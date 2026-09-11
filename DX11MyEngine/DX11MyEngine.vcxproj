@@ -224,6 +224,7 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Source\Header\Component_Faction.h" />
+    <ClInclude Include="Source\Header\Component_MeshCollider.h" />
     <ClInclude Include="Source\Header\Component_MiniMapRader.h" />
     <ClInclude Include="Source\Header\Component_MuzzleFlashEffect.h" />
     <ClInclude Include="Source\Header\Component_NormalBullet.h" />
@@ -424,6 +425,7 @@
     <ClCompile Include="Source\Cpp\Component_ConfigSetting.cpp" />
     <ClCompile Include="Source\Cpp\Component_DistortionEffect.cpp" />
     <ClCompile Include="Source\Cpp\Component_Item.cpp" />
+    <ClCompile Include="Source\Cpp\Component_MeshCollider.cpp" />
     <ClCompile Include="Source\Cpp\Component_MuzzleFlashEffect.cpp" />
     <ClCompile Include="Source\Cpp\Component_Physics.cpp" />
     <ClCompile Include="Source\Cpp\Component_Render.cpp" />

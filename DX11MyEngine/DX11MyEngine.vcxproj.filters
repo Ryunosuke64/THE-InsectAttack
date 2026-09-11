@@ -912,6 +912,9 @@
     <ClCompile Include="Source\Cpp\EnemyFactory.cpp">
       <Filter>ソース ファイル\Game\Factory</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_MeshCollider.cpp">
+      <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1459,6 +1462,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\EnemyFactory.h">
       <Filter>ソース ファイル\Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_MeshCollider.h">
+      <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -505,9 +505,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         Master::m_pCollisionManager->RegisterCollider(collider);
     }
 
-    //Master::m_pItemManager->SpawnItemRand(1, 100, VEC3(-120, 5, 80), 1);
-
-
 
     /* âÊñ è„ÇÃUIÇÃê∂ê¨ */
     {
