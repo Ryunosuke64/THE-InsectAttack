@@ -52,7 +52,7 @@
     {
       "type" : "MODEL",
       "bulletMaterialTag" : "Bullet_01",
-      "trailDrawTime" : 30,
+      "trailDrawTime" : 0.3,
       "trailWidth" : 3.0,
       "enableFlightSmoke" : true,
       "smokeInterval" : 0.001,
