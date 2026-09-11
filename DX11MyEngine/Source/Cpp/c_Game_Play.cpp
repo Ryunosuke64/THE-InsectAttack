@@ -98,6 +98,9 @@ int c_Game_Play::Update(SceneManager *pOwner)
         pOwner->OnSceneClose();
     }
 
+    // ミッションスクリプトの実行
+    Master::m_pMissionDirector->ExcuteScriptMissionMain();
+
     //////////////////////////////////////////////////////////////////////////////////////////
     //
     //						子ステートの処理

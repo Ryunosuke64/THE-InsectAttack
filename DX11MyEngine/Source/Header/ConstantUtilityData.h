@@ -364,24 +364,24 @@ namespace UtilityData
 	/// </summary>
 	struct StageEnvironmentParam
 	{
-		VECTOR3::VEC3 _dirLightColor;		// ディレクションライトカラー（スカイボックスの色になる）
-		VECTOR3::VEC3 _dirLightDirection;	// ディレクションライトの向き
-		float _dirLightIntensity;			// ディレクションライトインテンシティ
-		VECTOR3::VEC3 _fogColor;			// フォグカラー
-		float _fogStart;					// フォグの開始距離
-		float _fogEnd;						// フォグの最大距離（1.0以下ならフォグを設定しない）
-		float _dofStart;					// 被写界深度の開始距離
-		float _dofEnd;						// 被写界深度の最大距離
+		VECTOR3::VEC3 dirLightColor;		// ディレクションライトカラー（スカイボックスの色になる）
+		VECTOR3::VEC3 dirLightDirection;	// ディレクションライトの向き
+		float dirLightIntensity;			// ディレクションライトインテンシティ
+		VECTOR3::VEC3 fogColor;			// フォグカラー
+		float fogStart;					// フォグの開始距離
+		float fogEnd;						// フォグの最大距離（1.0以下ならフォグを設定しない）
+		float dofStart;					// 被写界深度の開始距離
+		float dofEnd;						// 被写界深度の最大距離
 
 		StageEnvironmentParam() :
-			_dirLightColor(VECTOR3::VEC3(1.0f)),
-			_dirLightDirection(VECTOR3::VEC3(0.0f,1.0f,0.0f)),
-			_dirLightIntensity(2.0f),
-			_fogColor(VECTOR3::VEC3(1.0f)),
-			_dofStart(0.0f),
-			_dofEnd(0.0f),
-			_fogStart(0.0f),
-			_fogEnd(0.0f)
+			dirLightColor(VECTOR3::VEC3(1.0f)),
+			dirLightDirection(VECTOR3::VEC3(0.0f,1.0f,0.0f)),
+			dirLightIntensity(2.0f),
+			fogColor(VECTOR3::VEC3(1.0f)),
+			dofStart(0.0f),
+			dofEnd(0.0f),
+			fogStart(0.0f),
+			fogEnd(0.0f)
 
 		{
 		}
@@ -406,15 +406,6 @@ namespace UtilityData
 	};
 
 	/// <summary>
-	/// エネミーの出現状態のタイプ
-	/// </summary>
-	enum class ENEMY_SPAWN_ACTIVE_TYPE
-	{
-		ACTIVE = 0,		// アクティブ状態で出現
-		PATROL = 1,		// 非アクティブ状態で出現
-	};
-
-	/// <summary>
 	/// プレイヤーの出現情報
 	/// </summary>
 	struct SpawnPlayerData
@@ -435,7 +426,7 @@ namespace UtilityData
 		float _spawnRadius;							// 出現位置の半径（ランダム出現時に使用）
 		VECTOR3::VEC3 _spawnPos;					// 出現位置
 		VECTOR3::VEC3 _spawnRot;					// 出現時の回転角度
-		ENEMY_SPAWN_ACTIVE_TYPE _activeType;		// 出現時の状態（アクティブ or 非アクティブ）
+		bool _isAggro;								// 出現時の状態（アクティブ or 非アクティブ）
 	};
 
 	/// <summary>

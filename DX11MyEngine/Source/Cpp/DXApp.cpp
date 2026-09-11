@@ -43,6 +43,7 @@ TweenManager            *Master::m_pTweenManager        = nullptr;   // TweenŠÇ—
 BuildingManager         *Master::m_pBuildingManager     = nullptr;   // Œš•¨ŠÇ—
 ScriptManager           *Master::m_pScriptManager       = nullptr;   // AngelScriptŠÇ—
 EnemyManager            *Master::m_pEnemyManager        = nullptr;   // ƒGƒlƒ~[ŠÇ—
+MissionDirector         *Master::m_pMissionDirector     = nullptr;   // ƒ~ƒbƒVƒ‡ƒ“ŠÇ—
 
 //*---------------------------------------------------------------------------------------
 //* @:DXApp Class 
@@ -119,6 +120,7 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
     Master::m_pBuildingManager      = new BuildingManager();        // Œš•¨ŠÇ—
     Master::m_pScriptManager        = new ScriptManager();          // AngelScriptŠÇ—
     Master::m_pEnemyManager         = new EnemyManager();           // ƒGƒlƒ~[ŠÇ—
+    Master::m_pMissionDirector      = new MissionDirector();        // ƒ~ƒbƒVƒ‡ƒ“ŠÇ—
 
 
     // *************************************************************************************************

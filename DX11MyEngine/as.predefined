@@ -89,6 +89,21 @@ class VEC3
     VEC3& opAssign(const VEC3&in);
 }
 
+class StageEnvironmentParam
+{
+    StageEnvironmentParam();
+    StageEnvironmentParam(const StageEnvironmentParam&in);
+    VEC3 dirLightColor;
+    VEC3 dirLightDirection;
+    float dirLightIntensity;
+    VEC3 fogColor;
+    float fogStart;
+    float fogEnd;
+    float dofStart;
+    float dofEnd;
+    StageEnvironmentParam& opAssign(const StageEnvironmentParam&in);
+}
+
 enum ENEMY_TYPE
 {
     GIANT_ANT_Normal = 0,
@@ -129,5 +144,10 @@ float floor(float);
 float fraction(float);
 void ErrorMesageBox(const string&in caption, const string&in msg);
 float GetDeltaTime();
+void SetStageEnvironmentParam(const StageEnvironmentParam&in param);
 uint SpawnEnemy(ENEMY_TYPE type, const VEC3&in pos, const VEC3&in rot, float hp, bool isAggro);
 uint SpawnEnemyGroup(ENEMY_TYPE type, const VEC3&in pos, float spawnRadius, uint count, float hp, bool isAggro);
+bool IsEnemyDead(uint enemyID);
+bool IsEnemyGroupDestroyed(uint groupID);
+int GetEnemyGroupAliveCount(uint groupID);
+int GetAliveEnemyCount();

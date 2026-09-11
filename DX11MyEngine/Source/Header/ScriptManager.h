@@ -44,8 +44,8 @@ private:
 
     void RegisterCoreAPI(asIScriptEngine* engine);
     void RegisterMathAPI(asIScriptEngine* engine);
-    void RegisterGameObjectAPI(asIScriptEngine* engine);
-    void RegisterPhysicsAPI(asIScriptEngine* engine);
+    void RegisterGameAPI(asIScriptEngine* engine);
+    void RegisterMissionAPI(asIScriptEngine* engine);
     void RegisterAudioAPI(asIScriptEngine* engine);
 };
 

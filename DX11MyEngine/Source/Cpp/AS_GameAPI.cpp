@@ -13,6 +13,16 @@ GetMissionTime()
 }
 
 //=========================================================================================
+// ステージ環境の設定
+//=========================================================================================
+void GIGA_Engine::ScriptAPI::Game::
+SetStageEnvironmentParam(const UtilityData::StageEnvironmentParam& param)
+{
+	Master::m_pMissionDirector->SetStageEnvironmentParam(param);
+}
+
+
+//=========================================================================================
 // エネミーの出現（単体）
 // タイプ・位置・回転・HP・攻撃状態か
 //=========================================================================================
@@ -45,4 +55,39 @@ SpawnEnemyGroup(EnemyData::ENEMY_TYPE type, const VECTOR3::VEC3& pos, float spaw
 	spawnData.hp = hp;
 
 	return EnemyFactory::SpawnEnemyGroup(spawnData);
+}
+
+//=========================================================================================
+// 指定IDのエネミーが倒されたか
+//=========================================================================================
+bool  GIGA_Engine::ScriptAPI::Game::
+IsEnemyDead(uint32_t enemyID)
+{
+	return Master::m_pEnemyManager->IsDead(enemyID);
+}
+
+//=========================================================================================
+// 指定IDのエネミーグループがすべて倒されたか
+//=========================================================================================
+bool  GIGA_Engine::ScriptAPI::Game::
+IsEnemyGroupDestroyed(uint32_t groupID)
+{
+	return Master::m_pEnemyManager->IsGroupDestroyed(groupID);
+}
+
+//=========================================================================================
+// 指定IDのエネミーグループの生存数を取得
+//=========================================================================================
+int  GIGA_Engine::ScriptAPI::Game::
+GetEnemyGroupAliveCount(uint32_t groupID)
+{
+	return Master::m_pEnemyManager->GetGroupAliveCount(groupID);
+}
+
+//=========================================================================================
+// エネミーの生存数を取得
+//=========================================================================================
+int  GIGA_Engine::ScriptAPI::Game::GetAliveEnemyCount()
+{
+	return Master::m_pEnemyManager->GetAllEnemyCount();
 }

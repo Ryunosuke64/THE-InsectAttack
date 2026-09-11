@@ -53,6 +53,7 @@ enumval ENEMY_TYPE OCTAHEDRON 1
 objtype "array<T>" 69
 objtype "string" 7938
 objtype "VEC3" 2147615490
+objtype "StageEnvironmentParam" 2147615490
 funcdef "bool array<T>::less(const T&in, const T&in)"
 
 // Template type members
@@ -151,6 +152,18 @@ objmthd "VEC3" "VEC3& opAssign(const VEC3&in)"
 objprop "VEC3" "float x" 0 0
 objprop "VEC3" "float y" 0 0
 objprop "VEC3" "float z" 0 0
+objbeh "StageEnvironmentParam" 2 "void StageEnvironmentParam()"
+objbeh "StageEnvironmentParam" 0 "void StageEnvironmentParam()"
+objbeh "StageEnvironmentParam" 0 "void StageEnvironmentParam(const StageEnvironmentParam&in)"
+objmthd "StageEnvironmentParam" "StageEnvironmentParam& opAssign(const StageEnvironmentParam&in)"
+objprop "StageEnvironmentParam" "VEC3 dirLightColor" 0 0
+objprop "StageEnvironmentParam" "VEC3 dirLightDirection" 0 0
+objprop "StageEnvironmentParam" "float dirLightIntensity" 0 0
+objprop "StageEnvironmentParam" "VEC3 fogColor" 0 0
+objprop "StageEnvironmentParam" "float fogStart" 0 0
+objprop "StageEnvironmentParam" "float fogEnd" 0 0
+objprop "StageEnvironmentParam" "float dofStart" 0 0
+objprop "StageEnvironmentParam" "float dofEnd" 0 0
 
 // Functions
 func "uint scan(const string&in, ?&out...)"
@@ -187,8 +200,13 @@ func "float floor(float)"
 func "float fraction(float)"
 func "void ErrorMesageBox(const string&in, const string&in)"
 func "float GetDeltaTime()"
+func "void SetStageEnvironmentParam(const StageEnvironmentParam&in)"
 func "uint SpawnEnemy(ENEMY_TYPE, const VEC3&in, const VEC3&in, float, bool)"
 func "uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool)"
+func "bool IsEnemyDead(uint)"
+func "bool IsEnemyGroupDestroyed(uint)"
+func "int GetEnemyGroupAliveCount(uint)"
+func "int GetAliveEnemyCount()"
 
 // Properties
 

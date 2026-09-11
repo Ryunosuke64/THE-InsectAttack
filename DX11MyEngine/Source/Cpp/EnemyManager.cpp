@@ -60,17 +60,18 @@ EnemyID EnemyManager::RegisterEnemy(std::weak_ptr<GameObject> pEnemy)
 	EnemySlot enemySlot;
 	enemySlot.active = true;
 	enemySlot.enemy = pEnemy;
-	
-	// エネミーコントローラー側にもIDを渡す
-	auto enemyController = pEnemy.lock()->get_Component<EnemyController>();
-	enemyController->set_EnemyID(enemyID, -1); // グループじゃないので -1 
-
 
 	// 配列に追加
 	m_Enemies.push_back(enemySlot);
 
 	enemyID.index = static_cast<uint32_t>(m_Enemies.size() - 1);
 	enemyID.generation = enemySlot.generation;
+
+
+	// エネミーコントローラー側にもIDを渡す
+	auto enemyController = pEnemy.lock()->get_Component<EnemyController>();
+	enemyController->set_EnemyID(enemyID, -1); // グループじゃないので -1 
+
 
 	return enemyID;
 }
@@ -235,6 +236,14 @@ int EnemyManager::GetGroupAliveCount(EnemyGroupID groupID)const
 	}
 
 	return count;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】指定IDのエネミーが倒されたか
+//*----------------------------------------------------------------------------------------
+bool EnemyManager::IsDead(uint32_t id)
+{
+	return  m_Enemies[id].active ? false : true;
 }
 
 //*---------------------------------------------------------------------------------------

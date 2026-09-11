@@ -1,0 +1,11 @@
+<unrecognized token> _unnamed_function_()
+
+Temps: 1
+
+Variables: 
+ 001: int 
+
+
+- 4,8 -
+    0   1 *    SetG4    2384029282176, 0
+    4   1 *    RET      0

@@ -14,6 +14,7 @@
 
 using namespace Tool;
 using namespace VECTOR3;
+using namespace UtilityData;
 
 #include <fstream>
 
@@ -293,22 +294,14 @@ bool ScriptManager::Init()
         RegisterMathAPI(m_pEngine);
 
         // ゲームAPI
-        RegisterGameObjectAPI(m_pEngine);
+        RegisterGameAPI(m_pEngine);
+
+        // ミッションAPI
+        RegisterMissionAPI(m_pEngine);
     }
 
     // コンテキスト作成
     m_pContext = m_pEngine->CreateContext();
-
-    // =====================================
-    // スクリプト読み込み
-    // =====================================
-    bool isRes = false;
-    isRes = LoadScript("MyModule", "Resource/MISSION_AS/MISSION_01.as");
-    if (!isRes)
-    {
-        return false;
-    }
-
 
 
     // デバッグ時のみ生成
@@ -548,7 +541,7 @@ void ScriptManager::RegisterMathAPI(asIScriptEngine* engine)
 //* [返値] 
 //* なし
 //*----------------------------------------------------------------------------------------
-void ScriptManager::RegisterGameObjectAPI(asIScriptEngine* engine)
+void ScriptManager::RegisterGameAPI(asIScriptEngine* engine)
 {
     int r = 0;
 
@@ -561,7 +554,49 @@ void ScriptManager::RegisterGameObjectAPI(asIScriptEngine* engine)
     )
         .value(EnemyData::ENEMY_TYPE::GIANT_ANT_Normal, "GIANT_ANT_Normal")
         .value(EnemyData::ENEMY_TYPE::OCTAHEDRON, "OCTAHEDRON");
+}
 
+
+//*---------------------------------------------------------------------------------------
+//*【?】ミッション用APIの登録
+//*
+//* [引数] 
+//* *engine : ASエンジン
+//* 
+//* [返値] 
+//* なし
+//*----------------------------------------------------------------------------------------
+void ScriptManager::RegisterMissionAPI(asIScriptEngine* engine)
+{
+    // =====================================
+    // StageEnvironmentParam
+    // =====================================
+    asbind20::value_class<StageEnvironmentParam>(
+        engine,
+        "StageEnvironmentParam",
+        asOBJ_APP_CLASS_ALLFLOATS |
+        asOBJ_APP_CLASS_MORE_CONSTRUCTORS
+    )
+        .behaviours_by_traits()
+        .property("VEC3 dirLightColor", &StageEnvironmentParam::dirLightColor)
+        .property("VEC3 dirLightDirection", &StageEnvironmentParam::dirLightDirection)
+        .property("float dirLightIntensity", &StageEnvironmentParam::dirLightIntensity)
+        .property("VEC3 fogColor", &StageEnvironmentParam::fogColor)
+        .property("float fogStart", &StageEnvironmentParam::fogStart)
+        .property("float fogEnd", &StageEnvironmentParam::fogEnd)
+        .property("float dofStart", &StageEnvironmentParam::dofStart)
+        .property("float dofEnd", &StageEnvironmentParam::dofEnd
+        );
+
+
+    // =====================================
+    // SetStageEnvironmentParam
+    // =====================================
+    asbind20::global(engine).function(
+        "void SetStageEnvironmentParam(const StageEnvironmentParam&in param)",
+        &GIGA_Engine::ScriptAPI::Game::SetStageEnvironmentParam
+    );
+    
 
     // =====================================
     // SpawnEnemy
@@ -578,9 +613,42 @@ void ScriptManager::RegisterGameObjectAPI(asIScriptEngine* engine)
         "uint32 SpawnEnemyGroup(ENEMY_TYPE type, const VEC3&in pos, float spawnRadius, uint32 count, float hp, bool isAggro)",
         &GIGA_Engine::ScriptAPI::Game::SpawnEnemyGroup
     );
+    
+    // =====================================
+    // IsEnemyDead
+    // =====================================
+    asbind20::global(engine).function(
+        "bool IsEnemyDead(uint32 enemyID)",
+        &GIGA_Engine::ScriptAPI::Game::IsEnemyDead
+    );
+        
+    // =====================================
+    // IsEnemyGroupDestroyed
+    // =====================================
+    asbind20::global(engine).function(
+        "bool IsEnemyGroupDestroyed(uint32 groupID)",
+        &GIGA_Engine::ScriptAPI::Game::IsEnemyGroupDestroyed
+    );
+
+    // =====================================
+    // GetEnemyGroupAliveCount
+    // =====================================
+    asbind20::global(engine).function(
+        "int GetEnemyGroupAliveCount(uint32 groupID)",
+        &GIGA_Engine::ScriptAPI::Game::GetEnemyGroupAliveCount
+    );
+        
+    // =====================================
+    // GetAliveEnemyCount
+    // =====================================
+    asbind20::global(engine).function(
+        "int GetAliveEnemyCount()",
+        &GIGA_Engine::ScriptAPI::Game::GetAliveEnemyCount
+    );
 
 
 }
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】オーディオAPIの登録

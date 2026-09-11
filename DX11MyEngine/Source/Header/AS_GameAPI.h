@@ -10,6 +10,9 @@ namespace GIGA_Engine::ScriptAPI::Game
 	// ミッション開始からの時間を取得
 	float GetMissionTime();
 
+	// ステージ環境の設定
+	void SetStageEnvironmentParam(const UtilityData::StageEnvironmentParam& param);
+
 	// エネミーの出現（単体）
 	// タイプ・位置・回転・HP・攻撃状態か
 	uint32_t SpawnEnemy(EnemyData::ENEMY_TYPE type,const VECTOR3::VEC3& pos, const VECTOR3::VEC3& rot, float hp, bool isAggro);

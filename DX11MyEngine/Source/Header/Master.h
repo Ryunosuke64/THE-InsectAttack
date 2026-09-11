@@ -22,6 +22,7 @@
 #include "BuildingManager.h"
 #include "ScriptManager.h"
 #include "EnemyManager.h"
+#include "MissionDirector.h"
 
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
@@ -63,4 +64,5 @@ public:
 	static BuildingManager		* m_pBuildingManager;	// 建物管理
 	static ScriptManager		* m_pScriptManager;		// AngelScript管理
 	static EnemyManager			* m_pEnemyManager;		// エネミー管理
+	static MissionDirector		* m_pMissionDirector;	// ミッション管理
 };

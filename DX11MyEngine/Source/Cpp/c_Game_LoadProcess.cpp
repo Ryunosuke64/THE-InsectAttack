@@ -101,32 +101,9 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         MessageBoxA(NULL, "アイテム管理クラスの初期化に失敗しました", "GameLoad", MB_OK);
         assert(false);
     }
-
-    Master::m_pScriptManager->ExcuteModuleFunction("MyModule", "void as_main()");
-
-    ///* アリ モデルの生成 */
-    //{
-    //    EnemyData::EnemyGroupSpawnData spawnData;
-    //    spawnData.enemyType = ENEMY_TYPE::GIANT_ANT_Normal;
-    //    spawnData.isAggro = true;
-    //    spawnData.position = VEC3(-150.0f, 0.0f, 0.0f);
-    //    spawnData.rotation = VEC3();
-    //    spawnData.hp = 200.0f;
-    //    spawnData.count = 100;
-    //    spawnData.spawnRadius = 10.0f;
-    //    EnemyFactory::SpawnEnemyGroup(spawnData);
-    //}
-
-    ///* 八面体生成 */
-    //{
-    //    EnemyData::EnemySpawnData spawnData;
-    //    spawnData.enemyType = ENEMY_TYPE::OCTAHEDRON;
-    //    spawnData.isAggro = true;
-    //    spawnData.position = VEC3(0.0f, 200.0f, 0.0f);
-    //    spawnData.rotation = VEC3();
-    //    spawnData.hp = 1000.0f;
-    //    EnemyFactory::SpawnEnemy(spawnData);
-    //}
+    
+    Master::m_pMissionDirector->LoadMissionScript("Resource/MISSION_AS/MISSION_01.as");
+    Master::m_pMissionDirector->ExcuteScriptMissionSetup();
 
 
     /* B-2 モデルの生成 */
@@ -164,12 +141,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             auto matPtr2 = Master::m_pResourceManager->FindMaterial("Building01_Base1");
             auto matPtr3 = Master::m_pResourceManager->FindMaterial("Building01_Base2");
             auto matPtr4 = Master::m_pResourceManager->FindMaterial("Building01_Base3");
-            //auto matPtr1 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_SupportPillar");
-            //auto matPtr2 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_TopPillar");
-            //auto matPtr3 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_TopToroid");
-            //auto matPtr4 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_Top");
-            //auto matPtr5 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_BaseGround");
-            //auto matPtr6 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_Wall");
 
             SetupMaterialInfo matInfo[6];
             matInfo[0].Index = 0;
@@ -777,64 +748,64 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     //                        ちょっとした雰囲気作り  
     //*****************************************************************************************
     DIFFICULTY_LEVEL crntDiffLevel = Master::m_pDataManager->get_DifficultyLevel();
-    auto dirLightObj = Master::m_pGameObjectManager->get_ObjectByTag("DirectionLight");
-    auto dirLight = dirLightObj->get_Component<DirectionalLight>();
+ //   auto dirLightObj = Master::m_pGameObjectManager->get_ObjectByTag("DirectionLight");
+ //   auto dirLight = dirLightObj->get_Component<DirectionalLight>();
 
-    // ステージ環境パラメータ
-    StageEnvironmentParam stageEnvironmentParam;
-    stageEnvironmentParam._dirLightColor     = VEC3(1.0f);              // ライトカラー
-    stageEnvironmentParam._dirLightIntensity = 2.5f;                    // ライトの強さ
-    stageEnvironmentParam._fogColor          = VEC3(0.6f, 0.7f, 0.8f);  // フォグカラー
-    stageEnvironmentParam._fogStart          = 0.0f;                    // フォグ開始距離
-    stageEnvironmentParam._fogEnd            = 0.0f;                    // フォグ最大距離
-    stageEnvironmentParam._dofStart          = 300.0f;                  // 被写界深度開始距離
-    stageEnvironmentParam._dofEnd            = 1500.0f;                 // 被写界深度最大距離
+ //   // ステージ環境パラメータ
+ //   StageEnvironmentParam stageEnvironmentParam;
+ //   stageEnvironmentParam.dirLightColor     = VEC3(1.0f);              // ライトカラー
+ //   stageEnvironmentParam.dirLightIntensity = 2.5f;                    // ライトの強さ
+ //   stageEnvironmentParam.fogColor          = VEC3(0.6f, 0.7f, 0.8f);  // フォグカラー
+ //   stageEnvironmentParam.fogStart          = 0.0f;                    // フォグ開始距離
+ //   stageEnvironmentParam.fogEnd            = 0.0f;                    // フォグ最大距離
+ //   stageEnvironmentParam.dofStart          = 300.0f;                  // 被写界深度開始距離
+ //   stageEnvironmentParam.dofEnd            = 1500.0f;                 // 被写界深度最大距離
 
-    switch (crntDiffLevel)
-    {
-    case UtilityData::DIFFICULTY_LEVEL::EASY:
-        stageEnvironmentParam._dirLightColor = VEC3(0.7f, 0.7f, 0.7f);
-        stageEnvironmentParam._dirLightIntensity = 3.5f;                   
-        break;
-    case UtilityData::DIFFICULTY_LEVEL::NORMAL:
-        stageEnvironmentParam._dirLightColor = VEC3(0.7f, 0.7f, 0.7f);
-        stageEnvironmentParam._dirLightIntensity = 3.5f;
-        break;
-    case UtilityData::DIFFICULTY_LEVEL::HARD:
-        stageEnvironmentParam._dirLightColor = VEC3(0.6f, 0.4f, 0.4f);
-        break;
-    case UtilityData::DIFFICULTY_LEVEL::DISASTER:
-        stageEnvironmentParam._dirLightColor = VEC3(0.5f, 0.2f, 0.4f);
-        stageEnvironmentParam._fogColor = VEC3(0.6f, 0.7f, 0.8f);;
-        stageEnvironmentParam._fogStart = 30.0f;
-        stageEnvironmentParam._fogEnd = 180.0f;
-        stageEnvironmentParam._dofStart = 30.0f;
-        stageEnvironmentParam._dofEnd = 180.0f;
-        break;
+ //   switch (crntDiffLevel)
+ //   {
+ //   case UtilityData::DIFFICULTY_LEVEL::EASY:
+ //       stageEnvironmentParam.dirLightColor = VEC3(0.7f, 0.7f, 0.7f);
+ //       stageEnvironmentParam.dirLightIntensity = 3.5f;                   
+ //       break;
+ //   case UtilityData::DIFFICULTY_LEVEL::NORMAL:
+ //       stageEnvironmentParam.dirLightColor = VEC3(0.7f, 0.7f, 0.7f);
+ //       stageEnvironmentParam.dirLightIntensity = 3.5f;
+ //       break;
+ //   case UtilityData::DIFFICULTY_LEVEL::HARD:
+ //       stageEnvironmentParam.dirLightColor = VEC3(0.6f, 0.4f, 0.4f);
+ //       break;
+ //   case UtilityData::DIFFICULTY_LEVEL::DISASTER:
+ //       stageEnvironmentParam.dirLightColor = VEC3(0.5f, 0.2f, 0.4f);
+ //       stageEnvironmentParam.fogColor = VEC3(0.6f, 0.7f, 0.8f);;
+ //       stageEnvironmentParam.fogStart = 30.0f;
+ //       stageEnvironmentParam.fogEnd = 180.0f;
+ //       stageEnvironmentParam.dofStart = 30.0f;
+ //       stageEnvironmentParam.dofEnd = 180.0f;
+ //       break;
 
-    case UtilityData::DIFFICULTY_LEVEL::IMPOSSIBLE:
-        stageEnvironmentParam._dirLightColor = VEC3(0.9f, 0.0f, 0.0f);
-        stageEnvironmentParam._fogColor = VEC3(0.25f, 0.0f, 0.0f);
-        stageEnvironmentParam._fogStart = 30.0f;
-        stageEnvironmentParam._fogEnd = 200.0f;
-        stageEnvironmentParam._dofStart = 30.0f;
-        stageEnvironmentParam._dofEnd = 200.0f;
-        break;    
+ //   case UtilityData::DIFFICULTY_LEVEL::IMPOSSIBLE:
+ //       stageEnvironmentParam.dirLightColor = VEC3(0.9f, 0.0f, 0.0f);
+ //       stageEnvironmentParam.fogColor = VEC3(0.25f, 0.0f, 0.0f);
+ //       stageEnvironmentParam.fogStart = 30.0f;
+ //       stageEnvironmentParam.fogEnd = 200.0f;
+ //       stageEnvironmentParam.dofStart = 30.0f;
+ //       stageEnvironmentParam.dofEnd = 200.0f;
+ //       break;    
 
-    default:
-        break;
-    }
-    /* 
-    * ディレクションライトの設定 
-    */
-    dirLight->set_LightColor(stageEnvironmentParam._dirLightColor);
-	dirLight->set_Intensity(stageEnvironmentParam._dirLightIntensity);
+ //   default:
+ //       break;
+ //   }
+ //   /* 
+ //   * ディレクションライトの設定 
+ //   */
+ //   dirLight->set_LightColor(stageEnvironmentParam.dirLightColor);
+	//dirLight->set_Intensity(stageEnvironmentParam.dirLightIntensity);
 
-    /* 
-    *  DOFとフォグの設定 
-    */
-    m_pRenderer->set_DofParam(stageEnvironmentParam._dofStart, stageEnvironmentParam._dofEnd);
-    m_pRenderer->set_FogParam(stageEnvironmentParam._fogColor, stageEnvironmentParam._fogStart, stageEnvironmentParam._fogEnd);
+ //   /* 
+ //   *  DOFとフォグの設定 
+ //   */
+ //   m_pRenderer->set_DofParam(stageEnvironmentParam.dofStart, stageEnvironmentParam.dofEnd);
+ //   m_pRenderer->set_FogParam(stageEnvironmentParam.fogColor, stageEnvironmentParam.fogStart, stageEnvironmentParam.fogEnd);
 
     // ロード画面用スプライトをオフに
     auto obj = Master::m_pGameObjectManager->get_ObjectByTag("LoadScreen_Sp");
