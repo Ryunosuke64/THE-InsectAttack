@@ -187,7 +187,7 @@ namespace BulletData
         std::string _bulletMaterialTag;                  // 弾本体に使用するマテリアルのタグ
         VECTOR3::VEC3 _scale = VECTOR3::VEC3();          // 弾本体の表示サイズ
 
-        int _trailDrawTime = 0;                          // 軌跡の表示時間。0なら軌跡を表示しない
+        float _trailDrawTime = 0.0;                          // 軌跡の表示時間。0なら軌跡を表示しない
         float _trailWidth = 0;                           // 軌跡の幅
         VECTOR3::VEC3 _trailColor = VECTOR3::VEC3(1.0f); // 軌跡の色
         float _smokeInterval = 0.05f;                    // 飛行中の煙を生成する時間間隔

@@ -447,7 +447,7 @@ bool WeaponDataManager::LoadVisualData(const nlohmann::json& _json, BulletData::
     }
 
     _outData._commonVisualData._bulletMaterialTag = _json.value("bulletMaterialTag", "");     // 弾そのもののマテリアル
-    _outData._commonVisualData._trailDrawTime     = _json.value("trailDrawTime", 0);          // トレイルの有無
+    _outData._commonVisualData._trailDrawTime     = _json.value("trailDrawTime", 0.0f);       // トレイルの有無
     _outData._commonVisualData._trailWidth        = _json.value("trailWidth", 0.0f);          // トレイルの幅
     _outData._commonVisualData._enableFlightSmoke = _json.value("enableFlightSmoke", false);  // 飛行煙の有無
     _outData._commonVisualData._smokeInterval     = _json.value("smokeInterval", 0.05f);      // 飛行煙の間隔

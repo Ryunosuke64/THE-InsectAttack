@@ -7,11 +7,11 @@
 struct TrailInfo
 {
 	VECTOR3::VEC3 _pos;	// 位置
-	int _time;		// 時間で徐々に縮めていく
+	float _time;		// 時間で徐々に縮めていく
 
 	TrailInfo() :
 		_pos(VECTOR3::VEC3()),
-		_time(0)
+		_time(0.0f)
 	{};
 };
 
@@ -34,7 +34,7 @@ private:
 	float m_EmissivePower;			// 発光の強さ
 	float m_Width;					// 幅
 	float m_MinVertexDistance;		// 頂点同士の距離（大きいほどカクカク）
-	int m_DrawTime;					// 表示時間
+	float m_DrawTime;					// 表示時間
 	const UINT MAX_TRAIL_VERTEX_NUM = 256;	// 最大長点数
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVertesBuffer;// 頂点バッファ
 	//bool m_IsView;								// カメラに向くようにするか（ビルボード）
@@ -57,8 +57,8 @@ public:
 	float get_Width()const { return m_Width; };			// 幅の取得
 	void set_MinVertexDistance(const float _dist) { m_MinVertexDistance = _dist; }	// 頂点同士の距離の設定
 	float get_MinVertexDistance()const { return m_MinVertexDistance; }				// 頂点同士の距離の取得
-	void set_DrawTime(const int _t) { m_DrawTime = _t; }	// 表示時間の設定
-	int get_DrawTime()const { return m_DrawTime; }		// 表示時間の取得
+	void set_DrawTime(const float _t) { m_DrawTime = _t; }	// 表示時間の設定
+	float get_DrawTime()const { return m_DrawTime; }		// 表示時間の取得
 	void set_EmissivePower(const float _power) { m_EmissivePower = _power; }		// エミッシブ設定
 	float get_EmissivePower()const { return m_EmissivePower; }						// エミッシブ取得
 

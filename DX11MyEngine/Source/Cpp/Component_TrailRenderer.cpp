@@ -113,7 +113,7 @@ void TrailRenderer::LateUpdate(RendererEngine &renderer)
 
 	// 存在時間を過ぎたら消していく
 	// 順番は変わらないはずなので、前の方から調べていく
-	if (m_TrailInfoList.front()._time <= 0)
+	if (m_TrailInfoList.front()._time <= 0.0f)
 	{
 		m_TrailInfoList.pop_front();
 	}
@@ -189,6 +189,7 @@ void TrailRenderer::Draw(RendererEngine &renderer)
 void TrailRenderer::VertexUpdate(RendererEngine& renderer)
 {
 	auto pContext = renderer.get_DeviceContext();
+	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 
 	if (m_TrailInfoList.empty() || m_TrailInfoList.size() == 1)return;
 
@@ -204,10 +205,10 @@ void TrailRenderer::VertexUpdate(RendererEngine& renderer)
 	{
 		VEC3 tail = m_TrailInfoList[i]._pos;// 末尾（今作るのはこれ）
 
-		m_TrailInfoList[i]._time--;
+		m_TrailInfoList[i]._time -= deltaTime;
 
 		// 時間の比率を求める
-		float w_t = static_cast<float>(m_TrailInfoList[i]._time) / static_cast<float>(m_DrawTime);
+		float w_t = m_TrailInfoList[i]._time / m_DrawTime;
 
 		VEC3 headDir;
 
