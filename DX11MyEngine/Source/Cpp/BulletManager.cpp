@@ -25,17 +25,17 @@ using namespace UtilityData;
 //						各プールのパラメータ
 // 
 //////////////////////////////////////////////////////////////////////////////////////////
-// 通常弾 =====================================================================
-constexpr int NUM_DEFAULT__NORMAL_BULLET    = 100;
-constexpr int NUM_MAX__NORMAL_BULLET        = 150;
+// ビルボード弾 =====================================================================
+constexpr int NUM_DEFAULT__BILLBOARD_BULLET    = 100;
+constexpr int NUM_MAX__BILLBOARD_BULLET        = 300;
 
 // 爆発弾 =====================================================================
-constexpr int NUM_DEFAULT__EXPLOSION_BULLET = 100;
-constexpr int NUM_MAX__EXPLOSION_BULLET     = 150;
+constexpr int NUM_DEFAULT__MODEL_BULLET = 100;
+constexpr int NUM_MAX__MODEL_BULLET     = 300;
 
-// 誘導弾 =====================================================================
-constexpr int NUM_DEFAULT__HORMING_BULLET   = 50;
-constexpr int NUM_MAX__HORMING_BULLET       = 100;
+// エフェクト弾 =====================================================================
+constexpr int NUM_DEFAULT__EFFECT_BULLET   = 100;
+constexpr int NUM_MAX__EFFECT_BULLET       = 300;
 
 
 
@@ -153,8 +153,8 @@ bool BulletManager::Init(RendererEngine &renderer)
 
             return obj.get();
         },
-        NUM_DEFAULT__NORMAL_BULLET,
-        NUM_MAX__NORMAL_BULLET
+        NUM_DEFAULT__BILLBOARD_BULLET,
+        NUM_MAX__BILLBOARD_BULLET
     ));
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -245,8 +245,92 @@ bool BulletManager::Init(RendererEngine &renderer)
 
             return obj.get();
         },
-        NUM_DEFAULT__EXPLOSION_BULLET,
-        NUM_MAX__EXPLOSION_BULLET
+        NUM_DEFAULT__MODEL_BULLET,
+        NUM_MAX__MODEL_BULLET
+    ));
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //
+    //
+    //						エフェクト弾のプール
+    // 
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////
+    m_BulletObjectPoolMap.emplace(BULLET_VISUAL_ARCHETYPE::EFFECT, ObjectPool<GameObject>(
+        // 取得時に実行 ******************************************************************************************
+        [&renderer](GameObject* obj)
+        {
+            // アクティブに
+            obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
+        },
+        // 返却時に実行 ******************************************************************************************
+        [this](GameObject* obj)
+        {
+            auto bulletComp = obj->get_Component<Bullet>();
+            //const auto bulletHitParam = bulletComp->get_HitData <ExplosionHitConfig>();
+            //float explosionRadius = bulletHitParam->_explosionRadius;   // 爆発半径を取得
+            bulletComp->Reset();
+
+            // 軌跡データをクリア
+            auto trail = obj->get_Component<TrailRenderer>();
+            trail->clear_TrailInfoList();
+
+            auto physics = obj->get_Component<Physics>();
+            physics->SetZeroVelocity();
+
+            auto transform = obj->get_Transform().lock();
+            VEC3 pos = transform->get_VEC3ToPos();
+            transform->get_VEC3ToScale();
+        },
+        // 生成時に実行 ******************************************************************************************
+        [&renderer]()->GameObject*
+        {
+            // マテリアル取得
+            auto matPtr1 = Master::m_pResourceManager->FindMaterial("Bullet");
+            SetupMaterialInfo matInfo[1];
+            matInfo[0].Index = 0;
+            matInfo[0].pMaterialData = matPtr1;
+
+            // オブジェクト作成
+            auto obj = Instantiate3D(std::make_shared<GameObject>(), true);
+            if (obj == nullptr) {
+                assert(false);
+                return nullptr;
+            }
+            obj->set_Tag("Bullet");
+
+            // 動的オブジェクトとして設定
+            obj->set_IsStatic(false);
+
+            obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_DONT_DESTROY);    // ノンデストロイ
+            obj->clear_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);        // ノンアクティブ
+            obj->set_IsUpdateAllowedDuringPause(false);                     // ポーズ中は停止
+
+            // バレットコンポーネントの追加
+            auto bulletComp = obj->add_Component<Bullet>();
+
+            // 移動用コンポーネントの追加
+            auto moveComp = obj->add_Component<MoveLogic>();
+            moveComp->Register(MOVE_BEHAVIOUR_TYPE::LINEAR);
+            moveComp->ChangeBehaviour(MOVE_BEHAVIOUR_TYPE::LINEAR);
+
+            // 軌跡コンポーネントの追加
+            auto trail = obj->add_Component<TrailRenderer>();
+            trail->set_Width(0.5f);
+            trail->set_MinVertexDistance(0.01f);
+            trail->set_DrawTime(2);
+            trail->set_EmissivePower(1.0f);
+            trail->set_Color(VECTOR4::VEC4(1.0f, 1.0f, 0.5f, 1.0f));
+            //trail->set_PosRandVec(VEC3(0.5f));
+
+            auto physics = obj->add_Component<Physics>();
+
+            // 初期化
+            bulletComp->Start(renderer);
+
+            return obj.get();
+        },
+        NUM_DEFAULT__EFFECT_BULLET,
+        NUM_MAX__EFFECT_BULLET
     ));
 
     return true;
@@ -462,9 +546,9 @@ void BulletManager::Shot(RendererEngine &renderer, const BulletData::BulletSpawn
     trail->set_DrawTime(bulletParam->_commonVisualData._trailDrawTime);
     trail->set_Width(bulletParam->_commonVisualData._trailWidth);
 
-    // 弾に合わせたマテリアルに付け替え
-    auto matPtr = Master::m_pResourceManager->FindMaterial(bulletParam->_commonVisualData._bulletMaterialTag);
     if (auto billboardRes = obj->get_Component<BillboardResource>()) {
+        // 弾に合わせたマテリアルに付け替え
+        auto matPtr = Master::m_pResourceManager->FindMaterial(bulletParam->_commonVisualData._bulletMaterialTag);
         billboardRes->set_Material(matPtr);
     }
 

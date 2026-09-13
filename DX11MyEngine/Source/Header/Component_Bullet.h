@@ -69,5 +69,11 @@ public:
         }
         return std::get_if<T>(&m_pDefinition->_moveData);
     }
+
+private:
+    bool HitCheck(BulletData::BULLET_TYPE _type, CollisionInfo& _outCollisionInfo);     // 衝突チェック
+    bool HitCheck_Sphere(CollisionInfo& _outCollisionInfo);                             // 球状判定
+    bool HitCheck_RaySegment(CollisionInfo& _outCollisionInfo);                         // レイセグメント
+    bool HitCheck_Ray(CollisionInfo& _outCollisionInfo);                                // レイ
 };
 

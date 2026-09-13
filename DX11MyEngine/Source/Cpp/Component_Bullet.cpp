@@ -221,13 +221,9 @@ void Bullet::LateUpdate(RendererEngine& renderer)
         }
     }
 
-    // レイキャストで衝突判定（コライダーの衝突処理をこっちに移動）
-    CollInData_Ray ray;
-    ray._point = m_PrevPos;           // 前回の位置からレイを飛ばす
-    ray._dir = newPos - m_PrevPos;    // 前回の位置から新しい位置へのベクトル
-    unsigned mask = m_pDefinition->_commonData._collisionMask;
     CollisionInfo hitInfo;
-    if (Master::m_pCollisionManager->CheckRaycast(ray, mask, &hitInfo))
+    bool isHit = HitCheck(m_pDefinition->_commonData._bulletType, hitInfo);
+    if (isHit)
     {
         VEC3 hitPoint = hitInfo.get_HitPoint();
         VEC3 normal = hitInfo.get_HitNormal().Normalize();
@@ -429,4 +425,105 @@ void Bullet::Reset()
     }
 
     m_pBillboardRenderer = nullptr;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】衝突チェック
+//* [引数]
+//* _type                : どんな条件で無効になったか
+//* & _outCollisionInfo  : 衝突情報の出力先
+//*
+//* [返値]
+//* 衝突したかどうか
+//*----------------------------------------------------------------------------------------
+bool Bullet::HitCheck(BulletData::BULLET_TYPE _type, CollisionInfo& _outCollisionInfo)
+{
+    bool isHit = false;
+    switch (_type)
+    {
+    case BulletData::BULLET_TYPE::NORMAL:
+        isHit = HitCheck_RaySegment(_outCollisionInfo);
+        break;
+    case BulletData::BULLET_TYPE::EXPLOSION:
+        isHit = HitCheck_RaySegment(_outCollisionInfo);
+        break;
+    case BulletData::BULLET_TYPE::HORMING:
+        isHit = HitCheck_RaySegment(_outCollisionInfo);
+        break;
+    case BulletData::BULLET_TYPE::LASER:
+        isHit = HitCheck_Ray(_outCollisionInfo);
+        break;
+    case BulletData::BULLET_TYPE::FLAME:
+        isHit = HitCheck_RaySegment(_outCollisionInfo);
+        //isHit = HitCheck_Sphere(_outCollisionInfo);
+        break;
+    case BulletData::BULLET_TYPE::ACID:
+        isHit = HitCheck_RaySegment(_outCollisionInfo);
+        //isHit = HitCheck_Sphere(_outCollisionInfo);
+        break;
+    case BulletData::BULLET_TYPE::NUM:
+        break;
+    default:
+        break;
+    }
+
+    return isHit;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】球状判定
+//* [引数]
+//* & _outCollisionInfo  : 衝突情報の出力先
+//* 
+//* [返値]
+//* 衝突したかどうか
+//*----------------------------------------------------------------------------------------
+bool Bullet::HitCheck_Sphere(CollisionInfo& _outCollisionInfo)
+{
+    // 移動後の位置
+    VEC3 pos = m_Runtime._transform->get_VEC3ToPos();
+    float radius = m_pDefinition->_commonData._collisionSize;
+    unsigned mask = m_pDefinition->_commonData._collisionMask;
+
+    return false;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】レイセグメント判定
+//*     前回の座標との差分からレイキャストをする 
+//* 
+//* [引数]
+//* & _outCollisionInfo  : 衝突情報の出力先
+//* [返値]
+//* 衝突したかどうか
+//*----------------------------------------------------------------------------------------
+bool Bullet::HitCheck_RaySegment(CollisionInfo& _outCollisionInfo)
+{
+    // 移動後の位置
+    VEC3 newPos = m_Runtime._transform->get_VEC3ToPos();
+
+    // レイキャストで衝突判定（コライダーの衝突処理をこっちに移動）
+    CollInData_Ray ray;
+    ray._point = m_PrevPos;           // 前回の位置からレイを飛ばす
+    ray._dir = newPos - m_PrevPos;    // 前回の位置から新しい位置へのベクトル
+    unsigned mask = m_pDefinition->_commonData._collisionMask;
+    return Master::m_pCollisionManager->CheckRaycast(ray, mask, &_outCollisionInfo);
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】レイ判定
+//* [引数]
+//* & _outCollisionInfo  : 衝突情報の出力先
+//* 
+//* [返値]
+//* 衝突したかどうか
+//*----------------------------------------------------------------------------------------
+bool Bullet::HitCheck_Ray(CollisionInfo& _outCollisionInfo)
+{
+    // レイキャストで衝突判定（コライダーの衝突処理をこっちに移動）
+    CollInData_Ray ray;
+    ray._point = m_StartPos;                                    // 前回の位置からレイを飛ばす
+    ray._dir = m_MoveDir * m_pDefinition->_commonData._range;
+    unsigned mask = m_pDefinition->_commonData._collisionMask;
+    return Master::m_pCollisionManager->CheckRaycast(ray, mask, &_outCollisionInfo);
 }

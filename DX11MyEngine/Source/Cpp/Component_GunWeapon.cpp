@@ -20,6 +20,7 @@
 using namespace DirectX;
 using namespace GIGA_Engine;
 using namespace Input;
+using namespace VECTOR4;
 using namespace VECTOR3;
 using namespace VECTOR2;
 using namespace BulletData;
@@ -418,6 +419,9 @@ void GunWeapon::Fire(RendererEngine& renderer)
     XMVECTOR vFirePos = XMVectorSet(firePos.x, firePos.y, firePos.z, 1.0f);
     XMVECTOR bulletDirVec = XMVector3Normalize(XMVectorSubtract(targetPos, vFirePos));
 
+    // 基準の前方向（+Z）
+    XMVECTOR baseForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+
     // 弾の方向ベクトルから Yaw と Pitch を計算（エフェクトや弾のクォータニオン用）
     VEC3 fw = VEC3::FromXMVECTOR(bulletDirVec);
     float yaw = atan2f(fw.x, fw.z);
@@ -464,6 +468,29 @@ void GunWeapon::Fire(RendererEngine& renderer)
         XMVECTOR finalRotQuat = XMQuaternionMultiply(rotQuat, spreadQuat);
         finalRotQuat = XMQuaternionNormalize(finalRotQuat); // 念のため正規化
 
+        // バラつき適用後の前方向
+        XMVECTOR finalForwardVec = XMVector3Rotate(baseForward, finalRotQuat);
+
+        // VEC3へ
+        VEC3 finalForward = VEC3::FromXMVECTOR(finalForwardVec);
+
+        // 最終Yaw
+        float finalYaw = atan2f(
+            finalForward.x,
+            finalForward.z
+        );
+
+        // 最終Pitch
+        float xzLen = sqrtf(
+            finalForward.x * finalForward.x +
+            finalForward.z * finalForward.z
+        );
+
+        float finalPitch = atan2f(
+            -finalForward.y,
+            xzLen
+        );
+
         // トランスフォームパラメータ
         BulletTransformData bulletTransform;
         bulletTransform._pos = firePos;
@@ -478,6 +505,30 @@ void GunWeapon::Fire(RendererEngine& renderer)
 
         // 弾データを共用体で持っているので、弾タイプにあったパラメータを入れるようにする
         Master::m_pBulletManager->Shot(renderer, spawnContext, gunParam->_bulletData);
+
+        auto& bulletData = gunParam->_bulletData;
+        if (bulletData._commonVisualData._visualArchetype == BULLET_VISUAL_ARCHETYPE::EFFECT &&
+            bulletData._commonData._bulletType == BULLET_TYPE::LASER)
+        {
+            VEC3 scale = bulletData._commonVisualData._scale;
+            VEC4 effectColor = bulletData._commonVisualData._effectColor;
+
+            // 再生
+            auto handle = Master::m_pEffectManager->PlayEffect(
+            bulletData._commonVisualData._bulletEffectTag, firePos);
+
+            // スケール・回転
+            Master::m_pEffectManager->SetScaleEffect(handle, scale);
+            Master::m_pEffectManager->SetRotationEffect(handle, finalPitch, finalYaw, 0.0f);
+
+            // カラー
+            Effekseer::Color color = Effekseer::Color(effectColor.x, effectColor.y, effectColor.z, effectColor.w);
+            Master::m_pEffectManager->SetAllColorEffect(handle, color);
+
+            // 動的パラメータ
+            // レーザーの長さ設定
+            Master::m_pEffectManager->SetDynamicParameter(handle, 0, bulletData._commonData._range);         
+        }
     }
 
     if (!m_pFlashPointLight.expired()) {

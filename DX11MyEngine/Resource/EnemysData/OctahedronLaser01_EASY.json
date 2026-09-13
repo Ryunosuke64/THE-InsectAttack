@@ -25,6 +25,7 @@
       "collisionSize": 0.0,
       "gravityScale": 0.0,
       "knockbackForce" : 20.0,
+      "bulletType" : "NORMAL",
       "collisionMask": ["PLAYER", "BUILDING", "DESTRUCTION_BUILDING"]
     },
     
@@ -38,7 +39,7 @@
       "type" : "EXPLOSION",
       "decalMaterialTag" : "Decal_Ant_Splash",
       "hitEffectTag" : "BulletHit_Acid",
-      "explosionRadius" : 80.0,
+      "explosionRadius" : 20.0,
       "explosionEffectTag" : "Explosion_01",
       "explosionEffectAliveTime" :3.0,
       "isSmoke" : true,

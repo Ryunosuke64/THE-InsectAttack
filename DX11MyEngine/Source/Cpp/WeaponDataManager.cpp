@@ -54,7 +54,7 @@ bool WeaponDataManager::Init()
     }
     m_AllWeaponsDataMap[0] = std::make_unique<GunWeaponData>(gunData);
 
-    if (LoadGunWeaponData("Resource/WeaponsData/Missile01.json", gunData) == false){
+    if (LoadGunWeaponData("Resource/WeaponsData/LaserRifle01.json", gunData) == false){
         assert(false);
     }
     m_AllWeaponsDataMap[1] = std::make_unique<GunWeaponData>(gunData);
@@ -264,9 +264,10 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
     constexpr float BULLET_REFERENCE_FPS = 60.0f;
 
     _outData._commonData._aliveFrame =commonJson.value("aliveFrame", 0);                       // 生存期間
-    _outData._commonData._lifeTime =                                                           // 実際の生存期間
-        static_cast<float>(_outData._commonData._aliveFrame) /BULLET_REFERENCE_FPS;
+    _outData._commonData._lifeTime =                                                        // 実際の生存期間
+        static_cast<float>(_outData._commonData._aliveFrame) / BULLET_REFERENCE_FPS;
     
+
     _outData._commonData._damage              = commonJson.value("damage", 0.0f);              // ダメージ
     _outData._commonData._speed               = commonJson.value("speed", 0.0f);               // 速度
     _outData._commonData._maxSpeed            = commonJson.value("maxSpeed", 0.0f);            // 最大速度
@@ -276,6 +277,28 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
     _outData._commonData._collisionSize       = commonJson.value("collisionSize", 0.0f);       // 当たり判定
     _outData._commonData._gravityScale        = commonJson.value("gravityScale", 0.0f);        // 重力
     _outData._commonData._knockbackForce      = commonJson.value("knockbackForce", 0.0f);      // 吹っ飛び力
+
+    // 実際の射程距離を求める
+    float speed = _outData._commonData._speed;
+    float range = 0.0f;
+    for (int count = 0; count < _outData._commonData._aliveFrame; count++)
+    {
+        speed += _outData._commonData._acceleration;
+
+        // 最大速度内に収める
+        speed = std::min(speed, _outData._commonData._maxSpeed);
+    }
+    _outData._commonData._range = speed;
+
+    // 弾のタイプ
+    std::string bulletTypeStr = commonJson.value("bulletType", "");
+    const auto bulletTypeIt = g_BulletTypeMap.find(bulletTypeStr);
+    // 未定義
+    if (bulletTypeIt == g_BulletTypeMap.end()) {
+        return false;
+    }
+    _outData._commonData._bulletType = bulletTypeIt->second;
+
 
     //bulletData._moveType = BULLET_MOVE_TYPE::LINEAR;    // 一旦直進のみ
 
@@ -441,18 +464,24 @@ bool WeaponDataManager::LoadVisualData(const nlohmann::json& _json, BulletData::
     {
         _outData._commonVisualData._visualArchetype = BULLET_VISUAL_ARCHETYPE::MODEL;
     }
+    else if (archetype == "EFFECT")
+    {
+        _outData._commonVisualData._visualArchetype = BULLET_VISUAL_ARCHETYPE::EFFECT;
+    }
     else
     {
         return false;
     }
 
     _outData._commonVisualData._bulletMaterialTag = _json.value("bulletMaterialTag", "");     // 弾そのもののマテリアル
+    _outData._commonVisualData._bulletEffectTag   = _json.value("bulletEffectTag", "");       // 弾本体をエフェクトで表示する場合
     _outData._commonVisualData._trailDrawTime     = _json.value("trailDrawTime", 0.0f);       // トレイルの有無
     _outData._commonVisualData._trailWidth        = _json.value("trailWidth", 0.0f);          // トレイルの幅
     _outData._commonVisualData._enableFlightSmoke = _json.value("enableFlightSmoke", false);  // 飛行煙の有無
     _outData._commonVisualData._smokeInterval     = _json.value("smokeInterval", 0.05f);      // 飛行煙の間隔
     _outData._commonVisualData._smokeSize         = _json.value("smokeSize", 0.0f);           // 飛行煙のサイズ
     _outData._commonVisualData._smokeEffectTag    = _json.value("smokeEffectTag", "");        // 煙エフェクトのタグ
+    LoadVEC4Data(_json, "effectColor", _outData._commonVisualData._effectColor);              // エフェクトカラー
     LoadVEC3Data(_json, "trailColor", _outData._commonVisualData._trailColor);                // トレイルカラー
     LoadVEC3Data(_json, "scale", _outData._commonVisualData._scale);                          // 弾の大きさ
 

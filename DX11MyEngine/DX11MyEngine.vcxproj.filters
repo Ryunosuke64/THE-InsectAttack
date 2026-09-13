@@ -343,6 +343,9 @@
     <Filter Include="ソース ファイル\Game\Factory">
       <UniqueIdentifier>{b57521f4-59f8-458b-9749-8459b9a795dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Weapon\Bullet\Unused">
+      <UniqueIdentifier>{661481a1-0e23-43fa-875a-03a5f1f319a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Cpp\SHADER.cpp">
@@ -614,18 +617,6 @@
     </ClCompile>
     <ClCompile Include="Source\Cpp\ObjectFactory.cpp">
       <Filter>ソース ファイル\Engine\Obj</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Cpp\Component_BulletBase.cpp">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Cpp\Component_ExplosionBullet.cpp">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Cpp\Component_ExplosionLightController.cpp">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Cpp\Component_NormalBullet.cpp">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cpp\Component_GunWeapon.cpp">
       <Filter>ソース ファイル\Game\Component\Weapon\Gun</Filter>
@@ -915,6 +906,18 @@
     <ClCompile Include="Source\Cpp\Component_MeshCollider.cpp">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_BulletBase.cpp">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_ExplosionBullet.cpp">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_ExplosionLightController.cpp">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_NormalBullet.cpp">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1177,18 +1180,6 @@
     </ClInclude>
     <ClInclude Include="Source\Header\ObjectFactory.h">
       <Filter>ソース ファイル\Engine\Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Header\Component_BulletBase.h">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Header\Component_ExplosionBullet.h">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Header\Component_ExplosionLightController.h">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Header\Component_NormalBullet.h">
-      <Filter>ソース ファイル\Game\Component\Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Source\Header\Component_GunWeapon.h">
       <Filter>ソース ファイル\Game\Component\Weapon\Gun</Filter>
@@ -1465,6 +1456,18 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_MeshCollider.h">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_NormalBullet.h">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_BulletBase.h">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_ExplosionBullet.h">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_ExplosionLightController.h">
+      <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

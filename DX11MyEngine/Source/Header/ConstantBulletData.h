@@ -38,6 +38,7 @@ namespace BulletData
     {
         BILLBOARD,          // ビルボード
         MODEL,              // 3Dモデル
+        EFFECT,             // エフェクト
         //LASER,            // レーザー
 
         NUM,
@@ -50,7 +51,7 @@ namespace BulletData
     {
         NORMAL,         // 通常弾
         EXPLOSION,      // 着弾時に爆発する弾
-        EXPLOSION_DELAY,// 一定時間後に爆発する弾
+        //EXPLOSION_DELAY,// 一定時間後に爆発する弾
         HORMING,        // 目標を追尾する弾
         LASER,          // 直線状のレーザー
         FLAME,          // 火炎弾
@@ -102,6 +103,17 @@ namespace BulletData
         {"PENETRATE",   ENVIRONMENT_RESPONSE::PENETRATE },
     };
 
+    // 弾のタイプを文字列からenumに変換するmap
+    static std::map<std::string, BULLET_TYPE> g_BulletTypeMap =
+    {
+        {"NORMAL",      BULLET_TYPE::NORMAL },
+        {"EXPLOSION",   BULLET_TYPE::EXPLOSION },
+        {"HORMING",     BULLET_TYPE::HORMING },
+        {"LASER",       BULLET_TYPE::LASER },
+        {"FLAME",       BULLET_TYPE::FLAME },
+        {"ACID",        BULLET_TYPE::ACID },
+    };
+
     /// <summary>
     /// 発射時に使用する弾の初期Transform情報。
     /// </summary>
@@ -136,17 +148,19 @@ namespace BulletData
     /// </summary>
     struct CommonConfig
     {
-        int _aliveFrame = 0;                        // 生存フレーム数
-        float _speed = 0.0f;                        // 発射時の速度（1フレームに進む距離）
-        float _maxSpeed = 0.0f;                     // 最大速度
-        float _lifeTime = 0.0f;                     // 生存期間（_aliveFrame / 60）
-        float _damage = 0.0f;                       // 命中時に与える基本ダメージ
-        float _acceleration = 0.0f;                 // 1秒あたりの速度変化量
-        float _gravityScale = 0.0f;                 // 重力の強さ。0.0fなら重力を適用しない
-        float _knockbackForce = 1.0f;               // 命中対象へ加えるノックバックの強さ
-        int _penetrationsCount = 0;                 // 貫通できる回数
-        unsigned int _collisionMask = 0;            // 衝突判定の対象となるCOLLISION_CATEGORYのビットマスク
-        float _collisionSize = 0.0f;                // 弾の衝突判定半径
+        int _aliveFrame = 0;                            // 生存フレーム数
+        float _speed = 0.0f;                            // 発射時の速度（1フレームに進む距離）
+        float _maxSpeed = 0.0f;                         // 最大速度
+        float _lifeTime = 0.0f;                         // 生存期間（_aliveFrame / 60）
+        float _range = 0.0f;                            // 実際の射程
+        float _damage = 0.0f;                           // 命中時に与える基本ダメージ
+        float _acceleration = 0.0f;                     // 1秒あたりの速度変化量
+        float _gravityScale = 0.0f;                     // 重力の強さ。0.0fなら重力を適用しない
+        float _knockbackForce = 1.0f;                   // 命中対象へ加えるノックバックの強さ
+        int _penetrationsCount = 0;                     // 貫通できる回数
+        unsigned int _collisionMask = 0;                // 衝突判定の対象となるCOLLISION_CATEGORYのビットマスク
+        float _collisionSize = 0.0f;                    // 弾の衝突判定半径
+        BULLET_TYPE _bulletType = BULLET_TYPE::NORMAL;  // 弾の種類
     };
 
 
@@ -185,6 +199,8 @@ namespace BulletData
     {
         BULLET_VISUAL_ARCHETYPE _visualArchetype = BULLET_VISUAL_ARCHETYPE::BILLBOARD; // 弾本体の描画方式
         std::string _bulletMaterialTag;                  // 弾本体に使用するマテリアルのタグ
+        std::string _bulletEffectTag;                    // 弾本体をエフェクトで表示する場合
+        VECTOR4::VEC4 _effectColor = VECTOR4::VEC4(1.0f);// エフェクトのカラー
         VECTOR3::VEC3 _scale = VECTOR3::VEC3();          // 弾本体の表示サイズ
 
         float _trailDrawTime = 0.0;                          // 軌跡の表示時間。0なら軌跡を表示しない

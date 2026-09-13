@@ -263,17 +263,17 @@ void c_Title_SoldierSelect::DrawWeaponInfo(const WeaponData::GunWeaponData* weap
 	const auto& baseBulletData = weaponData->_bulletData;
 	const auto& commonData = baseBulletData._commonData;
 
-	float range = commonData._speed * commonData._lifeTime;
+	float range = commonData._range;
 
 	/* 各パラメータの変換 */
-	std::wstring laserSightStr = weaponData->_isLaserSight ? L"装備" : L"----";																		// レーザーサイト
-	std::wstring zoomStr = weaponData->_zoomLength > 1.0f ? FormatFloat(weaponData->_zoomLength) + L"倍" : L"----";									// ズーム
-	std::wstring fireRateStr = FormatFloat(weaponData->_fireRate) + L"発／秒";																		// 連射速度
-	std::wstring speedStr = L"秒速" + FormatFloat(commonData._speed) + L"m";																	// 弾速
+	std::wstring laserSightStr = weaponData->_isLaserSight ? L"装備" : L"----";																// レーザーサイト
+	std::wstring zoomStr = weaponData->_zoomLength > 1.0f ? FormatFloat(weaponData->_zoomLength) + L"倍" : L"----";							// ズーム
+	std::wstring fireRateStr = FormatFloat(weaponData->_fireRate) + L"発／秒";																// 連射速度
+	std::wstring speedStr = L"秒速" + FormatFloat(commonData._speed) + L"m";																// 弾速
 	std::wstring penetrationsStr = commonData._penetrationsCount > 0 ? std::to_wstring(commonData._penetrationsCount) + L"回" : L"なし";	// 貫通可能回数
-	std::wstring reloadTimeStr = FormatFloat(weaponData->_reloadTime) + L"秒";																		// リロード時間
-	std::wstring rangeStr = FormatFloat(range) + L"m";																				// 射程距離
-	std::wstring accuracyStr;																				// 精度
+	std::wstring reloadTimeStr = FormatFloat(weaponData->_reloadTime) + L"秒";																// リロード時間
+	std::wstring rangeStr = FormatFloat(range) + L"m";																						// 射程距離
+	std::wstring accuracyStr;																												// 精度
 
 	if (weaponData->_accuracy <= 0.01f)accuracyStr = L"S";
 	else if (weaponData->_accuracy <= 0.015f)accuracyStr = L"A+";
