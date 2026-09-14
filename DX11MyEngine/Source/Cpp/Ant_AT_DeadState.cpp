@@ -25,6 +25,8 @@ using namespace Tool;
 //*----------------------------------------------------------------------------------------
 void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 {
+	pOwner->clear_StateTimer();
+
 	// ˆÚ“®ƒxƒNƒgƒ‹‚Í0
 	pOwner->set_MoveVelocity(VEC3());
 

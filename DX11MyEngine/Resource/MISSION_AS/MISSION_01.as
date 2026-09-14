@@ -18,7 +18,7 @@ void mission_setup()
     environmentParam.dofEnd            = 1500.0f;                 // 被写界深度最大距離
     SetStageEnvironmentParam(environmentParam);
 
-    // 八面体 
+    // アリ 
     enemyID = SpawnEnemy(
         ENEMY_TYPE::GIANT_ANT_Normal,
         VEC3(0.0f,150.0f,0.0f),
@@ -35,7 +35,7 @@ void mission_main()
     // アリ グループ１
     groupID1 = SpawnEnemyGroup(
         ENEMY_TYPE::GIANT_ANT_Normal,
-        VEC3(0.0f,0.0f,0.0f),
+        VEC3(0.0f,1.0f,0.0f),
         50.0f,
         20,
         200.0f,
@@ -45,10 +45,10 @@ void mission_main()
     // アリ グループ2
     groupID2 = SpawnEnemyGroup(
         ENEMY_TYPE::GIANT_ANT_Normal,
-        VEC3(-100.0f,0.0f,100.0f),
+        VEC3(-100.0f,1.0f,100.0f),
         50.0f,
         30,
-        200.0f,
+        1200.0f,
         true
     );
     

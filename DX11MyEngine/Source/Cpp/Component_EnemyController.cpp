@@ -30,6 +30,13 @@ using namespace UtilityData;
 EnemyController::EnemyController(std::weak_ptr<GameObject> pOwner, int updateRank)
     :IComponent(pOwner, updateRank),
 	m_StateMachine(this),
+	m_pHealthComp(nullptr),
+	m_pAnimatorComp(nullptr),
+	m_pColliderComp(nullptr),
+	m_pMoveLogicComp(nullptr),
+	m_pPhysicsComp(nullptr),
+	m_pTransformComp(nullptr),
+	m_pTarget(nullptr),
 	m_IsAnim(false),
 	m_IsGrounded(false),
 	m_IsOnDamage(false),
@@ -39,12 +46,11 @@ EnemyController::EnemyController(std::weak_ptr<GameObject> pOwner, int updateRan
 	m_StateTimer(0),
 	m_GravityVelocity(0.0f),
 	m_pEnemyData(nullptr),
-	m_pTarget(nullptr),
-	m_pTransformComp(nullptr),
 	m_Gravity(18.0f),
 	m_AnimSpeed(1.25f),
 	m_MyGroupID(-1),
-	m_MyID(-1)
+	m_MyID(-1),
+	m_StaggerInfo()
 {
     this->set_Tag("EnemyController");
 }
@@ -95,6 +101,7 @@ void EnemyController::Start(RendererEngine& renderer)
 		[this, &renderer](float _damage)
 		{
 			m_IsOnDamage = true;
+			m_StaggerInfo._cumulativeValue += _damage;	// ダメージ蓄積
 		}
 	);
 	// 死亡時の処理登録
@@ -281,6 +288,27 @@ bool EnemyController::get_IsDead()const
 	}
 	return false;
 }
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】受けたダメージ量の取得
+//*
+//* [引数]なし
+//* [返値]
+//* ダメージ量 
+//*----------------------------------------------------------------------------------------
+float EnemyController::get_DamageAmount()const
+{
+	if (m_pHealthComp != nullptr){
+		return m_pHealthComp->get_DamageAmount();
+	}
+	else{
+		assert(false);
+	}
+	return 0.0f;
+}
+
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】移動ロジックの切り替え

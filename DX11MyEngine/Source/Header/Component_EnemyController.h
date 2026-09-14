@@ -2,6 +2,27 @@
 #include "IComponent.h"
 #include "ConstantUtilityData.h"
 
+// ひるみデータ
+struct StaggerInfo
+{
+	float _threshold = 0.0f;		// ひるみ耐久値
+	float _cumulativeValue = 0.0f;	// 蓄積値
+
+	//
+	// ダメージの蓄積量が耐久を上回ったか
+	//
+	const bool IsStagger()
+	{
+		if (_cumulativeValue >= _threshold)
+		{
+			_cumulativeValue = 0.0f;	// 蓄積リセット
+			return true;
+		}
+
+		return false;
+	};
+};
+
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
 /* --- @:EnemyController Class --- */
@@ -20,7 +41,7 @@
 class EnemyController :  public IComponent
 {
 private:
-	StateMachine<EnemyController> m_StateMachine;				// ステートマシン
+	StateMachine<EnemyController> m_StateMachine;	// ステートマシン
 
 	class Health* m_pHealthComp;					// 体力管理コンポーネント
 	class SkinnedMeshAnimator* m_pAnimatorComp;		// アニメータコンポーネント
@@ -30,6 +51,7 @@ private:
 	class MyTransform* m_pTransformComp;			// トランスフォームコンポーネント
 	const GameObject* m_pTarget;					// 攻撃目標
 
+	StaggerInfo m_StaggerInfo;						// 怯み情報
 
 	VECTOR3::VEC3 m_MoveVelocity;					// 移動
 	VECTOR3::VEC3 m_StartPos;						// 開始位置
@@ -115,6 +137,11 @@ public:
 
 	/* ダメージフラグ */
 	bool get_IsOnDamage()const { return m_IsOnDamage; }
+	float get_DamageAmount()const;
+
+	/* 怯み */
+	void set_StaggerThreshold(float _val) { m_StaggerInfo._threshold = _val; }	// 怯み耐久
+	bool get_IsStagger() { return m_StaggerInfo.IsStagger(); }		// 怯み状態か
 
 	/* エネミーIDの設定
 	* ※グループでない場合は、**EnemyGroupID** は-1に設定してね

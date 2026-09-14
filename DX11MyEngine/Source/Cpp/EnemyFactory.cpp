@@ -27,6 +27,9 @@ using namespace VECTOR4;
 using namespace UtilityData;
 using namespace EnemyData;
 
+constexpr float ANT_THRESHOLD_RATE = 0.25f;         // 最大HPの25%
+constexpr float OCTAHEDRON_THRESHOLD_RATE = 0.30f;  // 最大HPの30%
+
 //*---------------------------------------------------------------------------------------
 //*【?】エネミーの生成
 //* [引数]
@@ -233,6 +236,9 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     health->set_MaxHP(hp);
     health->set_CrntHP(hp);
 
+    // コントローラー側に怯み耐久を設定する
+    enemyController->set_StaggerThreshold(hp * ANT_THRESHOLD_RATE);
+
     //
     // 物理コンポーネント追加
     //
@@ -249,12 +255,12 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     // 衝突カテゴリ
     collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);
     // 衝突マスクの設定
-    collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
-    collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
-    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);                // エネミー
-    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
-    collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // アイテム
-    collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER_BULLET, COLLISION_RESPONSE::RESPONSE_OVERLAP);       // アイテム
+    collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING,               COLLISION_RESPONSE::RESPONSE_BLOCK);          // 建物
+    collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING,   COLLISION_RESPONSE::RESPONSE_BLOCK);          // 破壊可能建物
+    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY,                  COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー
+    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET,           COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
+    collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM,                   COLLISION_RESPONSE::RESPONSE_IGNORE);         // アイテム
+    collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER_BULLET,          COLLISION_RESPONSE::RESPONSE_OVERLAP);        // アイテム
     // コライダーの登録
     Master::m_pCollisionManager->RegisterCollider(collider);
     
@@ -345,6 +351,9 @@ std::shared_ptr<GameObject> EnemyFactory::CreateOctahedron(const EnemyGeneration
     float hp = generationData.hp * Master::m_pDataManager->get_EnemyDifficultyFactor()._hpRate;
     health->set_MaxHP(hp);
     health->set_CrntHP(hp);
+
+    // コントローラー側に怯み耐久を設定する
+    enemyController->set_StaggerThreshold(hp * OCTAHEDRON_THRESHOLD_RATE);
 
     //
     // 物理コンポーネント追加

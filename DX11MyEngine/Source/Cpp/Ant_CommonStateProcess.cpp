@@ -24,7 +24,10 @@ int Ant_CommonStateProcess::CommonProcess(class EnemyController* pOwner)
 	}
 	else if (pOwner->get_IsOnDamage())
 	{
-		return ANT_STATE::ANT_STATE_ACTIVE_HIT_STUN;
+		// 怯み状態ならヒットスタンステートへ
+		if (pOwner->get_IsStagger()) {
+			return ANT_STATE::ANT_STATE_ACTIVE_HIT_STUN;
+		}
 	}
 	else
 	{

@@ -16,6 +16,7 @@ Health::Health(std::weak_ptr<GameObject> pOwner, int updateRank)
     :IComponent(pOwner, updateRank),
     m_CrntHP(0.0f),
     m_MaxHP(0.0f),
+    m_DamageAmount(0.0f),
     m_IsDead(false)/*,
     m_IsOnDamage(false)*/
 {
@@ -106,6 +107,8 @@ void Health::TakeDamage(const float _dmg, const CollisionInfo& _collInfo)
     }
 
     m_CrntHP -= _dmg;
+
+    m_DamageAmount = _dmg;
 
     // Õ“Ëî•ñ‚ğŠi”[
 	m_CollisionInfo = _collInfo;

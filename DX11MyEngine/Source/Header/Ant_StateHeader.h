@@ -177,11 +177,17 @@ class Ant_AT_HitStunState : public IState<class EnemyController>
 {
 private:
 	const float SOUND_HIT_RADIUS = 300.0f;				// ”í’e‰¹‚ª•·‚±‚¦‚é”ÍˆÍ
+	float m_StunTimer = 0.0f;
 
 public:
 	void OnEnter(class EnemyController *pOwner) override;
 	void OnExit(class EnemyController *pOwner)override;
 	int Update(class EnemyController *pOwner)override;
+
+private:
+	void SpawnHitEffect(const std::string &effectTag, const VECTOR3::VEC3 &pos, const VECTOR3::VEC3 &rot, const VECTOR3::VEC3& scale);
+	void SpawnHitDecal(const std::string &effectTag, const VECTOR3::VEC3 &pos, const VECTOR3::VEC3 &rot, const VECTOR3::VEC3& scale);
+
 };
 
 
