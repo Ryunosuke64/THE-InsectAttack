@@ -497,7 +497,7 @@ bool WeaponDataManager::LoadVisualData(const nlohmann::json& _json, BulletData::
         auto& customVisual = _outData._customVisualData.emplace<ScaleLerpVisualConfig>();
         LoadVEC3Data(customJson, "startScale", customVisual._startScale);                // 弾の大きさ
         LoadVEC3Data(customJson, "endScale", customVisual._endScale);                    // 弾の大きさ
-        customVisual._duration = customJson.value("duration", 0.0);                            // 煙エフェクトのタグ
+        customVisual._duration = customJson.value("duration", 0.0f);                     // 煙エフェクトのタグ
     }
     return true;
 }
