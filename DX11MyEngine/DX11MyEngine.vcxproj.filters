@@ -346,6 +346,9 @@
     <Filter Include="ソース ファイル\Game\Component\Weapon\Bullet\Unused">
       <UniqueIdentifier>{661481a1-0e23-43fa-875a-03a5f1f319a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Engine\Physics">
+      <UniqueIdentifier>{0a3f1a41-086d-4645-aa5c-216e74f97d8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Cpp\SHADER.cpp">
@@ -918,6 +921,9 @@
     <ClCompile Include="Source\Cpp\Component_NormalBullet.cpp">
       <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\PhysicsEngine.cpp">
+      <Filter>ソース ファイル\Engine\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1468,6 +1474,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_ExplosionLightController.h">
       <Filter>ソース ファイル\Game\Component\Weapon\Bullet\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\PhysicsEngine.h">
+      <Filter>ソース ファイル\Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

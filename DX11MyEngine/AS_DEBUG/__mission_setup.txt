@@ -106,7 +106,7 @@ Variables:
   110  26 *    PSF      v23
   111  28 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v23, 0
-  113  26 *    CpyVtoG4 v20, 0x1fbe35eacd0          (i:2181363051728, f:1.07774e-311)
+  113  26 *    CpyVtoG4 v20, 0x1f9fdca7650          (i:2173216388688, f:1.07371e-311)
 - 29,2 -
   116  26 *    SUSPEND
   117  26 *    PSF      v14

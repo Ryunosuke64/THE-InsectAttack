@@ -45,7 +45,7 @@
       "isSmoke" : true,
 
       "expLightColor" : [0, 1, 0],
-      "expLightIntensity" : 8.0,
+      "expLightIntensity" : 3.0,
       "expLightDuration" : 10.0
     },
     "visual" :  

@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Shader;Source/Lib/Imgui;Source/Lib/Imgui/backends;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Lib/Bullet/include/bullet;Source/Shader;Source/Lib/Imgui;Source/Lib/Imgui/backends;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -147,7 +147,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Source\Lib\Effekseer\Lib;Source\Lib\DirectXTex;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Source\Lib\Effekseer\Lib;Source\Lib\DirectXTex;Source\Lib\Bullet\Lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DirectXTexd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
@@ -166,7 +166,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Lib/Imgui/backends;Source/Lib/Imgui;Source/Shader;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Lib/Bullet/include/bullet;Source/Lib/Imgui/backends;Source/Lib/Imgui;Source/Shader;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -179,7 +179,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Source\Lib\Effekseer\Lib;Source\Lib\Imgui;Source\Lib\DirectXTex;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Source\Lib\Effekseer\Lib;Source\Lib\Imgui;Source\Lib\DirectXTex;Source\Lib\Bullet\Lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
@@ -298,6 +298,7 @@
     <ClInclude Include="Source\Header\LightManager.h" />
     <ClInclude Include="Source\Header\MissionAction.h" />
     <ClInclude Include="Source\Header\MissionEvent.h" />
+    <ClInclude Include="Source\Header\PhysicsEngine.h" />
     <ClInclude Include="Source\Header\RenderQueue.h" />
     <ClInclude Include="Source\Header\ScriptManager.h" />
     <ClInclude Include="Source\Header\TransientPointLightPool.h" />
@@ -524,6 +525,7 @@
     <ClCompile Include="Source\Cpp\LightManager.cpp" />
     <ClCompile Include="Source\Cpp\MissionAction.cpp" />
     <ClCompile Include="Source\Cpp\MissionEvent.cpp" />
+    <ClCompile Include="Source\Cpp\PhysicsEngine.cpp" />
     <ClCompile Include="Source\Cpp\RenderQueue.cpp" />
     <ClCompile Include="Source\Cpp\ScriptManager.cpp" />
     <ClCompile Include="Source\Cpp\TransientPointLightPool.cpp" />

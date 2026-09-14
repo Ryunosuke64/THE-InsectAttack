@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameManager.h"
 #include "SceneManager.h"
+#include "PhysicsEngine.h"
 #include "RendererEngine.h"
 #include "DirectWriteManager.h"
 #include "Component_3DCamera.h"
@@ -15,6 +16,7 @@ using namespace RenderData;
 //*----------------------------------------------------------------------------------------
 GameManager::GameManager() :
 	m_pSceneManager(nullptr),
+	m_pPhysicsEngine(nullptr),
 	m_IsClose(false)
 {
 }
@@ -39,16 +41,28 @@ GameManager::~GameManager()
 //*----------------------------------------------------------------------------------------
 bool GameManager::Init(RendererEngine& renderer)
 {
+	//
 	// パイプラインの作成
+	//
 	if (!renderer.CreateRendererPipeline(RENDER_PIPELINE_STATE::DEFAULT))
 	{
 		return false;
 	}
 
-	// シーン管理クラスの生成
-	m_pSceneManager = new SceneManager();
-
+	//
+	// シーン管理クラスの生成・初期化
+	//
+	m_pSceneManager = std::make_unique <SceneManager>();
 	if (!m_pSceneManager->Init(renderer))
+	{
+		return false;
+	}
+
+	//
+	// 物理エンジンの作成・セットアップ
+	//
+	m_pPhysicsEngine = std::make_unique<PhysicsEngine>();
+	if (!m_pPhysicsEngine->Setup())
 	{
 		return false;
 	}
@@ -72,6 +86,9 @@ void GameManager::Update(RendererEngine& renderer)
 
 	// オブジェクト更新
 	Master::m_pGameObjectManager->ObjectUpdate(renderer);
+
+	// 物理エンジン更新
+	m_pPhysicsEngine->Update(deltaTime);
 
 	// 衝突判定
 	Master::m_pCollisionManager->CollisionProcess();
@@ -129,6 +146,9 @@ void GameManager::Draw(RendererEngine& renderer)
 void GameManager::Term(RendererEngine &renderer)
 {
 	m_pSceneManager->Term(renderer);
-	delete m_pSceneManager;
+	m_pSceneManager.reset();
+
+	m_pPhysicsEngine->Shutdown();
+	m_pPhysicsEngine.reset();
 }
 

@@ -104,8 +104,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     
     Master::m_pMissionDirector->LoadMissionScript("Resource/MISSION_AS/MISSION_01.as");
     Master::m_pMissionDirector->ExcuteScriptMissionSetup();
-
-
+    
     /* B-2 モデルの生成 */
     {
         //// マテリアル取得

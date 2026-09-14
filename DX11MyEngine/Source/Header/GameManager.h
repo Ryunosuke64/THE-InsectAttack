@@ -14,7 +14,8 @@
 class GameManager
 {
 private:
-	SceneManager* m_pSceneManager;
+	std::unique_ptr<SceneManager> m_pSceneManager;
+	std::unique_ptr<class PhysicsEngine> m_pPhysicsEngine;
 
 	bool m_IsClose;	// I—¹ƒtƒ‰ƒO
 
