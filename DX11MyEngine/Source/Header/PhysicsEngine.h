@@ -1,4 +1,6 @@
 #pragma once
+#include <btBulletDynamicsCommon.h>
+
 
 /// <summary>
 /// コリジョンの形状
@@ -106,7 +108,9 @@ struct ConvexHullShapeDesc
 // 【?】物理エンジン
 //		BulletPhysicsの管理
 // 
-// [参考サイト]https://note.com/zerogram0g/n/n26a5a1b8c157
+// [参考サイト]
+// https://note.com/zerogram0g/n/n26a5a1b8c157
+// http://bulletjpn.web.fc2.com/07_RigidBodyDynamics.html
 //
 // ***************************************************************************************
 class PhysicsEngine
@@ -118,8 +122,9 @@ private:
 	std::unique_ptr<class btSequentialImpulseConstraintSolver> m_pSolver;
 	std::unique_ptr<class btDiscreteDynamicsWorld> m_pWorld;
 
-	std::vector<class  btRigidBody*>m_RBPtrs;	// リジッドボディのポインタを保持
-
+	btAlignedObjectArray<btRigidBody*>m_RigidBodies;	// リジッドボディのポインタを保持
+	btAlignedObjectArray<btCollisionShape*>m_CollisionShapes;	// リジッドボディのポインタを保持
+	
 public:
 	PhysicsEngine();
 	~PhysicsEngine();

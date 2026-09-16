@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "PhysicsEngine.h"
-#include <btBulletDynamicsCommon.h>
 
 using namespace VECTOR3;
 
@@ -60,7 +59,7 @@ bool PhysicsEngine::Setup()
     desc.rdDesc.mass = 1.0f;
     desc.rdDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
     RegisterShape(desc);
-
+    
     return true;
 }
 
@@ -77,6 +76,40 @@ bool PhysicsEngine::Setup()
 //*----------------------------------------------------------------------------------------
 bool PhysicsEngine::Shutdown()
 {
+    //
+    // リジッドボディの削除
+    //
+    for (int i = m_pWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+    {
+        btCollisionObject* obj = m_pWorld->getCollisionObjectArray()[i];
+        btRigidBody* body = btRigidBody::upcast(obj);
+        if (body && body->getMotionState())
+        {
+            delete body->getMotionState();
+        }
+        m_pWorld->removeCollisionObject(obj);
+        delete obj;
+    }
+
+    //
+    // コリジョンシェイプを削除
+    //
+    for (int j = 0; j < m_CollisionShapes.size(); j++)
+    {
+        btCollisionShape* shape = m_CollisionShapes[j];
+        m_CollisionShapes[j] = 0;
+        delete shape;
+    }
+
+    m_pWorld.reset();
+    m_pSolver.reset();
+    m_pBroadphase.reset();
+    m_pDispatcher.reset();
+    m_pConfig.reset();
+
+    m_CollisionShapes.clear();
+    m_RigidBodies.clear();
+
     return true;
 }
 
@@ -113,6 +146,9 @@ void PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC
         pShape
     );
 
+    // 
+    m_CollisionShapes.push_back(pShape);
+
     // RD
     btRigidBody* rigidBody = new btRigidBody(info);
 
@@ -120,7 +156,7 @@ void PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC
     m_pWorld->addRigidBody(rigidBody);
 
     // ポインタはこちらで削除する必要があるので、保持
-    m_RBPtrs.push_back(rigidBody);
+    m_RigidBodies.push_back(rigidBody);
 }
 
 

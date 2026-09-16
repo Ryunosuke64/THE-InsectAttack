@@ -255,6 +255,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       </SubType>
     </ClInclude>
     <ClInclude Include="Source\Header\Component_Render.h" />
+    <ClInclude Include="Source\Header\Component_RigidBody.h" />
     <ClInclude Include="Source\Header\Component_SkinnedMeshAnimator.h" />
     <ClInclude Include="Source\Header\Component_SkyRenderer.h" />
     <ClInclude Include="Source\Header\Component_SphereCollider.h" />
@@ -433,6 +434,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Component_MuzzleFlashEffect.cpp" />
     <ClCompile Include="Source\Cpp\Component_Physics.cpp" />
     <ClCompile Include="Source\Cpp\Component_Render.cpp" />
+    <ClCompile Include="Source\Cpp\Component_RigidBody.cpp" />
     <ClCompile Include="Source\Cpp\Component_SpotLight.cpp" />
     <ClCompile Include="Source\Cpp\c_Game_Config.cpp" />
     <ClCompile Include="Source\Cpp\c_Game_Manual.cpp" />
