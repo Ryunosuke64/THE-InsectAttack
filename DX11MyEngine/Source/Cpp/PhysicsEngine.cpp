@@ -2,6 +2,7 @@
 #include "PhysicsEngine.h"
 #include <btBulletDynamicsCommon.h>
 
+using namespace VECTOR3;
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -54,34 +55,11 @@ bool PhysicsEngine::Setup()
     // 重力
     m_pWorld->setGravity(btVector3(0.0f, -9.8f, 0.0f));
 
-    btConvexHullShape;
-
-    btCollisionShape* groundShape =
-        new btBoxShape(btVector3(
-            50.0f,
-            1.0f,
-            50.0f
-        ));
-    
-    btTransform transform;
-    transform.setIdentity();
-    transform.setOrigin(btVector3(0.0f, -1.0f, 0.0f));
-    btScalar mass = 0.0f;
-    btDefaultMotionState* motionState =
-        new btDefaultMotionState(transform);
-
-    btRigidBody::btRigidBodyConstructionInfo info(
-        mass,
-        motionState,
-        groundShape
-    );
-    btRigidBody* groundBody = new btRigidBody(info);
-
-    // リジッドボディを追加
-    // ポインタはこちらで削除する必要があるので、保持
-    m_pWorld->addRigidBody(groundBody);
-
-    m_RBPtrs.push_back(groundBody);
+    BoxShapeDesc desc;
+    desc.boxHalfExtents = VEC3(10.0f, 10.0f, 10.0f);
+    desc.rdDesc.mass = 1.0f;
+    desc.rdDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
+    RegisterShape(desc);
 
     return true;
 }
@@ -113,6 +91,142 @@ void PhysicsEngine::Update(float deltaTime)
     m_pWorld->stepSimulation(deltaTime);
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】リジッドボディの作成
+//*
+//* [引数] なし
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass)
+{
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+    // MotionState
+    btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+
+    // Info
+    btRigidBody::btRigidBodyConstructionInfo info(
+        (btScalar)mass,
+        motionState,
+        pShape
+    );
+
+    // RD
+    btRigidBody* rigidBody = new btRigidBody(info);
+
+    // リジッドボディを追加
+    m_pWorld->addRigidBody(rigidBody);
+
+    // ポインタはこちらで削除する必要があるので、保持
+    m_RBPtrs.push_back(rigidBody);
+}
+
+
+//=========================================================================================
+//
+//						シェイプ登録関数群
+//
+//=========================================================================================
+
+//*-----------------------------------------------------------------------------------------
+//*【?】ボックスシェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const BoxShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeBox(desc.boxHalfExtents);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+
+//*-----------------------------------------------------------------------------------------
+//*【?】球シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const SphereShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeSphere(desc.radius);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+
+//*-----------------------------------------------------------------------------------------
+//*【?】カプセルシェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const CapsuleShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeCapsule(desc.radius, desc.height);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】円柱シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const CylinderShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeCylinder(desc.halfExtents);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】円錐シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const ConeShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeCone(desc.radius, desc.height);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】三角錐シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const PyramidShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapePyramid(desc.v4);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】三角形シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const TriangleShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeTriangle(desc.v3);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】線シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const LineShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeLine(desc.v2);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】点シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const PointShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapePoint(desc.v1);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】凸包シェイプ登録
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::RegisterShape(const ConvexHullShapeDesc& desc)
+{
+    btCollisionShape* shape = CreateShapeConvexHull(desc.points, desc.numPoints, desc.stride);
+    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+}
+
+//=========================================================================================
+//
+//						シェイプ作成関数群
+//
+//=========================================================================================
 
 //*-----------------------------------------------------------------------------------------
 //*【?】ボックスシェイプ作成

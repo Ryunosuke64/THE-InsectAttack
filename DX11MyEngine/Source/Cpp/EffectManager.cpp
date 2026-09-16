@@ -109,6 +109,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/Destruction_Fragments_Small.efkefc", "Destruction_Fragments_Small");
     LoadEffect(u"Resource/Effect/Fragment_Octahedron.efkefc", "Fragment_Octahedron");
     LoadEffect(u"Resource/Effect/BulletHit_Standard.efkefc", "BulletHit_Standard");
+    LoadEffect(u"Resource/Effect/BulletHit_Metal.efkefc", "BulletHit_Metal");
     LoadEffect(u"Resource/Effect/BulletHit_Acid.efkefc", "BulletHit_Acid");
     LoadEffect(u"Resource/Effect/BulletHit_Flame.efkefc", "BulletHit_Flame");
     LoadEffect(u"Resource/Effect/MuzzleEffect_01.efkefc", "MuzzleEffect_01");

@@ -20,6 +20,85 @@ enum class COLLISION_SHAPE
 	COMPOUND,			// 形状の組み合わせ
 };
 
+struct SetupRigidBodyDesc
+{
+	float mass = 0.0f;
+	VECTOR3::VEC3 pos = VECTOR3::VEC3();
+};
+
+// ボックスシェイプセット用
+struct BoxShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	VECTOR3::VEC3 boxHalfExtents = VECTOR3::VEC3();
+};
+
+// 球シェイプセット用
+struct SphereShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	float radius = 0.0f;
+};
+
+// カプセルシェイプセット用
+struct CapsuleShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	float radius = 0.0f;
+	float height = 0.0f;
+};
+
+// 円柱シェイプセット用
+struct CylinderShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	VECTOR3::VEC3 halfExtents = VECTOR3::VEC3();
+};
+
+// 円錐シェイプセット用
+struct ConeShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	float radius = 0.0f;
+	float height = 0.0f;
+};
+
+// 三角錐シェイプセット用
+struct PyramidShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	std::array<VECTOR3::VEC3, 4> v4;
+};
+
+// 三角形シェイプセット用
+struct TriangleShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	std::array<VECTOR3::VEC3, 3> v3;
+};
+
+// 線シェイプセット用
+struct LineShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	std::array<VECTOR3::VEC3, 2> v2;
+};
+
+// 点シェイプセット用
+struct PointShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	VECTOR3::VEC3 v1 = VECTOR3::VEC3();
+};
+
+// 凸包シェイプセット用
+struct ConvexHullShapeDesc
+{
+	SetupRigidBodyDesc rdDesc;
+	const float* points;
+	int numPoints;
+	int stride = sizeof(VECTOR3::VEC3);
+};
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
 /* --- @:PhysicsEngine Class --- */
@@ -49,7 +128,18 @@ public:
 	void Update(float deltaTime);
 	bool Shutdown();
 
-	void RegisterShape();
+	void CreateRigidBody(class btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass);
+
+	void RegisterShape(const BoxShapeDesc& desc);
+	void RegisterShape(const SphereShapeDesc& desc);
+	void RegisterShape(const CapsuleShapeDesc& desc);
+	void RegisterShape(const CylinderShapeDesc& desc);
+	void RegisterShape(const ConeShapeDesc& desc);
+	void RegisterShape(const PyramidShapeDesc& desc);
+	void RegisterShape(const TriangleShapeDesc& desc);
+	void RegisterShape(const LineShapeDesc& desc);
+	void RegisterShape(const PointShapeDesc& desc);
+	void RegisterShape(const ConvexHullShapeDesc& desc);
 
 private:
 	class btBoxShape* CreateShapeBox(const VECTOR3::VEC3& boxHalfExtents);
