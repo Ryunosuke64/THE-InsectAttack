@@ -177,6 +177,7 @@ class Ant_AT_HitStunState : public IState<class EnemyController>
 {
 private:
 	const float SOUND_HIT_RADIUS = 300.0f;				// ”í’e‰¹‚ª•·‚±‚¦‚é”ÍˆÍ
+	const float STUN_DURATION = 1.0f;
 	float m_StunTimer = 0.0f;
 
 public:

@@ -1,5 +1,8 @@
 #pragma once
 #include "IComponent.h"
+#include "ConstantPhysicsData.h"
+
+class PhysicsEngine;
 
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
@@ -14,22 +17,31 @@
 class RigidBody : public IComponent
 {
 private:
-    VECTOR3::VEC3 m_Velocity;
-    VECTOR3::VEC3 m_ForceAccumulator; // 1フレームに蓄積された力
-    float m_Mass;			// 重量
-    float m_GravityScale;   // 重力の強さ
-    float m_MaxSpeed;       // 速度の上限
-    float m_Restitution;    // 反発係数(0.0f：跳ねない)
-    float m_MoveDrag;	    // 移動の減衰（0.0～1.0、1.0なら減衰なし、0.0なら完全に止まる）
-    float m_AirDrag;	    // 空中抵抗の減衰（0.0～1.0、1.0なら減衰なし、0.0なら完全に止まる）
-    bool m_IsEnable;
-    class btRigidBody *m_pRigidBodyBT;
+    PhysicsEngine* m_pEngine = nullptr; // 非所有
+    PhysicsData::PhysicsBodyHandle m_Handle;
+    PhysicsData::RigidBodyDesc m_Desc;
 
 public:
     RigidBody(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
     ~RigidBody();
 
-    void Start(RendererEngine& renderer) override;		// 初期化
-    void Update(RendererEngine& renderer) override;
+    // Colliderなどの構築完了後に呼ぶ。
+    bool Setup(PhysicsEngine& engine, const PhysicsData::RigidBodyDesc& desc);
+    void Release();
+
+    void AddForce(const VECTOR3::VEC3& force);
+    void AddImpulse(const VECTOR3::VEC3& impulse);
+
+    VECTOR3::VEC3 GetLinearVelocity() const;
+    void SetLinearVelocity(const VECTOR3::VEC3& velocity);
+
+    void SetMass(float mass);
+    void SetGravityScale(float scale);
+
+    void SetEnabled(bool enabled);
+    void Teleport(const VECTOR3::VEC3& position);
+
+    // Kinematic用。瞬間移動とは区別する。
+    void MovePosition(const VECTOR3::VEC3& position);
 };
 

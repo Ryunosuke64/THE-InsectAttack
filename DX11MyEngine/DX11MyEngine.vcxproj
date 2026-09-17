@@ -270,6 +270,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\ConstantBuildingData.h" />
     <ClInclude Include="Source\Header\ConstantBulletData.h" />
     <ClInclude Include="Source\Header\ConstantEnemyData.h" />
+    <ClInclude Include="Source\Header\ConstantPhysicsData.h" />
     <ClInclude Include="Source\Header\ConstantPlayerData.h" />
     <ClInclude Include="Source\Header\ConstantRenderData.h" />
     <ClInclude Include="Source\Header\ConstantUIData.h" />

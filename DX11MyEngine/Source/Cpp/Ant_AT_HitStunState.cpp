@@ -75,6 +75,7 @@ int Ant_AT_HitStunState::Update(class EnemyController* pOwner)
 	{
 		return commonRes;
 	}
+	// Ä“xƒXƒ^ƒ“ó‘Ô‚É
 	else if (commonRes == ANT_STATE::ANT_STATE_ACTIVE_HIT_STUN)
 	{
 		m_StunTimer = 0.0f;
@@ -103,7 +104,7 @@ int Ant_AT_HitStunState::Update(class EnemyController* pOwner)
 	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 	m_StunTimer += deltaTime;
 
-	if (m_StunTimer > 1.0f)
+	if (m_StunTimer > STUN_DURATION)
 	{
 		return ANT_STATE::ANT_STATE_ACTIVE_MOVE;
 	}

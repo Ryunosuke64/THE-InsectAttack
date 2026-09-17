@@ -27,7 +27,7 @@ using namespace VECTOR4;
 using namespace UtilityData;
 using namespace EnemyData;
 
-constexpr float ANT_THRESHOLD_RATE = 0.25f;         // 最大HPの25%
+constexpr float ANT_THRESHOLD_RATE = 0.05f;         // 最大HPの5%
 constexpr float OCTAHEDRON_THRESHOLD_RATE = 0.30f;  // 最大HPの30%
 
 //*---------------------------------------------------------------------------------------

@@ -10,16 +10,16 @@
   "isLaserSight": false,
   "soundID": 0,
   "muzzleFlashEffectTag" : "MuzzleEffect_01",
-  "muzzleFlashEffectScale" :  [1.0, 1.0, 1.0],
+  "muzzleFlashEffectScale" :  [0.5, 0.5, 0.5],
   "bulletType": "NORMAL",
   "bulletParam": 
   {
     "common" :  
     {
-      "aliveFrame" : 46,
+      "aliveFrame" : 30,
       "speed": 350.0,
       "maxSpeed": 350.0,
-      "damage": 20.0,
+      "damage": 10.0,
       "acceleration": 0.0,
       "penetrationsCount": 1,
       "collisionSize": 0.0,
@@ -39,21 +39,21 @@
       "type" : "DIRECT",
       "decalMaterialTag" : "Decal_BulletHole",
       "hitEffectTag" : "BulletHit_Standard",
-      "environmentResponse" : "BOUNCE"
+      "environmentResponse" : "DEACTIVATE"
     },
 
     "visual" :  
     {
       "type" : "BILLBOARD",
-      "bulletMaterialTag" : "Bullet_03",
-      "trailDrawTime" : 0.03,
-      "trailWidth" : 0.08,
+      "bulletMaterialTag" : "Bullet_01",
+      "trailDrawTime" : 0.04,
+      "trailWidth" : 0.8,
       "enableFlightSmoke" : false,
       "smokeInterval" : 0.0,              
-      "smokeSize" : 0.0,                     
+      "smokeSize" : 0.0,
       "smokeEffectTag" : "",
-      "trailColor" : [10.0, 10.0, 10.0],
-      "scale" : [0.1, 0.1, 0.1],
+      "trailColor" : [1.5, 1.5, 1.5],
+      "scale" :  [0.05, 0.05, 0.05],
 
       "custom" : 
       {

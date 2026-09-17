@@ -1,6 +1,6 @@
 #pragma once
 #include <btBulletDynamicsCommon.h>
-
+#include "ConstantPhysicsData.h"
 
 /// <summary>
 /// ÉRÉäÉWÉáÉìÇÃå`èÛ
@@ -101,6 +101,9 @@ struct ConvexHullShapeDesc
 	int numPoints;
 	int stride = sizeof(VECTOR3::VEC3);
 };
+
+
+
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
 /* --- @:PhysicsEngine Class --- */
@@ -134,6 +137,10 @@ public:
 	bool Shutdown();
 
 	void CreateRigidBody(class btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass);
+
+	void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force);
+	void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse);
+	void SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass);
 
 	void RegisterShape(const BoxShapeDesc& desc);
 	void RegisterShape(const SphereShapeDesc& desc);

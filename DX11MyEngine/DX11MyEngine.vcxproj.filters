@@ -1487,6 +1487,9 @@
     <ClInclude Include="Source\Header\Component_RigidBody.h">
       <Filter>ソース ファイル\Engine\BaseComponent\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Header\ConstantPhysicsData.h">
+      <Filter>ソース ファイル\Constant</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shader\ConstantBuffers_H.hlsli">
