@@ -103,7 +103,6 @@ struct ConvexHullShapeDesc
 };
 
 
-
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
 /* --- @:PhysicsEngine Class --- */
@@ -125,7 +124,7 @@ private:
 	std::unique_ptr<class btSequentialImpulseConstraintSolver> m_pSolver;
 	std::unique_ptr<class btDiscreteDynamicsWorld> m_pWorld;
 
-	btAlignedObjectArray<btRigidBody*>m_RigidBodies;	// リジッドボディのポインタを保持
+	btAlignedObjectArray<PhysicsData::RigidBodySlot>m_RigidBodies;	// リジッドボディのポインタを保持
 	btAlignedObjectArray<btCollisionShape*>m_CollisionShapes;	// リジッドボディのポインタを保持
 	
 public:
@@ -136,22 +135,25 @@ public:
 	void Update(float deltaTime);
 	bool Shutdown();
 
-	void CreateRigidBody(class btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass);
+	PhysicsData::PhysicsBodyHandle CreateRigidBody(class btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass);
+	bool IsValidRigidBody(const PhysicsData::PhysicsBodyHandle& handle)const;
 
-	void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force);
-	void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse);
+	void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force, const VECTOR3::VEC3& rel_pos);
+	void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse, const VECTOR3::VEC3& rel_pos);
+	void AddAngularImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& angularImpulse);
+	
 	void SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass);
 
-	void RegisterShape(const BoxShapeDesc& desc);
-	void RegisterShape(const SphereShapeDesc& desc);
-	void RegisterShape(const CapsuleShapeDesc& desc);
-	void RegisterShape(const CylinderShapeDesc& desc);
-	void RegisterShape(const ConeShapeDesc& desc);
-	void RegisterShape(const PyramidShapeDesc& desc);
-	void RegisterShape(const TriangleShapeDesc& desc);
-	void RegisterShape(const LineShapeDesc& desc);
-	void RegisterShape(const PointShapeDesc& desc);
-	void RegisterShape(const ConvexHullShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const BoxShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const SphereShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const CapsuleShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const CylinderShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const ConeShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const PyramidShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const TriangleShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const LineShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const PointShapeDesc& desc);
+	PhysicsData::PhysicsBodyHandle RegisterShape(const ConvexHullShapeDesc& desc);
 
 private:
 	class btBoxShape* CreateShapeBox(const VECTOR3::VEC3& boxHalfExtents);

@@ -10,6 +10,14 @@ namespace PhysicsData
 		uint32_t generation = 0;
 	};
 
+	// „‘ÌƒXƒƒbƒg
+	struct RigidBodySlot
+	{
+		btRigidBody* rigidBody = nullptr;
+
+		uint32_t generation = 0;
+		bool active = false;
+	};
 	enum class BodyType
 	{
 		Static,
@@ -25,4 +33,6 @@ namespace PhysicsData
 		float friction = 0.5f;
 		float restitution = 0.0f;
 	};
+
+
 };

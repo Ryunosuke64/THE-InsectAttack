@@ -2,6 +2,7 @@
 #include "PhysicsEngine.h"
 
 using namespace VECTOR3;
+using namespace PhysicsData;
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -133,9 +134,19 @@ void PhysicsEngine::Update(float deltaTime)
 //* 
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force)
+void PhysicsEngine::
+AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force, const VECTOR3::VEC3& rel_pos)
 {
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
 
+    m_RigidBodies[handle.index].rigidBody->applyForce(
+        btVector3(force.x, force.y, force.z),
+        btVector3(rel_pos.x, rel_pos.y, rel_pos.z)
+    );
 }
 
 //*---------------------------------------------------------------------------------------
@@ -147,10 +158,44 @@ void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3&
 //* 
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse)
+void PhysicsEngine::
+AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse, const VECTOR3::VEC3& rel_pos)
 {
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
 
+    m_RigidBodies[handle.index].rigidBody->applyImpulse(
+        btVector3(impulse.x, impulse.y, impulse.z),
+        btVector3(rel_pos.x, rel_pos.y, rel_pos.z)
+    );
 }
+
+//*---------------------------------------------------------------------------------------
+//*【?】間的な回転力を加える
+//*
+//* [引数]
+//* &handle         : ハンドル
+//* &angularImpulse : 衝撃ベクトル
+//* 
+//* [返値]なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+AddAngularImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& angularImpulse)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    m_RigidBodies[handle.index].rigidBody->applyTorqueImpulse(
+        btVector3(angularImpulse.x, angularImpulse.y, angularImpulse.z)
+    );
+}
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】質量を設定
@@ -161,9 +206,29 @@ void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC
 //* 
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
+void PhysicsEngine::
+SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
 {
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+    btVector3 inertia(0, 0, 0);
+    auto body = m_RigidBodies[handle.index].rigidBody;
+    auto shape = body->getCollisionShape();
 
+    if (shape == nullptr) 
+    {
+        return;
+    }
+
+    if (mass > 0.0f)
+    {
+        shape->calculateLocalInertia(mass, inertia);
+    }
+
+    body->setMassProps(mass, inertia);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -172,7 +237,7 @@ void SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
 //* [引数] なし
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass)
+PhysicsBodyHandle PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass)
 {
     btTransform transform;
     transform.setIdentity();
@@ -197,8 +262,84 @@ void PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC
     // リジッドボディを追加
     m_pWorld->addRigidBody(rigidBody);
 
+    // ************************************************************
+    // 
     // ポインタはこちらで削除する必要があるので、保持
-    m_RigidBodies.push_back(rigidBody);
+    // 
+    // ************************************************************
+    
+    PhysicsBodyHandle resultHandle;
+    
+    //
+    // 空いている場所を探し再利用
+    //
+    for (uint32_t i = 0; i < m_RigidBodies.size(); i++)
+    {
+        RigidBodySlot& slot = m_RigidBodies[i];
+
+        if (!slot.active)
+        {
+            slot.rigidBody = rigidBody;
+            slot.active = true;
+
+            resultHandle.index = i;
+            resultHandle.generation = slot.generation;
+
+            return resultHandle;
+        }
+    }
+
+    //
+    // 空いていないなら追加
+    //
+    RigidBodySlot rdSlot;
+    rdSlot.active = true;
+    rdSlot.rigidBody = rigidBody;
+
+    // 配列に追加
+    m_RigidBodies.push_back(rdSlot);
+
+    resultHandle.index = static_cast<uint32_t>(m_RigidBodies.size() - 1);
+    resultHandle.generation = rdSlot.generation;
+
+    return resultHandle;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】指定ハンドルのリジッドボディが有効状態か
+//*
+//* [引数]
+//* handle : ハンドル
+//*
+//* [返値]
+//* 有効かどうか
+//*----------------------------------------------------------------------------------------
+bool PhysicsEngine::IsValidRigidBody(const PhysicsBodyHandle& handle)const
+{
+    // インデックス範囲
+    if (handle.index >= m_RigidBodies.size()) {
+        return false;
+    }
+
+    const RigidBodySlot& slot = m_RigidBodies[handle.index];
+
+    // 非アクティブ
+    if (!slot.active) {
+        return false;
+    }
+
+    if (slot.generation != handle.generation) {
+        return false;
+    }
+
+    // ぬるぽチェック
+    if (slot.rigidBody == nullptr) {
+        return false;
+    }
+
+
+    // 有効状態
+    return true;
 }
 
 
@@ -211,93 +352,93 @@ void PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC
 //*-----------------------------------------------------------------------------------------
 //*【?】ボックスシェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const BoxShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const BoxShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeBox(desc.boxHalfExtents);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 
 //*-----------------------------------------------------------------------------------------
 //*【?】球シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const SphereShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const SphereShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeSphere(desc.radius);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 
 //*-----------------------------------------------------------------------------------------
 //*【?】カプセルシェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const CapsuleShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const CapsuleShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeCapsule(desc.radius, desc.height);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】円柱シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const CylinderShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const CylinderShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeCylinder(desc.halfExtents);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】円錐シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const ConeShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const ConeShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeCone(desc.radius, desc.height);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】三角錐シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const PyramidShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const PyramidShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapePyramid(desc.v4);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】三角形シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const TriangleShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const TriangleShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeTriangle(desc.v3);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】線シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const LineShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const LineShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeLine(desc.v2);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】点シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const PointShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const PointShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapePoint(desc.v1);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】凸包シェイプ登録
 //*-----------------------------------------------------------------------------------------
-void PhysicsEngine::RegisterShape(const ConvexHullShapeDesc& desc)
+PhysicsBodyHandle PhysicsEngine::RegisterShape(const ConvexHullShapeDesc& desc)
 {
     btCollisionShape* shape = CreateShapeConvexHull(desc.points, desc.numPoints, desc.stride);
-    CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
 }
 
 //=========================================================================================
