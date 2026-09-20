@@ -2,6 +2,7 @@
 #include "GameScene_StateHeader.h"
 #include "RendererEngine.h"
 #include "GameManager.h"
+#include "SceneManager.h"
 #include "ResourceManager.h"
 #include "SceneStateEnums.h"
 #include "GameObject.h"
@@ -36,6 +37,7 @@
 #include "Component_Item.h"
 #include "Component_DistortionEffect.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 #include "EnemyFactory.h"
 
 using namespace UtilityData;
@@ -299,6 +301,99 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         obj->get_Component<MyTransform>()->set_Scale(0.1f, 0.1f, 0.1f);
         obj->get_Component<MyTransform>()->set_Pos(0.0f, 500.0f, 0.0f);
         obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+    }
+
+
+    //
+    //リジッドボディテスト
+    //
+    {
+
+        /* 地面の生成 */
+        {
+            // マテリアル取得
+            auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
+            //auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
+
+            SetupMaterialInfo matInfo[1];
+            matInfo[0].Index = 0;
+            matInfo[0].pMaterialData = matPtr;
+
+            CreateUtilityMeshInfo mesh;
+            mesh.pRenderer = m_pRenderer;
+            mesh.Type = UTILITY_MESH_TYPE::PLANE;
+            mesh.ObjTag = "RBGround";
+            mesh.MatNum = 1;
+            mesh.MaterialData = matInfo;
+            mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+            mesh.IsNormalMap = true;
+            mesh.TilingScale = VEC2(60.0f, 60.0f);
+            mesh.ObjLayer = 90;
+
+            auto obj = MeshFactory::CreateUtilityMesh(mesh);
+            obj->get_Transform().lock()->set_Scale(400.0f, 1.0f, 400.0f);
+            obj->get_Transform().lock()->set_Pos(0.0f, 0.0f, 0.0f);
+            obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+
+            auto rb = obj->add_Component<RigidBody>();
+            PhysicsData::RigidBodyDesc rbDesc;
+            PhysicsData::BoxShapeDesc shapeDesc;
+            rbDesc.mass = 0.0f;
+            rbDesc.pos = VEC3(0.0f, -1.0f, 0.0f);
+            rbDesc.restitution = 1.0f;
+            shapeDesc.boxHalfExtents = VEC3(400.0f, 1.0f, 400.0f);
+            rbDesc.shapeDesc = shapeDesc;
+
+            rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+        }
+
+        /* キューブの生成 */
+        {
+            // マテリアル取得
+            auto matPtr = Master::m_pResourceManager->FindMaterial("Block");
+
+            SetupMaterialInfo matInfo[1];
+            matInfo[0].Index = 0;
+            matInfo[0].pMaterialData = matPtr;
+
+            CreateUtilityMeshInfo mesh;
+            mesh.pRenderer = m_pRenderer;
+            mesh.Type = UTILITY_MESH_TYPE::CUBE;
+            mesh.MatNum = 1;
+            mesh.MaterialData = matInfo;
+            mesh.IsActive = true;
+            mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+            mesh.IsNormalMap = true;
+            mesh.ObjLayer = 105;
+
+            for (int i = 0; i < 250; i++)
+            {
+                VEC3 pos;
+                pos.x = -100.0f;
+                pos.y = 30.0f + i;
+                pos.z = 100.0f;
+                VEC3 scl = VEC3(1.0f);
+                auto obj = MeshFactory::CreateUtilityMesh(mesh);
+                obj->get_Transform().lock()->set_Pos(pos);
+                obj->get_Transform().lock()->set_Scale(scl);
+                obj->set_Tag("RBBlock");
+                obj->set_IsUpdateAllowedDuringPause(false);
+                obj->set_IsStatic(false);
+
+                auto rb = obj->add_Component<RigidBody>();
+
+                PhysicsData::RigidBodyDesc rbDesc;
+                PhysicsData::BoxShapeDesc shapeDesc;
+                rbDesc.mass = 1.0f;
+                rbDesc.friction = 0.8f;
+                rbDesc.restitution = 0.1f;
+                rbDesc.pos = pos;
+                shapeDesc.boxHalfExtents = VEC3(1.0f, 1.0f, 1.0f);
+                rbDesc.shapeDesc = shapeDesc;
+
+                rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+            }
+        }
     }
 
     /* 地面の生成 */

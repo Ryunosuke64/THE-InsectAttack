@@ -18,6 +18,7 @@ private:
 	// ステートマシン
 	StateMachine<SceneManager> m_StateMachine;
 	bool m_IsClose;
+	const class GameManager* m_pGameManager;
 
 public:
 	SceneManager();
@@ -27,6 +28,9 @@ public:
 	void Update(RendererEngine& renderer);
 	void Draw(RendererEngine& renderer);
 	void Term(RendererEngine &renderer);
+
+	void set_GM(const class GameManager& gm) { m_pGameManager = &gm; };
+	const class GameManager* get_GM()const { return m_pGameManager; };
 
 	/* シーンの終了フラグ */
 	void OnSceneClose() { m_IsClose = true; }

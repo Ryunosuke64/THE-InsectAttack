@@ -319,6 +319,11 @@ void Bullet::LateUpdate(RendererEngine& renderer)
 
         auto obj = hitInfo.get_HitObject().lock();
 
+        if (!obj)
+        {
+            return;
+        }
+
         // 吹っ飛び
         if (auto physics = obj->get_Component<Physics>())
         {
@@ -506,8 +511,13 @@ bool Bullet::HitCheck_RaySegment(CollisionInfo& _outCollisionInfo)
     CollInData_Ray ray;
     ray._point = m_PrevPos;           // 前回の位置からレイを飛ばす
     ray._dir = newPos - m_PrevPos;    // 前回の位置から新しい位置へのベクトル
+    if (ray._dir.LengthSq() < 0.000001f)
+    {
+        return false;
+    }
     unsigned mask = m_pDefinition->_commonData._collisionMask;
-    return Master::m_pCollisionManager->CheckRaycast(ray, mask, &_outCollisionInfo);
+    //return Master::m_pCollisionManager->CheckRaycast(ray, mask, &_outCollisionInfo);
+    return Master::m_pPhysicsEngine->Raycast(ray, &_outCollisionInfo);
 }
 
 //*---------------------------------------------------------------------------------------

@@ -385,9 +385,9 @@ XMMATRIX MyTransform::get_MtxScale()const{
 XMMATRIX MyTransform::get_WorldMtx()const {
 
     // オフセットを加算
-    XMVECTOR scl = m_Scale    + m_Local_Scale;
     XMVECTOR rot = XMQuaternionMultiply(m_Local_RotationQ, m_RotationQ);
-    XMVECTOR pos = m_Position + m_Local_Position;
+    XMVECTOR scl = DirectX::XMVectorAdd(m_Scale, m_Local_Scale);
+    XMVECTOR pos = DirectX::XMVectorAdd(m_Position, m_Local_Position);
 
     XMMATRIX mtxS = XMMatrixScalingFromVector(scl);
     XMMATRIX mtxRot = XMMatrixRotationQuaternion(rot);
@@ -435,9 +435,9 @@ XMMATRIX MyTransform::get_WorldMtx(const XMMATRIX &scl, const XMMATRIX &rot, con
 // -----------------------------------------------------------------------------
 XMMATRIX MyTransform::get_ExcludingRotWorldMtx()const{
     // オフセットを加算
-    // オフセットを加算
-    XMVECTOR scl = m_Scale + m_Local_Scale;
-    XMVECTOR pos = m_Position + m_Local_Position;
+    XMVECTOR scl = DirectX::XMVectorAdd(m_Scale, m_Local_Scale);
+    XMVECTOR pos = DirectX::XMVectorAdd(m_Position, m_Local_Position);
+
 
     XMMATRIX mtxS = XMMatrixScalingFromVector(scl);
     XMMATRIX mtxT = XMMatrixTranslationFromVector(pos);

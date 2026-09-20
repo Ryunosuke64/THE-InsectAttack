@@ -1,106 +1,6 @@
 #pragma once
-#include <btBulletDynamicsCommon.h>
+#include <LinearMath/btAlignedObjectArray.h>
 #include "ConstantPhysicsData.h"
-
-/// <summary>
-/// コリジョンの形状
-/// </summary>
-enum class COLLISION_SHAPE
-{
-	BOX,				// ボックス
-	SPHERE,				// 球
-	CAPSULE,			// カプセル
-	CYLINDER,			// 円柱
-	CONE,				// 円錐
-	PYRAMID,			// 三角錐
-	TRIANGLE,			// 三角形
-	LINE,				// 線
-	POINT,				// 点
-	CONVEX_HULL,		// 凸包
-	CONVEX_TRIANGLE,	// 凸面三角形
-	CONCAVE_TRIANGLE,	// 凹面三角形
-	COMPOUND,			// 形状の組み合わせ
-};
-
-struct SetupRigidBodyDesc
-{
-	float mass = 0.0f;
-	VECTOR3::VEC3 pos = VECTOR3::VEC3();
-};
-
-// ボックスシェイプセット用
-struct BoxShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	VECTOR3::VEC3 boxHalfExtents = VECTOR3::VEC3();
-};
-
-// 球シェイプセット用
-struct SphereShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	float radius = 0.0f;
-};
-
-// カプセルシェイプセット用
-struct CapsuleShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	float radius = 0.0f;
-	float height = 0.0f;
-};
-
-// 円柱シェイプセット用
-struct CylinderShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	VECTOR3::VEC3 halfExtents = VECTOR3::VEC3();
-};
-
-// 円錐シェイプセット用
-struct ConeShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	float radius = 0.0f;
-	float height = 0.0f;
-};
-
-// 三角錐シェイプセット用
-struct PyramidShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	std::array<VECTOR3::VEC3, 4> v4;
-};
-
-// 三角形シェイプセット用
-struct TriangleShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	std::array<VECTOR3::VEC3, 3> v3;
-};
-
-// 線シェイプセット用
-struct LineShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	std::array<VECTOR3::VEC3, 2> v2;
-};
-
-// 点シェイプセット用
-struct PointShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	VECTOR3::VEC3 v1 = VECTOR3::VEC3();
-};
-
-// 凸包シェイプセット用
-struct ConvexHullShapeDesc
-{
-	SetupRigidBodyDesc rdDesc;
-	const float* points;
-	int numPoints;
-	int stride = sizeof(VECTOR3::VEC3);
-};
 
 
 // ***************************************************************************************
@@ -125,7 +25,7 @@ private:
 	std::unique_ptr<class btDiscreteDynamicsWorld> m_pWorld;
 
 	btAlignedObjectArray<PhysicsData::RigidBodySlot>m_RigidBodies;	// リジッドボディのポインタを保持
-	btAlignedObjectArray<btCollisionShape*>m_CollisionShapes;	// リジッドボディのポインタを保持
+	btAlignedObjectArray <class btCollisionShape* > m_CollisionShapes;	// リジッドボディのポインタを保持
 	
 public:
 	PhysicsEngine();
@@ -135,27 +35,45 @@ public:
 	void Update(float deltaTime);
 	bool Shutdown();
 
-	PhysicsData::PhysicsBodyHandle CreateRigidBody(class btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass);
-	bool IsValidRigidBody(const PhysicsData::PhysicsBodyHandle& handle)const;
+	PhysicsData::PhysicsBodyHandle CreateRigidBody(const PhysicsData::RigidBodyDesc& desc);
+	void UnregisterRigidBody(const PhysicsData::PhysicsBodyHandle& handle);
 
+	bool IsValidRigidBody(const PhysicsData::PhysicsBodyHandle& handle)const;
 	void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force, const VECTOR3::VEC3& rel_pos);
 	void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse, const VECTOR3::VEC3& rel_pos);
 	void AddAngularImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& angularImpulse);
 	
 	void SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass);
+	void SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gravity);
+	void SetWorldPosition(
+		const PhysicsData::PhysicsBodyHandle& handle,
+		const VECTOR3::VEC3& pos);
 
-	PhysicsData::PhysicsBodyHandle RegisterShape(const BoxShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const SphereShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const CapsuleShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const CylinderShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const ConeShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const PyramidShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const TriangleShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const LineShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const PointShapeDesc& desc);
-	PhysicsData::PhysicsBodyHandle RegisterShape(const ConvexHullShapeDesc& desc);
+	VECTOR3::VEC3 GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle);
+	VECTOR4::VEC4 GetRotation(const PhysicsData::PhysicsBodyHandle& handle);
+
+
+	class btCollisionShape* CreateShape(const PhysicsData::PhysicsShapeDesc& descVariant);
+	class btCollisionShape* CreateShape(const PhysicsData::BoxShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::SphereShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::CapsuleShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::CylinderShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::ConeShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::PyramidShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::TriangleShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::LineShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::PointShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::ConvexHullShapeDesc& desc);
+
+	bool Raycast(const CollInData_Ray& ray,class CollisionInfo* _hitInfo);
 
 private:
+	PhysicsEngine(const PhysicsEngine&) = delete;
+	PhysicsEngine& operator=(const PhysicsEngine&) = delete;
+	// ------------------------------------------------------
+
+
+
 	class btBoxShape* CreateShapeBox(const VECTOR3::VEC3& boxHalfExtents);
 	class btSphereShape* CreateShapeSphere(float radius);
 	class btCapsuleShape* CreateShapeCapsule(float radius, float height);
@@ -168,5 +86,7 @@ private:
 	class btConvexHullShape* CreateShapeConvexHull(const float* points, int numPoints, int stride = sizeof(VECTOR3::VEC3));
 	class btConvexTriangleMeshShape* CreateShapeConvexTriangleMesh();
 	class btBvhTriangleMeshShape* CreateShapeBvhTriangleMesh();
+
+
 };
 

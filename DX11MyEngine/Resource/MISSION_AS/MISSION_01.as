@@ -37,7 +37,7 @@ void mission_main()
         ENEMY_TYPE::GIANT_ANT_Normal,
         VEC3(0.0f,1.0f,0.0f),
         50.0f,
-        20,
+        1,
         200.0f,
         true
     );
@@ -47,7 +47,7 @@ void mission_main()
         ENEMY_TYPE::GIANT_ANT_Normal,
         VEC3(-100.0f,1.0f,100.0f),
         50.0f,
-        30,
+        1,
         1200.0f,
         true
     );
@@ -84,10 +84,12 @@ void mission_main()
             ENEMY_TYPE::OCTAHEDRON,
             VEC3(0.0f,150.0,0.0), 
             100.0f,
-            10,
+            3,
             500.0f,
             true
         );
+
+        wave++;
     }
         break;
     default:

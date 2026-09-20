@@ -16,7 +16,6 @@ using namespace RenderData;
 //*----------------------------------------------------------------------------------------
 GameManager::GameManager() :
 	m_pSceneManager(nullptr),
-	m_pPhysicsEngine(nullptr),
 	m_IsClose(false)
 {
 }
@@ -58,11 +57,12 @@ bool GameManager::Init(RendererEngine& renderer)
 		return false;
 	}
 
+	m_pSceneManager->set_GM(*this);
+
 	//
 	// 物理エンジンの作成・セットアップ
 	//
-	m_pPhysicsEngine = std::make_unique<PhysicsEngine>();
-	if (!m_pPhysicsEngine->Setup())
+	if (!Master::m_pPhysicsEngine->Setup())
 	{
 		return false;
 	}
@@ -88,7 +88,7 @@ void GameManager::Update(RendererEngine& renderer)
 	Master::m_pGameObjectManager->ObjectUpdate(renderer);
 
 	// 物理エンジン更新
-	m_pPhysicsEngine->Update(deltaTime);
+	Master::m_pPhysicsEngine->Update(deltaTime);
 
 	// 衝突判定
 	Master::m_pCollisionManager->CollisionProcess();
@@ -148,7 +148,8 @@ void GameManager::Term(RendererEngine &renderer)
 	m_pSceneManager->Term(renderer);
 	m_pSceneManager.reset();
 
-	m_pPhysicsEngine->Shutdown();
-	m_pPhysicsEngine.reset();
+	Master::m_pGameObjectManager->Term(renderer);
+
+	Master::m_pPhysicsEngine->Shutdown();
 }
 

@@ -44,6 +44,7 @@ BuildingManager         *Master::m_pBuildingManager     = nullptr;   // 建物管理
 ScriptManager           *Master::m_pScriptManager       = nullptr;   // AngelScript管理
 EnemyManager            *Master::m_pEnemyManager        = nullptr;   // エネミー管理
 MissionDirector         *Master::m_pMissionDirector     = nullptr;   // ミッション管理
+PhysicsEngine           *Master::m_pPhysicsEngine       = nullptr;   // Bullet物理エンジン
 
 //*---------------------------------------------------------------------------------------
 //* @:DXApp Class 
@@ -121,6 +122,7 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
     Master::m_pScriptManager        = new ScriptManager();          // AngelScript管理
     Master::m_pEnemyManager         = new EnemyManager();           // エネミー管理
     Master::m_pMissionDirector      = new MissionDirector();        // ミッション管理
+    Master::m_pPhysicsEngine        = new PhysicsEngine();          // Bullet物理エンジン
 
 
     // *************************************************************************************************
@@ -403,7 +405,6 @@ void DXApp::Term()
     Master::m_pLightManager->Term();
     Master::m_pDirectWriteManager->Term();
     Master::m_pBlendManager->Term();
-    Master::m_pGameObjectManager->Term(*m_pRenderer);
     Master::m_pResourceManager->Term();
     Master::m_pInputManager->Term();
     Master::m_pSoundManager->UninitXA2Sound();

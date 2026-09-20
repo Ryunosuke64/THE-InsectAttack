@@ -1,7 +1,10 @@
 #include "pch.h"
+#include <btBulletDynamicsCommon.h>
 #include "PhysicsEngine.h"
+#include "CollisionInfo.h"
 
 using namespace VECTOR3;
+using namespace VECTOR4;
 using namespace PhysicsData;
 
 //*---------------------------------------------------------------------------------------
@@ -54,13 +57,6 @@ bool PhysicsEngine::Setup()
 
     // 重力
     m_pWorld->setGravity(btVector3(0.0f, -9.8f, 0.0f));
-
-    BoxShapeDesc desc;
-    desc.boxHalfExtents = VEC3(10.0f, 10.0f, 10.0f);
-    desc.rdDesc.mass = 1.0f;
-    desc.rdDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
-    RegisterShape(desc);
-    
     return true;
 }
 
@@ -92,15 +88,15 @@ bool PhysicsEngine::Shutdown()
         delete obj;
     }
 
-    //
-    // コリジョンシェイプを削除
-    //
-    for (int j = 0; j < m_CollisionShapes.size(); j++)
-    {
-        btCollisionShape* shape = m_CollisionShapes[j];
-        m_CollisionShapes[j] = 0;
-        delete shape;
-    }
+    ////
+    //// コリジョンシェイプを削除
+    ////
+    //for (int j = 0; j < m_CollisionShapes.size(); j++)
+    //{
+    //    btCollisionShape* shape = m_CollisionShapes[j];
+    //    m_CollisionShapes[j] = 0;
+    //    delete shape;
+    //}
 
     m_pWorld.reset();
     m_pSolver.reset();
@@ -108,7 +104,7 @@ bool PhysicsEngine::Shutdown()
     m_pDispatcher.reset();
     m_pConfig.reset();
 
-    m_CollisionShapes.clear();
+    //m_CollisionShapes.clear();
     m_RigidBodies.clear();
 
     return true;
@@ -123,6 +119,7 @@ bool PhysicsEngine::Shutdown()
 void PhysicsEngine::Update(float deltaTime)
 {
     m_pWorld->stepSimulation(deltaTime);
+
 }
 
 //*---------------------------------------------------------------------------------------
@@ -229,7 +226,131 @@ SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
     }
 
     body->setMassProps(mass, inertia);
+
+    // 慣性の更新
+    body->updateInertiaTensor();
 }
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】重力を設定
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* scale    : 重力
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gravity)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    auto body = m_RigidBodies[handle.index].rigidBody;
+    
+    body->setGravity(btVector3(gravity.x, gravity.y, gravity.z));
+}
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】ワールド座標を設定
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* pos      : 座標
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetWorldPosition(
+    const PhysicsData::PhysicsBodyHandle& handle,
+    const VECTOR3::VEC3& pos)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+    auto body = m_RigidBodies[handle.index].rigidBody;
+    btTransform transform = body->getWorldTransform();
+
+    // トランスフォームに位置を設定
+    transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+    // トランスフォーム再設定
+    body->setWorldTransform(transform);
+
+    // モーションステートがあるならそっちも変更
+    if (body->getMotionState())
+    {
+        body->getMotionState()->setWorldTransform(transform);
+    }
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】ワールド座標を取得
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* [返値] 
+//* ワールド座標
+//*----------------------------------------------------------------------------------------
+VECTOR3::VEC3 PhysicsEngine::
+GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return VEC3();
+    }
+    auto body = m_RigidBodies[handle.index].rigidBody;
+
+    // トランスフォームを取得し、位置を取得
+    btTransform transform = body->getWorldTransform();
+    btVector3 pos = transform.getOrigin();
+
+    return VEC3(
+        static_cast<float>(pos.getX()),
+        static_cast<float>(pos.getY()),
+        static_cast<float>(pos.getZ())
+    );
+}
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】回転を取得
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* [返値] 
+//* 回転
+//*----------------------------------------------------------------------------------------
+VECTOR4::VEC4 PhysicsEngine::
+GetRotation(const PhysicsData::PhysicsBodyHandle& handle)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return VEC4();
+    }
+    auto body = m_RigidBodies[handle.index].rigidBody;
+
+    // トランスフォームを取得し、回転を取得
+    btTransform transform = body->getWorldTransform();
+    btQuaternion rot = transform.getRotation();
+
+    return VEC4(
+        static_cast<float>(rot.getX()),
+        static_cast<float>(rot.getY()),
+        static_cast<float>(rot.getZ()),
+        static_cast<float>(rot.getW())
+    );
+}
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】リジッドボディの作成
@@ -237,21 +358,35 @@ SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
 //* [引数] なし
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const VECTOR3::VEC3& pos, float mass)
+PhysicsBodyHandle PhysicsEngine::
+CreateRigidBody(const RigidBodyDesc& desc)
 {
+    // シェイプ作成
+    btCollisionShape* pShape = CreateShape(desc.shapeDesc);
+
+    // トランスフォーム設定
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+    transform.setOrigin(btVector3(desc.pos.x, desc.pos.y, desc.pos.z));
 
     // MotionState
     btDefaultMotionState* motionState = new btDefaultMotionState(transform);
 
+    btVector3 localInertia = btVector3(0.0f, 0.0f, 0.0f);
+    if (desc.mass > 0.0f) {
+        pShape->calculateLocalInertia(desc.mass, localInertia);
+    }
+
     // Info
     btRigidBody::btRigidBodyConstructionInfo info(
-        (btScalar)mass,
+        (btScalar)desc.mass,
         motionState,
-        pShape
+        pShape,
+        localInertia
     );
+
+    info.m_restitution = desc.restitution;  // 反発係数（大きいほど跳ねる）
+    info.m_friction = desc.friction;        // 摩擦（大きいほど滑りにくい）
 
     // 
     m_CollisionShapes.push_back(pShape);
@@ -261,6 +396,12 @@ PhysicsBodyHandle PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const
 
     // リジッドボディを追加
     m_pWorld->addRigidBody(rigidBody);
+
+    // 重力
+    btVector3 gravity = btVector3(desc.gravityScale.x, desc.gravityScale.y, desc.gravityScale.z);
+    rigidBody->setGravity(gravity);
+    rigidBody->setRestitution(desc.restitution);
+    rigidBody->setFriction(desc.friction);
 
     // ************************************************************
     // 
@@ -304,6 +445,53 @@ PhysicsBodyHandle PhysicsEngine::CreateRigidBody(btCollisionShape* pShape, const
 
     return resultHandle;
 }
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】リジッドボディの登録解除
+//*
+//* [引数]
+//* handle : 登録解除するリジッドボディのID
+//*
+//* [返値]
+//* なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::UnregisterRigidBody(const PhysicsData::PhysicsBodyHandle& handle)
+{
+    if (!IsValidRigidBody(handle)) {
+        return;
+    }
+
+    // 状態をリセット
+    RigidBodySlot& slot = m_RigidBodies[handle.index];
+    btRigidBody* rigidBody = slot.rigidBody;
+    btMotionState* motionState = rigidBody->getMotionState();
+    btCollisionShape* shape = rigidBody->getCollisionShape();
+    
+    // リジッドボディをワールドから除外し削除
+    m_pWorld->removeRigidBody(rigidBody);
+    delete rigidBody;
+
+    // モーションステート削除
+    if (motionState != nullptr)
+    {
+        delete motionState;
+    }
+    // シェイプ削除
+    if (shape != nullptr)
+    {
+        delete shape;
+    }
+
+
+    slot.rigidBody = nullptr;
+    slot.active = false;
+
+    // 次にこのindexが使用された際に、
+    // 古いEnemyIDと区別するため
+    slot.generation++;
+}
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】指定ハンドルのリジッドボディが有効状態か
@@ -350,95 +538,103 @@ bool PhysicsEngine::IsValidRigidBody(const PhysicsBodyHandle& handle)const
 //=========================================================================================
 
 //*-----------------------------------------------------------------------------------------
+//*【?】シェイプ登録  共用体ver
+//*-----------------------------------------------------------------------------------------
+btCollisionShape* PhysicsEngine::CreateShape(const PhysicsShapeDesc& descVariant)
+{
+    btCollisionShape* shape = nullptr;
+
+    // 対応したシェイプ登録関数呼び出し
+    std::visit([&](const auto& value)
+        {
+            shape = CreateShape(value);
+        }, descVariant
+    );
+
+    return shape;
+}
+
+
+//*-----------------------------------------------------------------------------------------
 //*【?】ボックスシェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const BoxShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const BoxShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeBox(desc.boxHalfExtents);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeBox(desc.boxHalfExtents);
 }
 
 
 //*-----------------------------------------------------------------------------------------
 //*【?】球シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const SphereShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const SphereShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeSphere(desc.radius);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeSphere(desc.radius);
 }
 
 
 //*-----------------------------------------------------------------------------------------
 //*【?】カプセルシェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const CapsuleShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const CapsuleShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeCapsule(desc.radius, desc.height);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeCapsule(desc.radius, desc.height);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】円柱シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const CylinderShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const CylinderShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeCylinder(desc.halfExtents);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeCylinder(desc.halfExtents);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】円錐シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const ConeShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const ConeShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeCone(desc.radius, desc.height);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeCone(desc.radius, desc.height);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】三角錐シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const PyramidShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const PyramidShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapePyramid(desc.v4);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapePyramid(desc.v4);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】三角形シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const TriangleShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const TriangleShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeTriangle(desc.v3);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeTriangle(desc.v3);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】線シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const LineShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const LineShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeLine(desc.v2);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeLine(desc.v2);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】点シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const PointShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const PointShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapePoint(desc.v1);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapePoint(desc.v1);
 }
 
 //*-----------------------------------------------------------------------------------------
 //*【?】凸包シェイプ登録
 //*-----------------------------------------------------------------------------------------
-PhysicsBodyHandle PhysicsEngine::RegisterShape(const ConvexHullShapeDesc& desc)
+btCollisionShape* PhysicsEngine::CreateShape(const ConvexHullShapeDesc& desc)
 {
-    btCollisionShape* shape = CreateShapeConvexHull(desc.points, desc.numPoints, desc.stride);
-    return CreateRigidBody(shape, desc.rdDesc.pos, desc.rdDesc.mass);
+    return CreateShapeConvexHull(desc.points, desc.numPoints, desc.stride);
 }
 
 //=========================================================================================
@@ -543,4 +739,54 @@ btBU_Simplex1to4* PhysicsEngine::CreateShapePoint(const VECTOR3::VEC3 & v1)
 btConvexHullShape* PhysicsEngine::CreateShapeConvexHull(const float* points, int numPoints, int stride)
 {
     return new btConvexHullShape(points, numPoints, stride);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】レイ判定
+//*-----------------------------------------------------------------------------------------
+bool PhysicsEngine::Raycast(const CollInData_Ray& ray, CollisionInfo* _hitInfo)
+{
+    btVector3 start_bt = btVector3(
+        ray._point.x,
+        ray._point.y, 
+        ray._point.z
+    );
+    btVector3 end_bt = btVector3(
+        ray._point.x + ray._dir.x, 
+        ray._point.y + ray._dir.y, 
+        ray._point.z + ray._dir.z
+    );
+
+    btCollisionWorld::ClosestRayResultCallback callback(
+        start_bt,
+        end_bt
+    );
+
+    m_pWorld->rayTest(start_bt,end_bt, callback);
+
+    // 衝突
+    if (callback.hasHit())
+    {
+        // 衝突点
+        VEC3 hitPoint = VEC3(
+            callback.m_hitPointWorld.getX(),
+            callback.m_hitPointWorld.getY(),
+            callback.m_hitPointWorld.getZ()
+        );
+
+        // 衝突法線
+        VEC3 hitNormal = VEC3(
+            callback.m_hitNormalWorld.getX(),
+            callback.m_hitNormalWorld.getY(),
+            callback.m_hitNormalWorld.getZ()
+        );
+
+        // ヒット情報に入れる
+        _hitInfo->set_HitPoint(hitPoint);
+        _hitInfo->set_HitNormal(hitNormal);
+
+        return true;
+    }
+
+    return false;
 }

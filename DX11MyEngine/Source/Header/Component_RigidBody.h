@@ -20,7 +20,6 @@ private:
     PhysicsEngine* m_pEngine = nullptr; // îÒèäóL
     PhysicsData::PhysicsBodyHandle m_Handle;
     PhysicsData::RigidBodyDesc m_Desc;
-
 public:
     RigidBody(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
     ~RigidBody();
@@ -29,14 +28,17 @@ public:
     bool Setup(PhysicsEngine& engine, const PhysicsData::RigidBodyDesc& desc);
     void Release();
 
+    void LateUpdate(RendererEngine& renderer)override;
+
     void AddForce(const VECTOR3::VEC3& force);
     void AddImpulse(const VECTOR3::VEC3& impulse);
+    VECTOR3::VEC3 GetWorldPotision()const;
 
     VECTOR3::VEC3 GetLinearVelocity() const;
     void SetLinearVelocity(const VECTOR3::VEC3& velocity);
 
     void SetMass(float mass);
-    void SetGravityScale(float scale);
+    void SetGravity(const VECTOR3::VEC3& gravity);
 
     void SetEnabled(bool enabled);
     void Teleport(const VECTOR3::VEC3& position);
