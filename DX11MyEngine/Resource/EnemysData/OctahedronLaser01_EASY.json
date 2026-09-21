@@ -26,6 +26,7 @@
       "gravityScale": 0.0,
       "knockbackForce" : 20.0,
       "bulletType" : "NORMAL",
+      "collisionCategory" : "ENEMY_BULLET",
       "collisionMask": ["PLAYER", "BUILDING", "DESTRUCTION_BUILDING"]
     },
     

@@ -109,6 +109,8 @@ struct CollisionProxy
 //  ★★★シングルトン★★★
 //
 // 【?】衝突判定の管理
+//   [※ BulletPhysicsによる衝突判定へ移行するため、廃止予定]
+// 
 // 参考サイト：https://yutateno.hatenablog.jp/entry/2019/11/27/001801 
 //           ：https://developer.mozilla.org/ja/docs/Games/Techniques/3D_collision_detection
 //           ：https://qiita.com/Aqua-218/items/a432cf0410bff57202c5

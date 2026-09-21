@@ -8,6 +8,7 @@ using namespace DirectX;
 using namespace UtilityData;
 using namespace GIGA_Engine;
 using namespace VECTOR3;
+using namespace PhysicsData;
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -95,4 +96,11 @@ void SphereCollider::Draw(RendererEngine &renderer)
 
     // メッシュ表示
     m_pSphereMesh->Draw(renderer, localMat);
+}
+
+PhysicsShapeDesc SphereCollider::GetShapeDesc()const
+{
+    PhysicsData::SphereShapeDesc desc;
+    desc.radius = m_Radius;
+    return desc;
 }

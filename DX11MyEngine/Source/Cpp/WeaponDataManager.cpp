@@ -54,7 +54,7 @@ bool WeaponDataManager::Init()
     }
     m_AllWeaponsDataMap[0] = std::make_unique<GunWeaponData>(gunData);
 
-    if (LoadGunWeaponData("Resource/WeaponsData/LaserRifle01.json", gunData) == false){
+    if (LoadGunWeaponData("Resource/WeaponsData/Missile01.json", gunData) == false){
         assert(false);
     }
     m_AllWeaponsDataMap[1] = std::make_unique<GunWeaponData>(gunData);
@@ -290,7 +290,9 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
     }
     _outData._commonData._range = speed;
 
+    //
     // 弾のタイプ
+    //
     std::string bulletTypeStr = commonJson.value("bulletType", "");
     const auto bulletTypeIt = g_BulletTypeMap.find(bulletTypeStr);
     // 未定義
@@ -300,9 +302,21 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
     _outData._commonData._bulletType = bulletTypeIt->second;
 
 
-    //bulletData._moveType = BULLET_MOVE_TYPE::LINEAR;    // 一旦直進のみ
+    //
+    // 自身の衝突カテゴリ
+    //
+    std::string myCollisionCategoryStr = commonJson.value("collisionCategory", "");
+    const auto myCollisionCategoryIt = g_CollisionCategoryMap.find(myCollisionCategoryStr);;
+    // 未定義衝突カテゴリ
+    if (myCollisionCategoryIt == g_CollisionCategoryMap.end())
+    {
+        return false;
+    }
+    _outData._commonData._myCollisionCategory = UINT_CAST(myCollisionCategoryIt->second);
 
+    //
     // 衝突マスク
+    //
     _outData._commonData._collisionMask = 0;
     if (commonJson.contains("collisionMask") &&
         commonJson["collisionMask"].is_array())

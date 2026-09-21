@@ -134,6 +134,9 @@ private:
 	// ボーン変換用定数バッファ
 	CB_BONES_DATA m_BonesData;						// 定数バッファ用ボーン変換データ
 
+	std::vector<VERTEX::CollisionVertex> m_CollisionVertices;
+	std::vector<uint32_t> m_CollisionIndices;
+
 
 	//CB_BONES_DATA_SET *m_pConstanrBufferBonesData;// ボーン用
 	//CB_TRANSFORM_SET  *m_pCBTransformSet;			// ワールド行列用
@@ -174,6 +177,11 @@ public:
 	const std::vector<BoneInfo> &get_BoneList() const { return m_BoneList; }
 	const std::vector<std::weak_ptr<Material>> &get_MaterialList() const { return m_pMaterialList; }
 
+
+	/* コリジョンメッシュ  */
+	const std::vector<VERTEX::CollisionVertex>& get_CollisionVertices() const { return m_CollisionVertices; }
+	const std::vector<uint32_t>& get_CollisionIndices() const { return m_CollisionIndices; }
+
 	/* Assimp関連 */
 	const Assimp::Importer &get_Importer() const { return m_Importer; }
 	const aiScene *get_Scene() const { return m_pScene; }
@@ -199,7 +207,8 @@ private:
 	void NodeExtraction(const aiNode *pNode, int parentIdx);	// ノード情報を再帰的に抽出
 	void BoneExtraction(aiMesh *mesh);							// ボーン情報抽出
 	void MatrialExtraction(const aiScene *scene);				// マテリアル情報抽出 ※上のset_TextureMapで直接指定させているので要らないかも
-	
+	void CollisionMeshSetup(aiMesh* mesh);
+
 	bool CreateBonesCBuffer(RendererEngine &renderer);			// ボーン変換用定数バッファの作成
 	bool CreateMaterialCBuffer(RendererEngine &renderer);		// マテリアル用定数バッファの作成
 	bool CreateTransformCBuffer(RendererEngine &renderer);		// トランスフォーム用定数バッファの作成

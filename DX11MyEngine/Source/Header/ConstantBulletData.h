@@ -159,6 +159,7 @@ namespace BulletData
         float _knockbackForce = 1.0f;                   // 命中対象へ加えるノックバックの強さ
         int _penetrationsCount = 0;                     // 貫通できる回数
         unsigned int _collisionMask = 0;                // 衝突判定の対象となるCOLLISION_CATEGORYのビットマスク
+        unsigned int _myCollisionCategory = 0;          // 自身の衝突カテゴリ
         float _collisionSize = 0.0f;                    // 弾の衝突判定半径
         BULLET_TYPE _bulletType = BULLET_TYPE::NORMAL;  // 弾の種類
     };

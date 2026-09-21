@@ -196,102 +196,102 @@ namespace BulletBehaviour
         //*****************************************************************************************
         //						衝突した際の処理
         //*****************************************************************************************
-        //auto hitObj = _collision.get_HitObject().lock();
-        //if (!hitObj) return result;
-        //COLLISION_CATEGORY hitCategory = _collision.get_HitCollider().lock()->get_CollisionCategory();
+        auto hitObj = _collision.get_HitObject().lock();
+        if (!hitObj) return result;
+        COLLISION_CATEGORY hitCategory = _collision.get_HitCollider().lock()->get_CollisionCategory();
 
-        //// 相手がHealthComponentを持っているか確認（破壊可能な建物は壊せないように）
-        //auto health = hitObj->get_Component<Health>();
-        //if (health && hitCategory != COLLISION_CATEGORY::DESTRUCTION_BUILDING)
-        //{
-        //    // 弾が保持しているダメージ値を渡す
-        //    health->TakeDamage(_common._damage, _collision);
+        // 相手がHealthComponentを持っているか確認（破壊可能な建物は壊せないように）
+        auto health = hitObj->get_Component<Health>();
+        if (health && hitCategory != COLLISION_CATEGORY::DESTRUCTION_BUILDING)
+        {
+            // 弾が保持しているダメージ値を渡す
+            health->TakeDamage(_common._damage, _collision);
 
-        //}
+        }
 
-        ////*****************************************************************************************
-        ////						建物などに衝突した場合
-        ////*****************************************************************************************
-        //if (hitCategory == COLLISION_CATEGORY::BUILDING || 
-        //    hitCategory == COLLISION_CATEGORY::DESTRUCTION_BUILDING)
-        //{
-        //    // 衝突時の反応
-        //    switch (_hitData._environmentResponse)
-        //    {
-        //        /* 無効 */
-        //    case ENVIRONMENT_RESPONSE::DEACTIVATE:
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
+        //*****************************************************************************************
+        //						建物などに衝突した場合
+        //*****************************************************************************************
+        if (hitCategory == COLLISION_CATEGORY::BUILDING || 
+            hitCategory == COLLISION_CATEGORY::DESTRUCTION_BUILDING)
+        {
+            // 衝突時の反応
+            switch (_hitData._environmentResponse)
+            {
+                /* 無効 */
+            case ENVIRONMENT_RESPONSE::DEACTIVATE:
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
 
-        //        /* スライド */
-        //    case ENVIRONMENT_RESPONSE::SLIDE:
-        //        // 壁に沿って移動
-        //        result._response = BULLET_HIT_RESPONSE::SLIDE;
-        //        break;
+                /* スライド */
+            case ENVIRONMENT_RESPONSE::SLIDE:
+                // 壁に沿って移動
+                result._response = BULLET_HIT_RESPONSE::SLIDE;
+                break;
 
-        //        /* バウンド */
-        //    case ENVIRONMENT_RESPONSE::BOUNCE:
-        //        result._response = BULLET_HIT_RESPONSE::BOUNCE;
-        //        break;
+                /* バウンド */
+            case ENVIRONMENT_RESPONSE::BOUNCE:
+                result._response = BULLET_HIT_RESPONSE::BOUNCE;
+                break;
 
-        //        /* アタッチ（未使用） */
-        //    case ENVIRONMENT_RESPONSE::ATTACH:
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
+                /* アタッチ（未使用） */
+            case ENVIRONMENT_RESPONSE::ATTACH:
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
 
-        //        /* 貫通 */
-        //    case ENVIRONMENT_RESPONSE::PENETRATE:
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
+                /* 貫通 */
+            case ENVIRONMENT_RESPONSE::PENETRATE:
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
 
-        //        /* その他 */
-        //    default:
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
-        //    }
-        //}
-        ////*****************************************************************************************
-        ////						敵やプレイヤーなどの有機物に衝突した場合
-        ////*****************************************************************************************
-        //else
-        //{
-        //    // 衝突時の反応
-        //    switch (_hitData._environmentResponse)
-        //    {
-        //        /* 無効 */
-        //    case ENVIRONMENT_RESPONSE::DEACTIVATE:
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
-        //    
-        //        /* スライド */
-        //    case ENVIRONMENT_RESPONSE::SLIDE:
-        //        // そのまま通り抜けさせる
-        //        result._response = BULLET_HIT_RESPONSE::PENETRATE;
-        //        break;
+                /* その他 */
+            default:
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
+            }
+        }
+        //*****************************************************************************************
+        //						敵やプレイヤーなどの有機物に衝突した場合
+        //*****************************************************************************************
+        else
+        {
+            // 衝突時の反応
+            switch (_hitData._environmentResponse)
+            {
+                /* 無効 */
+            case ENVIRONMENT_RESPONSE::DEACTIVATE:
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
+            
+                /* スライド */
+            case ENVIRONMENT_RESPONSE::SLIDE:
+                // そのまま通り抜けさせる
+                result._response = BULLET_HIT_RESPONSE::PENETRATE;
+                break;
 
-        //        /* バウンド */
-        //    case ENVIRONMENT_RESPONSE::BOUNCE:
-        //        // 壁以外（有機物）に衝突した際は、バウンドさせず、無効にする
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
-        //    
-        //        /* アタッチ（未使用） */
-        //    case ENVIRONMENT_RESPONSE::ATTACH:
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
-        //    
-        //        /* 貫通 */
-        //    case ENVIRONMENT_RESPONSE::PENETRATE:
-        //        // 貫通数を増やす
-        //        result._response = BULLET_HIT_RESPONSE::PENETRATE_COUNT;
-        //        break;
-        //    
-        //        /* その他 */
-        //    default:
-        //        result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
-        //        break;
-        //    }
-        //}
+                /* バウンド */
+            case ENVIRONMENT_RESPONSE::BOUNCE:
+                // 壁以外（有機物）に衝突した際は、バウンドさせず、無効にする
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
+            
+                /* アタッチ（未使用） */
+            case ENVIRONMENT_RESPONSE::ATTACH:
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
+            
+                /* 貫通 */
+            case ENVIRONMENT_RESPONSE::PENETRATE:
+                // 貫通数を増やす
+                result._response = BULLET_HIT_RESPONSE::PENETRATE_COUNT;
+                break;
+            
+                /* その他 */
+            default:
+                result._response = BULLET_HIT_RESPONSE::DEACTIVATE;
+                break;
+            }
+        }
 
         auto transform = _runtime._transform;
         VEC3 pos = transform->get_VEC3ToPos();

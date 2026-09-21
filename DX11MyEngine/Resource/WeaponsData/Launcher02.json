@@ -27,6 +27,7 @@
       "gravityScale": 8.0,
       "knockbackForce" : 20.0,
       "bulletType" : "NORMAL",
+      "collisionCategory" : "PLAYER_BULLET",
       "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING"]
     },
     
@@ -46,8 +47,8 @@
       "isSmoke" : false,
 
       "expLightColor" : [0.2, 0.2, 0.9],
-      "expLightIntensity" : 6.0,
-      "expLightDuration" : 5.0
+      "expLightIntensity" : 3.0,
+      "expLightDuration" : 3.0
     },
 
     "visual" :  

@@ -1,7 +1,11 @@
 #include "pch.h"
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/NarrowPhaseCollision/btRaycastCallback.h>
 #include "PhysicsEngine.h"
 #include "CollisionInfo.h"
+#include "Component_Collider.h"
+#include "Component_BoxCollider.h"
+#include "Component_SphereCollider.h"
 
 using namespace VECTOR3;
 using namespace VECTOR4;
@@ -361,8 +365,29 @@ GetRotation(const PhysicsData::PhysicsBodyHandle& handle)
 PhysicsBodyHandle PhysicsEngine::
 CreateRigidBody(const RigidBodyDesc& desc)
 {
+    PhysicsBodyHandle resultHandle;
+
+    // コライダー取得
+    auto collider = desc.collider.lock();
+
+    if (!collider)
+    {
+        assert(false);
+        MessageBox(NULL, L"コライダーが設定されていないため、シェイプの作成ができません", L"PhysicsEngine", MB_OK);
+        return resultHandle;
+    }
+    
+    VEC3 center = collider->get_Center();
+
     // シェイプ作成
-    btCollisionShape* pShape = CreateShape(desc.shapeDesc);
+    btCollisionShape* pShape = CreateShape(collider->GetShapeDesc(), center);
+
+    if (pShape == nullptr)
+    {
+        MessageBox(NULL, L"シェイプが作成できませんでした", L"PhysicsEngine", MB_OK);
+        assert(false);
+        return resultHandle;
+    }
 
     // トランスフォーム設定
     btTransform transform;
@@ -394,8 +419,16 @@ CreateRigidBody(const RigidBodyDesc& desc)
     // RD
     btRigidBody* rigidBody = new btRigidBody(info);
 
+    // 自身の衝突マスクの種類
+    const int group =
+        static_cast<int>(collider->get_CollisionCategory());
+
+    // 衝突マスク
+    const int mask =
+        static_cast<int>(collider->get_CollisionBitMask());
+
     // リジッドボディを追加
-    m_pWorld->addRigidBody(rigidBody);
+    m_pWorld->addRigidBody(rigidBody, group, mask);
 
     // 重力
     btVector3 gravity = btVector3(desc.gravityScale.x, desc.gravityScale.y, desc.gravityScale.z);
@@ -403,13 +436,13 @@ CreateRigidBody(const RigidBodyDesc& desc)
     rigidBody->setRestitution(desc.restitution);
     rigidBody->setFriction(desc.friction);
 
+
     // ************************************************************
     // 
     // ポインタはこちらで削除する必要があるので、保持
     // 
     // ************************************************************
     
-    PhysicsBodyHandle resultHandle;
     
     //
     // 空いている場所を探し再利用
@@ -420,8 +453,12 @@ CreateRigidBody(const RigidBodyDesc& desc)
 
         if (!slot.active)
         {
+            rigidBody->setUserIndex(i);
+
             slot.rigidBody = rigidBody;
             slot.active = true;
+            slot.owner = desc.owner;
+            slot.collider = desc.collider;
 
             resultHandle.index = i;
             resultHandle.generation = slot.generation;
@@ -433,15 +470,21 @@ CreateRigidBody(const RigidBodyDesc& desc)
     //
     // 空いていないなら追加
     //
+    uint32_t index = static_cast<uint32_t>(m_RigidBodies.size());
+
     RigidBodySlot rdSlot;
     rdSlot.active = true;
     rdSlot.rigidBody = rigidBody;
+    rdSlot.owner = desc.owner;
+    rdSlot.collider = desc.collider;
+    rigidBody->setUserIndex(index);
 
     // 配列に追加
     m_RigidBodies.push_back(rdSlot);
 
-    resultHandle.index = static_cast<uint32_t>(m_RigidBodies.size() - 1);
+    resultHandle.index = index;
     resultHandle.generation = rdSlot.generation;
+
 
     return resultHandle;
 }
@@ -540,20 +583,54 @@ bool PhysicsEngine::IsValidRigidBody(const PhysicsBodyHandle& handle)const
 //*-----------------------------------------------------------------------------------------
 //*【?】シェイプ登録  共用体ver
 //*-----------------------------------------------------------------------------------------
-btCollisionShape* PhysicsEngine::CreateShape(const PhysicsShapeDesc& descVariant)
+btCollisionShape* PhysicsEngine::CreateShape(const PhysicsShapeDesc& descVariant, const VECTOR3::VEC3& center)
 {
-    btCollisionShape* shape = nullptr;
+    btCollisionShape* childShape = nullptr;
+    btCollisionShape* resultShape = nullptr;
 
     // 対応したシェイプ登録関数呼び出し
     std::visit([&](const auto& value)
         {
-            shape = CreateShape(value);
+            childShape = CreateShape(value);
         }, descVariant
     );
 
-    return shape;
+    //
+    // 中心オフセットがあるなら、子形状として中心を設定
+    //
+    if (center.x != 0.0f || center.y != 0.0f || center.z != 0.0f)
+    {
+        btTransform childTransform;
+        childTransform.setIdentity();
+        childTransform.setOrigin(
+            btVector3(center.x, center.y, center.z));
+
+        auto* compound = new btCompoundShape();
+        compound->addChildShape(childTransform, childShape);
+
+        // この形状を剛体に渡す
+        resultShape = compound;
+    }
+    //
+    //  中心オフセットがなければ、作成したシェイプをそのまま返すようにする
+    //
+    else
+    {
+        resultShape = childShape;
+    }
+
+
+    return resultShape;
 }
 
+
+//*-----------------------------------------------------------------------------------------
+//*【?】ボックスシェイプ登録
+//*-----------------------------------------------------------------------------------------
+btCollisionShape* PhysicsEngine::CreateShape(const PhysicsData::ErrorShapeDesc& desc)
+{
+    return nullptr;
+}
 
 //*-----------------------------------------------------------------------------------------
 //*【?】ボックスシェイプ登録
@@ -635,6 +712,14 @@ btCollisionShape* PhysicsEngine::CreateShape(const PointShapeDesc& desc)
 btCollisionShape* PhysicsEngine::CreateShape(const ConvexHullShapeDesc& desc)
 {
     return CreateShapeConvexHull(desc.points, desc.numPoints, desc.stride);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】BVH三角形フルメッシュシェイプ登録
+//*-----------------------------------------------------------------------------------------
+btCollisionShape* PhysicsEngine::CreateShape(const BvhTriangleShapeDesc& desc)
+{
+    return CreateShapeBvhTriangleMesh(desc.vertexPositions, desc.indices);
 }
 
 //=========================================================================================
@@ -742,9 +827,41 @@ btConvexHullShape* PhysicsEngine::CreateShapeConvexHull(const float* points, int
 }
 
 //*-----------------------------------------------------------------------------------------
+//*【?】BVH三角形フルメッシュシェイプ作成
+//*-----------------------------------------------------------------------------------------
+btBvhTriangleMeshShape* PhysicsEngine::
+    CreateShapeBvhTriangleMesh(std::vector<VERTEX::CollisionVertex> vertexPositions, std::vector<uint32_t> indices)
+{
+    btTriangleMesh* triangleMesh = new btTriangleMesh();
+
+    // 三角形メッシュ追加していく
+    for (int i = 0; i < indices.size(); i += 3)
+    {
+        const VEC3 p0 = vertexPositions[indices[i]].position;
+        const VEC3 p1 = vertexPositions[indices[i + 1]].position;
+        const VEC3 p2 = vertexPositions[indices[i + 2]].position;
+
+        triangleMesh->addTriangle(
+            btVector3(p0.x, p0.y, p0.z),
+            btVector3(p1.x, p1.y, p1.z),
+            btVector3(p2.x, p2.y, p2.z)
+        );
+    }
+
+    btBvhTriangleMeshShape* shape = 
+        new btBvhTriangleMeshShape(
+            triangleMesh, 
+            true            // BVHのAABB圧縮を使用
+        );
+
+    return shape;
+}
+
+
+//*-----------------------------------------------------------------------------------------
 //*【?】レイ判定
 //*-----------------------------------------------------------------------------------------
-bool PhysicsEngine::Raycast(const CollInData_Ray& ray, CollisionInfo* _hitInfo)
+bool PhysicsEngine::Raycast(const CollInData_Ray& ray, unsigned group, unsigned mask, CollisionInfo* _hitInfo)
 {
     btVector3 start_bt = btVector3(
         ray._point.x,
@@ -761,6 +878,15 @@ bool PhysicsEngine::Raycast(const CollInData_Ray& ray, CollisionInfo* _hitInfo)
         start_bt,
         end_bt
     );
+
+    // 衝突マスクの設定
+    callback.m_collisionFilterGroup = static_cast<int>(group);
+    callback.m_collisionFilterMask = static_cast<int>(mask);
+
+    //    判定方式をGJKに変更
+    // ※ 初期の方法では弾のすり抜けが発生してしまったため
+    callback.m_flags |=
+        btTriangleRaycastCallback::kF_UseGjkConvexCastRaytest;
 
     m_pWorld->rayTest(start_bt,end_bt, callback);
 
@@ -781,9 +907,23 @@ bool PhysicsEngine::Raycast(const CollInData_Ray& ray, CollisionInfo* _hitInfo)
             callback.m_hitNormalWorld.getZ()
         );
 
+        // リジッドボディの生成時に設定したインデックスからリジッドボディスロットを検索
+        const auto* hitBody = callback.m_collisionObject;
+        int index = hitBody->getUserIndex();
+
+        if (index >= m_RigidBodies.size())
+        {
+            assert(false);
+            return false;
+        }
+        auto &hitObj = m_RigidBodies[index].owner;
+        auto &hitCollider = m_RigidBodies[index].collider;
+
         // ヒット情報に入れる
         _hitInfo->set_HitPoint(hitPoint);
         _hitInfo->set_HitNormal(hitNormal);
+        _hitInfo->set_HitObject(hitObj);
+        _hitInfo->set_HitCollider(hitCollider);
 
         return true;
     }

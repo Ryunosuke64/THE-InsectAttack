@@ -30,6 +30,8 @@ public:
 	Collider(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
 	~Collider();
 
+	virtual PhysicsData::PhysicsShapeDesc GetShapeDesc() const = 0;
+
 	// 使用フラグ
 	void set_IsEnable(bool _flag) { m_IsEnable = _flag; }
 	bool get_IsEnable()const { return m_IsEnable; }

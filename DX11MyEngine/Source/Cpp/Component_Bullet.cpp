@@ -511,13 +511,15 @@ bool Bullet::HitCheck_RaySegment(CollisionInfo& _outCollisionInfo)
     CollInData_Ray ray;
     ray._point = m_PrevPos;           // 前回の位置からレイを飛ばす
     ray._dir = newPos - m_PrevPos;    // 前回の位置から新しい位置へのベクトル
-    if (ray._dir.LengthSq() < 0.000001f)
+    if (ray._dir.LengthSq() < 0.001f)
     {
         return false;
     }
     unsigned mask = m_pDefinition->_commonData._collisionMask;
+    unsigned group = m_pDefinition->_commonData._myCollisionCategory;
     //return Master::m_pCollisionManager->CheckRaycast(ray, mask, &_outCollisionInfo);
-    return Master::m_pPhysicsEngine->Raycast(ray, &_outCollisionInfo);
+
+    return Master::m_pPhysicsEngine->Raycast(ray, group, mask, &_outCollisionInfo);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -535,5 +537,8 @@ bool Bullet::HitCheck_Ray(CollisionInfo& _outCollisionInfo)
     ray._point = m_StartPos;                                    // 前回の位置からレイを飛ばす
     ray._dir = m_MoveDir * m_pDefinition->_commonData._range;
     unsigned mask = m_pDefinition->_commonData._collisionMask;
-    return Master::m_pCollisionManager->CheckRaycast(ray, mask, &_outCollisionInfo);
+    unsigned group = m_pDefinition->_commonData._myCollisionCategory;
+    //return Master::m_pCollisionManager->CheckRaycast(ray, mask, &_outCollisionInfo);
+
+    return Master::m_pPhysicsEngine->Raycast(ray, group, mask, &_outCollisionInfo);
 }

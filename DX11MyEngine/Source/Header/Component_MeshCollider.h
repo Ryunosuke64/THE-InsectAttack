@@ -13,6 +13,7 @@
 class MeshCollider : public Collider
 {
 private:
+	std::weak_ptr<class ModelData> m_pModelData;
 
 public:
 	MeshCollider(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
@@ -20,5 +21,8 @@ public:
 
 	void Start(RendererEngine& renderer) override;		// ‰Šú‰»
 	void Update(RendererEngine& renderer) override;		// XVˆ—
-};
 
+	PhysicsData::PhysicsShapeDesc GetShapeDesc() const override;
+
+	void SetupModelData(std::weak_ptr<class ModelData> modelData);
+};

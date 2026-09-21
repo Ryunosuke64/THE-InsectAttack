@@ -24,6 +24,9 @@ public:
 	void Update(RendererEngine &renderer) override;		// XVˆ—
 	void Draw(RendererEngine &renderer)override;		// •`‰æˆ—
 
+	PhysicsData::PhysicsShapeDesc GetShapeDesc() const override;
+
+
 	// ”¼Œa
 	void set_Radius(float _r) { m_Radius = _r; }
 	float get_Radius()const { return m_Radius; }

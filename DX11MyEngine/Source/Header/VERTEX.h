@@ -155,5 +155,13 @@ namespace VERTEX
             return VEC3::Distance(v0.pos, v1.pos);
         }
     }
+
+    /// <summary>
+    /// ƒRƒŠƒWƒ‡ƒ“—p
+    /// </summary>
+    struct CollisionVertex
+    {
+        VECTOR3::VEC3 position;
+    };
 }
 

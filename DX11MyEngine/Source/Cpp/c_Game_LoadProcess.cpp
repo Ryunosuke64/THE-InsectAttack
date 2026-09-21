@@ -38,6 +38,7 @@
 #include "Component_DistortionEffect.h"
 #include "Component_Physics.h"
 #include "Component_RigidBody.h"
+#include "Component_MeshCollider.h"
 #include "EnemyFactory.h"
 
 using namespace UtilityData;
@@ -178,7 +179,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             {
                 for (int y = -2; y < 3; y++)
                 {
-                    VEC3 scale = VEC3(0.8f);
+                    VEC3 pos = VEC3(50.0f * x, 0.0f, 70.0f * y);
+                    VEC3 scale = VEC3(1.0f);
                     auto obj = MeshFactory::CreateModel(model);
                     obj->get_Component<MyTransform>()->set_Scale(scale);
                     obj->get_Component<MyTransform>()->set_Pos(50.0f * x, 0.0f, 70.0f * y);
@@ -195,17 +197,37 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
                     health->set_MaxHP(600.0f);
                     health->set_CrntHP(600.0f);
 
-                    // コライダーの追加
-                    auto collider = obj->add_Component<BoxCollider>();
-                    collider->set_Size(VEC3(20.0f * scale.x, 30.0f * scale.y, 10.0f * scale.z));
-                    collider->set_Center(VEC3(0.0f, 30.0f * scale.y, 0.0f));
+
+                    auto modelResource = obj->get_Component<ModelMeshResource>();
+
+                    auto rb = obj->add_Component<RigidBody>();
+                    auto collider = obj->add_Component<MeshCollider>();
+                    collider->SetupModelData(modelResource->get_ModelData());
                     collider->set_IsStatic(true);
-                    // 衝突カテゴリ
-                    collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
+                    collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
+
+                    PhysicsData::RigidBodyDesc rbDesc;
+                    rbDesc.mass = 0.0f;
+                    rbDesc.pos = pos;
+                    rbDesc.restitution = 1.0f;
+                    rbDesc.owner = obj;         // オーナーオブジェクトの設定
+                    rbDesc.collider = collider; // コライダーの設定
+
+                    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
 
 
-                    // コライダーの登録
-                    Master::m_pCollisionManager->RegisterCollider(obj->get_Component<BoxCollider>());
+
+                    //// コライダーの追加
+                    //auto collider = obj->add_Component<BoxCollider>();
+                    //collider->set_Size(VEC3(20.0f * scale.x, 30.0f * scale.y, 10.0f * scale.z));
+                    //collider->set_Center(VEC3(0.0f, 30.0f * scale.y, 0.0f));
+                    //collider->set_IsStatic(true);
+                    //// 衝突カテゴリ
+                    //collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
+
+
+                    //// コライダーの登録
+                    //Master::m_pCollisionManager->RegisterCollider(obj->get_Component<BoxCollider>());
                 }
             }
         }
@@ -246,10 +268,11 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             model.MatNum = 6;
             model.SetupMaterial = matInfo;
 
+            VEC3 pos = VEC3(-200.0f, 0.0f, 150.0f);
             VEC3 scale = VEC3(1.0f);
             auto obj = MeshFactory::CreateModel(model);
             obj->get_Component<MyTransform>()->set_Scale(scale);
-            obj->get_Component<MyTransform>()->set_Pos(-200.0f, 0.0f, 150.0f);
+            obj->get_Component<MyTransform>()->set_Pos(pos);
             obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
 
             // ポーズ中は停止
@@ -263,16 +286,24 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             health->set_MaxHP(1600.0f);
             health->set_CrntHP(1600.0f);
 
-            // コライダーの追加
-            auto collider = obj->add_Component<BoxCollider>();
-            collider->set_Size(VEC3(20.0f * scale.x, 50.0f * scale.y, 10.0f * scale.z));
-            collider->set_Center(VEC3(0.0f, 50.0f * scale.y, 0.0f));
-            collider->set_IsStatic(true);
-            // 衝突カテゴリ
-            collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
+            auto modelResource = obj->get_Component<ModelMeshResource>();
 
-            // コライダーの登録
-            Master::m_pCollisionManager->RegisterCollider(obj->get_Component<BoxCollider>());
+            auto rb = obj->add_Component<RigidBody>();
+            auto collider = obj->add_Component<MeshCollider>();
+            //collider->set_Size(VEC3(20.0f * scale.x, 50.0f * scale.y, 10.0f * scale.z));
+            //collider->set_Center(VEC3(0.0f, 50.0f * scale.y, 0.0f));
+            collider->SetupModelData(modelResource->get_ModelData());
+            collider->set_IsStatic(true);
+            collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
+
+            PhysicsData::RigidBodyDesc rbDesc;
+            rbDesc.mass = 0.0f;
+            rbDesc.pos = pos;
+            rbDesc.restitution = 1.0f;
+            rbDesc.owner = obj;         // オーナーオブジェクトの設定
+            rbDesc.collider = collider; // コライダーの設定
+
+            rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
         }
 
     }
@@ -288,19 +319,37 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
         CreateModelInfo model;
         model.pRenderer = m_pRenderer;
-        model.LODModels[0] = { "Resource/Model/Enemy/MotherShip/MotherShip.fbx", 0.0f };
+        model.LODModels[0] = { "Resource/Model/Enemy/MotherShip/MotherShip2.fbx", 0.0f };
         model.ObjTag = "MotherShip";
         model.IsAnim = false;
         model.MatNum = 1;
         model.IsActive = true;
         model.SetupMaterial = matInfo;
         model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC;
+        VEC3 pos = VEC3(0.0f, 350.0f, 0.0f);
 
         auto obj = MeshFactory::CreateModel(model);
 		obj->set_IsStatic(false);
-        obj->get_Component<MyTransform>()->set_Scale(0.1f, 0.1f, 0.1f);
-        obj->get_Component<MyTransform>()->set_Pos(0.0f, 500.0f, 0.0f);
+        obj->get_Component<MyTransform>()->set_Scale(1.0f, 1.0f, 1.0f);
+        obj->get_Component<MyTransform>()->set_Pos(pos);
         obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+
+        auto modelResource = obj->get_Component<ModelMeshResource>();
+
+        auto rb = obj->add_Component<RigidBody>();
+        auto collider = obj->add_Component<MeshCollider>();
+        collider->SetupModelData(modelResource->get_ModelData());
+        collider->set_IsStatic(true);
+        collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
+
+        PhysicsData::RigidBodyDesc rbDesc;
+        rbDesc.mass = 0.0f;
+        rbDesc.pos = pos;
+        rbDesc.restitution = 1.0f;
+        rbDesc.owner = obj;         // オーナーオブジェクトの設定
+        rbDesc.collider = collider; // コライダーの設定
+
+        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }
 
 
@@ -308,7 +357,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     //リジッドボディテスト
     //
     {
-
         /* 地面の生成 */
         {
             // マテリアル取得
@@ -336,13 +384,18 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
 
             auto rb = obj->add_Component<RigidBody>();
+            auto collider = obj->add_Component<BoxCollider>();
+            collider->set_Size(VEC3(400.0f, 1.0f, 400.0f));
+            collider->set_Center(VEC3(0.0f, -1.0f, 0.0f));
+            collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
+            collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
+
             PhysicsData::RigidBodyDesc rbDesc;
-            PhysicsData::BoxShapeDesc shapeDesc;
             rbDesc.mass = 0.0f;
-            rbDesc.pos = VEC3(0.0f, -1.0f, 0.0f);
+            rbDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
             rbDesc.restitution = 1.0f;
-            shapeDesc.boxHalfExtents = VEC3(400.0f, 1.0f, 400.0f);
-            rbDesc.shapeDesc = shapeDesc;
+            rbDesc.owner = obj;         // オーナーオブジェクトの設定
+            rbDesc.collider = collider; // コライダーの設定
 
             rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
         }
@@ -366,13 +419,13 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             mesh.IsNormalMap = true;
             mesh.ObjLayer = 105;
 
-            for (int i = 0; i < 250; i++)
+            for (int i = 0; i < 50; i++)
             {
                 VEC3 pos;
                 pos.x = -100.0f;
                 pos.y = 30.0f + i;
                 pos.z = 100.0f;
-                VEC3 scl = VEC3(1.0f);
+                VEC3 scl = VEC3(0.5f);
                 auto obj = MeshFactory::CreateUtilityMesh(mesh);
                 obj->get_Transform().lock()->set_Pos(pos);
                 obj->get_Transform().lock()->set_Scale(scl);
@@ -381,15 +434,18 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
                 obj->set_IsStatic(false);
 
                 auto rb = obj->add_Component<RigidBody>();
+                auto collider = obj->add_Component<BoxCollider>();
+                collider->set_Size(VEC3(0.5f, 0.5f, 0.5f));
+                collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING); // 衝突カテゴリ
+                collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
 
                 PhysicsData::RigidBodyDesc rbDesc;
-                PhysicsData::BoxShapeDesc shapeDesc;
                 rbDesc.mass = 1.0f;
-                rbDesc.friction = 0.8f;
-                rbDesc.restitution = 0.1f;
+                rbDesc.friction = 0.5f;
+                rbDesc.restitution = 0.5f;
                 rbDesc.pos = pos;
-                shapeDesc.boxHalfExtents = VEC3(1.0f, 1.0f, 1.0f);
-                rbDesc.shapeDesc = shapeDesc;
+                rbDesc.owner = obj;         // オーナーオブジェクトの設定
+                rbDesc.collider = collider; // コライダーの設定
 
                 rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
             }
@@ -424,8 +480,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
         // コライダーの追加
         auto collider = obj->add_Component<BoxCollider>();
-        collider->set_Size(VEC3(400.0f, 1.0f, 400.0f));
-        collider->set_Center(VEC3(0, -1.0f, 0)); // コライダーの中心を地面の厚み分だけ下げる
+        collider->set_Size(VEC3(400.0f, 0.5f, 400.0f));
+        collider->set_Center(VEC3(0, -0.5f, 0)); // コライダーの中心を地面の厚み分だけ下げる
         collider->set_IsStatic(true);
         // 衝突カテゴリ
         collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
@@ -702,7 +758,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             // スポットライト
             auto spotLight = obj->add_Component<SpotLight>();
             spotLight->set_SpotLightData(300.0f, 15.0f);
-            spotLight->set_Intensity(15.0f);
+            spotLight->set_Intensity(10.0f);
             spotLight->set_LightColor(VEC3(1.0f));
 
 
@@ -757,7 +813,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             // スポットライト
             auto spotLight = obj->add_Component<SpotLight>();
             spotLight->set_SpotLightData(300.0f, 15.0f);
-            spotLight->set_Intensity(15.0f);
+            spotLight->set_Intensity(10.0f);
             spotLight->set_LightColor(VEC3(1.0f));
 
             // レーザーサイト

@@ -1,32 +1,32 @@
 
 Total count
-PshC4      : 30
-PshV4      : 4
-PSF        : 21
-PshG4      : 2336
-RET        : 2343
-JMP        : 4674
-JS         : 2337
-JP         : 2337
-INCi       : 1
-CMPIi      : 4674
-JMPP       : 2337
-CALLSYS    : 2361
-SUSPEND    : 7024
-GETREF     : 8
-SetV4      : 5
-ADDSi      : 2
-CpyVtoG4   : 4
-CpyRtoV4   : 4
-CpyGtoV4   : 2337
-WRTV4      : 5
-LDG        : 1
-VAR        : 8
-SUBIi      : 2337
-SetG4      : 5
-SetV1      : 4
-LoadVObjR  : 5
-JLowZ      : 2336
+PshC4      : 60
+PshV4      : 8
+PSF        : 42
+PshG4      : 21762
+RET        : 21776
+JMP        : 43528
+JS         : 21764
+JP         : 21764
+INCi       : 2
+CMPIi      : 43528
+JMPP       : 21764
+CALLSYS    : 21812
+SUSPEND    : 65318
+GETREF     : 16
+SetV4      : 10
+ADDSi      : 4
+CpyVtoG4   : 8
+CpyRtoV4   : 8
+CpyGtoV4   : 21764
+WRTV4      : 10
+LDG        : 2
+VAR        : 16
+SUBIi      : 21764
+SetG4      : 10
+SetV1      : 8
+LoadVObjR  : 10
+JLowZ      : 21762
 
 Never executed
 PopPtr    
@@ -205,52 +205,52 @@ POWu64
 Thiscall1 
 
 Sequences
-PshC4     , PshC4      : 18
-PshC4     , PSF        : 8
-PshC4     , GETREF     : 4
-PshV4     , PshC4      : 4
-PSF       , CALLSYS    : 19
-PSF       , ADDSi      : 2
-PshG4     , CALLSYS    : 2336
-RET       , PSF        : 1
-RET       , CpyGtoV4   : 2337
-RET       , SetG4      : 4
-JMP       , SUSPEND    : 4674
-JS        , SUBIi      : 2337
-JP        , CMPIi      : 2337
-INCi      , SUSPEND    : 1
-CMPIi     , JS         : 2337
-CMPIi     , JP         : 2337
-JMPP      , JMP        : 2337
-CALLSYS   , PSF        : 4
-CALLSYS   , RET        : 1
-CALLSYS   , SUSPEND    : 4
-CALLSYS   , CpyVtoG4   : 4
-CALLSYS   , CpyRtoV4   : 4
-CALLSYS   , VAR        : 8
-CALLSYS   , JLowZ      : 2336
-SUSPEND   , PshC4      : 2
-SUSPEND   , PSF        : 2
-SUSPEND   , PshG4      : 2336
-SUSPEND   , RET        : 2337
-SUSPEND   , JMP        : 2337
-SUSPEND   , SetV4      : 5
-SUSPEND   , LDG        : 1
-SUSPEND   , SetV1      : 4
-GETREF    , CALLSYS    : 6
-GETREF    , GETREF     : 2
-SetV4     , LoadVObjR  : 5
-ADDSi     , GETREF     : 2
-CpyVtoG4  , SUSPEND    : 4
-CpyRtoV4  , PSF        : 4
-CpyGtoV4  , CMPIi      : 2337
-WRTV4     , SUSPEND    : 5
-LDG       , INCi       : 1
-VAR       , PshC4      : 6
-VAR       , PSF        : 2
-SUBIi     , JMPP       : 2337
-SetG4     , RET        : 5
-SetV1     , PshV4      : 4
-LoadVObjR , WRTV4      : 5
-JLowZ     , SUSPEND    : 2336
+PshC4     , PshC4      : 36
+PshC4     , PSF        : 16
+PshC4     , GETREF     : 8
+PshV4     , PshC4      : 8
+PSF       , CALLSYS    : 38
+PSF       , ADDSi      : 4
+PshG4     , CALLSYS    : 21762
+RET       , PSF        : 2
+RET       , CpyGtoV4   : 21764
+RET       , SetG4      : 9
+JMP       , SUSPEND    : 43528
+JS        , SUBIi      : 21764
+JP        , CMPIi      : 21764
+INCi      , SUSPEND    : 2
+CMPIi     , JS         : 21764
+CMPIi     , JP         : 21764
+JMPP      , JMP        : 21764
+CALLSYS   , PSF        : 8
+CALLSYS   , RET        : 2
+CALLSYS   , SUSPEND    : 8
+CALLSYS   , CpyVtoG4   : 8
+CALLSYS   , CpyRtoV4   : 8
+CALLSYS   , VAR        : 16
+CALLSYS   , JLowZ      : 21762
+SUSPEND   , PshC4      : 4
+SUSPEND   , PSF        : 4
+SUSPEND   , PshG4      : 21762
+SUSPEND   , RET        : 21764
+SUSPEND   , JMP        : 21764
+SUSPEND   , SetV4      : 10
+SUSPEND   , LDG        : 2
+SUSPEND   , SetV1      : 8
+GETREF    , CALLSYS    : 12
+GETREF    , GETREF     : 4
+SetV4     , LoadVObjR  : 10
+ADDSi     , GETREF     : 4
+CpyVtoG4  , SUSPEND    : 8
+CpyRtoV4  , PSF        : 8
+CpyGtoV4  , CMPIi      : 21764
+WRTV4     , SUSPEND    : 10
+LDG       , INCi       : 2
+VAR       , PshC4      : 12
+VAR       , PSF        : 4
+SUBIi     , JMPP       : 21764
+SetG4     , RET        : 10
+SetV1     , PshV4      : 8
+LoadVObjR , WRTV4      : 10
+JLowZ     , SUSPEND    : 21762
 LABEL     , SetG4      : 1

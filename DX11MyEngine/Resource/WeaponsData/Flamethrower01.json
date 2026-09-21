@@ -22,6 +22,7 @@
     "collisionSize": 0.0,
     "gravityScale": 0.0,
     "knockbackForce" : 1.0,
+      "collisionCategory" : "PLAYER_BULLET",
     "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING"],
     "bulletMaterialTag" : "Flame_01",
     "decalMaterialTag" : "",

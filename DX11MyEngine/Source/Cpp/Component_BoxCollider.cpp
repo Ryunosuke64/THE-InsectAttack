@@ -7,6 +7,7 @@
 using namespace DirectX;
 using namespace GIGA_Engine;
 using namespace VECTOR3;
+using namespace PhysicsData;
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -16,7 +17,7 @@ using namespace VECTOR3;
 //*----------------------------------------------------------------------------------------
 BoxCollider::BoxCollider(std::weak_ptr<GameObject> pOwner, int updateRank)
     :Collider(pOwner, updateRank),
-    m_Size(VEC3(10.0f,10.0f,10.0f)),
+	m_HarfSize(VEC3(1.0f, 1.0f, 1.0f)),
     m_CollisionJudgmentType(COLLISION_JUDGMENT::AABB)
 {
     this->set_Tag("BoxCollider");
@@ -142,7 +143,7 @@ void BoxCollider::Draw(RendererEngine &renderer)
 	const VEC3 colliderCenter = transform->get_VEC3ToPos() + m_Center;
 
 	// m_Sizeは判定側では半サイズとして使用されるため、描画時は全体の大きさに変換する
-	const VEC3 colliderFullSize = m_Size * 2.0f;
+	const VEC3 colliderFullSize = m_HarfSize * 2.0f;
 
 	const XMMATRIX scaleMtx = XMMatrixScaling(
 		colliderFullSize.x,
@@ -157,8 +158,9 @@ void BoxCollider::Draw(RendererEngine &renderer)
 	m_pBoxMesh->Draw(renderer, scaleMtx * translationMtx);
 }
 
-
-bool BoxCollider::AABB(const VECTOR3::VEC3 &_src, const VECTOR3::VEC3 &_dest)
+PhysicsShapeDesc BoxCollider::GetShapeDesc()const
 {
-    return true;
+	PhysicsData::BoxShapeDesc desc;
+	desc.boxHalfExtents = m_HarfSize;
+	return desc;
 }

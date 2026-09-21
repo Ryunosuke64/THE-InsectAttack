@@ -86,8 +86,18 @@ namespace PhysicsData
 		int stride = sizeof(VECTOR3::VEC3);
 	};
 
+	// BVH三角形フルメッシュ
+	struct BvhTriangleShapeDesc
+	{
+		std::vector<VERTEX::CollisionVertex> vertexPositions;
+		std::vector<uint32_t>indices;
+	};
+
+	struct ErrorShapeDesc {};
+
 	// シェイプのセットアップvariant
 	using PhysicsShapeDesc = std::variant<
+		ErrorShapeDesc,
 		BoxShapeDesc,
 		SphereShapeDesc,
 		CapsuleShapeDesc,
@@ -97,7 +107,8 @@ namespace PhysicsData
 		TriangleShapeDesc,
 		LineShapeDesc,
 		PointShapeDesc,
-		ConvexHullShapeDesc
+		ConvexHullShapeDesc,
+		BvhTriangleShapeDesc
 	>;
 
 
@@ -112,10 +123,12 @@ namespace PhysicsData
 	// 剛体スロット
 	struct RigidBodySlot
 	{
-		 btRigidBody* rigidBody = nullptr;
-
+		btRigidBody* rigidBody = nullptr;
 		uint32_t generation = 0;
 		bool active = false;
+
+		std::weak_ptr<class GameObject> owner;
+		std::weak_ptr<class Collider> collider;
 	};
 	enum class BodyType
 	{
@@ -136,7 +149,10 @@ namespace PhysicsData
 		VECTOR3::VEC3 gravityScale = VECTOR3::VEC3(0.0f, -9.8f, 0.0f); // ワールド重力に対する倍率
 		VECTOR3::VEC3 pos = VECTOR3::VEC3();
 
-		PhysicsShapeDesc shapeDesc; // シェイプセットアップ用
+		std::weak_ptr<class GameObject> owner;
+		std::weak_ptr<class Collider> collider;
+		
+		//PhysicsShapeDesc shapeDesc; // シェイプセットアップ用
 	};
 
 

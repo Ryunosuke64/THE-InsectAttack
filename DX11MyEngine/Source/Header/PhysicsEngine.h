@@ -53,7 +53,8 @@ public:
 	VECTOR4::VEC4 GetRotation(const PhysicsData::PhysicsBodyHandle& handle);
 
 
-	class btCollisionShape* CreateShape(const PhysicsData::PhysicsShapeDesc& descVariant);
+	class btCollisionShape* CreateShape(const PhysicsData::PhysicsShapeDesc& descVariant,const VECTOR3::VEC3& center);
+	class btCollisionShape* CreateShape(const PhysicsData::ErrorShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::BoxShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::SphereShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::CapsuleShapeDesc& desc);
@@ -64,8 +65,9 @@ public:
 	class btCollisionShape* CreateShape(const PhysicsData::LineShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::PointShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::ConvexHullShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::BvhTriangleShapeDesc& desc);
 
-	bool Raycast(const CollInData_Ray& ray,class CollisionInfo* _hitInfo);
+	bool Raycast(const CollInData_Ray& ray, unsigned group, unsigned mask, class CollisionInfo* _hitInfo);
 
 private:
 	PhysicsEngine(const PhysicsEngine&) = delete;
@@ -85,8 +87,6 @@ private:
 	class btBU_Simplex1to4* CreateShapePoint(const VECTOR3::VEC3& v1);
 	class btConvexHullShape* CreateShapeConvexHull(const float* points, int numPoints, int stride = sizeof(VECTOR3::VEC3));
 	class btConvexTriangleMeshShape* CreateShapeConvexTriangleMesh();
-	class btBvhTriangleMeshShape* CreateShapeBvhTriangleMesh();
-
-
+	class btBvhTriangleMeshShape* CreateShapeBvhTriangleMesh(std::vector<VERTEX::CollisionVertex> verticesPos, std::vector<uint32_t> indices);
 };
 

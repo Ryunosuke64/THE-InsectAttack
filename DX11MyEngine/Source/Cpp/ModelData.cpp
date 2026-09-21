@@ -7,6 +7,7 @@
 using namespace VECTOR4;
 using namespace VECTOR3;
 using namespace VECTOR2;
+using namespace VERTEX;
 using namespace Tool;
 using namespace DirectX;
 
@@ -107,10 +108,14 @@ bool ModelData::Setup(RendererEngine &renderer, const char *filePath)
         {
             aiMesh *pMeshData = m_pScene->mMeshes[meshIdx];
 
+
             // 頂点を持つメッシュだけ境界へ含める
             if (pMeshData->HasPositions() &&
                 pMeshData->mNumVertices > 0)
             {
+                // コリジョンメッシュセットアップ
+                CollisionMeshSetup(pMeshData);
+
                 const aiVector3D& meshMin = pMeshData->mAABB.mMin;
                 const aiVector3D& meshMax = pMeshData->mAABB.mMax;
 
@@ -548,5 +553,46 @@ bool ModelData::CreateTransformCBuffer(RendererEngine &renderer)
 }
 
 
+//*---------------------------------------------------------------------------------------
+//*【?】衝突判定用メッシュデータのセットアップ
+//*
+//* [引数]
+//* *mesh : Assimpメッシュ
+//*
+//* [返値]
+//* なし 
+//*----------------------------------------------------------------------------------------
+void ModelData::CollisionMeshSetup(aiMesh* mesh)
+{
+    // このMeshを追加する前の頂点数
+    uint32_t baseVertex =
+        static_cast<uint32_t>(m_CollisionVertices.size());
 
+    // 頂点
+    for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
+    {
+        const aiVector3D& pos = mesh->mVertices[i];
 
+        CollisionVertex vertex;
+        vertex.position = VEC3(
+            pos.x,
+            pos.y,
+            pos.z
+        );
+
+        m_CollisionVertices.push_back(vertex);
+    }
+
+    // インデックス
+    for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
+    {
+        const aiFace& face = mesh->mFaces[i];
+
+        if (face.mNumIndices != 3)
+            continue;
+
+        m_CollisionIndices.push_back(baseVertex + face.mIndices[0]);
+        m_CollisionIndices.push_back(baseVertex + face.mIndices[1]);
+        m_CollisionIndices.push_back(baseVertex + face.mIndices[2]);
+    }
+}
