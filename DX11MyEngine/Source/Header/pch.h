@@ -90,6 +90,7 @@
 #include <random>	// 乱数生成用
 #include <sstream>
 #include <iomanip>
+#include <unordered_set>
 /* 定数 */
 constexpr int POINTLIGHT_MAX_NUM		= 100; // ポイントライトの最大数
 constexpr int SPOTLIGHT_MAX_NUM			= 20;  // スポットライトの最大数

@@ -19,6 +19,7 @@ Collider::Collider(std::weak_ptr<GameObject> pOwner, int updateRank)
     : IComponent(pOwner, updateRank),
     m_pTransform(nullptr),
     m_IsEnable(true),
+    m_IsConvex(true),
     m_IsTrigger(false),
     m_IsHit(false),
     m_IsStatic(false),

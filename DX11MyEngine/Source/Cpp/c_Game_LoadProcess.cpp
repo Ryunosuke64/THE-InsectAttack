@@ -339,15 +339,17 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         auto rb = obj->add_Component<RigidBody>();
         auto collider = obj->add_Component<MeshCollider>();
         collider->SetupModelData(modelResource->get_ModelData());
-        collider->set_IsStatic(true);
+        collider->set_IsStatic(false);
+        collider->set_IsConvex(false);
         collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
 
         PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 0.0f;
+        rbDesc.mass = 1.0f;
         rbDesc.pos = pos;
-        rbDesc.restitution = 1.0f;
+        rbDesc.restitution = 0.1f;
         rbDesc.owner = obj;         // オーナーオブジェクトの設定
         rbDesc.collider = collider; // コライダーの設定
+        rbDesc.gravity = VEC3(0.0f, -10.0f, 0.0f);
 
         rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }

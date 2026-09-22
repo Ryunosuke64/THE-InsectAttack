@@ -506,12 +506,13 @@ namespace BulletBehaviour
 
         unsigned mask = _common._collisionMask;;
         // 範囲内チェック
-        auto targets = Master::m_pCollisionManager->CheckSphere(hitPoint, _hitData._explosionRadius, mask);
+        //auto targets = Master::m_pCollisionManager->CheckSphere(hitPoint, _hitData._explosionRadius, mask);
+        auto targets = Master::m_pPhysicsEngine->CheckSphere(hitPoint, _hitData._explosionRadius, mask);
 
         // 範囲内の全員にダメージ
         for (auto& target : targets)
         {
-            if (auto obj = target->get_OwnerObj().lock())
+            if (auto obj = target.lock())
             {
                 // ダメージ
                 if (auto health = obj->get_Component<Health>())

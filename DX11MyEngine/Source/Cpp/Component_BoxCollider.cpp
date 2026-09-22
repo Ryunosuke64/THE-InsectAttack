@@ -158,6 +158,14 @@ void BoxCollider::Draw(RendererEngine &renderer)
 	m_pBoxMesh->Draw(renderer, scaleMtx * translationMtx);
 }
 
+
+//*---------------------------------------------------------------------------------
+//*【?】シェイプ情報の取得
+//*
+//* [引数]なし
+//* [返値]
+//* シェイプ情報 
+//*----------------------------------------------------------------------------------------
 PhysicsShapeDesc BoxCollider::GetShapeDesc()const
 {
 	PhysicsData::BoxShapeDesc desc;

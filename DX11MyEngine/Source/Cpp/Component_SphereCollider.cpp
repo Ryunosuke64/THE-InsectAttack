@@ -98,6 +98,14 @@ void SphereCollider::Draw(RendererEngine &renderer)
     m_pSphereMesh->Draw(renderer, localMat);
 }
 
+
+//*---------------------------------------------------------------------------------
+//*【?】シェイプ情報の取得
+//*
+//* [引数]なし
+//* [返値]
+//* シェイプ情報 
+//*----------------------------------------------------------------------------------------
 PhysicsShapeDesc SphereCollider::GetShapeDesc()const
 {
     PhysicsData::SphereShapeDesc desc;

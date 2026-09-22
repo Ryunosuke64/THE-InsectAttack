@@ -39,6 +39,7 @@ public:
 	void UnregisterRigidBody(const PhysicsData::PhysicsBodyHandle& handle);
 
 	bool IsValidRigidBody(const PhysicsData::PhysicsBodyHandle& handle)const;
+	void SetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& velocity);
 	void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force, const VECTOR3::VEC3& rel_pos);
 	void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse, const VECTOR3::VEC3& rel_pos);
 	void AddAngularImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& angularImpulse);
@@ -65,9 +66,14 @@ public:
 	class btCollisionShape* CreateShape(const PhysicsData::LineShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::PointShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::ConvexHullShapeDesc& desc);
+	class btCollisionShape* CreateShape(const PhysicsData::GImpactShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::BvhTriangleShapeDesc& desc);
 
 	bool Raycast(const CollInData_Ray& ray, unsigned group, unsigned mask, class CollisionInfo* _hitInfo);
+	std::vector<std::weak_ptr<GameObject>> CheckSphere(
+		const VECTOR3::VEC3& position,
+		float radius,
+		int mask);
 
 private:
 	PhysicsEngine(const PhysicsEngine&) = delete;
@@ -85,8 +91,9 @@ private:
 	class btBU_Simplex1to4* CreateShapeTriangle(const std::array<VECTOR3::VEC3, 3> v3);
 	class btBU_Simplex1to4* CreateShapeLine(const std::array<VECTOR3::VEC3, 2> v2);
 	class btBU_Simplex1to4* CreateShapePoint(const VECTOR3::VEC3& v1);
-	class btConvexHullShape* CreateShapeConvexHull(const float* points, int numPoints, int stride = sizeof(VECTOR3::VEC3));
+	class btConvexHullShape* CreateShapeConvexHull(const std::vector<VERTEX::CollisionVertex>& vertexPositions);
+	class btGImpactMeshShape* CreateGImpactMeshShape(const std::vector<VERTEX::CollisionVertex>& vertices, const std::vector<uint32_t>& indices);
 	class btConvexTriangleMeshShape* CreateShapeConvexTriangleMesh();
-	class btBvhTriangleMeshShape* CreateShapeBvhTriangleMesh(std::vector<VERTEX::CollisionVertex> verticesPos, std::vector<uint32_t> indices);
+	class btBvhTriangleMeshShape* CreateShapeBvhTriangleMesh(const std::vector<VERTEX::CollisionVertex>& verticesPos, const std::vector<uint32_t>& indices);
 };
 

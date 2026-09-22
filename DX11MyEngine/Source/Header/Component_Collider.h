@@ -17,6 +17,7 @@ protected:
 	bool m_IsEnable;								// 使用するかどうか
 	bool m_IsTrigger;								// 衝突判定のみ取るかどうか（falseなら物理も判定をする）
 	bool m_IsHit;									// 現在衝突しているかどうか
+	bool m_IsConvex;								// 凸形状か
 	bool m_IsStatic;								// 静的かどうか（建物など動かないもの）
 	UtilityData::COLLIDER_TYPE m_ColliderType;		// コライダーの種類
 	class MyTransform *m_pTransform;				// 自身のトランスフォームポインタ
@@ -30,6 +31,7 @@ public:
 	Collider(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
 	~Collider();
 
+	// 各コライダーごとにシェイプ情報を生成させる
 	virtual PhysicsData::PhysicsShapeDesc GetShapeDesc() const = 0;
 
 	// 使用フラグ
@@ -55,6 +57,10 @@ public:
 	/* 静的かどうか */
 	void set_IsStatic(bool _flag) { m_IsStatic = _flag; }
 	bool get_IsStatic()const { return m_IsStatic; }
+
+	/* 凸形状かどうか */
+	void set_IsConvex(bool _flag) { m_IsConvex = _flag; }
+	bool get_IsConvex()const { return m_IsConvex; }
 
 	/* デバッグメッシュ表示するか */
 	void set_IsDrawDebugMesh(bool _flag) { m_IsDrawDebugMesh = _flag; }

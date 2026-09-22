@@ -1,5 +1,7 @@
 #pragma once
-#include <BulletDynamics\Dynamics\btRigidBody.h>
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+#include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
+
 namespace PhysicsData
 {
 	/// <summary>
@@ -81,9 +83,14 @@ namespace PhysicsData
 	// 凸包シェイプセット用
 	struct ConvexHullShapeDesc
 	{
-		const float* points;
-		int numPoints;
-		int stride = sizeof(VECTOR3::VEC3);
+		std::vector<VERTEX::CollisionVertex> vertexPositions;
+	};
+
+	// GImpactメッシュ
+	struct GImpactShapeDesc
+	{
+		std::vector<VERTEX::CollisionVertex> vertexPositions;
+		std::vector<uint32_t>indices;
 	};
 
 	// BVH三角形フルメッシュ
@@ -92,6 +99,7 @@ namespace PhysicsData
 		std::vector<VERTEX::CollisionVertex> vertexPositions;
 		std::vector<uint32_t>indices;
 	};
+
 
 	struct ErrorShapeDesc {};
 
@@ -108,7 +116,8 @@ namespace PhysicsData
 		LineShapeDesc,
 		PointShapeDesc,
 		ConvexHullShapeDesc,
-		BvhTriangleShapeDesc
+		BvhTriangleShapeDesc,
+		GImpactShapeDesc
 	>;
 
 
@@ -143,10 +152,10 @@ namespace PhysicsData
 	struct RigidBodyDesc
 	{
 		BodyType type = BodyType::Dynamic;
-		float mass = 0.0f;
+		float mass = 0.0f;	
 		float friction = 0.5f;
 		float restitution = 0.0f;
-		VECTOR3::VEC3 gravityScale = VECTOR3::VEC3(0.0f, -9.8f, 0.0f); // ワールド重力に対する倍率
+		VECTOR3::VEC3 gravity = VECTOR3::VEC3(0.0f, -9.8f, 0.0f); // ワールド重力に対する倍率
 		VECTOR3::VEC3 pos = VECTOR3::VEC3();
 
 		std::weak_ptr<class GameObject> owner;
@@ -155,5 +164,46 @@ namespace PhysicsData
 		//PhysicsShapeDesc shapeDesc; // シェイプセットアップ用
 	};
 
+
+	class SphereContactCallback
+		: public btCollisionWorld::ContactResultCallback
+	{
+	public:
+		const btCollisionObject* queryObject = nullptr;	
+
+		std::unordered_set<const btCollisionObject*> objects;	// 範囲内のオブジェクトを格納
+
+		btScalar addSingleResult(
+			btManifoldPoint& cp,
+			const btCollisionObjectWrapper* colObj0Wrap,
+			int,
+			int,
+			const btCollisionObjectWrapper* colObj1Wrap,
+			int,
+			int) override
+		{
+			const btCollisionObject* obj0 =
+				colObj0Wrap->getCollisionObject();
+
+			const btCollisionObject* obj1 =
+				colObj1Wrap->getCollisionObject();
+
+			if (obj0 == queryObject)
+			{
+				objects.insert(obj1);
+			}
+			else
+			{
+				objects.insert(obj0);
+			}
+
+			return 0.0f;
+		}
+
+		bool needsCollision(btBroadphaseProxy* proxy0) const override
+		{
+			return (proxy0->m_collisionFilterGroup & m_collisionFilterMask) != 0;
+		}
+	};
 
 };

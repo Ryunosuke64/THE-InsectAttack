@@ -19,7 +19,7 @@ Building_Tower_1_TopToroid,1,1,1,1,1,1,1,1,150,0,0.25,0.5,1,Resource/Model/Build
 Building_Tower_1_Top,1,1,1,1,1,1,1,1,150,1,1,0,1.5,Resource/Model/Building/03/Textures/BL_TW01_tex01.png,Resource/Model/Building/03/Textures/BL_TW01_tex01_normal.png,-1,0
 Building_Tower_1_Wall,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,1,Resource/Model/Building/03/Textures/BL_TW01_tex03.jpg,Resource/Model/Building/03/Textures/BL_TW01_tex03_normal.png,-1,0
 Building_Tower_1_BaseGround,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,1,Resource/Model/Building/03/Textures/BL_TW01_tex02.jpg,Resource/Model/Building/03/Textures/BL_TW01_tex02_normal.png,-1,0
-MotherShip,1,1,1,1,1,1,1,1,150,0,0,0,0,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/DefaultN_Map.png,-1,0
+MotherShip,1,1,1,1,1,1,1,1,150,1,1,1,0.1,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/DefaultN_Map.png,-1,0
 Ground,1,1,1,1,1,1,1,1,50,1,1,1,0,Resource/Texture/Materials/brick_moss_001_diff_2k.png,Resource/Texture/Materials/brick_moss_001_nor_dx_2k.png,-1,0
 Billboard,1,1,1,1,1,1,1,1,50,0,0,0,0,Resource/Texture/Billboard.png,-1,-1,1
 Recovery_Billboard,1,1,1,1,1,1,1,1,50,1,0,0,5,Resource/Texture/Item/Recovery.png,-1,-1,1

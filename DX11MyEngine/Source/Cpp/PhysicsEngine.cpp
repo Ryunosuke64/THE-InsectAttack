@@ -1,6 +1,12 @@
 #include "pch.h"
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/NarrowPhaseCollision/btRaycastCallback.h>
+
+// Gimpact用
+#include <BulletCollision/Gimpact/btGImpactShape.h>
+#include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
+
+
 #include "PhysicsEngine.h"
 #include "CollisionInfo.h"
 #include "Component_Collider.h"
@@ -44,6 +50,11 @@ bool PhysicsEngine::Setup()
 
     // 衝突判定を管理
     m_pDispatcher = std::make_unique < btCollisionDispatcher>(m_pConfig.get());
+
+    // GImpactの登録
+    btGImpactCollisionAlgorithm::registerAlgorithm(
+        m_pDispatcher.get()
+    );
 
     // 広域衝突判定
     m_pBroadphase = std::make_unique <btDbvtBroadphase>();
@@ -124,6 +135,29 @@ void PhysicsEngine::Update(float deltaTime)
 {
     m_pWorld->stepSimulation(deltaTime);
 
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】線形速度を設定
+//*
+//* [引数] 
+//* & handle    : ハンドル
+//* & velocity  : ベロシティ
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& velocity)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    m_RigidBodies[handle.index].rigidBody->setLinearVelocity(
+        btVector3(velocity.x, velocity.y, velocity.z)
+    );
 }
 
 //*---------------------------------------------------------------------------------------
@@ -431,7 +465,7 @@ CreateRigidBody(const RigidBodyDesc& desc)
     m_pWorld->addRigidBody(rigidBody, group, mask);
 
     // 重力
-    btVector3 gravity = btVector3(desc.gravityScale.x, desc.gravityScale.y, desc.gravityScale.z);
+    btVector3 gravity = btVector3(desc.gravity.x, desc.gravity.y, desc.gravity.z);
     rigidBody->setGravity(gravity);
     rigidBody->setRestitution(desc.restitution);
     rigidBody->setFriction(desc.friction);
@@ -711,7 +745,15 @@ btCollisionShape* PhysicsEngine::CreateShape(const PointShapeDesc& desc)
 //*-----------------------------------------------------------------------------------------
 btCollisionShape* PhysicsEngine::CreateShape(const ConvexHullShapeDesc& desc)
 {
-    return CreateShapeConvexHull(desc.points, desc.numPoints, desc.stride);
+    return CreateShapeConvexHull(desc.vertexPositions);
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】GImpactシェイプ登録
+//*-----------------------------------------------------------------------------------------
+btCollisionShape* PhysicsEngine::CreateShape(const GImpactShapeDesc& desc)
+{
+    return CreateGImpactMeshShape(desc.vertexPositions, desc.indices);
 }
 
 //*-----------------------------------------------------------------------------------------
@@ -821,25 +863,77 @@ btBU_Simplex1to4* PhysicsEngine::CreateShapePoint(const VECTOR3::VEC3 & v1)
 //*-----------------------------------------------------------------------------------------
 //*【?】凸包シェイプ作成
 //*-----------------------------------------------------------------------------------------
-btConvexHullShape* PhysicsEngine::CreateShapeConvexHull(const float* points, int numPoints, int stride)
+btConvexHullShape* PhysicsEngine::CreateShapeConvexHull(const std::vector<VERTEX::CollisionVertex>& vertices)
 {
-    return new btConvexHullShape(points, numPoints, stride);
+    auto* shape = new btConvexHullShape();
+
+    for (const auto& vertex : vertices)
+    {
+        const VEC3& p = vertex.position;
+
+        shape->addPoint(
+            btVector3(p.x, p.y, p.z),
+            false   // ここではAABBを更新しない
+        );
+    }
+
+    shape->recalcLocalAabb();
+
+    return shape;
 }
 
 //*-----------------------------------------------------------------------------------------
-//*【?】BVH三角形フルメッシュシェイプ作成
+//*【?】動的オブジェクト向けの凹メッシュ作成
 //*-----------------------------------------------------------------------------------------
-btBvhTriangleMeshShape* PhysicsEngine::
-    CreateShapeBvhTriangleMesh(std::vector<VERTEX::CollisionVertex> vertexPositions, std::vector<uint32_t> indices)
+btGImpactMeshShape* PhysicsEngine::
+CreateGImpactMeshShape(
+    const std::vector<VERTEX::CollisionVertex>& vertices,
+    const std::vector<uint32_t>& indices)
 {
     btTriangleMesh* triangleMesh = new btTriangleMesh();
 
     // 三角形メッシュ追加していく
     for (int i = 0; i < indices.size(); i += 3)
     {
-        const VEC3 p0 = vertexPositions[indices[i]].position;
-        const VEC3 p1 = vertexPositions[indices[i + 1]].position;
-        const VEC3 p2 = vertexPositions[indices[i + 2]].position;
+        const VEC3 p0 = vertices[indices[i]].position;
+        const VEC3 p1 = vertices[indices[i + 1]].position;
+        const VEC3 p2 = vertices[indices[i + 2]].position;
+
+        triangleMesh->addTriangle(
+            btVector3(p0.x, p0.y, p0.z),
+            btVector3(p1.x, p1.y, p1.z),
+            btVector3(p2.x, p2.y, p2.z)
+        );
+    }
+    
+    // GImpactメッシュシェイプ
+    btGImpactMeshShape* shape =
+        new btGImpactMeshShape(
+            triangleMesh
+        );
+
+    // 境界情報の更新
+    shape->updateBound();
+
+    return shape;
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】BVH三角形フルメッシュシェイプ作成
+//*-----------------------------------------------------------------------------------------
+btBvhTriangleMeshShape* PhysicsEngine::
+    CreateShapeBvhTriangleMesh(
+        const std::vector<VERTEX::CollisionVertex>& vertices,
+        const std::vector<uint32_t>& indices)
+{
+    btTriangleMesh* triangleMesh = new btTriangleMesh();
+
+    // 三角形メッシュ追加していく
+    for (int i = 0; i < indices.size(); i += 3)
+    {
+        const VEC3 p0 = vertices[indices[i]].position;
+        const VEC3 p1 = vertices[indices[i + 1]].position;
+        const VEC3 p2 = vertices[indices[i + 2]].position;
 
         triangleMesh->addTriangle(
             btVector3(p0.x, p0.y, p0.z),
@@ -861,7 +955,11 @@ btBvhTriangleMeshShape* PhysicsEngine::
 //*-----------------------------------------------------------------------------------------
 //*【?】レイ判定
 //*-----------------------------------------------------------------------------------------
-bool PhysicsEngine::Raycast(const CollInData_Ray& ray, unsigned group, unsigned mask, CollisionInfo* _hitInfo)
+bool PhysicsEngine::
+Raycast(
+    const CollInData_Ray& ray, 
+    unsigned group, unsigned mask, 
+    CollisionInfo* _hitInfo)
 {
     btVector3 start_bt = btVector3(
         ray._point.x,
@@ -873,6 +971,7 @@ bool PhysicsEngine::Raycast(const CollInData_Ray& ray, unsigned group, unsigned 
         ray._point.y + ray._dir.y, 
         ray._point.z + ray._dir.z
     );
+
 
     btCollisionWorld::ClosestRayResultCallback callback(
         start_bt,
@@ -929,4 +1028,63 @@ bool PhysicsEngine::Raycast(const CollInData_Ray& ray, unsigned group, unsigned 
     }
 
     return false;
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】スフィア判定
+//*-----------------------------------------------------------------------------------------
+std::vector<std::weak_ptr<GameObject>> PhysicsEngine::
+CheckSphere(
+    const VECTOR3::VEC3& position,
+    float radius,
+    int mask)
+{
+    // 一時判定用シェイプを作る
+    btSphereShape sphere(radius);
+
+    btCollisionObject queryObject;
+    queryObject.setCollisionShape(&sphere);
+
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(
+        btVector3(position.x, position.y, position.z)
+    );
+
+    queryObject.setWorldTransform(transform);
+
+    // コールバック
+    SphereContactCallback callback;
+    callback.queryObject = &queryObject;
+    callback.m_collisionFilterMask = mask;
+
+    // 判定
+    m_pWorld->contactTest(
+        &queryObject,
+        callback
+    );
+
+    std::vector<std::weak_ptr<GameObject>>resultGameObjects;
+
+    // 範囲内のコリジョンオブジェクトからインデックスを取り出し、
+    // ゲームオブジェクトを取り出す
+    for (auto obj : callback.objects)
+    {
+        int index = obj->getUserIndex();
+
+        if (index < 0 || index >= m_RigidBodies.size())
+        {
+            MessageBox(NULL, L"リジッドボディへのインデックスが範囲外です", L"PhysicsEngine", MB_OK);
+            assert(false);
+            continue;
+        }
+        auto& hitGameObj = m_RigidBodies[index].owner;
+
+        if (!hitGameObj.expired())
+        {
+            resultGameObjects.push_back(hitGameObj);
+        }
+    }
+
+    return resultGameObjects;
 }

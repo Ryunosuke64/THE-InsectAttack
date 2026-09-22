@@ -33,7 +33,7 @@ MeshCollider::~MeshCollider()
 //*
 //* [引数]
 //* &renderer : 描画エンジンの参照
-//* [返値]なし
+//* [返値] なし
 //*----------------------------------------------------------------------------------------
 void MeshCollider::Start(RendererEngine& renderer)
 {
@@ -45,18 +45,33 @@ void MeshCollider::Start(RendererEngine& renderer)
 //*
 //* [引数]
 //* &renderer : 描画エンジンの参照
-//* [返値]なし
+//* [返値] なし
 //*----------------------------------------------------------------------------------------
 void MeshCollider::Update(RendererEngine& renderer)
 {
 
 }
 
+//*---------------------------------------------------------------------------------
+//*【?】シェイプ情報の取得
+//*
+//* [引数]
+//* modelData : モデルデータ
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
 void MeshCollider::SetupModelData(std::weak_ptr<class ModelData> modelData)
 {
     m_pModelData = modelData;
 }
 
+//*---------------------------------------------------------------------------------
+//*【?】シェイプ情報の取得
+//*
+//* [引数] なし
+//* [返値]
+//* シェイプ情報 
+//*----------------------------------------------------------------------------------------
 PhysicsShapeDesc MeshCollider::GetShapeDesc()const
 {
     if (m_pModelData.expired())
@@ -69,7 +84,10 @@ PhysicsShapeDesc MeshCollider::GetShapeDesc()const
     // モデルデータからコリジョンメッシュ用データの取り出し
     std::vector<CollisionVertex> vertices = m_pModelData.lock()->get_CollisionVertices();
     std::vector<uint32_t> indices = m_pModelData.lock()->get_CollisionIndices();
-
+    
+    //*****************************************************************************************
+    // 静的メッシュ 凸形状
+    //*****************************************************************************************
     if (m_IsStatic)
     {
         PhysicsData::BvhTriangleShapeDesc desc;
@@ -78,10 +96,24 @@ PhysicsShapeDesc MeshCollider::GetShapeDesc()const
         
         return desc;
     }
-    else
+    //*****************************************************************************************
+    // 動的メッシュ 凸形状
+    //*****************************************************************************************
+    else if (m_IsConvex)
     {
         PhysicsData::ConvexHullShapeDesc desc;
+        desc.vertexPositions = vertices;
 
+        return desc;
+    }
+    //*****************************************************************************************
+    // 動的メッシュ 凹形状
+    //*****************************************************************************************
+    else if(!m_IsConvex)
+    {
+        PhysicsData::GImpactShapeDesc desc;
+        desc.vertexPositions = vertices;
+        desc.indices = indices;
 
         return desc;
     }
