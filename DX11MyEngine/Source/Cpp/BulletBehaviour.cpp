@@ -14,6 +14,7 @@
 #include "ResourceManager.h"
 #include "Component_Collider.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 #include "Component_3DCamera.h"
 #include "IMoveBehaviour.h"
 
@@ -521,7 +522,7 @@ namespace BulletBehaviour
                 }
 
                 // ‚Á”ò‚Ñ
-                if (auto physics = obj->get_Component<Physics>())
+                if (auto rb = obj->get_Component<RigidBody>())
                 {
                     auto targetTransform = obj->get_Transform().lock();
                     VEC3 targetPos = targetTransform->get_VEC3ToPos();
@@ -536,12 +537,12 @@ namespace BulletBehaviour
                     knockbackDir = knockbackDir.Normalize();
 
                     // ÕŒ‚ƒxƒNƒgƒ‹‚ÌÝ’è
-                    physics->AddImpulse(knockbackDir * _common._knockbackForce);
+                    rb->AddImpulse(knockbackDir * _common._knockbackForce);
 
-                    knockbackDir.y = Master::m_pRandomManager->GetFloatRandom(-1, 1);
-                    knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-1, 1);
-                    knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-1, 1);
-                    physics->AddAngularImpulse(knockbackDir * _common._knockbackForce);
+                    //knockbackDir.y = Master::m_pRandomManager->GetFloatRandom(-1, 1);
+                    //knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-1, 1);
+                    //knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-1, 1);
+                    //rb->AddAngularImpulse(knockbackDir * _common._knockbackForce);
                 }
             }
         }

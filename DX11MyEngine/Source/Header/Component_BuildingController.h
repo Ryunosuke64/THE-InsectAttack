@@ -17,7 +17,8 @@ class BuildingController : public IComponent
 public:
 
 private:
-	class Health* m_pHealthComp;	// 体力管理コンポーネント
+	class Health* m_pHealthComp;		// 体力管理コンポーネント
+	class RigidBody* m_pRigidBodyComp;	// 剛体コンポーネント
 	StateMachine<BuildingController> m_StateMachine;	// ステートマシン
 	float m_CollapseTargetAngle;	// 崩壊する角度
 
@@ -38,5 +39,6 @@ public:
 	void set_CollapseTargetAngle(float _angle) { m_CollapseTargetAngle = _angle; }
 	float get_CollapseTargetAngle()const { return m_CollapseTargetAngle; }	// 崩壊する角度の取得
 	const class Health* get_HealthComp()const { return m_pHealthComp; }	// 体力管理コンポーネントの取得
+	class RigidBody* get_RigidBodyComp()const { return m_pRigidBodyComp; }	// 剛体コンポーネントの取得
 };
 

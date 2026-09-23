@@ -41,14 +41,19 @@ public:
 	bool IsValidRigidBody(const PhysicsData::PhysicsBodyHandle& handle)const;
 	void SetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& velocity);
 	void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force, const VECTOR3::VEC3& rel_pos);
+	void AddCentralForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force);
 	void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse, const VECTOR3::VEC3& rel_pos);
+	void AddCentralImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse);
 	void AddAngularImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& angularImpulse);
+	void SetWorldTransform(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& pos, const VECTOR4::VEC4& rot);
 	
 	void SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass);
 	void SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gravity);
 	void SetWorldPosition(
 		const PhysicsData::PhysicsBodyHandle& handle,
 		const VECTOR3::VEC3& pos);
+
+	void SetMask(const PhysicsData::PhysicsBodyHandle& handle, unsigned group, unsigned mask);
 
 	VECTOR3::VEC3 GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle);
 	VECTOR4::VEC4 GetRotation(const PhysicsData::PhysicsBodyHandle& handle);

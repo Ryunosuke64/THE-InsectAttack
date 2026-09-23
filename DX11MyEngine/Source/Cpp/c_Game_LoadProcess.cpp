@@ -203,8 +203,9 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
                     auto rb = obj->add_Component<RigidBody>();
                     auto collider = obj->add_Component<MeshCollider>();
                     collider->SetupModelData(modelResource->get_ModelData());
-                    collider->set_IsStatic(true);
+                    collider->set_IsStatic(false);
                     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
+                    collider->set_IsConvex(true);
 
                     PhysicsData::RigidBodyDesc rbDesc;
                     rbDesc.mass = 0.0f;
@@ -341,7 +342,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         collider->SetupModelData(modelResource->get_ModelData());
         collider->set_IsStatic(false);
         collider->set_IsConvex(false);
-        collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
+        collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
 
         PhysicsData::RigidBodyDesc rbDesc;
         rbDesc.mass = 1.0f;
@@ -349,7 +350,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         rbDesc.restitution = 0.1f;
         rbDesc.owner = obj;         // オーナーオブジェクトの設定
         rbDesc.collider = collider; // コライダーの設定
-        rbDesc.gravity = VEC3(0.0f, -10.0f, 0.0f);
+        rbDesc.gravity = VEC3(0.0f, 0.0f, 0.0f);
 
         rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }
@@ -405,7 +406,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         /* キューブの生成 */
         {
             // マテリアル取得
-            auto matPtr = Master::m_pResourceManager->FindMaterial("Block");
+            auto matPtr = Master::m_pResourceManager->FindMaterial("TestBlock");
 
             SetupMaterialInfo matInfo[1];
             matInfo[0].Index = 0;
@@ -421,13 +422,13 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             mesh.IsNormalMap = true;
             mesh.ObjLayer = 105;
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 250; i++)
             {
                 VEC3 pos;
                 pos.x = -100.0f;
-                pos.y = 30.0f + i;
+                pos.y = 10.0f + i;
                 pos.z = 100.0f;
-                VEC3 scl = VEC3(0.5f);
+                VEC3 scl = VEC3(1.0f);
                 auto obj = MeshFactory::CreateUtilityMesh(mesh);
                 obj->get_Transform().lock()->set_Pos(pos);
                 obj->get_Transform().lock()->set_Scale(scl);
@@ -437,14 +438,14 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
                 auto rb = obj->add_Component<RigidBody>();
                 auto collider = obj->add_Component<BoxCollider>();
-                collider->set_Size(VEC3(0.5f, 0.5f, 0.5f));
+                collider->set_Size(VEC3(1.0f, 1.0f, 1.0f));
                 collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING); // 衝突カテゴリ
                 collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
 
                 PhysicsData::RigidBodyDesc rbDesc;
                 rbDesc.mass = 1.0f;
                 rbDesc.friction = 0.5f;
-                rbDesc.restitution = 0.5f;
+                rbDesc.restitution = 0.8f;
                 rbDesc.pos = pos;
                 rbDesc.owner = obj;         // オーナーオブジェクトの設定
                 rbDesc.collider = collider; // コライダーの設定

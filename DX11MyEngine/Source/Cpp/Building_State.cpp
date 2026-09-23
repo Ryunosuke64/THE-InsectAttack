@@ -3,12 +3,16 @@
 #include "RendererEngine.h"
 #include "Component_3DCamera.h"
 #include "Component_BuildingController.h"
+#include "Component_RigidBody.h"
 #include "Component_BoxCollider.h"
+#include "Component_MeshCollider.h"
 #include "Component_Health.h"
 
 using namespace VECTOR2;
 using namespace VECTOR3;
+using namespace VECTOR4;
 using namespace BuildingData;
+using namespace UtilityData;
 using namespace Tool;
 
 /* 倒壊パラメータ */
@@ -152,9 +156,12 @@ void Building_CllapseInState::OnExit(BuildingController* pOwner)
 	Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, INT_CAST(SOUND_ID::BUILDING_DESTRUCTION), pos, BUILDING_DESTRUCTION_SOUND_RADIUS);
 
 	// 完全に破壊されたら、コライダーをオフにする
-	auto collider = ownerObj->get_Component<BoxCollider>();
+	auto collider = ownerObj->get_Component<MeshCollider>();
 	if (collider) {
-		collider->set_IsEnable(false);
+		collider->remove_CollisionBitMask(COLLISION_CATEGORY::ENEMY_BULLET);
+		collider->remove_CollisionBitMask(COLLISION_CATEGORY::PLAYER_BULLET);
+		collider->remove_CollisionBitMask(COLLISION_CATEGORY::PLAYER);
+		collider->remove_CollisionBitMask(COLLISION_CATEGORY::ENEMY);
 	}
 
 	ownerObj->set_IsStatic(false);	// 動的オブジェクトに変更
@@ -168,19 +175,31 @@ int Building_CllapseInState::Update(BuildingController* pOwner)
 		return BUILDING_STATE::BUILDING_STATE_CLLAPSE_NOW;	// 倒壊中ステートへ
 	}
 
-	auto transform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
+	auto rigidBody = pOwner->get_RigidBodyComp();
+	//auto transform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
 
 	// 倒壊のY座標を更新
-	VEC3 pos = transform->get_VEC3ToPos();
+	//VEC3 pos = transform->get_VEC3ToPos();
+	VEC3 pos = rigidBody->GetWorldPotision();
 	pos.y = m_SunkTweenPosY;	// 倒壊のY座標を更新
 
-	// 倒壊の回転角度を更新
-	VEC3 rot = transform->get_VEC3ToRotateToRad();
-	rot.x = m_SunkTweenRot.x;
-	rot.z = m_SunkTweenRot.z;
+	// クオータニオンへ変換
+	VEC4 rot = VEC4::FromXMVECTOR(
+		DirectX::XMQuaternionRotationRollPitchYaw(
+			m_SunkTweenRot.x,
+			m_SunkTweenRot.y,
+			m_SunkTweenRot.z
+		)
+	);
+	rigidBody->SetWorldTransform(pos, rot);
 
-	transform->set_Pos(pos);
-	transform->set_RotateToRad(rot);
+	// 倒壊の回転角度を更新
+	//VEC3 rot = transform->get_VEC3ToRotateToRad();
+	//rot.x = m_SunkTweenRot.x;
+	//rot.z = m_SunkTweenRot.z;
+
+	//transform->set_Pos(pos);
+	//transform->set_RotateToRad(rot);
 
 	m_FrameCounter++;
 	
@@ -268,10 +287,10 @@ int Building_CllapseNowState::Update(BuildingController* pOwner)
 
 	if (pOwner->get_IsActiveOwnerObj())
 	{
-		auto transform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
+		//auto transform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
+		auto rigidBody = pOwner->get_RigidBodyComp();
 
-		VEC3 pos = transform->get_VEC3ToPos();
-		VEC3 rot = transform->get_VEC3ToRotateToRad();
+		VEC3 pos = rigidBody->GetWorldPotision();
 
 		float t = m_CrntCollapseTime / m_CollapseTime;
 		float easeIn = Tool::Easing::EaseInSine(t);
@@ -286,11 +305,18 @@ int Building_CllapseNowState::Update(BuildingController* pOwner)
 
 		/* 倒れるような感じに */
 		float crntAngle = m_CollapseTargetAngle * easeIn;
-		rot.x = m_StartRot.x + crntAngle;
-		rot.z = m_StartRot.z + crntAngle;
 
-		transform->set_Pos(pos);
-		transform->set_RotateToRad(rot);
+		// クオータニオンへ変換
+		VEC4 rot = VEC4::FromXMVECTOR(
+			DirectX::XMQuaternionRotationRollPitchYaw(
+				m_StartRot.x + crntAngle,
+				m_StartRot.y,
+				m_StartRot.z + crntAngle
+			)
+		);
+		// リジッドボディへ設定
+		rigidBody->SetWorldTransform(pos, rot);
+
 
 
 		m_FrameCounter++;
@@ -353,17 +379,23 @@ int Building_CllapseEndState::Update(BuildingController* pOwner)
 
 	if (pOwner->get_IsActiveOwnerObj())
 	{
-		auto transform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
+		auto rigidBody = pOwner->get_RigidBodyComp();
 
-		VEC3 rot = transform->get_VEC3ToRotateToRad();
+		VEC3 pos = rigidBody->GetWorldPotision();
 
 		float t = m_CrntCollapseEndTime / BUILDING_COLLAPSE_END_TIME;
 		float easeBack = Tool::Easing::EaseOutBack(t);
 
-		rot.x = Tool::Lerp(m_Rot.x, m_Rot.x + 0.1f, easeBack);
-		rot.z = Tool::Lerp(m_Rot.z, m_Rot.z + 0.1f, easeBack);
-
-		transform->set_RotateToRad(rot);
+		// クオータニオンへ変換
+		VEC4 rot = VEC4::FromXMVECTOR(
+			DirectX::XMQuaternionRotationRollPitchYaw(
+				Tool::Lerp(m_Rot.x, m_Rot.x + 0.1f, easeBack),
+				0.0f,
+				Tool::Lerp(m_Rot.z, m_Rot.z + 0.1f, easeBack)
+			)
+		);
+		// リジッドボディへ設定
+		rigidBody->SetWorldTransform(pos, rot);
 	}
 
 	// 倒壊終了時間が一定以上経過したら落下ステートへ
@@ -397,13 +429,13 @@ int Building_FallState::Update(BuildingController* pOwner)
 
 	if (pOwner->get_IsActiveOwnerObj())
 	{
-		auto transform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
+		auto rigidBody = pOwner->get_RigidBodyComp();
 
-		VEC3 pos = transform->get_VEC3ToPos();
+		VEC3 pos = rigidBody->GetWorldPotision();
 
 		pos.y -= BUILDING_FALL_SPEED * deltaTime;
 
-		transform->set_Pos(pos);
+		rigidBody->Teleport(pos);
 
 		if (pos.y < -100.0f)
 		{

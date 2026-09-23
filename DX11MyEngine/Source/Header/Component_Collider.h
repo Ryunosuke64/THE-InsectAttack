@@ -27,9 +27,14 @@ protected:
 	unsigned m_ResponseBitMask;						// 押し出し処理を行うかどうかのビットマスク
 	bool m_IsDrawDebugMesh;							// デバッグ用メッシュを表示するか
 
+
+	std::weak_ptr<class RigidBody> m_pRigidBody;
+
 public:
 	Collider(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
 	~Collider();
+
+	void set_RigidBody(std::weak_ptr<class RigidBody> rb) { m_pRigidBody = rb; };
 
 	// 各コライダーごとにシェイプ情報を生成させる
 	virtual PhysicsData::PhysicsShapeDesc GetShapeDesc() const = 0;
@@ -73,11 +78,13 @@ public:
 
 	/* 衝突判定のビットマスク */
 	/// <summary> 一括設定</summary>
-	void set_CollisionBitMask(unsigned _mask) { m_CollisionBitMask = _mask; };
+	void set_CollisionBitMask(unsigned _mask);
 	/// <summary> 特定のカテゴリを追加 </summary>
-	void add_CollisionBitMask(UtilityData::COLLISION_CATEGORY _category) {GIGA_Engine::BitFlag::SetFlag(static_cast<unsigned>(_category), m_CollisionBitMask);}
+	void add_CollisionBitMask(UtilityData::COLLISION_CATEGORY _category);
 	/// <summary> 特定のカテゴリを除外 </summary>
-	void remove_CollisionBitMask(UtilityData::COLLISION_CATEGORY _category) { GIGA_Engine::BitFlag::UnsetFlag(static_cast<unsigned>(_category), m_CollisionBitMask); }
+	void remove_CollisionBitMask(UtilityData::COLLISION_CATEGORY _category);
+
+
 	/// <summary> 衝突判定用ビットマスクの取得</summary>
 	unsigned get_CollisionBitMask()const { return m_CollisionBitMask; }
 	/// <summary> 衝突応答用のビットマスク取得 </summary>

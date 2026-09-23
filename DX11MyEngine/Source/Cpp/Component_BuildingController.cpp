@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Component_BuildingController.h"
 #include "Component_Health.h"
+#include "Component_RigidBody.h"
 #include "ConstantBuildingData.h"
 #include "BuildingStateFactory.h"
 
@@ -46,6 +47,9 @@ void BuildingController::Start(RendererEngine& renderer)
 	m_pHealthComp->RegisterOnDead([this]() {
 		m_IsDestruction = true;	// 破壊されたフラグをオンにする
 		});
+
+	// 剛体コンポーネント
+	m_pRigidBodyComp = get_OwnerObj().lock()->get_Component<RigidBody>().get();
 
 	m_IsDestruction = false;
 

@@ -30,18 +30,29 @@ public:
 
     void LateUpdate(RendererEngine& renderer)override;
 
+    void RefreshCollisionFilter();
+
+    //
+    // à⁄ìÆån
+    //
     void AddForce(const VECTOR3::VEC3& force);
     void AddImpulse(const VECTOR3::VEC3& impulse);
-    VECTOR3::VEC3 GetWorldPotision()const;
-
-    VECTOR3::VEC3 GetLinearVelocity() const;
     void SetLinearVelocity(const VECTOR3::VEC3& velocity);
+    void AddCentralForce(const VECTOR3::VEC3& force);
+    void AddCentralImpulse(const VECTOR3::VEC3& impulse);
+    void Teleport(const VECTOR3::VEC3& position);
+    void SetWorldTransform(const VECTOR3::VEC3& position,const VECTOR4::VEC4& rotation);
+
+
+
+    VECTOR3::VEC3 GetWorldPotision()const;
+    VECTOR4::VEC4 GetRotation()const;
+    VECTOR3::VEC3 GetLinearVelocity() const;
 
     void SetMass(float mass);
     void SetGravity(const VECTOR3::VEC3& gravity);
 
     void SetEnabled(bool enabled);
-    void Teleport(const VECTOR3::VEC3& position);
 
     // KinematicópÅBèuä‘à⁄ìÆÇ∆ÇÕãÊï Ç∑ÇÈÅB
     void MovePosition(const VECTOR3::VEC3& position);

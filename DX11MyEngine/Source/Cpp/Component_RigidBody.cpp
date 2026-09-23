@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Component_RigidBody.h"
+#include "Component_Collider.h"
 #include "PhysicsEngine.h"
 
 using namespace GIGA_Engine;
 using namespace VECTOR3;
+using namespace VECTOR4;
 using namespace UtilityData;
 using namespace PhysicsData;
 
@@ -60,8 +62,25 @@ bool RigidBody::Setup(PhysicsEngine& engine, const RigidBodyDesc& desc)
     m_pEngine = &engine;
     m_Desc = desc;
 
+
     // ÉGÉìÉWÉìÇ…ìoò^ÇµÅAÉnÉìÉhÉãÇéÛÇØéÊÇÈ
     m_Handle = m_pEngine->CreateRigidBody(desc);
+
+
+    auto owner = m_pOwner.lock();
+    auto collider = desc.collider.lock();
+
+    if (!owner || !collider) {
+        return false;
+    }
+
+    auto self = owner->get_Component<RigidBody>();
+    if (!self || self.get() != this) {
+        return false;
+    }
+
+    // shared_ptr<RigidBody> Å® weak_ptr<RigidBody> Ç…é©ìÆïœä∑
+    collider->set_RigidBody(self);
 
     return true;
 }
@@ -70,8 +89,8 @@ bool RigidBody::Setup(PhysicsEngine& engine, const RigidBodyDesc& desc)
 //*---------------------------------------------------------------------------------------
 //*Åy?Åzâï˙
 //*
-//* [à¯êî]Ç»Çµ
-//* [ï‘íl]Ç»Çµ
+//* [à¯êî] Ç»Çµ
+//* [ï‘íl] Ç»Çµ
 //*----------------------------------------------------------------------------------------
 void RigidBody::Release()
 {
@@ -85,11 +104,28 @@ void RigidBody::Release()
 }
 
 //*---------------------------------------------------------------------------------------
+//*Åy?ÅzÉ}ÉXÉNÇê›íËÇµÇ»Ç®Ç∑
+//*
+//* [à¯êî] Ç»Çµ
+//* [ï‘íl] Ç»Çµ
+//*----------------------------------------------------------------------------------------
+void RigidBody::RefreshCollisionFilter()
+{
+    if (auto collider = m_Desc.collider.lock())
+    {
+        unsigned mask = collider->get_CollisionBitMask();
+        unsigned group = UINT_CAST(collider->get_CollisionCategory());
+        m_pEngine->SetMask(m_Handle, mask, group);
+    }
+}
+
+//*---------------------------------------------------------------------------------------
 //*Åy?Åzåpë±ìIÇ»óÕÇâ¡Ç¶ÇÈ
 //*
 //* [à¯êî]
 //* &_force : óÕÉxÉNÉgÉã
-//* [ï‘íl]Ç»Çµ
+//* 
+//* [ï‘íl] Ç»Çµ
 //*----------------------------------------------------------------------------------------
 void RigidBody::AddForce(const VECTOR3::VEC3& force)
 {
@@ -101,11 +137,82 @@ void RigidBody::AddForce(const VECTOR3::VEC3& force)
 //*
 //* [à¯êî]
 //* &_impulse : è’åÇÉxÉNÉgÉã
-//* [ï‘íl]Ç»Çµ
+//* 
+//* [ï‘íl] Ç»Çµ
 //*----------------------------------------------------------------------------------------
 void RigidBody::AddImpulse(const VECTOR3::VEC3& impulse)
 {
     m_pEngine->AddImpulse(m_Handle, impulse, VEC3());
+}
+
+//*---------------------------------------------------------------------------------------
+//*Åy?Åzê¸å`ë¨ìxÇê›íË
+//*
+//* [à¯êî]
+//* &velocity : ë¨ìx
+//* 
+//* [ï‘íl]Ç»Çµ
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetLinearVelocity(const VECTOR3::VEC3& velocity)
+{
+    m_pEngine->SetLinearVelocity(m_Handle, velocity);
+}
+
+//*---------------------------------------------------------------------------------------
+//*Åy?ÅzèdêSÇ…åpë±ìIÇ»óÕÇâ¡Ç¶ÇÈ
+//*     âÒì]Ç»Çµ
+//*
+//* [à¯êî]
+//* &_force : óÕÉxÉNÉgÉã
+//* 
+//* [ï‘íl]Ç»Çµ
+//*----------------------------------------------------------------------------------------
+void RigidBody::AddCentralForce(const VECTOR3::VEC3& force)
+{
+    m_pEngine->AddCentralForce(m_Handle, force);
+}
+
+//*---------------------------------------------------------------------------------------
+//*Åy?Åzèuä‘ìIÇ»è’åÇÇâ¡Ç¶ÇÈ
+//*     âÒì]Ç»Çµ
+//*
+//* [à¯êî]
+//* &_impulse : è’åÇÉxÉNÉgÉã
+//* 
+//* [ï‘íl]Ç»Çµ
+//*----------------------------------------------------------------------------------------
+void RigidBody::AddCentralImpulse(const VECTOR3::VEC3& impulse)
+{
+    m_pEngine->AddCentralImpulse(m_Handle, impulse);
+}
+
+//*---------------------------------------------------------------------------------------
+//*Åy?Åzíºê⁄à íuÇê›íËÇ∑ÇÈ
+//*     ï®óùìIÇ»ãììÆÇÕçló∂ÇµÇ»Ç¢ 
+//*
+//* [à¯êî]
+//* &position : à íu
+//* 
+//* [ï‘íl]Ç»Çµ
+//*----------------------------------------------------------------------------------------
+void RigidBody::Teleport(const VECTOR3::VEC3& position)
+{
+    VEC4 rot = m_pEngine->GetRotation(m_Handle);
+    m_pEngine->SetWorldTransform(m_Handle, position, rot);
+}
+
+//*---------------------------------------------------------------------------------------
+//*Åy?Åzíºê⁄à íuÇê›íËÇ∑ÇÈ
+//*     ï®óùìIÇ»ãììÆÇÕçló∂ÇµÇ»Ç¢ 
+//*
+//* [à¯êî]
+//* &position : à íu
+//* 
+//* [ï‘íl]Ç»Çµ
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetWorldTransform(const VECTOR3::VEC3& position, const VECTOR4::VEC4& rotation)
+{
+    m_pEngine->SetWorldTransform(m_Handle, position, rotation);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -114,6 +221,14 @@ void RigidBody::AddImpulse(const VECTOR3::VEC3& impulse)
 VECTOR3::VEC3 RigidBody::GetWorldPotision()const
 {
     return m_pEngine->GetWorldPosition(m_Handle);
+}
+
+//*---------------------------------------------------------------------------------------
+//*Åy?ÅzâÒì]ÇÃéÊìæ
+//*----------------------------------------------------------------------------------------
+VECTOR4::VEC4 RigidBody::GetRotation()const
+{
+    return m_pEngine->GetRotation(m_Handle);
 }
 
 //*---------------------------------------------------------------------------------------

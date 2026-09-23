@@ -4,6 +4,7 @@
 #include "GameObjectManager.h"
 #include "GameObject.h"
 #include "ResourceManager.h"
+#include "Component_RigidBody.h"
 
 using namespace GIGA_Engine;
 using namespace VECTOR3;
@@ -42,6 +43,57 @@ Collider::~Collider()
 {
 
 }
+
+//*---------------------------------------------------------------------------------------
+//*【?】衝突判定マスク一括設定
+//*----------------------------------------------------------------------------------------
+void Collider::set_CollisionBitMask(unsigned _mask)
+{ 
+    if (m_CollisionBitMask == _mask) {
+        return; // 変更がなければ通知しない
+    }
+
+    m_CollisionBitMask = _mask;
+
+    if (auto rigidBody = m_pRigidBody.lock()) {
+        rigidBody->RefreshCollisionFilter();
+    }
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】衝突判定マスク特定のカテゴリを追加
+//*----------------------------------------------------------------------------------------
+void Collider::add_CollisionBitMask(UtilityData::COLLISION_CATEGORY _category)
+{
+    if (GIGA_Engine::BitFlag::CheckAll(static_cast<unsigned>(_category), m_CollisionBitMask)) {
+        return; // 変更がなければ通知しない
+    }
+
+    GIGA_Engine::BitFlag::SetFlag(static_cast<unsigned>(_category), m_CollisionBitMask);
+
+    if (auto rigidBody = m_pRigidBody.lock()) {
+        rigidBody->RefreshCollisionFilter();
+    }
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】衝突判定マスク特定のカテゴリを除外
+//*----------------------------------------------------------------------------------------
+void Collider::remove_CollisionBitMask(UtilityData::COLLISION_CATEGORY _category) 
+{ 
+    if (!GIGA_Engine::BitFlag::CheckAll(static_cast<unsigned>(_category), m_CollisionBitMask)) {
+        return; // 変更がなければ通知しない
+    }
+
+    GIGA_Engine::BitFlag::UnsetFlag(static_cast<unsigned>(_category), m_CollisionBitMask);
+
+    if (auto rigidBody = m_pRigidBody.lock()) {
+        rigidBody->RefreshCollisionFilter();
+    }
+}
+
+
+
 //*---------------------------------------------------------------------------------------
 //*【?】衝突時の応答の設定
 //*
@@ -103,3 +155,5 @@ COLLISION_RESPONSE Collider::get_Response(COLLISION_CATEGORY _otherCategory)cons
     // 接触判定を取り、物理的に押し返す
     return COLLISION_RESPONSE::RESPONSE_BLOCK;
 }
+
+

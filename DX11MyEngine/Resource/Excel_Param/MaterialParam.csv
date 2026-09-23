@@ -43,3 +43,4 @@ Flame_01,3,2,2,1,1,1,1,1,100,1,1,1,1,Resource/Effect/Texture/flamea.png,-1,-1,1
 Objector_body,0,1,0,1,1,1,1,1,100,0,1,0,3,Resource/Model/Enemy/Octahedron/textures/shieldSurface.jpg,-1,-1,0
 Objector_shield,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/Enemy/Octahedron/textures/shieldSurface.jpg,Resource/Model/Enemy/Octahedron/textures/shieldSurface_normal.png,-1,0
 Grass,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Materials/grass.png,-1,-1,1
+TestBlock,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Materials/260718150419111.JPG,Resource/Texture/DefaultN_Map.png,-1,0

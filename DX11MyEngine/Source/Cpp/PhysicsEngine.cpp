@@ -185,6 +185,30 @@ AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& forc
 }
 
 //*---------------------------------------------------------------------------------------
+//*【?】重心に力を加える
+//*     回転はなし
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* & force  : 力
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+AddCentralForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    m_RigidBodies[handle.index].rigidBody->applyCentralForce(
+        btVector3(force.x, force.y, force.z)
+    );
+}
+
+//*---------------------------------------------------------------------------------------
 //*【?】衝撃を加える
 //*
 //* [引数] 
@@ -209,7 +233,32 @@ AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& im
 }
 
 //*---------------------------------------------------------------------------------------
-//*【?】間的な回転力を加える
+//*【?】衝撃を加える
+//*     回転はなし
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* & force  : 衝撃力
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+AddCentralImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    m_RigidBodies[handle.index].rigidBody->applyCentralImpulse(
+        btVector3(impulse.x, impulse.y, impulse.z)
+    );
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】瞬間的な回転力を加える
+//*     移動はしない 
 //*
 //* [引数]
 //* &handle         : ハンドル
@@ -231,6 +280,32 @@ AddAngularImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
     );
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】トランスフォームを直接設定
+//*
+//* [引数]
+//* &handle : ハンドル
+//* &pos    : 位置
+//* 
+//* [返値]なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetWorldTransform(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& pos, const VECTOR4::VEC4& rot)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    btTransform transform;
+    transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+    transform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+
+    m_RigidBodies[handle.index].rigidBody->setWorldTransform(
+        transform
+    );
+}
 
 //*---------------------------------------------------------------------------------------
 //*【?】質量を設定
@@ -389,6 +464,40 @@ GetRotation(const PhysicsData::PhysicsBodyHandle& handle)
     );
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】マスクの設定
+//*
+//* [引数] 
+//* & handle : ハンドル
+//*  group   : 自身のグループ
+//*  mask    : 衝突マスク
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetMask(const PhysicsData::PhysicsBodyHandle& handle, unsigned group, unsigned mask)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+    auto* body = m_RigidBodies[handle.index].rigidBody;
+
+    // 再登録時にワールド重力で上書きされる場合があるため保存
+    const btVector3 gravity = body->getGravity();
+
+    // 一旦worldから除外し追加しなおす
+    // 除外しない場合、衝突相手の組み合わせが更新できないため
+    m_pWorld->removeRigidBody(body);
+    m_pWorld->addRigidBody(
+        body,
+        static_cast<int>(group),
+        static_cast<int>(mask)
+    );
+
+    body->setGravity(gravity);
+}
 
 //*---------------------------------------------------------------------------------------
 //*【?】リジッドボディの作成
