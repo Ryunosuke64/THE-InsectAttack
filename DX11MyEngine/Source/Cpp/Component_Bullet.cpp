@@ -15,6 +15,7 @@
 #include "ResourceManager.h"
 #include "Component_Collider.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 #include "Component_BillboardRenderer.h"
 
 using namespace GIGA_Engine;
@@ -325,14 +326,14 @@ void Bullet::LateUpdate(RendererEngine& renderer)
         }
 
         // 吹っ飛び
-        if (auto physics = obj->get_Component<Physics>())
+        if (auto rigidBody = obj->get_Component<RigidBody>())
         {
             auto targetTransform = obj->get_Transform().lock();
             VEC3 targetPos = targetTransform->get_VEC3ToPos();
             VECTOR3::VEC3 knockbackDir = m_MoveDir;     // 移動ベクトルをそのまま衝撃のベクトルにする
 
             // 衝撃ベクトルの設定
-            physics->AddImpulse(knockbackDir * m_pDefinition->_commonData._knockbackForce);
+            rigidBody->AddImpulse(knockbackDir * m_pDefinition->_commonData._knockbackForce);
         }
     }
 }

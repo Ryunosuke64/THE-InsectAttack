@@ -5,6 +5,7 @@
 #include "Component_WeaponController.h"
 #include "Component_Health.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 #include "GameObject.h"
 #include "InputFactory.h"
 #include "DirectWriteManager.h"

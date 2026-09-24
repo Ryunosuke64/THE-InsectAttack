@@ -155,7 +155,11 @@ SetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
         return;
     }
 
-    m_RigidBodies[handle.index].rigidBody->setLinearVelocity(
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    rb->activate(true); // アクティブ状態にする
+
+    rb->setLinearVelocity(
         btVector3(velocity.x, velocity.y, velocity.z)
     );
 }
@@ -178,7 +182,11 @@ AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& forc
         return;
     }
 
-    m_RigidBodies[handle.index].rigidBody->applyForce(
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    rb->activate(true); // アクティブ状態にする
+
+    rb->applyForce(
         btVector3(force.x, force.y, force.z),
         btVector3(rel_pos.x, rel_pos.y, rel_pos.z)
     );
@@ -203,7 +211,11 @@ AddCentralForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC
         return;
     }
 
-    m_RigidBodies[handle.index].rigidBody->applyCentralForce(
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    rb->activate(true); // アクティブ状態にする
+
+    rb->applyCentralForce(
         btVector3(force.x, force.y, force.z)
     );
 }
@@ -226,7 +238,11 @@ AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& im
         return;
     }
 
-    m_RigidBodies[handle.index].rigidBody->applyImpulse(
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    rb->activate(true); // アクティブ状態にする
+
+    rb->applyImpulse(
         btVector3(impulse.x, impulse.y, impulse.z),
         btVector3(rel_pos.x, rel_pos.y, rel_pos.z)
     );
@@ -251,7 +267,11 @@ AddCentralImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
         return;
     }
 
-    m_RigidBodies[handle.index].rigidBody->applyCentralImpulse(
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    rb->activate(true); // アクティブ状態にする
+
+    rb->applyCentralImpulse(
         btVector3(impulse.x, impulse.y, impulse.z)
     );
 }
@@ -275,7 +295,12 @@ AddAngularImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
         return;
     }
 
-    m_RigidBodies[handle.index].rigidBody->applyTorqueImpulse(
+
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    rb->activate(true); // アクティブ状態にする
+
+    rb->applyTorqueImpulse(
         btVector3(angularImpulse.x, angularImpulse.y, angularImpulse.z)
     );
 }
@@ -298,11 +323,15 @@ SetWorldTransform(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
         return;
     }
 
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    rb->activate(true); // アクティブ状態にする
+
     btTransform transform;
     transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
     transform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-    m_RigidBodies[handle.index].rigidBody->setWorldTransform(
+    rb->setWorldTransform(
         transform
     );
 }
@@ -393,6 +422,8 @@ SetWorldPosition(
 
     // トランスフォームに位置を設定
     transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+
+    body->activate(true);   // アクティブ状態に
 
     // トランスフォーム再設定
     body->setWorldTransform(transform);

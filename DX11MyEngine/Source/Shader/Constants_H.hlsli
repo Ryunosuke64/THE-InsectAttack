@@ -13,7 +13,7 @@ static const int POINTLIGHT_MAX_NUM     = 100;                      // ƒ|ƒCƒ“ƒgƒ
 static const int SPOTLIGHT_MAX_NUM      = 20;                       // ƒXƒ|ƒbƒgƒ‰ƒCƒg‚ÌÅ‘å”
 static const int DIRECTIONLIGHT_MAX_NUM = 1;                        // ƒfƒBƒŒƒNƒVƒ‡ƒ“ƒ‰ƒCƒg‚ÌÅ‘å”
 static const float SHADOW_STRENGTH      = 0.3f;                     // ‰e‚Ì”Z‚³icolor * SHADOW_STRENGTHj
-static const float3 AMBIENT_COLOR       = float3(0.3f, 0.3f, 0.3f); // ƒAƒ“ƒrƒGƒ“ƒgƒJƒ‰[
+static const float3 AMBIENT_COLOR       = float3(0.28f, 0.28f, 0.28f); // ƒAƒ“ƒrƒGƒ“ƒgƒJƒ‰[
 
 
 #endif

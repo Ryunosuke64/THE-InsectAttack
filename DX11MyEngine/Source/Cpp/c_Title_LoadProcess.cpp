@@ -202,6 +202,8 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         matInfo[2].Index = 2;
         matInfo[2].pMaterialData = matPtr2; // 頭
 
+        VEC3 pos = VEC3(-900.0f, 0.0f, 900.0f);
+
         CreateModelInfo model;
         model.pRenderer = m_pRenderer;
         model.LODModels[0] = { "Resource/Model/Ranger/Swat_01.fbx", 0.0f };
@@ -219,7 +221,7 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         pPlayerObj->get_Component<SkinnedMeshAnimator>()->set_AnimIndex(INT_CAST(PlayerData::PLAYER_RANGER_ANIM_ID::RIFLE_AMING_IDLE));
         pPlayerObj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_DONT_DESTROY);        // 破棄しない
         pPlayerObj->set_IsStatic(false);        // 動的オブジェクト
-        pPlayerObj->get_Transform().lock()->set_Pos(-900.0f, 0.0f, 900.0f);
+        pPlayerObj->get_Transform().lock()->set_Pos(pos);
 
         // ポーズ中は停止
         pPlayerObj->set_IsUpdateAllowedDuringPause(false);
@@ -235,9 +237,13 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         auto faction = pPlayerObj->add_Component<Faction>();
         faction->set_Faction(FACTION::PLAYER);
 
-        auto physics = pPlayerObj->add_Component<Physics>();
+        //auto physics = pPlayerObj->add_Component<Physics>();
         //physics->set_GravityScale(0.0f);
 
+        //
+        // リジッドボディの追加
+        //
+        auto rigidBody = pPlayerObj->add_Component<RigidBody>();
 
         // コライダーの追加
         auto collider = pPlayerObj->add_Component<BoxCollider>();
@@ -255,6 +261,17 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
 
         // コライダーの登録
         Master::m_pCollisionManager->RegisterCollider(collider);
+
+
+        PhysicsData::RigidBodyDesc rbDesc;
+        rbDesc.mass = 1.0f;
+        rbDesc.friction = 0.5f;
+        rbDesc.restitution = 0.0f;
+        rbDesc.pos = pos;
+        rbDesc.owner = pPlayerObj;     // オーナーオブジェクトの設定
+        rbDesc.collider = collider;    // コライダーの設定
+
+        rigidBody->Setup(*Master::m_pPhysicsEngine, rbDesc);
 
         // カメラのフォーカスオブジェクトに設定
         m_pCameraComp->set_FocusObject(pPlayerObj);

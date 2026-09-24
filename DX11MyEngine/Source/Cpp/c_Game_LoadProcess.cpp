@@ -423,11 +423,11 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             mesh.IsNormalMap = true;
             mesh.ObjLayer = 105;
 
-            for (int i = 0; i < 250; i++)
+            for (int i = 0; i < 100; i++)
             {
                 VEC3 pos;
                 pos.x = -100.0f;
-                pos.y = 10.0f + i;
+                pos.y = 10.0f;
                 pos.z = 100.0f;
                 VEC3 scl = VEC3(1.0f);
                 auto obj = MeshFactory::CreateUtilityMesh(mesh);
