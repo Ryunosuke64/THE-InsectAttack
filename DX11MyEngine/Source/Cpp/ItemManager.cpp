@@ -7,6 +7,7 @@
 #include "Component_Item.h"
 #include "Component_Faction.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 
 using namespace VECTOR4;
 using namespace VECTOR3;
@@ -110,25 +111,34 @@ bool ItemManager::Init(RendererEngine& renderer)
             //*****************************************************************************************
             //						コンポーネントの追加
             //*****************************************************************************************
+            //
             // アイテムコンポーネントの追加
+            //
             auto item = obj->add_Component<Item>();
             item->set_ItemType(ITEM_TYPE::RECOVERY_SMALL);
             item->Start(renderer);
 
+            //
             // 派閥コンポーネントの追加
+            //
             auto faction = obj->add_Component<Faction>();
             faction->set_Faction(FACTION::ITEM);
 
+            //
             // 物理コンポーネントの追加
-            auto physics = obj->add_Component<Physics>();
+            //
+            auto rigidBody = obj->add_Component<RigidBody>();
 
+
+            //
             // コライダーの追加
+            //
             auto collider = obj->add_Component<BoxCollider>();
             collider->set_Size(VEC3(0.75f, 0.75f, 0.75f));
             collider->set_Center(VEC3(0, 0.0f, 0)); // コライダーの中心を地面の厚み分だけ下げる
-            //collider->set_IsStatic(true);
             collider->set_IsTrigger(true);          // 物理判定無し
-			collider->set_IsEnable(false);		    // 最初は無効状態
+            collider->set_IsEnable(false);		    // 最初は無効状態
+            collider->set_IsStatic(false);
 
             // 衝突カテゴリ
             collider->set_CollisionCategory(COLLISION_CATEGORY::ITEM);
@@ -139,8 +149,20 @@ bool ItemManager::Init(RendererEngine& renderer)
             collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);
             collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);
 
-            // コライダーの登録
-            Master::m_pCollisionManager->RegisterCollider(collider);
+            //
+            // リジッドボディのセットアップ
+            //
+            PhysicsData::RigidBodyDesc rbDesc;
+            rbDesc.mass = 1.0f;
+            rbDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
+            rbDesc.restitution = 0.2f;
+            rbDesc.friction = 0.7f;
+            rbDesc.angularFactor = VEC3(0.0f);  // 回転させない
+            rbDesc.owner = obj;         // オーナーオブジェクトの設定
+            rbDesc.collider = collider; // コライダーの設定
+
+
+            rigidBody->Setup(*Master::m_pPhysicsEngine, rbDesc);
 
             return obj.get();
         },
@@ -232,9 +254,13 @@ void ItemManager::SpawnItem(UtilityData::ITEM_TYPE _type, const VECTOR3::VEC3& _
         return;
     }
 
-    // トランスフォームの設定
-    auto transform = obj->get_Transform().lock();
-    transform->set_Pos(_pos);
+    // リジッドボディから位置の設定
+    auto rigidBody = obj->get_Component<RigidBody>();
+    rigidBody->Teleport(_pos);
+
+    //// トランスフォームの設定
+    //auto transform = obj->get_Transform().lock();
+    //transform->set_Pos(_pos);
 
     // アイテムコンポーネントのセットアップ
     auto itemComp = obj->get_Component<Item>();
@@ -295,9 +321,13 @@ void ItemManager::SpawnItemRand(int _minNum, int _maxNum, const VECTOR3::VEC3& _
             return;
         }
 
-        // トランスフォームの設定
-        auto transform = obj->get_Transform().lock();
-        transform->set_Pos(_pos + Master::m_pRandomManager->GetVEC3Random(-_radiuse, _radiuse));
+        // リジッドボディから位置の設定
+        auto rigidBody = obj->get_Component<RigidBody>();
+        rigidBody->Teleport(_pos + Master::m_pRandomManager->GetVEC3Random(-_radiuse, _radiuse));
+
+        //// トランスフォームの設定
+        //auto transform = obj->get_Transform().lock();
+        //transform->set_Pos(_pos + Master::m_pRandomManager->GetVEC3Random(-_radiuse, _radiuse));
 
         // アイテムがまだ回復しかないので
         ITEM_TYPE type = static_cast<ITEM_TYPE>(Master::m_pRandomManager->GetIntRandom(0, 1)); 

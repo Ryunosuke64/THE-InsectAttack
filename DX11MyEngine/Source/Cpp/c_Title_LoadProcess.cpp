@@ -18,6 +18,7 @@
 #include "Component_PointLight.h"
 #include "Component_Faction.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 #include "GameObject.h"
 #include "MeshFactory.h"
 #include "InputFactory.h"
@@ -237,6 +238,7 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         auto physics = pPlayerObj->add_Component<Physics>();
         //physics->set_GravityScale(0.0f);
 
+
         // コライダーの追加
         auto collider = pPlayerObj->add_Component<BoxCollider>();
         collider->set_Size(VEC3(0.5f, 1.0f, 0.5f));
@@ -250,7 +252,6 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_OVERLAP);                // アイテム
         collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
         collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
-
 
         // コライダーの登録
         Master::m_pCollisionManager->RegisterCollider(collider);

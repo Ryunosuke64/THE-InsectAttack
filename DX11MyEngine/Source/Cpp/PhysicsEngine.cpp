@@ -578,7 +578,7 @@ CreateRigidBody(const RigidBodyDesc& desc)
     rigidBody->setGravity(gravity);
     rigidBody->setRestitution(desc.restitution);
     rigidBody->setFriction(desc.friction);
-
+    rigidBody->setAngularFactor(btVector3(desc.angularFactor.x, desc.angularFactor.y, desc.angularFactor.z));
 
     // ************************************************************
     // 

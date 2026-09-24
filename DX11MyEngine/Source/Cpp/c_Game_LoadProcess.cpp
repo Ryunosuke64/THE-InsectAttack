@@ -343,9 +343,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         collider->set_IsStatic(false);
         collider->set_IsConvex(false);
         collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
-
         PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 1.0f;
+        rbDesc.mass = 1000.0f;
         rbDesc.pos = pos;
         rbDesc.restitution = 0.1f;
         rbDesc.owner = obj;         // オーナーオブジェクトの設定
@@ -402,6 +401,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
             rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
         }
+
+        Master::m_pItemManager->SpawnItemRand(100, 100, VEC3(-150.0f, 50.0f, 100.0f), 10.0f);
 
         /* キューブの生成 */
         {

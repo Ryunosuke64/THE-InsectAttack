@@ -152,11 +152,12 @@ namespace PhysicsData
 	struct RigidBodyDesc
 	{
 		BodyType type = BodyType::Dynamic;
-		float mass = 0.0f;	
-		float friction = 0.5f;
-		float restitution = 0.0f;
-		VECTOR3::VEC3 gravity = VECTOR3::VEC3(0.0f, -9.8f, 0.0f); // ワールド重力に対する倍率
-		VECTOR3::VEC3 pos = VECTOR3::VEC3();
+		float mass = 0.0f;												// 質量
+		float friction = 0.5f;											// 摩擦
+		float restitution = 0.0f;										// 反発
+		VECTOR3::VEC3 gravity = VECTOR3::VEC3(0.0f, -9.8f, 0.0f);		// ワールド重力に対する倍率
+		VECTOR3::VEC3 angularFactor = VECTOR3::VEC3(1.0f, 1.0, 1.0f);	// 1.0 = 回転 0.0 = 回転させない
+		VECTOR3::VEC3 pos = VECTOR3::VEC3();							// 初期座標
 
 		std::weak_ptr<class GameObject> owner;
 		std::weak_ptr<class Collider> collider;

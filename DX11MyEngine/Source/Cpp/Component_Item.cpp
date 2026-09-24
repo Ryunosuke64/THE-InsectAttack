@@ -57,23 +57,23 @@ void Item::Start(RendererEngine& renderer)
 //*----------------------------------------------------------------------------------------
 void Item::Update(RendererEngine& renderer)
 {
-	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
-	m_Timer += deltaTime;
-	VEC3 crntPos = m_pTransform->get_VEC3ToPos();
-	
-	// ふわふわする（0～1）
-	//crntPos.y += (sinf(m_Timer) * 0.5f) + 0.5f;
-	//crntPos.y += 1.0f; // そのままだと下にめり込んでしまうため
+	//float deltaTime = Master::m_pTimeManager->get_DeltaTime();
+	//m_Timer += deltaTime;
+	//VEC3 crntPos = m_pTransform->get_VEC3ToPos();
+	//
+	//// ふわふわする（0～1）
+	////crntPos.y += (sinf(m_Timer) * 0.5f) + 0.5f;
+	////crntPos.y += 1.0f; // そのままだと下にめり込んでしまうため
 
-	// ほぼ停止状態の際は物理コンポーネントを停止し、
-	// コライダーをstaticにする
-	if (m_pPhysics->get_Velocity().LengthSq() < 0.001f)
-	{
-		//m_pPhysics->set_IsEnable(false);
-		//m_pBoxCollider->set_IsStatic(true);
-	}
+	//// ほぼ停止状態の際は物理コンポーネントを停止し、
+	//// コライダーをstaticにする
+	//if (m_pPhysics->get_Velocity().LengthSq() < 0.001f)
+	//{
+	//	//m_pPhysics->set_IsEnable(false);
+	//	//m_pBoxCollider->set_IsStatic(true);
+	//}
 
-	m_pTransform->set_Pos(crntPos);
+	//m_pTransform->set_Pos(crntPos);
 }
 
 
