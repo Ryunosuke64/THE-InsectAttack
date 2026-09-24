@@ -82,6 +82,13 @@ bool RigidBody::Setup(PhysicsEngine& engine, const RigidBodyDesc& desc)
     // shared_ptr<RigidBody> → weak_ptr<RigidBody> に自動変換
     collider->set_RigidBody(self);
 
+    // ユーザーデータとして保持
+    m_UserData.collider = collider;
+    m_UserData.gameoOject = owner;
+
+    // ポインタを設定
+    m_pEngine->SetUserPointer(m_Handle, &m_UserData);
+
     return true;
 }
 
@@ -115,7 +122,7 @@ void RigidBody::RefreshCollisionFilter()
     {
         unsigned mask = collider->get_CollisionBitMask();
         unsigned group = UINT_CAST(collider->get_CollisionCategory());
-        m_pEngine->SetMask(m_Handle, mask, group);
+        m_pEngine->SetMask(m_Handle, group, mask);
     }
 }
 

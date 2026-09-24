@@ -54,6 +54,8 @@ public:
 		const VECTOR3::VEC3& pos);
 
 	void SetMask(const PhysicsData::PhysicsBodyHandle& handle, unsigned group, unsigned mask);
+	void SetUserPointer(const PhysicsData::PhysicsBodyHandle& handle, void* userP);
+
 
 	VECTOR3::VEC3 GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle);
 	VECTOR4::VEC4 GetRotation(const PhysicsData::PhysicsBodyHandle& handle);

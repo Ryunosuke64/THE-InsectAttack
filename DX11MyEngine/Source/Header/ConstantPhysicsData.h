@@ -166,6 +166,24 @@ namespace PhysicsData
 	};
 
 
+	/// <summary>
+	/// リジッドボディのユーザー設定用ポインタに設定するデータ
+	/// </summary>
+	struct PhysicsUserData
+	{
+		std::weak_ptr<class GameObject> gameoOject;
+		std::weak_ptr<class Collider> collider;
+	};
+
+	// ***************************************************************************************
+	// ---------------------------------------------------------------------------------------
+	/* --- @:SphereContactCallback Class --- */
+	//
+	//  ★継承：ContactResultCallback ★
+	//
+	// 【?】スフィア判定のコールバックに使う
+	//		
+	// ***************************************************************************************
 	class SphereContactCallback
 		: public btCollisionWorld::ContactResultCallback
 	{
@@ -207,4 +225,34 @@ namespace PhysicsData
 		}
 	};
 
+
+	// ***************************************************************************************
+	// ---------------------------------------------------------------------------------------
+	/* --- @:SphereContactCallback Class --- */
+	//
+	//  ★継承：ContactResultCallback ★
+	//
+	// 【?】スフィア判定のコールバックに使う
+	//		
+	// ***************************************************************************************
+	class MyCollisionDispatcher : public btCollisionDispatcher
+	{
+	private:
+
+
+	public:
+		MyCollisionDispatcher(btCollisionConfiguration* config)
+			: btCollisionDispatcher(config)
+		{
+		}
+
+
+		// こちら側で定義
+		bool needsResponse(
+			const btCollisionObject* body0,
+			const btCollisionObject* body1) override
+		{
+			PhysicsUserData* userData = static_cast<PhysicsUserData*>(body0->getUserPointer());
+		};
+	};
 };

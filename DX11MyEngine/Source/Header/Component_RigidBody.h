@@ -20,6 +20,9 @@ private:
     PhysicsEngine* m_pEngine = nullptr; // îÒèäóL
     PhysicsData::PhysicsBodyHandle m_Handle;
     PhysicsData::RigidBodyDesc m_Desc;
+
+    PhysicsData::PhysicsUserData m_UserData;
+
 public:
     RigidBody(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
     ~RigidBody();
@@ -42,7 +45,6 @@ public:
     void AddCentralImpulse(const VECTOR3::VEC3& impulse);
     void Teleport(const VECTOR3::VEC3& position);
     void SetWorldTransform(const VECTOR3::VEC3& position,const VECTOR4::VEC4& rotation);
-
 
 
     VECTOR3::VEC3 GetWorldPotision()const;

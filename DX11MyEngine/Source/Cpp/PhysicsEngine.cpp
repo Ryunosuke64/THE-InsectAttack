@@ -530,6 +530,32 @@ SetMask(const PhysicsData::PhysicsBodyHandle& handle, unsigned group, unsigned m
     body->setGravity(gravity);
 }
 
+
+//*---------------------------------------------------------------------------------------
+//*【?】リジッドボディへ、ユーザー設定用のポインタを設定する
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* userP    : 格納するポインタ
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetUserPointer(const PhysicsData::PhysicsBodyHandle& handle, void* userP)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    auto* body = m_RigidBodies[handle.index].rigidBody;
+    
+    // ポインタ設定
+    body->setUserPointer(userP);
+}
+
+
 //*---------------------------------------------------------------------------------------
 //*【?】リジッドボディの作成
 //*
@@ -685,6 +711,8 @@ void PhysicsEngine::UnregisterRigidBody(const PhysicsData::PhysicsBodyHandle& ha
     btMotionState* motionState = rigidBody->getMotionState();
     btCollisionShape* shape = rigidBody->getCollisionShape();
     
+    rigidBody->setUserPointer(nullptr);
+
     // リジッドボディをワールドから除外し削除
     m_pWorld->removeRigidBody(rigidBody);
     delete rigidBody;
