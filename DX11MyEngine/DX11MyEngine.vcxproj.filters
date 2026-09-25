@@ -930,6 +930,9 @@
     <ClCompile Include="Source\Cpp\Component_RigidBody.cpp">
       <Filter>ソース ファイル\Engine\BaseComponent\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\ConstantPhysicsData.cpp">
+      <Filter>ソース ファイル\Constant</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">

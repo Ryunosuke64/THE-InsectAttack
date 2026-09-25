@@ -48,8 +48,8 @@ bool PhysicsEngine::Setup()
     // 衝突判定の設定
     m_pConfig = std::make_unique<btDefaultCollisionConfiguration>();
 
-    // 衝突判定を管理
-    m_pDispatcher = std::make_unique < btCollisionDispatcher>(m_pConfig.get());
+    // 衝突判定を管理（自分で定義したやつ）
+    m_pDispatcher = std::make_unique <MyCollisionDispatcher>(m_pConfig.get());
 
     // GImpactの登録
     btGImpactCollisionAlgorithm::registerAlgorithm(
@@ -135,6 +135,16 @@ void PhysicsEngine::Update(float deltaTime)
 {
     m_pWorld->stepSimulation(deltaTime);
 
+    CollectContacts();
+    DispatchEvents();
+
+    // 前フレームの情報として保持
+    m_PrevCollisionPairs = std::move(m_CrntCollisionPairs);
+    m_PrevTriggerPairs = std::move(m_CrntTriggerPairs);
+
+    // 現在フレームの情報はクリア
+    m_CrntCollisionPairs.clear();
+    m_CrntTriggerPairs.clear();
 }
 
 //*---------------------------------------------------------------------------------------
@@ -1255,4 +1265,196 @@ CheckSphere(
     }
 
     return resultGameObjects;
+}
+
+
+
+//*-----------------------------------------------------------------------------------------
+//*【?】接触ペアを作る
+//*-----------------------------------------------------------------------------------------
+CollisionPair PhysicsEngine::
+MakePair(const btCollisionObject* a, const btCollisionObject* b)
+{
+    // [b] が [a]より小さいなら順番を入れ替える
+    // 同じペア同士で判定をさせない
+    // 例:(A, B) と (B, A)は同じオブジェクト同士なのに、
+    // 別のペアとして扱われてしまうため、順番をそろえる
+    if (std::less<const btCollisionObject*>{}(b, a))
+    {
+        std::swap(a, b);
+    }
+
+    return { a,b };
+}
+
+
+//*-----------------------------------------------------------------------------------------
+//*【?】指定オブジェクトに対応するコライダーを取得する
+//*-----------------------------------------------------------------------------------------
+Collider* PhysicsEngine::
+GetCollider(const btCollisionObject* object)
+{
+    if (object == nullptr) { 
+        return nullptr; 
+    }
+
+    int index = object->getUserIndex();
+
+    // 範囲外チェック
+    if (index < 0 || index >= m_RigidBodies.size())
+    {
+        return nullptr;
+    }
+
+    // コライダー取得
+    if (auto collider = m_RigidBodies[index].collider.lock())
+    {
+        return collider.get();
+    }
+
+    return nullptr;
+}
+
+
+//*-----------------------------------------------------------------------------------------
+//*【?】現在フレームの接触ペアを収集
+//* 
+//* [***** btPersistentManifold *****]
+//*  接触情報のキャッシュで、最大4つの衝突点情報を持っている
+//*  4つ以上、衝突点がある場合は、めり込み具合などで絞られる
+//*  [btManifoldPoint]に衝突点情報が入っている
+//* 
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::CollectContacts()
+{
+    // 接触情報の数を取得
+    int manifoldCount = m_pDispatcher->getNumManifolds();
+
+    for (int i = 0; i < manifoldCount; i++)
+    {
+        // Manifoldの取得
+        btPersistentManifold* manifold = m_pDispatcher->getManifoldByIndexInternal(i);
+
+        const btCollisionObject* objectA = manifold->getBody0();
+        const btCollisionObject* objectB = manifold->getBody1();
+
+        bool isContact = false;
+
+        // 衝突点の数分
+        for (int j = 0; j < manifold->getNumContacts(); j++)
+        {
+            // 衝突点情報の取得
+            const btManifoldPoint& point = manifold->getContactPoint(j);
+
+            // 2つのオブジェクトが、どれくらいめり込んでいるか
+            // 古いキャッシュが残っており、接触していない可能性があるため、念のため確かめる
+            // 有効な接触点があれば、ブレイクする
+            if (point.getDistance() <= 0.0f)
+            {
+                isContact = true;
+                break;
+            }
+        }
+
+        // 接触点が一つもなかった場合は飛ばす
+        if (!isContact)
+        {
+            continue;
+        }
+
+        // ペアを作る
+        CollisionPair pair = MakePair(objectA, objectB);
+
+        // オブジェクトからコライダーを取得する
+        Collider* colliderA = GetCollider(objectA);
+        Collider* colliderB = GetCollider(objectB);
+
+        // コライダーがなければ飛ばす
+        if (!colliderA || !colliderB)
+        {
+            continue;
+        }
+
+        //
+        // トリガーとコリジョン、それぞれ衝突しているペアを記録
+        //
+        if (colliderA->get_IsTrigger() || colliderB->get_IsTrigger())
+        {
+            m_CrntTriggerPairs.insert(pair);
+        }
+        else
+        {
+            m_CrntCollisionPairs.insert(pair);
+        }
+    }
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】イベントの発行をする
+//*-----------------------------------------------------------------------------------------
+void PhysicsEngine::DispatchEvents()
+{
+    //=========================================================================================
+    //
+    //						コリジョンイベント
+    //
+    //=========================================================================================
+    for (auto& pair : m_CrntCollisionPairs)
+    {
+        // 前フレームにないなら、衝突した瞬間になる
+        if(!m_PrevCollisionPairs.contains(pair))
+        {
+            int indexA = pair.a->getUserIndex();
+            int indexB = pair.b->getUserIndex();
+                
+            GameObject* gameObjectA = m_RigidBodies[indexA].owner.lock().get();
+            GameObject* gameObjectB = m_RigidBodies[indexB].owner.lock().get();
+
+            CollisionInfo info;
+            gameObjectA->OnCollisionEnter(info);
+        }
+        // 前フレームでも衝突しているなら、衝突中になる
+        else
+        {
+
+        }
+    }
+
+    for (auto& pair : m_PrevCollisionPairs)
+    {
+        // 今回フレームにないなら、衝突から抜けた瞬間になる
+        if (!m_CrntCollisionPairs.contains(pair))
+        {
+
+        }
+    }
+
+
+    //=========================================================================================
+    //
+    //						トリガーイベント
+    //
+    //=========================================================================================
+    for (auto& pair : m_CrntTriggerPairs)
+    {
+        // 前フレームにないなら、衝突した瞬間になる
+        if (!m_PrevTriggerPairs.contains(pair))
+        {
+
+        }
+        // 前フレームでも衝突しているなら、衝突中になる
+        else
+        {
+
+        }
+    }
+
+    for (auto& pair : m_PrevTriggerPairs)
+    {
+        // 今回フレームにないなら、衝突から抜けた瞬間になる
+        if (!m_CrntTriggerPairs.contains(pair))
+        {
+
+        }
+    }
 }

@@ -437,6 +437,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Component_Render.cpp" />
     <ClCompile Include="Source\Cpp\Component_RigidBody.cpp" />
     <ClCompile Include="Source\Cpp\Component_SpotLight.cpp" />
+    <ClCompile Include="Source\Cpp\ConstantPhysicsData.cpp" />
     <ClCompile Include="Source\Cpp\c_Game_Config.cpp" />
     <ClCompile Include="Source\Cpp\c_Game_Manual.cpp" />
     <ClCompile Include="Source\Cpp\c_MissionSelect_DifficultSelect.cpp" />

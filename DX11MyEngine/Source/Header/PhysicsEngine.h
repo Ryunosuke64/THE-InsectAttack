@@ -19,7 +19,7 @@ class PhysicsEngine
 {
 private:
 	std::unique_ptr<class btDefaultCollisionConfiguration> m_pConfig;
-	std::unique_ptr<class btCollisionDispatcher> m_pDispatcher;
+	std::unique_ptr<class btCollisionDispatcher> m_pDispatcher;			// Bulletが見つけた衝突候補について、どのような衝突判定処理を行うか管理し、結果のManifoldを保持するもの
 	std::unique_ptr<class btBroadphaseInterface> m_pBroadphase;
 	std::unique_ptr<class btSequentialImpulseConstraintSolver> m_pSolver;
 	std::unique_ptr<class btDiscreteDynamicsWorld> m_pWorld;
@@ -27,6 +27,11 @@ private:
 	btAlignedObjectArray<PhysicsData::RigidBodySlot>m_RigidBodies;	// リジッドボディのポインタを保持
 	btAlignedObjectArray <class btCollisionShape* > m_CollisionShapes;	// リジッドボディのポインタを保持
 	
+	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_PrevCollisionPairs;
+	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_CrntCollisionPairs;
+	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_PrevTriggerPairs;
+	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_CrntTriggerPairs;
+
 public:
 	PhysicsEngine();
 	~PhysicsEngine();
@@ -87,6 +92,10 @@ private:
 	PhysicsEngine& operator=(const PhysicsEngine&) = delete;
 	// ------------------------------------------------------
 
+	PhysicsData::CollisionPair MakePair(const btCollisionObject* a, const btCollisionObject* b);
+	class Collider* GetCollider(const btCollisionObject* object);
+	void CollectContacts();	// 現在フレームの接触ペアを収集
+	void DispatchEvents();	// イベントの発行をする
 
 
 	class btBoxShape* CreateShapeBox(const VECTOR3::VEC3& boxHalfExtents);

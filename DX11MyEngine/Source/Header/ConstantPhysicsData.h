@@ -175,6 +175,36 @@ namespace PhysicsData
 		std::weak_ptr<class Collider> collider;
 	};
 
+
+	/// <summary>
+	/// 衝突判定ペア
+	/// </summary>
+	struct CollisionPair
+	{
+		const btCollisionObject* a;
+		const btCollisionObject* b;
+
+		bool operator ==(const CollisionPair& other)const
+		{
+			return a == other.a &&
+				   b == other.b;
+		};
+	};
+
+	/// <summary>
+	/// 衝突ペアのためのハッシュ値
+	/// </summary>
+	struct CollisionPairHash
+	{
+		size_t operator()(const CollisionPair& pair)const
+		{
+			size_t h1 = std::hash<const btCollisionObject*>{}(pair.a);
+			size_t h2 = std::hash<const btCollisionObject*>{}(pair.b);
+
+			return h1 ^ (h2 << 1);
+		}
+	};
+
 	// ***************************************************************************************
 	// ---------------------------------------------------------------------------------------
 	/* --- @:SphereContactCallback Class --- */
@@ -239,20 +269,19 @@ namespace PhysicsData
 	{
 	private:
 
-
 	public:
 		MyCollisionDispatcher(btCollisionConfiguration* config)
 			: btCollisionDispatcher(config)
 		{
 		}
 
-
-		// こちら側で定義
+		// こちら側で衝突制御の定義
 		bool needsResponse(
 			const btCollisionObject* body0,
-			const btCollisionObject* body1) override
-		{
-			PhysicsUserData* userData = static_cast<PhysicsUserData*>(body0->getUserPointer());
-		};
+			const btCollisionObject* body1) override;		
+		
+		bool needsCollision(
+			const btCollisionObject* body0,
+			const btCollisionObject* body1) override;
 	};
 };
