@@ -1197,10 +1197,10 @@ Raycast(
         auto &hitCollider = m_RigidBodies[index].collider;
 
         // ƒqƒbƒgî•ñ‚É“ü‚ê‚é
-        _hitInfo->set_HitPoint(hitPoint);
-        _hitInfo->set_HitNormal(hitNormal);
-        _hitInfo->set_HitObject(hitObj);
-        _hitInfo->set_HitCollider(hitCollider);
+        _hitInfo->hitPoint = hitPoint;
+        _hitInfo->hitNormal = hitNormal;
+        _hitInfo->hitObject = hitObj;
+        _hitInfo->hitCollider = hitCollider;
 
         return true;
     }
@@ -1339,6 +1339,8 @@ void PhysicsEngine::CollectContacts()
         const btCollisionObject* objectB = manifold->getBody1();
 
         bool isContact = false;
+        CollisionInfo info;
+        int contactIndex = 0;
 
         // Õ“Ë“_‚Ì”•ª
         for (int j = 0; j < manifold->getNumContacts(); j++)
@@ -1352,6 +1354,13 @@ void PhysicsEngine::CollectContacts()
             if (point.getDistance() <= 0.0f)
             {
                 isContact = true;
+                info.contactCount++;
+                info.contacts[contactIndex].position;
+                info.contacts[contactIndex].normal;
+                info.contacts[contactIndex].penetrationDepth;
+
+                contactIndex++;
+
                 break;
             }
         }
@@ -1406,7 +1415,14 @@ void PhysicsEngine::DispatchEvents()
         {
             int indexA = pair.a->getUserIndex();
             int indexB = pair.b->getUserIndex();
-                
+
+            if (indexA < 0 || m_RigidBodies.size() <= indexA ||
+                indexB < 0 || m_RigidBodies.size() <= indexB)
+            {
+                assert(false);
+                continue;
+            }
+
             GameObject* gameObjectA = m_RigidBodies[indexA].owner.lock().get();
             GameObject* gameObjectB = m_RigidBodies[indexB].owner.lock().get();
 

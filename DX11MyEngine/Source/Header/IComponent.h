@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "ConstantPhysicsData.h"
 
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
@@ -26,12 +27,12 @@ public:
 	virtual void Draw(RendererEngine &renderer) {};		 // 描画処理
 	
 	/* 当たり判定関連 */
-	virtual void OnCollisionEnter(const class CollisionInfo &_other) {} // 当たった瞬間
-	virtual void OnCollisionStay(const class CollisionInfo &_other) {}	// 当たっている間
-	virtual void OnCollisionExit(const class CollisionInfo &_other) {}	// 離れた瞬間
-	virtual void OnTriggerEnter(const class CollisionInfo &_other) {}	// トリガー 当たった瞬間
-	virtual void OnTriggerStay(const class CollisionInfo& _other) {}	// トリガー 当たっている間
-	virtual void OnTriggerExit(const class CollisionInfo& _other) {}	// トリガー 離れた瞬間
+	virtual void OnCollisionEnter(const PhysicsData::CollisionInfo &_other) {} // 当たった瞬間
+	virtual void OnCollisionStay(const PhysicsData::CollisionInfo &_other) {}	// 当たっている間
+	virtual void OnCollisionExit(const PhysicsData::CollisionInfo &_other) {}	// 離れた瞬間
+	virtual void OnTriggerEnter(const PhysicsData::CollisionInfo &_other) {}	// トリガー 当たった瞬間
+	virtual void OnTriggerStay(const PhysicsData::CollisionInfo& _other) {}	// トリガー 当たっている間
+	virtual void OnTriggerExit(const PhysicsData::CollisionInfo& _other) {}	// トリガー 離れた瞬間
 
 	/// <summary>
 	// 表示するかどうか（レンダラーなどで使う）

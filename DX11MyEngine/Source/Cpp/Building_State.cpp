@@ -59,8 +59,8 @@ int Building_IdleState::Update(BuildingController* pOwner)
 	if (pOwner->get_IsOnDamage())
 	{
 		const auto transform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
-		VEC3 pos = healthComp->get_CollisionInfo().get_HitPoint();
-		VEC3 hitNormal = healthComp->get_CollisionInfo().get_HitNormal();	// Õ“Ë–@ü
+		VEC3 pos = healthComp->get_CollisionInfo().hitPoint;
+		VEC3 hitNormal = healthComp->get_CollisionInfo().hitNormal;	// Õ“Ë–@ü
 		VEC3 effectRotAxis = VEC3(0.0f);
 		float effectRotAngle = 0;
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "ConstantBulletData.h"
-#include "CollisionInfo.h"
+#include "ConstantPhysicsData.h"
 
 struct MoveParam;
 
@@ -28,13 +28,13 @@ namespace BulletBehaviour
         BulletData::RuntimeState& _runtime,
         const BulletData::CommonConfig& _common,
         const BulletData::DirectHitConfig& _hitData,
-        const CollisionInfo& _collision,
+        const PhysicsData::CollisionInfo& _collision,
         class RendererEngine& _renderer);
 
     BulletData::BulletHitResult OnHit(
         BulletData::RuntimeState& runtime,
         const BulletData::CommonConfig& _common,
         const BulletData::ExplosionHitConfig& _hitData,
-        const CollisionInfo& _collision,
+        const PhysicsData::CollisionInfo& _collision,
         class RendererEngine& _renderer);
 };

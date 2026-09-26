@@ -2,6 +2,7 @@
 //#include "Object.h"
 #include "Component_Transform.h"
 #include "Component_RectTransform.h"
+#include "ConstantPhysicsData.h"
 
 
 enum class OBJECT_CATEGORY
@@ -65,12 +66,12 @@ public:
 	virtual void Update(RendererEngine& renderer) {};
 	virtual void Draw(RendererEngine& renderer) {};
 
-	void OnCollisionEnter(const class CollisionInfo& _other);	// “–‚½‚Á‚½uŠÔ
-	//void OnCollisionStay(const class CollisionInfo& _other);	// “–‚½‚Á‚Ä‚¢‚éŠÔ
-	//void OnCollisionExit(const class CollisionInfo& _other);	// —£‚ê‚½uŠÔ
-	void OnTriggerEnter(const class CollisionInfo& _other);		// ƒgƒŠƒK[ “–‚½‚Á‚½uŠÔ
-	//void OnTriggerStay(const class CollisionInfo& _other);		// ƒgƒŠƒK[ “–‚½‚Á‚Ä‚¢‚éŠÔ
-	//void OnTriggerExit(const class CollisionInfo& _other);		// ƒgƒŠƒK[ —£‚ê‚½uŠÔ
+	void OnCollisionEnter(const PhysicsData::CollisionInfo& _other);	// “–‚½‚Á‚½uŠÔ
+	void OnCollisionStay(const  PhysicsData::CollisionInfo& _other);	// “–‚½‚Á‚Ä‚¢‚éŠÔ
+	void OnCollisionExit(const  PhysicsData::CollisionInfo& _other);	// —£‚ê‚½uŠÔ
+	void OnTriggerEnter(const   PhysicsData::CollisionInfo& _other);		// ƒgƒŠƒK[ “–‚½‚Á‚½uŠÔ
+	void OnTriggerStay(const    PhysicsData::CollisionInfo& _other);		// ƒgƒŠƒK[ “–‚½‚Á‚Ä‚¢‚éŠÔ
+	void OnTriggerExit(const    PhysicsData::CollisionInfo& _other);		// ƒgƒŠƒK[ —£‚ê‚½uŠÔ
 
 	/* Ã“Iƒtƒ‰ƒO */
 	bool get_IsStatic()const { return m_IsStatic; }

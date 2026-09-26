@@ -79,7 +79,7 @@ public:
 	void LateUpdate(RendererEngine& renderer) override;	// 更新
 	void Update(RendererEngine& renderer) override;		// 更新
 	void Draw(RendererEngine& renderer) override;		// 描画
-	void OnCollisionEnter(const class CollisionInfo &_other)override;	// 衝突時処理
+	void OnCollisionEnter(const PhysicsData::CollisionInfo &_other)override;	// 衝突時処理
 	void set_EnemyData(const EnemyData::BaseEnemyData* _enemyData) { m_pEnemyData = _enemyData; }	// エネミーデータの設定
 	const EnemyData::BaseEnemyData* get_EnemyData()const;
 

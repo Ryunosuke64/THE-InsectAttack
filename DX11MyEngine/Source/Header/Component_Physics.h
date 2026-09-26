@@ -37,7 +37,7 @@ public:
 
     void Start(RendererEngine& renderer) override;		// ‰Šú‰»
     void Update(RendererEngine& renderer) override;
-    void OnCollisionEnter(const CollisionInfo& info) override;
+    void OnCollisionEnter(const PhysicsData::CollisionInfo& info) override;
 
     /// <summary> —Í‚ğ‰Á‚¦‚é </summary>
     void AddForce(const VECTOR3::VEC3& _force);

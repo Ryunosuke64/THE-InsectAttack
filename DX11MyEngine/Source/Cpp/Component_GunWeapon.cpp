@@ -18,6 +18,7 @@
 #include "CollisionInfo.h"
 
 using namespace DirectX;
+using namespace PhysicsData;
 using namespace GIGA_Engine;
 using namespace Input;
 using namespace VECTOR4;
@@ -173,7 +174,7 @@ void GunWeapon::LateUpdate(RendererEngine& renderer)
         // レイキャストして当たった位置にレーザーポインタを置く
         if (Master::m_pCollisionManager->CheckRaycast(ray, hitMask, &hitInfo))
         {
-			laserPointPos = hitInfo.get_HitPoint(); // 少し浮かせる
+			laserPointPos = hitInfo.hitPoint; // 少し浮かせる
         }
 
         laserPoint->get_Transform().lock()->set_Pos(laserPointPos);

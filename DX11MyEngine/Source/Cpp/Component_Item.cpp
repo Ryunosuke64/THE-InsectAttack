@@ -86,9 +86,9 @@ void Item::Update(RendererEngine& renderer)
 //* [•Ô’l]
 //* void
 //*----------------------------------------------------------------------------------------
-void Item::OnTriggerEnter(const class CollisionInfo& _other)
+void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 {
-	auto hitObj = _other.get_HitObject().lock();
+	auto hitObj = _other.hitObject.lock();
 	if (!hitObj){
 		return;
 	}
@@ -129,7 +129,7 @@ void Item::OnTriggerEnter(const class CollisionInfo& _other)
 //* [•Ô’l]
 //* void
 //*----------------------------------------------------------------------------------------
-void Item::OnCollisionEnter(const class CollisionInfo& _other)
+void Item::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
 {
 
 }

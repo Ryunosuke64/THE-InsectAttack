@@ -20,6 +20,7 @@
 
 
 using namespace GIGA_Engine;
+using namespace PhysicsData;
 using namespace UtilityData;
 using namespace VECTOR3;
 using namespace VECTOR4;
@@ -189,7 +190,7 @@ namespace BulletBehaviour
         BulletData::RuntimeState& _runtime,
         const BulletData::CommonConfig& _common,
         const BulletData::DirectHitConfig& _hitData,
-        const CollisionInfo& _collision,
+        const PhysicsData::CollisionInfo& _collision,
         class RendererEngine& _renderer)
     {
         BulletHitResult result;
@@ -197,9 +198,9 @@ namespace BulletBehaviour
         //*****************************************************************************************
         //						衝突した際の処理
         //*****************************************************************************************
-        auto hitObj = _collision.get_HitObject().lock();
+        auto hitObj = _collision.hitObject.lock();
         if (!hitObj) return result;
-        COLLISION_CATEGORY hitCategory = _collision.get_HitCollider().lock()->get_CollisionCategory();
+        COLLISION_CATEGORY hitCategory = _collision.hitCollider.lock()->get_CollisionCategory();
 
         // 相手がHealthComponentを持っているか確認（破壊可能な建物は壊せないように）
         auto health = hitObj->get_Component<Health>();
@@ -207,7 +208,6 @@ namespace BulletBehaviour
         {
             // 弾が保持しているダメージ値を渡す
             health->TakeDamage(_common._damage, _collision);
-
         }
 
         //*****************************************************************************************
@@ -298,8 +298,8 @@ namespace BulletBehaviour
         VEC3 pos = transform->get_VEC3ToPos();
 
 
-        VEC3 hitNormal = _collision.get_HitNormal();    // 衝突相手の法線
-        VEC3 hitPoint = _collision.get_HitPoint();      // 衝突位置
+        VEC3 hitNormal = _collision.hitNormal;    // 衝突相手の法線
+        VEC3 hitPoint = _collision.hitPoint;      // 衝突位置
 
         // 水平方向の向きを求める
         float yaw = atan2(hitNormal.x, hitNormal.z);
@@ -387,7 +387,7 @@ namespace BulletBehaviour
         BulletData::RuntimeState& runtime,
         const BulletData::CommonConfig& _common,
         const BulletData::ExplosionHitConfig& _hitData,
-        const CollisionInfo& _collision,
+        const PhysicsData::CollisionInfo& _collision,
         class RendererEngine& _renderer)
     {
         BulletHitResult result;
@@ -412,8 +412,8 @@ namespace BulletBehaviour
         Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::EXPLOSION01), crntPos, 1500.0f);
 
 
-        VEC3 hitNormal = _collision.get_HitNormal();    // 衝突相手の法線
-        VEC3 hitPoint = _collision.get_HitPoint();      // 衝突位置
+        VEC3 hitNormal = _collision.hitNormal;    // 衝突相手の法線
+        VEC3 hitPoint = _collision.hitPoint;      // 衝突位置
 
         // 水平方向の向きを求める
         float angleY = atan2(hitNormal.x, hitNormal.z);

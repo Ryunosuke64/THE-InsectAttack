@@ -13,6 +13,7 @@
 #include "CollisionInfo.h"
 #include "ConstantUtilityData.h"
 
+using namespace PhysicsData;
 using namespace UtilityData;
 using namespace Input;
 using namespace VECTOR3;
@@ -513,14 +514,9 @@ void PlayerController::RollingUpdate()
 //* [返値]
 //* void
 //*----------------------------------------------------------------------------------------
-void PlayerController::OnCollisionEnter(const class CollisionInfo &other)
+void PlayerController::OnCollisionEnter(const PhysicsData::CollisionInfo &other)
 {
-	if (other.get_HitObject().lock()->get_Tag() == "Ant")
-	{
-		//m_pHealthComp.lock()->TakeDamage(1.0f);
-	}
-
-	VEC3 normal = other.get_HitNormal();
+	VEC3 normal = other.hitNormal;
 
 	// 法線のY成分が一定以上（例：0.7f以上で約45度以下の坂）なら床とみなす
 	if (normal.y < -0.7f)

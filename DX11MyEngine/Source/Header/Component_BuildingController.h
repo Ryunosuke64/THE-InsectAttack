@@ -32,7 +32,7 @@ public:
 
 	void Start(RendererEngine& renderer) override;	// 初期化
 	void Update(RendererEngine& renderer) override;	// 更新
-	void OnCollisionEnter(const class CollisionInfo& _other)override;
+	void OnCollisionEnter(const PhysicsData::CollisionInfo& _other)override;
 
 	bool get_IsDestruction()const { return m_IsDestruction; }	// 破壊されたかどうかの取得
 	bool get_IsOnDamage()const { return m_IsOnDamage; };			// ダメージを受けたかどうかの取得

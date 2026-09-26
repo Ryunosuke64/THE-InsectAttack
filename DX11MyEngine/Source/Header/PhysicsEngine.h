@@ -81,7 +81,7 @@ public:
 	class btCollisionShape* CreateShape(const PhysicsData::GImpactShapeDesc& desc);
 	class btCollisionShape* CreateShape(const PhysicsData::BvhTriangleShapeDesc& desc);
 
-	bool Raycast(const CollInData_Ray& ray, unsigned group, unsigned mask, class CollisionInfo* _hitInfo);
+	bool Raycast(const CollInData_Ray& ray, unsigned group, unsigned mask, PhysicsData::CollisionInfo* _hitInfo);
 	std::vector<std::weak_ptr<GameObject>> CheckSphere(
 		const VECTOR3::VEC3& position,
 		float radius,

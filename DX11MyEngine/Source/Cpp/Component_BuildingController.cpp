@@ -81,7 +81,7 @@ void BuildingController::Update(RendererEngine& renderer)
 //* &_other : Õ“Ë‘Šè‚Ìî•ñ
 //* [•Ô’l]‚È‚µ
 //*----------------------------------------------------------------------------------------
-void BuildingController::OnCollisionEnter(const class CollisionInfo& _other)
+void BuildingController::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
 {
 
 }

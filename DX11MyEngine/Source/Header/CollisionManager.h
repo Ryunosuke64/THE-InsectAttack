@@ -170,7 +170,7 @@ public:
     /// <param name="_transB">Bトランスフォーム</param>
     /// <param name="info">data格納先</param>
     /// <returns>衝突したか</returns>
-    bool HitCheck(std::shared_ptr<class Collider> _colA,std::shared_ptr<class Collider> _colB, std::shared_ptr<class MyTransform> _transA,std::shared_ptr<class MyTransform> _transB, class CollisionInfo* info);
+    bool HitCheck(std::shared_ptr<class Collider> _colA,std::shared_ptr<class Collider> _colB, std::shared_ptr<class MyTransform> _transA,std::shared_ptr<class MyTransform> _transB, PhysicsData::CollisionInfo* info);
     
     /// <summary>
     /// レイキャスト判定
@@ -180,7 +180,7 @@ public:
     /// <param name="_ray">レイ情報</param>
     /// <param name="_outHitInfo">data格納先</param>
     /// <returns>衝突したか</returns>
-    bool HitCheck_Raycast(std::shared_ptr<class Collider> _collider,  std::shared_ptr<class MyTransform> _transform, const CollInData_Ray& _ray, float *_outDist, class CollisionInfo* _outHitInfo);
+    bool HitCheck_Raycast(std::shared_ptr<class Collider> _collider,  std::shared_ptr<class MyTransform> _transform, const CollInData_Ray& _ray, float *_outDist, PhysicsData::CollisionInfo* _outHitInfo);
 
     /// <summary>
     /// 範囲内のオブジェクトを取得する
@@ -194,19 +194,19 @@ public:
     /// <param name="_ray"></param>
     /// <param name="_outHitInfo"></param>
     /// <returns></returns>
-    bool CheckRaycast(const CollInData_Ray& _ray,int _mask, class CollisionInfo* _outHitInfo);
+    bool CheckRaycast(const CollInData_Ray& _ray,int _mask, PhysicsData::CollisionInfo* _outHitInfo);
 
     //*****************************************************************************************
     //						 3D 
     //*****************************************************************************************
     // 箱と箱 物理的判定
-    bool HitCheck_BoxVsBox_Physics(const CollInData_AABB &_src, const CollInData_AABB &_dst, class CollisionInfo *info);
+    bool HitCheck_BoxVsBox_Physics(const CollInData_AABB &_src, const CollInData_AABB &_dst, PhysicsData::CollisionInfo *info);
 
     // 箱と箱
     bool HitCheck_BoxVsBox(const CollInData_AABB &_src, const CollInData_AABB &_dst);
     
     // 箱と箱（OBB）
-    bool HitCheck_OBBVsOBB(const CollInData_OBB &_src, const CollInData_OBB&_dst, class CollisionInfo* _hitInfo);
+    bool HitCheck_OBBVsOBB(const CollInData_OBB &_src, const CollInData_OBB&_dst, PhysicsData::CollisionInfo* _hitInfo);
 
     // 箱と点
     bool HitCheck_BoxVsPoint(const CollInData_AABB &box, const VECTOR3::VEC3& _p);    
@@ -222,16 +222,16 @@ public:
     //						 レイキャスト 
     //*****************************************************************************************
     // 平面とレイ
-    bool HitCheck_PlaneVsRay(const CollInData_Plane& _plane, const CollInData_Ray& _ray, class CollisionInfo* _hitInfo );
+    bool HitCheck_PlaneVsRay(const CollInData_Plane& _plane, const CollInData_Ray& _ray, PhysicsData::CollisionInfo* _hitInfo );
     
     // 箱とレイ
-    bool HitCheck_BoxVsRay(const CollInData_AABB& _box, const CollInData_Ray& _ray, class CollisionInfo* _hitInfo);
+    bool HitCheck_BoxVsRay(const CollInData_AABB& _box, const CollInData_Ray& _ray, PhysicsData::CollisionInfo* _hitInfo);
     
 	// 三角形とレイ
 	bool HitCheck_TraiangleVsRay(const CollInData_Triangle& _triangle, const CollInData_Ray& _ray, float& u, float& v, float& t);
 
     // 球とレイ
-    bool HitCheck_SphereVsRay(const CollInData_Sphere& _sphere, const CollInData_Ray& _ray, class CollisionInfo* _hitInfo );
+    bool HitCheck_SphereVsRay(const CollInData_Sphere& _sphere, const CollInData_Ray& _ray, PhysicsData::CollisionInfo* _hitInfo );
 
     // 平面と線分
     bool HitCheck_PlaneVsSegment(const CollInData_Plane& _plane, const CollInData_Segment& _segment);

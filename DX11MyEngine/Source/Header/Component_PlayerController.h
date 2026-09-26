@@ -165,7 +165,7 @@ public:
 
 	void RollingUpdate();	// ローリング更新
 
-	void OnCollisionEnter(const class CollisionInfo &other)override;
+	void OnCollisionEnter(const PhysicsData::CollisionInfo &other)override;
 
 	void Reset();	// パラメータ等をリセットする（ゲームの終了時などに呼ぶ）
 

@@ -100,7 +100,7 @@ void Health::TakeDamage(const float _dmg)
 //* [•Ô’l]
 //* ‚È‚µ 
 //*----------------------------------------------------------------------------------------
-void Health::TakeDamage(const float _dmg, const CollisionInfo& _collInfo)
+void Health::TakeDamage(const float _dmg, const PhysicsData::CollisionInfo& _collInfo)
 {
     if (m_IsDead) {
         return;

@@ -140,9 +140,9 @@ void Physics::Update(RendererEngine& renderer)
 //* &info : 衝突情報
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void Physics::OnCollisionEnter(const CollisionInfo& info)
+void Physics::OnCollisionEnter(const PhysicsData::CollisionInfo& info)
 {
-    VEC3 hitNorm = -info.get_HitNormal();
+    VEC3 hitNorm = -info.hitNormal;
 
     // 現在の進行方向と、ぶつかった面の法線の内積
     float dot_VelocityAndNormal = VEC3::Dot(m_Velocity, hitNorm);

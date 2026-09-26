@@ -10,6 +10,7 @@
 #include <chrono>
 
 using namespace UtilityData;
+using namespace PhysicsData;
 using namespace VECTOR3;
 
 namespace
@@ -243,7 +244,7 @@ void CollisionManager::CollisionProcess()
                     VEC3 currentPos;    // 押し出し反映用
 
                     // 押し出すベクトル = 法線 * めり込み量
-                    pushVector = info.get_HitNormal() * info.get_PenetrationDepth();
+                    pushVector = info.hitNormal * info.penetrationDepth;
 
                     // 静的オブジェクトの場合は0.0にする（押し出さない）
                     // 押し出し比率
@@ -273,15 +274,15 @@ void CollisionManager::CollisionProcess()
 
                 // Bと衝突したことをAオブジェクト側に伝える
                 CollisionInfo infoA = info;
-                infoA.set_HitObject(colB->get_OwnerObj());
-                infoA.set_HitCollider(colB);
-                infoA.set_HitNormal(-info.get_HitNormal()); // そのままだとぶつかった側の押し出し法線なので、法線を反転させる
+                infoA.hitObject = colB->get_OwnerObj();
+                infoA.hitCollider = colB;
+                infoA.hitNormal = -info.hitNormal; // そのままだとぶつかった側の押し出し法線なので、法線を反転させる
 
 
                 // Aと衝突したことをBオブジェクト側に伝える
                 CollisionInfo infoB = info;
-                infoB.set_HitObject(colA->get_OwnerObj());
-                infoB.set_HitCollider(colA);
+                infoB.hitObject  = colA->get_OwnerObj();
+                infoB.hitCollider = colA;
 
                 // Responseに応じてイベントを通知
                 const auto eventNotificationStart = std::chrono::steady_clock::now();
@@ -465,21 +466,21 @@ bool CollisionManager::HitCheck(
 
             if (overlapX <= overlapY && overlapX <= overlapZ)
             {
-                info->set_PenetrationDepth(overlapX);
+                info->penetrationDepth = overlapX;
                 normal = (centerA.x < centerB.x) ? VEC3(-1.0f, 0.0f, 0.0f) : VEC3(1.0f, 0.0f, 0.0f);
             }
             else if (overlapY <= overlapZ)
             {
-                info->set_PenetrationDepth(overlapY);
+                info->penetrationDepth = overlapY;
                 normal = (centerA.y < centerB.y) ? VEC3(0.0f, -1.0f, 0.0f) : VEC3(0.0f, 1.0f, 0.0f);
             }
             else
             {
-                info->set_PenetrationDepth(overlapZ);
+                info->penetrationDepth = overlapZ;
                 normal = (centerA.z < centerB.z) ? VEC3(0.0f, 0.0f, -1.0f) : VEC3(0.0f, 0.0f, 1.0f);
             }
 
-            info->set_HitNormal(normal);
+            info->hitNormal  = normal;
 
             return true;
         }
@@ -525,21 +526,21 @@ bool CollisionManager::HitCheck(
 
             if (overlapX <= overlapY && overlapX <= overlapZ)
             {
-                info->set_PenetrationDepth(overlapX);
+                info->penetrationDepth  = overlapX;
                 normal = (centerA.x < centerB.x) ? VEC3(-1.0f, 0.0f, 0.0f) : VEC3(1.0f, 0.0f, 0.0f);
             }
             else if (overlapY <= overlapZ)
             {
-                info->set_PenetrationDepth(overlapY);
+                info->penetrationDepth = overlapY;
                 normal = (centerA.y < centerB.y) ? VEC3(0.0f, -1.0f, 0.0f) : VEC3(0.0f, 1.0f, 0.0f);
             }
             else
             {
-                info->set_PenetrationDepth(overlapZ);
+                info->penetrationDepth = overlapZ;
                 normal = (centerA.z < centerB.z) ? VEC3(0.0f, 0.0f, -1.0f) : VEC3(0.0f, 0.0f, 1.0f);
             }
 
-            info->set_HitNormal(normal);
+            info->hitNormal = normal;
 
 
             return true;
@@ -588,21 +589,21 @@ bool CollisionManager::HitCheck(
 
             if (overlapX <= overlapY && overlapX <= overlapZ)
             {
-                info->set_PenetrationDepth(overlapX);
+                info->penetrationDepth = overlapX;
                 normal = (centerA.x < centerB.x) ? VEC3(-1.0f, 0.0f, 0.0f) : VEC3(1.0f, 0.0f, 0.0f);
             }
             else if (overlapY <= overlapZ)
             {
-                info->set_PenetrationDepth(overlapY);
+                info->penetrationDepth = overlapY;
                 normal = (centerA.y < centerB.y) ? VEC3(0.0f, -1.0f, 0.0f) : VEC3(0.0f, 1.0f, 0.0f);
             }
             else
             {
-                info->set_PenetrationDepth(overlapZ);
+                info->penetrationDepth = overlapZ;
                 normal = (centerA.z < centerB.z) ? VEC3(0.0f, 0.0f, -1.0f) : VEC3(0.0f, 0.0f, 1.0f);
             }
 
-            info->set_HitNormal(normal);
+            info->hitNormal = normal;
 
 
             return true;
@@ -635,7 +636,7 @@ bool CollisionManager::HitCheck_Raycast(
     std::shared_ptr<class MyTransform> _transform, 
     const CollInData_Ray& _ray, 
     float* _outDistSq,
-    class CollisionInfo* _outHitInfo)
+    CollisionInfo* _outHitInfo)
 {
     bool isHit = false;
     COLLIDER_TYPE type = _collider->get_ColliderType();
@@ -659,11 +660,11 @@ bool CollisionManager::HitCheck_Raycast(
         if (HitCheck_BoxVsRay(dataAABB, _ray, _outHitInfo))
         {
 			// 衝突したコライダーとオブジェクトを保存
-			_outHitInfo->set_HitCollider(_collider);
-			_outHitInfo->set_HitObject(_collider->get_OwnerObj());
+			_outHitInfo->hitCollider = _collider;
+            _outHitInfo->hitObject = _collider->get_OwnerObj();
 
 			// 衝突したコライダーへの距離を保存
-			*_outDistSq = (_outHitInfo->get_HitPoint() - _ray._point).LengthSq();
+			*_outDistSq = (_outHitInfo->hitPoint - _ray._point).LengthSq();
             
             isHit = true;
         }
@@ -792,7 +793,7 @@ std::vector<std::shared_ptr<Collider>> CollisionManager::CheckSphere(const VECTO
 //* true : 当たった
 //* false : 当たってない
 //*----------------------------------------------------------------------------------------
-bool CollisionManager::CheckRaycast(const CollInData_Ray& _ray, int _mask, class CollisionInfo* _outHitInfo)
+bool CollisionManager::CheckRaycast(const CollInData_Ray& _ray, int _mask, PhysicsData::CollisionInfo* _outHitInfo)
 {
     const auto queryStart = std::chrono::steady_clock::now();
     m_QueryDebugMetrics.RaycastQueryCount++;
@@ -864,7 +865,7 @@ bool CollisionManager::CheckRaycast(const CollInData_Ray& _ray, int _mask, class
 //* true : 当たった
 //* false : 当たってない
 //*----------------------------------------------------------------------------------------
-bool CollisionManager::HitCheck_BoxVsBox_Physics(const CollInData_AABB &_src, const CollInData_AABB &_dst, class CollisionInfo *info)
+bool CollisionManager::HitCheck_BoxVsBox_Physics(const CollInData_AABB &_src, const CollInData_AABB &_dst, CollisionInfo *info)
 {
     return true;
 }
@@ -982,8 +983,8 @@ bool CollisionManager::HitCheck_OBBVsOBB(const CollInData_OBB& _src, const CollI
     }
 
     // 既存のシステムに合わせて衝突情報を格納
-    _hitInfo->set_PenetrationDepth(minPenetration);
-    _hitInfo->set_HitNormal(bestAxis);
+    _hitInfo->penetrationDepth = minPenetration;
+    _hitInfo->hitNormal = bestAxis;
 
     return true;
 
@@ -1093,7 +1094,7 @@ bool CollisionManager::HitCheck_SphereVsSphere(const CollInData_Sphere& _src, co
 //* true : 当たった
 //* false : 当たってない
 //*----------------------------------------------------------------------------------------
-bool CollisionManager::HitCheck_PlaneVsRay(const CollInData_Plane& _plane, const CollInData_Ray& _ray, class CollisionInfo* _hitInfo)
+bool CollisionManager::HitCheck_PlaneVsRay(const CollInData_Plane& _plane, const CollInData_Ray& _ray, CollisionInfo* _hitInfo)
 {
     // レイの方向と法線の垂直関係を調べる
     float t_Dot1 = VEC3::Dot(_plane._norm, _ray._dir);
@@ -1120,8 +1121,8 @@ bool CollisionManager::HitCheck_PlaneVsRay(const CollInData_Plane& _plane, const
     }
     
     // 衝突点を計算して格納
-    _hitInfo->set_HitPoint(_ray._point + (_ray._dir * t));
-    _hitInfo->set_HitNormal(_plane._norm);
+    _hitInfo->hitPoint = _ray._point + (_ray._dir * t);
+    _hitInfo->hitNormal = _plane._norm;
 
     return true;
 }
@@ -1139,7 +1140,7 @@ bool CollisionManager::HitCheck_PlaneVsRay(const CollInData_Plane& _plane, const
 //* true : 当たった
 //* false : 当たってない
 //*----------------------------------------------------------------------------------------
-bool CollisionManager::HitCheck_BoxVsRay(const CollInData_AABB& _box, const CollInData_Ray& _ray, class CollisionInfo* _hitInfo)
+bool CollisionManager::HitCheck_BoxVsRay(const CollInData_AABB& _box, const CollInData_Ray& _ray, CollisionInfo* _hitInfo)
 {
     float t_Min = 0.0f;
     float t_Max = 0.0f;
@@ -1287,8 +1288,8 @@ bool CollisionManager::HitCheck_BoxVsRay(const CollInData_AABB& _box, const Coll
         return false;
     }
 
-    _hitInfo->set_HitPoint(point + dir * t_Min);
-    _hitInfo->set_HitNormal(hitNnormal);
+    _hitInfo->hitPoint = point + dir * t_Min;
+    _hitInfo->hitNormal = hitNnormal;
 
     return true;
 }

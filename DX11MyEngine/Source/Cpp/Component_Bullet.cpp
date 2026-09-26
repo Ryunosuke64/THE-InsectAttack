@@ -18,6 +18,7 @@
 #include "Component_RigidBody.h"
 #include "Component_BillboardRenderer.h"
 
+using namespace PhysicsData;
 using namespace GIGA_Engine;
 using namespace UtilityData;
 using namespace Input;
@@ -226,8 +227,8 @@ void Bullet::LateUpdate(RendererEngine& renderer)
     bool isHit = HitCheck(m_pDefinition->_commonData._bulletType, hitInfo);
     if (isHit)
     {
-        VEC3 hitPoint = hitInfo.get_HitPoint();
-        VEC3 normal = hitInfo.get_HitNormal().Normalize();
+        VEC3 hitPoint = hitInfo.hitPoint;
+        VEC3 normal = hitInfo.hitNormal.Normalize();
         
         m_PrevPos = hitPoint;
 
@@ -318,7 +319,7 @@ void Bullet::LateUpdate(RendererEngine& renderer)
             break;
         }
 
-        auto obj = hitInfo.get_HitObject().lock();
+        auto obj = hitInfo.hitObject.lock();
 
         if (!obj)
         {

@@ -202,9 +202,9 @@ void EnemyController::Draw(RendererEngine &renderer)
 //* & _other : Õ“Ë‘Šè‚Ìî•ñ
 //* [•Ô’l]‚È‚µ
 //*----------------------------------------------------------------------------------------
-void EnemyController::OnCollisionEnter(const class CollisionInfo& _other)
+void EnemyController::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
 {
-	VEC3 normal = _other.get_HitNormal();
+	VEC3 normal = _other.hitNormal;
 
 	// –@ü‚ÌY¬•ª‚ªˆê’èˆÈã‚È‚ç°‚Æ‚İ‚È‚·
 	if (normal.y < -0.7f)

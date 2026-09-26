@@ -99,7 +99,7 @@ void GameObject::ComponentRender(RendererEngine &renderer)
 //*
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void GameObject::OnCollisionEnter(const CollisionInfo &info)
+void GameObject::OnCollisionEnter(const PhysicsData::CollisionInfo &info)
 {
 	// 自身が持っている全てのコンポーネントに対してループ処理を行う
 	for (auto & comp : m_pComponentMap)
@@ -120,7 +120,7 @@ void GameObject::OnCollisionEnter(const CollisionInfo &info)
 //*
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void GameObject::OnTriggerEnter(const CollisionInfo &info)
+void GameObject::OnTriggerEnter(const PhysicsData::CollisionInfo &info)
 {
 	// 自身が持っている全てのコンポーネントに対してループ処理を行う
 	for (auto & comp : m_pComponentMap)

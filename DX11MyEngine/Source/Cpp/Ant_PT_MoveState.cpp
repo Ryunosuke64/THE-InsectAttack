@@ -6,6 +6,7 @@
 #include "CollisionInfo.h"
 #include "Component_Collider.h"
 
+using namespace PhysicsData;
 using namespace VECTOR3;
 using namespace VECTOR2;
 using namespace UtilityData;
@@ -132,7 +133,7 @@ int Ant_PT_MoveState::Update(class EnemyController* pOwner)
 		frontTraceRay._dir = myForward * 5.0f;
 
 		if (Master::m_pCollisionManager->CheckRaycast(frontTraceRay, collisionMask, &hitInfo)) {
-			VEC3 hitNorm = hitInfo.get_HitNormal();	// Õ“Ë‚µ‚½–Ê‚Ì–@ü
+			VEC3 hitNorm = hitInfo.hitNormal;	// Õ“Ë‚µ‚½–Ê‚Ì–@ü
 			hitNorm.y = 0.0f; // Œš•¨‚Ì•Ç‚ªŒX‚¢‚Ä‚¢‚Ä‚àY•ûŒü‚Ì—Í‚Í–³Ž‹‚·‚é
 
 			if (hitNorm.LengthSq() > 0.0001f) {

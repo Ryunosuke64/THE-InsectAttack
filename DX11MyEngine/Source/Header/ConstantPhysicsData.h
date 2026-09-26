@@ -1,9 +1,16 @@
 #pragma once
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
+#include "CollisionInfo.h"
+
+class GameObject;
+class MyTransform;
+class Collider;
 
 namespace PhysicsData
 {
+	struct CollisionInfo;
+
 	/// <summary>
 	/// コリジョンの形状
 	/// </summary>
@@ -120,25 +127,6 @@ namespace PhysicsData
 		GImpactShapeDesc
 	>;
 
-
-	// PhysicsEngine内のスロットを識別する。
-	// generationで削除・再利用後の古い参照を検出する。
-	struct PhysicsBodyHandle
-	{
-		uint32_t index = UINT32_MAX;
-		uint32_t generation = 0;
-	};
-
-	// 剛体スロット
-	struct RigidBodySlot
-	{
-		btRigidBody* rigidBody = nullptr;
-		uint32_t generation = 0;
-		bool active = false;
-
-		std::weak_ptr<class GameObject> owner;
-		std::weak_ptr<class Collider> collider;
-	};
 	enum class BodyType
 	{
 		Static,
@@ -146,33 +134,12 @@ namespace PhysicsData
 		Kinematic
 	};
 
-	/// <summary>
-	/// リジッドボディのセットアップデータ
-	/// </summary>
-	struct RigidBodyDesc
+	// PhysicsEngine内のスロットを識別する。
+	// generationで削除・再利用後の古い参照を検出する。
+	struct PhysicsBodyHandle
 	{
-		BodyType type = BodyType::Dynamic;
-		float mass = 0.0f;												// 質量
-		float friction = 0.5f;											// 摩擦
-		float restitution = 0.0f;										// 反発
-		VECTOR3::VEC3 gravity = VECTOR3::VEC3(0.0f, -9.8f, 0.0f);		// ワールド重力に対する倍率
-		VECTOR3::VEC3 angularFactor = VECTOR3::VEC3(1.0f, 1.0, 1.0f);	// 1.0 = 回転 0.0 = 回転させない
-		VECTOR3::VEC3 pos = VECTOR3::VEC3();							// 初期座標
-
-		std::weak_ptr<class GameObject> owner;
-		std::weak_ptr<class Collider> collider;
-		
-		//PhysicsShapeDesc shapeDesc; // シェイプセットアップ用
-	};
-
-
-	/// <summary>
-	/// リジッドボディのユーザー設定用ポインタに設定するデータ
-	/// </summary>
-	struct PhysicsUserData
-	{
-		std::weak_ptr<class GameObject> gameoOject;
-		std::weak_ptr<class Collider> collider;
+		uint32_t index = UINT32_MAX;
+		uint32_t generation = 0;
 	};
 
 
@@ -204,6 +171,82 @@ namespace PhysicsData
 			return h1 ^ (h2 << 1);
 		}
 	};
+
+	/// <summary>
+	/// 接触点情報
+	/// </summary>
+	struct ContactPoint
+	{
+		VECTOR3::VEC3 position;		// 衝突位置
+		VECTOR3::VEC3 normal;		// 衝突面の向き
+		float penetrationDepth;		// めり込み量
+	};
+
+	constexpr int MAX_CONTACT_POINTS_SIZE = 4;  // 接触点情報の最大数
+
+	// ***************************************************************************************
+	// ---------------------------------------------------------------------------------------
+	/* --- @:CollisionInfo Class --- */
+	//
+	// 【?】衝突時の情報をまとめたクラス
+	//
+	// ***************************************************************************************
+	struct CollisionInfo
+	{
+		std::weak_ptr<::GameObject> hitObject;     // 衝突相手
+		std::weak_ptr<::MyTransform> hitTransform; // 衝突相手のトランスフォーム
+		std::weak_ptr<::Collider> hitCollider;     // 衝突相手のコライダー
+		VECTOR3::VEC3 hitPoint;                         // 衝突位置
+		VECTOR3::VEC3 hitNormal;                        // 衝突面の向き
+		VECTOR3::VEC3 relativeVelocity;                 // 衝突した物体の相対速度
+		float penetrationDepth;                         // めり込み量
+
+		std::array<ContactPoint, MAX_CONTACT_POINTS_SIZE> contacts; // 接触点情報
+		int contactCount;
+	};
+
+	/// <summary>
+	/// リジッドボディのセットアップデータ
+	/// </summary>
+	struct RigidBodyDesc
+	{
+		BodyType type = BodyType::Dynamic;
+		float mass = 0.0f;												// 質量
+		float friction = 0.5f;											// 摩擦
+		float restitution = 0.0f;										// 反発
+		VECTOR3::VEC3 gravity = VECTOR3::VEC3(0.0f, -9.8f, 0.0f);		// ワールド重力に対する倍率
+		VECTOR3::VEC3 angularFactor = VECTOR3::VEC3(1.0f, 1.0, 1.0f);	// 1.0 = 回転 0.0 = 回転させない
+		VECTOR3::VEC3 pos = VECTOR3::VEC3();							// 初期座標
+
+		std::weak_ptr<::GameObject> owner;
+		std::weak_ptr<::Collider> collider;
+
+		//PhysicsShapeDesc shapeDesc; // シェイプセットアップ用
+	};
+
+
+	/// <summary>
+	/// リジッドボディのユーザー設定用ポインタに設定するデータ
+	/// </summary>
+	struct PhysicsUserData
+	{
+		std::weak_ptr<::GameObject> gameoOject;
+		std::weak_ptr<::Collider> collider;
+	};
+
+
+	// 剛体スロット
+	struct RigidBodySlot
+	{
+		btRigidBody* rigidBody = nullptr;
+		uint32_t generation = 0;
+		bool active = false;
+
+		std::weak_ptr<::GameObject> owner;
+		std::weak_ptr<::Collider> collider;
+		std::vector<CollisionInfo> collisions;
+	};
+
 
 	// ***************************************************************************************
 	// ---------------------------------------------------------------------------------------
