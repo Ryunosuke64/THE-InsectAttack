@@ -1273,18 +1273,19 @@ CheckSphere(
 //*【?】接触ペアを作る
 //*-----------------------------------------------------------------------------------------
 CollisionPair PhysicsEngine::
-MakePair(const btCollisionObject* a, const btCollisionObject* b)
+MakePair(const PhysicsBodyHandle& a, const PhysicsBodyHandle& b)
 {
     // [b] が [a]より小さいなら順番を入れ替える
     // 同じペア同士で判定をさせない
     // 例:(A, B) と (B, A)は同じオブジェクト同士なのに、
     // 別のペアとして扱われてしまうため、順番をそろえる
-    if (std::less<const btCollisionObject*>{}(b, a))
+    if (b.index < a.index ||
+        (b.index == a.index && b.generation < a.generation))
     {
-        std::swap(a, b);
+        return { b, a };
     }
 
-    return { a,b };
+    return { a, b };
 }
 
 
@@ -1315,6 +1316,32 @@ GetCollider(const btCollisionObject* object)
     return nullptr;
 }
 
+//*-----------------------------------------------------------------------------------------
+//*【?】指定オブジェクトに対応する剛体ハンドルを取得する
+//*-----------------------------------------------------------------------------------------
+PhysicsBodyHandle PhysicsEngine::GetBodyHandle(
+    const btCollisionObject* object) const
+{
+    if (!object)
+        return {}; // 無効なハンドル
+
+    const int index = object->getUserIndex();
+
+    if (index < 0 || index >= m_RigidBodies.size())
+        return {};
+
+    const auto& slot = m_RigidBodies[index];
+
+    // 登録中か、このオブジェクトのスロットかを確認
+    if (!slot.active || slot.rigidBody != object)
+        return {};
+
+    return {
+        static_cast<uint32_t>(index),
+        slot.generation
+    };
+}
+
 
 //*-----------------------------------------------------------------------------------------
 //*【?】現在フレームの接触ペアを収集
@@ -1338,9 +1365,8 @@ void PhysicsEngine::CollectContacts()
         const btCollisionObject* objectA = manifold->getBody0();
         const btCollisionObject* objectB = manifold->getBody1();
 
-        bool isContact = false;
-        CollisionInfo info;
-        int contactIndex = 0;
+        PairCollisionInfo info;
+        info.contactCount = 0;
 
         // 衝突点の数分
         for (int j = 0; j < manifold->getNumContacts(); j++)
@@ -1353,26 +1379,69 @@ void PhysicsEngine::CollectContacts()
             // 有効な接触点があれば、ブレイクする
             if (point.getDistance() <= 0.0f)
             {
-                isContact = true;
+                PairContactPoint& contact = info.contacts[info.contactCount];
+
+                // 接触位置 A側とB側の両方を保持
+                const btVector3& posA = point.getPositionWorldOnA();
+                const btVector3& posB = point.getPositionWorldOnB();
+
+                contact.positionA = VEC3(
+                    posA.x(), posA.y(), posA.z()
+                );
+
+                contact.positionB = VEC3(
+                    posB.x(), posB.y(), posB.z()
+                );
+
+                // 法線
+                const btVector3& normal = point.m_normalWorldOnB;
+
+                contact.normalOnB = VEC3(
+                    normal.x(),
+                    normal.y(),
+                    normal.z()
+                );
+
+                // getDistance()はどれだけ、離れているかを表しているので、
+                // 負の値ならめり込んでいることになる
+                // それを反転して、めり込み量にする
+                contact.penetrationDepth =-point.getDistance();
+
                 info.contactCount++;
-                info.contacts[contactIndex].position;
-                info.contacts[contactIndex].normal;
-                info.contacts[contactIndex].penetrationDepth;
 
-                contactIndex++;
-
-                break;
             }
         }
 
         // 接触点が一つもなかった場合は飛ばす
-        if (!isContact)
+        if (info.contactCount <= 0)
         {
             continue;
         }
 
         // ペアを作る
-        CollisionPair pair = MakePair(objectA, objectB);
+        const auto handleA = GetBodyHandle(objectA);
+        const auto handleB = GetBodyHandle(objectB);
+
+        if (!IsValidRigidBody(handleA) ||
+            !IsValidRigidBody(handleB))
+        {
+            continue;
+        }
+
+        const CollisionPair pair = MakePair(handleA, handleB);
+
+        // ペアの順序に、接触情報のA/Bも合わせる
+        if (pair.a.index != handleA.index ||
+            pair.a.generation != handleA.generation)
+        {
+            for (uint32_t i = 0; i < info.contactCount; ++i)
+            {
+                auto& contact = info.contacts[i];
+
+                std::swap(contact.positionA, contact.positionB);
+                contact.normalOnB = -contact.normalOnB;
+            }
+        }
 
         // オブジェクトからコライダーを取得する
         Collider* colliderA = GetCollider(objectA);
@@ -1389,11 +1458,11 @@ void PhysicsEngine::CollectContacts()
         //
         if (colliderA->get_IsTrigger() || colliderB->get_IsTrigger())
         {
-            m_CrntTriggerPairs.insert(pair);
+            m_CrntTriggerPairs[pair] = info;
         }
         else
         {
-            m_CrntCollisionPairs.insert(pair);
+            m_CrntCollisionPairs[pair] = info;
         }
     }
 }
@@ -1403,74 +1472,190 @@ void PhysicsEngine::CollectContacts()
 //*-----------------------------------------------------------------------------------------
 void PhysicsEngine::DispatchEvents()
 {
-    //=========================================================================================
-    //
-    //						コリジョンイベント
-    //
-    //=========================================================================================
-    for (auto& pair : m_CrntCollisionPairs)
+    //==================================================
+    // Collision：Enter / Stay
+    // 今回接触しているペアを調べる
+    //==================================================
+    for (const auto& [pair, pairInfo] : m_CrntCollisionPairs)
     {
-        // 前フレームにないなら、衝突した瞬間になる
-        if(!m_PrevCollisionPairs.contains(pair))
-        {
-            int indexA = pair.a->getUserIndex();
-            int indexB = pair.b->getUserIndex();
+        const bool isEnter = !m_PrevCollisionPairs.contains(pair);
 
-            if (indexA < 0 || m_RigidBodies.size() <= indexA ||
-                indexB < 0 || m_RigidBodies.size() <= indexB)
-            {
-                assert(false);
+        // A側、B側の順に通知する
+        for (bool notifyA : { true, false })
+        {
+            const auto& receiver = notifyA ? pair.a : pair.b;
+
+            // 通知先の剛体が削除済みなら飛ばす
+            if (!IsValidRigidBody(receiver))
                 continue;
+
+            auto owner = m_RigidBodies[receiver.index].owner.lock();
+            if (!owner)
+                continue;
+
+            const CollisionInfo info =
+                BuildCollisionInfo(pair, pairInfo, notifyA);
+
+            if (isEnter)
+            {
+                owner->OnCollisionEnter(info);
             }
-
-            GameObject* gameObjectA = m_RigidBodies[indexA].owner.lock().get();
-            GameObject* gameObjectB = m_RigidBodies[indexB].owner.lock().get();
-
-            CollisionInfo info;
-            gameObjectA->OnCollisionEnter(info);
+            else
+            {
+                owner->OnCollisionStay(info);
+            }
         }
-        // 前フレームでも衝突しているなら、衝突中になる
+    }
+
+    //==================================================
+    // Collision：Exit
+    // 前回は接触していたが、今回は接触していないペア
+    //==================================================
+    for (const auto& [pair, pairInfo] : m_PrevCollisionPairs)
+    {
+        if (m_CrntCollisionPairs.contains(pair))
+            continue;
+
+        for (bool notifyA : { true, false })
+        {
+            const auto& receiver = notifyA ? pair.a : pair.b;
+
+            if (!IsValidRigidBody(receiver))
+                continue;
+
+            auto owner = m_RigidBodies[receiver.index].owner.lock();
+            if (!owner)
+                continue;
+
+            // Exitには、最後に接触していた時点の情報を渡す
+            const CollisionInfo info =
+                BuildCollisionInfo(pair, pairInfo, notifyA);
+
+            owner->OnCollisionExit(info);
+        }
+    }
+
+    //==================================================
+    // Trigger：Enter / Stay
+    // 今回重なっているペアを調べる
+    //==================================================
+    for (const auto& [pair, pairInfo] : m_CrntTriggerPairs)
+    {
+        const bool isEnter = !m_PrevTriggerPairs.contains(pair);
+
+        for (bool notifyA : { true, false })
+        {
+            const auto& receiver = notifyA ? pair.a : pair.b;
+
+            if (!IsValidRigidBody(receiver))
+                continue;
+
+            auto owner = m_RigidBodies[receiver.index].owner.lock();
+            if (!owner)
+                continue;
+
+            const CollisionInfo info =
+                BuildCollisionInfo(pair, pairInfo, notifyA);
+
+            if (isEnter)
+            {
+                owner->OnTriggerEnter(info);
+            }
+            else
+            {
+                owner->OnTriggerStay(info);
+            }
+        }
+    }
+
+    //==================================================
+    // Trigger：Exit
+    // 前回は重なっていたが、今回は重なっていないペア
+    //==================================================
+    for (const auto& [pair, pairInfo] : m_PrevTriggerPairs)
+    {
+        if (m_CrntTriggerPairs.contains(pair))
+            continue;
+
+        for (bool notifyA : { true, false })
+        {
+            const auto& receiver = notifyA ? pair.a : pair.b;
+
+            if (!IsValidRigidBody(receiver))
+                continue;
+
+            auto owner = m_RigidBodies[receiver.index].owner.lock();
+            if (!owner)
+                continue;
+
+            const CollisionInfo info =
+                BuildCollisionInfo(pair, pairInfo, notifyA);
+
+            owner->OnTriggerExit(info);
+        }
+    }
+}
+
+CollisionInfo PhysicsEngine::BuildCollisionInfo(
+    const CollisionPair& pair,
+    const PairCollisionInfo& pairInfo,
+    bool notifyA) const
+{
+    CollisionInfo result{};
+
+    // Aに通知するなら、衝突相手はB
+    // Bに通知するなら、衝突相手はA
+    const auto& other = notifyA ? pair.b : pair.a;
+
+    if (IsValidRigidBody(other))
+    {
+        const auto& otherSlot = m_RigidBodies[other.index];
+
+        result.hitObject = otherSlot.owner;
+        result.hitCollider = otherSlot.collider;
+
+        if (auto otherOwner = otherSlot.owner.lock())
+        {
+            result.hitTransform = otherOwner->get_Transform();
+        }
+    }
+
+    // 保存されている接触点を、通知先の視点へ変換する
+    for (uint32_t i = 0;
+        i < pairInfo.contactCount &&
+        i < pairInfo.contacts.size() &&
+        i < result.contacts.size();
+        i++)
+    {
+        const auto& source = pairInfo.contacts[i];
+        auto& destination = result.contacts[i];
+
+        // 接触位置：相手側の表面上の位置
+        // 法線：相手から自分へ向かう方向
+        if (notifyA)
+        {
+            destination.position = source.positionB;
+            destination.normal = source.normalOnB;
+        }
         else
         {
-
+            destination.position = source.positionA;
+            destination.normal = -source.normalOnB;
         }
+
+        destination.penetrationDepth = source.penetrationDepth;
+        result.contactCount++;
     }
 
-    for (auto& pair : m_PrevCollisionPairs)
+    // 単一の接触位置を使う処理向けに、最初の点を代表値にする
+    if (result.contactCount > 0)
     {
-        // 今回フレームにないなら、衝突から抜けた瞬間になる
-        if (!m_CrntCollisionPairs.contains(pair))
-        {
+        const auto& firstContact = result.contacts[0];
 
-        }
+        result.hitPoint = firstContact.position;
+        result.hitNormal = firstContact.normal;
+        result.penetrationDepth = firstContact.penetrationDepth;
     }
 
-
-    //=========================================================================================
-    //
-    //						トリガーイベント
-    //
-    //=========================================================================================
-    for (auto& pair : m_CrntTriggerPairs)
-    {
-        // 前フレームにないなら、衝突した瞬間になる
-        if (!m_PrevTriggerPairs.contains(pair))
-        {
-
-        }
-        // 前フレームでも衝突しているなら、衝突中になる
-        else
-        {
-
-        }
-    }
-
-    for (auto& pair : m_PrevTriggerPairs)
-    {
-        // 今回フレームにないなら、衝突から抜けた瞬間になる
-        if (!m_CrntTriggerPairs.contains(pair))
-        {
-
-        }
-    }
+    return result;
 }

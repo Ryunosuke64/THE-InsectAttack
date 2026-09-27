@@ -659,6 +659,22 @@ namespace Tool
             vertices[i].bitangent = vertices[i].bitangent.Normalize();
         }
     }
+
+    ////////////////////////////////////////////////////////////////
+    //ハッシュ値を統合する ( 汎用的に使用できる関数 )
+    // seed  in:既存のハッシュ値  out:元のseedとvから作成したハッシュ値を統合した値
+    // v     新たにハッシュ値を作成する値
+    // [参考サイト]
+    // https://suzulang.com/cpp-unordered_map-my-type/
+    template<typename T>
+    void HashCombine(size_t& seed, T const& v)
+    {
+        //基本型に関するハッシュ生成は標準ライブラリが提供している
+        std::hash<T> primitive_type_hash;
+
+        //生成したハッシュを合成する。このコードはboostものを使用する
+        seed ^= primitive_type_hash(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    }
 }
 
 

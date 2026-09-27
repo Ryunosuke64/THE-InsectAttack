@@ -27,10 +27,16 @@ private:
 	btAlignedObjectArray<PhysicsData::RigidBodySlot>m_RigidBodies;	// リジッドボディのポインタを保持
 	btAlignedObjectArray <class btCollisionShape* > m_CollisionShapes;	// リジッドボディのポインタを保持
 	
-	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_PrevCollisionPairs;
-	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_CrntCollisionPairs;
-	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_PrevTriggerPairs;
-	std::unordered_set<PhysicsData::CollisionPair, PhysicsData::CollisionPairHash> m_CrntTriggerPairs;
+	using ContactMap =
+		std::unordered_map<
+		PhysicsData::CollisionPair, 
+		PhysicsData::PairCollisionInfo, 
+		PhysicsData::CollisionPairHash>;
+
+	ContactMap m_PrevCollisionPairs;
+	ContactMap m_CrntCollisionPairs;
+	ContactMap m_PrevTriggerPairs;
+	ContactMap m_CrntTriggerPairs;
 
 public:
 	PhysicsEngine();
@@ -92,11 +98,15 @@ private:
 	PhysicsEngine& operator=(const PhysicsEngine&) = delete;
 	// ------------------------------------------------------
 
-	PhysicsData::CollisionPair MakePair(const btCollisionObject* a, const btCollisionObject* b);
+	PhysicsData::CollisionPair MakePair(const PhysicsData::PhysicsBodyHandle& a, const PhysicsData::PhysicsBodyHandle& b);
 	class Collider* GetCollider(const btCollisionObject* object);
+	PhysicsData::PhysicsBodyHandle GetBodyHandle(const btCollisionObject* object) const;
 	void CollectContacts();	// 現在フレームの接触ペアを収集
 	void DispatchEvents();	// イベントの発行をする
-
+	PhysicsData::CollisionInfo BuildCollisionInfo(
+		const PhysicsData::CollisionPair& pair,
+		const PhysicsData::PairCollisionInfo& pairInfo,
+		bool notifyA) const;
 
 	class btBoxShape* CreateShapeBox(const VECTOR3::VEC3& boxHalfExtents);
 	class btSphereShape* CreateShapeSphere(float radius);

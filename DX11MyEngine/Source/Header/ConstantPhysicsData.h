@@ -142,20 +142,21 @@ namespace PhysicsData
 		uint32_t generation = 0;
 	};
 
-
 	/// <summary>
 	/// 衝突判定ペア
 	/// </summary>
 	struct CollisionPair
 	{
-		const btCollisionObject* a;
-		const btCollisionObject* b;
+		const PhysicsBodyHandle a;
+		const PhysicsBodyHandle b;
 
-		bool operator ==(const CollisionPair& other)const
+		bool operator==(const CollisionPair& other) const
 		{
-			return a == other.a &&
-				   b == other.b;
-		};
+			return a.index == other.a.index &&
+				a.generation == other.a.generation &&
+				b.index == other.b.index &&
+				b.generation == other.b.generation;
+		}
 	};
 
 	/// <summary>
@@ -165,11 +166,38 @@ namespace PhysicsData
 	{
 		size_t operator()(const CollisionPair& pair)const
 		{
-			size_t h1 = std::hash<const btCollisionObject*>{}(pair.a);
-			size_t h2 = std::hash<const btCollisionObject*>{}(pair.b);
+			//クラスのメンバの値それぞれについてハッシュ生成して、それらを結合して一つのハッシュ値にする
+			std::size_t seed = 0;
+			Tool::HashCombine(seed, pair.a.index);
+			Tool::HashCombine(seed, pair.a.generation);
+			Tool::HashCombine(seed, pair.b.index);
+			Tool::HashCombine(seed, pair.b.generation);
 
-			return h1 ^ (h2 << 1);
+			return seed;
 		}
+	};
+
+	/// <summary>
+	/// 衝突点情報 ペア用
+	/// </summary>
+	struct PairContactPoint
+	{
+		VECTOR3::VEC3 positionA;
+		VECTOR3::VEC3 positionB;
+
+		// B → A
+		VECTOR3::VEC3 normalOnB;
+
+		float penetrationDepth = 0.0f;
+	};
+
+	/// <summary>
+	/// 衝突情報 ペア用
+	/// </summary>
+	struct PairCollisionInfo
+	{
+		std::array<PairContactPoint, 4> contacts;
+		uint32_t contactCount = 0;
 	};
 
 	/// <summary>
@@ -177,9 +205,9 @@ namespace PhysicsData
 	/// </summary>
 	struct ContactPoint
 	{
-		VECTOR3::VEC3 position;		// 衝突位置
-		VECTOR3::VEC3 normal;		// 衝突面の向き
-		float penetrationDepth;		// めり込み量
+		VECTOR3::VEC3 position;				// 衝突位置
+		VECTOR3::VEC3 normal;				// 衝突面の向き
+		float penetrationDepth = 0.0f;		// めり込み量
 	};
 
 	constexpr int MAX_CONTACT_POINTS_SIZE = 4;  // 接触点情報の最大数
@@ -193,16 +221,15 @@ namespace PhysicsData
 	// ***************************************************************************************
 	struct CollisionInfo
 	{
-		std::weak_ptr<::GameObject> hitObject;     // 衝突相手
-		std::weak_ptr<::MyTransform> hitTransform; // 衝突相手のトランスフォーム
-		std::weak_ptr<::Collider> hitCollider;     // 衝突相手のコライダー
-		VECTOR3::VEC3 hitPoint;                         // 衝突位置
-		VECTOR3::VEC3 hitNormal;                        // 衝突面の向き
-		VECTOR3::VEC3 relativeVelocity;                 // 衝突した物体の相対速度
-		float penetrationDepth;                         // めり込み量
-
-		std::array<ContactPoint, MAX_CONTACT_POINTS_SIZE> contacts; // 接触点情報
-		int contactCount;
+		std::weak_ptr<::GameObject> hitObject;							// 衝突相手
+		std::weak_ptr<::MyTransform> hitTransform;						// 衝突相手のトランスフォーム
+		std::weak_ptr<::Collider> hitCollider;							// 衝突相手のコライダー
+		VECTOR3::VEC3 hitPoint = VECTOR3::VEC3();						// 衝突位置
+		VECTOR3::VEC3 hitNormal = VECTOR3::VEC3();						// 衝突面の向き
+		VECTOR3::VEC3 relativeVelocity = VECTOR3::VEC3();				// 衝突した物体の相対速度
+		float penetrationDepth = 0.0f;									// めり込み量
+		int contactCount = 0;											// 接触回数（0なら衝突なし）
+		std::array<ContactPoint, MAX_CONTACT_POINTS_SIZE> contacts;		// 接触点情報
 	};
 
 	/// <summary>
@@ -244,7 +271,6 @@ namespace PhysicsData
 
 		std::weak_ptr<::GameObject> owner;
 		std::weak_ptr<::Collider> collider;
-		std::vector<CollisionInfo> collisions;
 	};
 
 

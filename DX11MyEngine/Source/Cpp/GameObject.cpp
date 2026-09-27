@@ -112,6 +112,33 @@ void GameObject::OnCollisionEnter(const PhysicsData::CollisionInfo &info)
 	}
 }
 
+void GameObject::OnCollisionStay(const PhysicsData::CollisionInfo& info)
+{
+	// 自身が持っている全てのコンポーネントに対してループ処理を行う
+	for (auto& comp : m_pComponentMap)
+	{
+		// アクティブなもののみ
+		if (comp.second->get_IsStatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE))
+		{
+			comp.second->OnCollisionStay(info);
+		}
+	}
+}
+
+void GameObject::OnCollisionExit(const PhysicsData::CollisionInfo& info)
+{
+	// 自身が持っている全てのコンポーネントに対してループ処理を行う
+	for (auto& comp : m_pComponentMap)
+	{
+		// アクティブなもののみ
+		if (comp.second->get_IsStatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE))
+		{
+			comp.second->OnCollisionExit(info);
+		}
+	}
+}
+
+
 //*---------------------------------------------------------------------------------------
 //*【?】衝突判定を受け取る
 //*
@@ -132,6 +159,34 @@ void GameObject::OnTriggerEnter(const PhysicsData::CollisionInfo &info)
 		}
 	}
 }
+
+
+void GameObject::OnTriggerStay(const PhysicsData::CollisionInfo& info)
+{
+	// 自身が持っている全てのコンポーネントに対してループ処理を行う
+	for (auto& comp : m_pComponentMap)
+	{
+		// アクティブなもののみ
+		if (comp.second->get_IsStatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE))
+		{
+			comp.second->OnTriggerStay(info);
+		}
+	}
+}
+
+void GameObject::OnTriggerExit(const PhysicsData::CollisionInfo& info)
+{
+	// 自身が持っている全てのコンポーネントに対してループ処理を行う
+	for (auto& comp : m_pComponentMap)
+	{
+		// アクティブなもののみ
+		if (comp.second->get_IsStatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE))
+		{
+			comp.second->OnTriggerExit(info);
+		}
+	}
+}
+
 
 //*---------------------------------------------------------------------------------------
 //* @:Object Class 

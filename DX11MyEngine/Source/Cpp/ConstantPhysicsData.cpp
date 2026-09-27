@@ -26,7 +26,7 @@ needsResponse(const btCollisionObject* body0, const btCollisionObject* body1)
 	auto colliderA = userDataA->collider.lock();
 	auto colliderB = userDataB->collider.lock();
 
-	if (!colliderA || colliderB)
+	if (!colliderA || !colliderB)
 	{
 		return true;
 	}
@@ -65,7 +65,7 @@ needsCollision(const btCollisionObject* body0, const btCollisionObject* body1)
 	auto colliderA = userDataA->collider.lock();
 	auto colliderB = userDataB->collider.lock();
 
-	if (!colliderA || colliderB)
+	if (!colliderA || !colliderB)
 	{
 		return true;
 	}

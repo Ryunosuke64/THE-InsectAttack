@@ -96,6 +96,10 @@ void PlayerController::Start(RendererEngine& renderer)
 	m_CrntAnimID = PLAYER_RANGER_ANIM_ID::RIFLE_AMING_IDLE;
 
 	m_pPhysicsComp = m_pOwner.lock()->get_Component<Physics>();
+	if (m_pPhysicsComp.expired())
+	{
+		ErrorMessage(L"Physicsコンポーネントがありません", L"PlayerController");
+	}
 	m_pPhysicsComp.lock()->set_MaxSpeed(10.0f);
 	m_pPhysicsComp.lock()->set_GravityScale(14.0f);
 	m_pPhysicsComp.lock()->set_Restitution(0.0f);
