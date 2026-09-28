@@ -45,6 +45,7 @@ public:
     void AddCentralImpulse(const VECTOR3::VEC3& impulse);
     void Teleport(const VECTOR3::VEC3& position);
     void SetWorldTransform(const VECTOR3::VEC3& position,const VECTOR4::VEC4& rotation);
+    void SetRotation(const VECTOR4::VEC4& rotation);
 
 
     VECTOR3::VEC3 GetWorldPotision()const;

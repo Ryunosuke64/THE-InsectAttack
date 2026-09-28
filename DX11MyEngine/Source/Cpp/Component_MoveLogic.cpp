@@ -3,6 +3,7 @@
 #include "IMoveBehaviour.h"
 #include "LinearMove_Behaviour.h"
 #include "HormingMove_Behaviour.h"
+#include "Component_RigidBody.h"
 #include "GameObject.h"
 
 using namespace GIGA_Engine;
@@ -70,7 +71,6 @@ void MoveLogic::Update(RendererEngine &renderer)
 void MoveLogic::Calculate(const MoveParam& _param)
 {
     float deltaTime = Master::m_pTimeManager->get_DeltaTime();
-
     // 移動挙動クラスがセットされていれば、移動計算をする
     if (auto pTransform = m_pOwner.lock()->get_Transform().lock())
     {
@@ -87,36 +87,92 @@ void MoveLogic::Calculate(const MoveParam& _param)
             // 移動計算を呼び出す
             res = m_pMoveBehaviour->MoveCalculate(deltaTime, effectiveParam, *pTransform);
 
-            // 加速度
-            //float accelerationSpeed = _param._acceleration * deltaTime;
-
-            // 目標速度に近づける
-            //m_CrntMoveVelocity = VEC3::Lerp(m_CrntMoveVelocity, res._moveVelocity, accelerationSpeed);
-
-
-            // 移動ベクトルと回転ベクトルをもとに、新しい位置と回転を計算する
-            VEC3 crntPos = pTransform->get_VEC3ToPos();
-            VEC3 newPos = crntPos + (res._moveVelocity * deltaTime);
-
-            // 重力があるなら、重力処理を行う
-            //if (_param._gravity > 0.0f)
-            //{
-            //    m_GravityVelocity -= _param._gravity * deltaTime;
-
-            //    newPos.y += m_GravityVelocity * deltaTime;
-            //    if (newPos.y < -100.0f)
-            //    {
-            //        newPos.y = 0.0f;
-            //        m_GravityVelocity = 0.0f;
-            //    }
-            //}
-
-            // 反映
-            pTransform->set_Pos(newPos);
-            pTransform->set_RotationQuaternion(res._RotQ);
+            //****************************************************
+            // 物理移動をするか（RIgidBodyで移動させるか）
+            if (_param._isPhysicsMove)
+            {
+                PhysicsMovement(res, *pTransform, deltaTime);
+            }
+            else
+            {
+                NormalMovement(res, *pTransform, deltaTime);
+            }
         }
     }
 }
+
+//*---------------------------------------------------------------------------------------
+//*【?】物理移動
+//*     RigidBodyで移動する 
+//*
+//* [引数] 
+//* &_param : 移動計算に必要なパラメータ
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void MoveLogic::PhysicsMovement(const ResultMove& _param, const MyTransform& _transform, float deltaTime)
+{
+    auto rigidBody = m_pOwner.lock()->get_Component<RigidBody>();
+
+    if (!rigidBody)
+    {
+        return;
+    }
+    // 地上の敵：Y方向の速度は重力・落下用に維持する
+    auto velocity = rigidBody->GetLinearVelocity();
+    velocity.x = _param._moveVelocity.x;
+    velocity.z = _param._moveVelocity.z;
+    rigidBody->SetLinearVelocity(velocity);
+
+    DirectX::XMFLOAT4 rotation;
+    DirectX::XMStoreFloat4(
+        &rotation,
+        DirectX::XMQuaternionNormalize(_param._RotQ));
+
+    // 回転設定
+    rigidBody->SetRotation(VECTOR4::VEC4(
+        rotation.x,
+        rotation.y,
+        rotation.z,
+        rotation.w
+    ));
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】通常移動
+//*
+//* [引数]
+//* &_param : 移動計算に必要なパラメータ
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void MoveLogic::NormalMovement(const ResultMove& _param,  MyTransform& _transform, float deltaTime)
+{
+    // 加速度
+    //float accelerationSpeed = _param._acceleration * deltaTime;
+
+    // 目標速度に近づける
+    //m_CrntMoveVelocity = VEC3::Lerp(m_CrntMoveVelocity, res._moveVelocity, accelerationSpeed);
+
+    // 移動ベクトルと回転ベクトルをもとに、新しい位置と回転を計算する
+    VEC3 crntPos = _transform.get_VEC3ToPos();
+    VEC3 newPos = crntPos + (_param._moveVelocity * deltaTime);
+
+    // 重力があるなら、重力処理を行う
+    //if (_param._gravity > 0.0f)
+    //{
+    //    m_GravityVelocity -= _param._gravity * deltaTime;
+
+    //    newPos.y += m_GravityVelocity * deltaTime;
+    //    if (newPos.y < -100.0f)
+    //    {
+    //        newPos.y = 0.0f;
+    //        m_GravityVelocity = 0.0f;
+    //    }
+    //}
+    // 反映
+    _transform.set_Pos(newPos);
+    _transform.set_RotationQuaternion(_param._RotQ);
+}
+
 
 
 //*---------------------------------------------------------------------------------------

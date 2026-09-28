@@ -134,10 +134,11 @@ private:
 	std::weak_ptr<class SkinnedMeshAnimator> m_pAnimatorComp;		// アニメータコンポーネント
 	std::weak_ptr<class Health> m_pHealthComp;						// 体力管理コンポーネント
 	std::weak_ptr<class WeaponController> m_pWeaponController;		// 武器制御用
-	std::weak_ptr<class Physics> m_pPhysicsComp;					// 物理コンポーネント
+	std::weak_ptr<class RigidBody> m_pRigidBodyComp;					// 物理コンポーネント
 
     bool m_IsAnim;					// アニメーション中かどうか
     float m_MoveSpeed;				// 移動速度
+    float m_MoveMaxSpeed;			// 最大移動速度
 	bool m_IsJump;					// ジャンプしたか
 	VECTOR3::VEC3 m_MoveVelocity;	// 移動
 	float m_JumpVelocity;			// ジャンプベクトル
@@ -166,12 +167,18 @@ public:
 	void RollingUpdate();	// ローリング更新
 
 	void OnCollisionEnter(const PhysicsData::CollisionInfo &other)override;
+	void OnCollisionStay(const PhysicsData::CollisionInfo &other)override;
+	void OnCollisionExit(const PhysicsData::CollisionInfo &other)override;
 
 	void Reset();	// パラメータ等をリセットする（ゲームの終了時などに呼ぶ）
 
 	/* 移動速度 */
     float get_MoveSpeed() const { return m_MoveSpeed; }
     void set_MoveSpeed(float speed) { m_MoveSpeed = speed; }
+	
+	/* 最大移動速度 */
+    float get_MoveMaxSpeed() const { return m_MoveMaxSpeed; }
+    void set_MoveMaxSpeed(float speed) { m_MoveMaxSpeed = speed; }
 
 	/* アニメーションID */
 	void set_AnimID(PlayerData::PLAYER_RANGER_ANIM_ID id) { m_CrntAnimID = id; };
@@ -216,5 +223,11 @@ private:
 	/// 移動方向に回転する
 	/// </summary>
 	void MovedAngle(const VECTOR3::VEC3& _crntRot,const VECTOR3::VEC3& _velocity);
+
+	/// <summary>
+	/// 接地判定チェック
+	/// </summary>
+	/// <param name="info"></param>
+	void CheckGround(const PhysicsData::CollisionInfo& info);
 };
 

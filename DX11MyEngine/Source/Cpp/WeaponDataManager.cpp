@@ -71,7 +71,7 @@ bool WeaponDataManager::Init()
     m_AllWeaponsDataMap[3] = std::make_unique<GunWeaponData>(gunData);
 
     // スカウト ************************************************************************************
-    if (LoadGunWeaponData("Resource/WeaponsData/AssultRifle02.json", gunData) == false) {
+    if (LoadGunWeaponData("Resource/WeaponsData/AcidGun01.json", gunData) == false) {
         assert(false);
     }
     m_AllWeaponsDataMap[4] = std::make_unique<GunWeaponData>(gunData);

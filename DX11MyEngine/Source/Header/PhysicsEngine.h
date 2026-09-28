@@ -70,7 +70,7 @@ public:
 
 	VECTOR3::VEC3 GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle);
 	VECTOR4::VEC4 GetRotation(const PhysicsData::PhysicsBodyHandle& handle);
-
+	VECTOR3::VEC3 GetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle)const;
 
 	class btCollisionShape* CreateShape(const PhysicsData::PhysicsShapeDesc& descVariant,const VECTOR3::VEC3& center);
 	class btCollisionShape* CreateShape(const PhysicsData::ErrorShapeDesc& desc);

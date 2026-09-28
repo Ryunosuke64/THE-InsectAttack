@@ -203,9 +203,9 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
                     auto rb = obj->add_Component<RigidBody>();
                     auto collider = obj->add_Component<MeshCollider>();
                     collider->SetupModelData(modelResource->get_ModelData());
-                    collider->set_IsStatic(false);
+                    collider->set_IsStatic(true);
                     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-                    collider->set_IsConvex(true);
+                    collider->set_IsConvex(false);
 
                     PhysicsData::RigidBodyDesc rbDesc;
                     rbDesc.mass = 0.0f;
@@ -553,7 +553,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         {
             VEC3 pos;
             pos.x = -140.0f;
-            pos.y = 1.0f;
+            pos.y = 1.0f + i * 2;
             pos.z = 50.0f + i * 10;
             VEC3 col;
             col.x = static_cast<float>(rand() % 255) / 255.0f;
@@ -572,20 +572,21 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             light->set_LightColor(col);
             light->set_Intensity(5.5f);
 
-            // 物理コンポーネント
-            auto physics = obj->add_Component<Physics>();
-            physics->set_AirDrag(1.0f);
-
-            // コライダーの追加
+            auto rb = obj->add_Component<RigidBody>();
             auto collider = obj->add_Component<BoxCollider>();
             collider->set_Size(VEC3(1.0f, 1.0f, 1.0f));
-            collider->set_Center(VEC3(0, 0, 0));
-            collider->set_IsStatic(false);
-            // 衝突カテゴリ
-            collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
+            collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING); // 衝突カテゴリ
+            collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
 
-            // コライダーの登録
-            Master::m_pCollisionManager->RegisterCollider(collider);
+            PhysicsData::RigidBodyDesc rbDesc;
+            rbDesc.mass = 0.0f;
+            rbDesc.friction = 0.0f;
+            rbDesc.restitution = 0.8f;
+            rbDesc.pos = pos;
+            rbDesc.owner = obj;         // オーナーオブジェクトの設定
+            rbDesc.collider = collider; // コライダーの設定
+
+            rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
         }
     }
 
@@ -868,7 +869,11 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
 
     // プレイヤーに操作コンポーネントつける
-    playerObj->get_Transform().lock()->set_Pos(-90.0f, 0.0f, 90.0f);  // プレイヤーの初期位置を設定
+    VEC3 playerPos = VEC3(-90.0f, 3.0f, 90.0f);     // プレイヤーの初期位置を設定
+    auto playerRigidBody = playerObj->get_Component<RigidBody>();
+    playerRigidBody->SetWorldTransform(playerPos, VEC4(0.0f, 0.0f, 0.0f, 1.0f));
+    playerRigidBody->SetLinearVelocity(VEC3(0.0f, 0.0f, 0.0f));
+
     playerObj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
     auto playerControl = playerObj->add_Component<PlayerController>(1); // コンポーネントの追加
     playerControl->Reset(); // パラメータ等リセットする

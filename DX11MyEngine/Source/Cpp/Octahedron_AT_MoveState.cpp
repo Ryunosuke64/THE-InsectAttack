@@ -97,6 +97,7 @@ int Octahedron_AT_MoveState::Update(class EnemyController* pOwner)
 	movePram._turnSpeed = 0.05f;	// 急に振り向くと変なので、少し優しめに
 	movePram._moveDirection = m_MoveDir;
 	movePram._maxSpeed = pOwner->get_MoveSpeed();
+	movePram._isPhysicsMove = true;
 	auto move = pOwner->get_MoveLogicComponent();
 	move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す
 

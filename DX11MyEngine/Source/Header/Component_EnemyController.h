@@ -47,7 +47,7 @@ private:
 	class SkinnedMeshAnimator* m_pAnimatorComp;		// アニメータコンポーネント
 	class Collider* m_pColliderComp;				// コライダーコンポーネント
 	class MoveLogic* m_pMoveLogicComp;				// 移動コンポーネント
-	class Physics* m_pPhysicsComp;					// 物理コンポーネント
+	class RigidBody* m_pRigidBodyComp;				// 物理コンポーネント
 	class MyTransform* m_pTransformComp;			// トランスフォームコンポーネント
 	const GameObject* m_pTarget;					// 攻撃目標
 
@@ -163,7 +163,7 @@ public:
 	class MoveLogic* get_MoveLogicComponent() const { return m_pMoveLogicComp; };
 	class SkinnedMeshAnimator* get_AnimatorComponent() const { return m_pAnimatorComp; };
 	class Collider* get_ColliderComponent() const { return m_pColliderComp; };
-	class Physics* get_PhysicsComponent() const { return m_pPhysicsComp; };
+	class RigidBody* get_RigidBodyComponent() const { return m_pRigidBodyComp; };
 	class Health* get_HealthComponent() const { return m_pHealthComp; }
 	class MyTransform* get_TransformComponent() const { return m_pTransformComp; }
 };

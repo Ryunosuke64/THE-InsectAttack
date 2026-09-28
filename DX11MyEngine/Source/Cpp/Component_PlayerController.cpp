@@ -16,20 +16,24 @@
 using namespace PhysicsData;
 using namespace UtilityData;
 using namespace Input;
+using namespace VECTOR4;
 using namespace VECTOR3;
 using namespace VECTOR2;
 
 using namespace PlayerData;
-
 using namespace DirectX;
 using namespace Tool;
 
-constexpr float MOVE_SPEED = 150.0f;	// プレイヤーの移動速度
-constexpr float ROLLING_SPEED = 32.0f;	// ローリング時初速
-constexpr float ROLLING_DURATION = 1.0f;// ローリング時間
-constexpr float JUMP_HEIGHT = 2.5f;		// ジャンプの高さ
-constexpr float GRAVITY = 18.0f;		// 重力
-constexpr float ANIM_SPEED = 1.25f;		// アニメーション速度
+constexpr float MOVE_SPEED        = 10.0f;	// プレイヤーの移動速度
+constexpr float MAX_MOVE_SPEED    = 11.0f;	// プレイヤーの最大移動速度
+constexpr float MOVE_ACCELERATION = 40.0f;	// 移動加速度
+constexpr float MOVE_DECELERATION = 20.0f;	// 移動減速
+constexpr float ROLLING_SPEED     = 26.0f;	// ローリング時初速
+constexpr float ROLLING_DURATION  = 1.0f;	// ローリング時間
+constexpr float JUMP_HEIGHT       = 2.5f;	// ジャンプの高さ
+constexpr float GRAVITY           = 9.8f;	// 重力
+constexpr float ANIM_SPEED        = 1.25f;	// アニメーション速度
+constexpr float GROUND_NORMAL_Y   = 0.8f;	// 地面とするY法線
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -47,6 +51,7 @@ m_IsGrounded (true),
 m_IsContinuousAngle(true),
 m_MoveVelocity(VEC3()),
 m_MoveSpeed(MOVE_SPEED),
+m_MoveMaxSpeed(MAX_MOVE_SPEED),
 m_CrntAnimID(PLAYER_RANGER_ANIM_ID::RIFLE_AMING_IDLE),
 m_JumpVelocity(0.0f),
 m_Gravity(GRAVITY),
@@ -95,14 +100,14 @@ void PlayerController::Start(RendererEngine& renderer)
 
 	m_CrntAnimID = PLAYER_RANGER_ANIM_ID::RIFLE_AMING_IDLE;
 
-	m_pPhysicsComp = m_pOwner.lock()->get_Component<Physics>();
-	if (m_pPhysicsComp.expired())
+	m_pRigidBodyComp = m_pOwner.lock()->get_Component<RigidBody>();
+	if (m_pRigidBodyComp.expired())
 	{
 		ErrorMessage(L"Physicsコンポーネントがありません", L"PlayerController");
 	}
-	m_pPhysicsComp.lock()->set_MaxSpeed(10.0f);
-	m_pPhysicsComp.lock()->set_GravityScale(14.0f);
-	m_pPhysicsComp.lock()->set_Restitution(0.0f);
+	//m_pRigidBodyComp.lock()->set_MaxSpeed(10.0f);
+	//m_pRigidBodyComp.lock()->set_GravityScale(14.0f);
+	//m_pRigidBodyComp.lock()->set_Restitution(0.0f);
 
 	// HP管理コンポーネントの取得
 	m_pHealthComp = m_pOwner.lock()->get_Component<Health>();
@@ -175,7 +180,7 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 	//m_pWeaponController.lock()->Update(renderer);
 
 	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
-	auto physics = m_pPhysicsComp.lock();
+	auto rigidBody = m_pRigidBodyComp.lock();
 
 	auto pOwner = m_pOwner.lock();
 	VEC3 upVec = VEC3(0.0f, 1.0f, 0.0f);					// カメラから取得
@@ -298,7 +303,7 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 			//m_JumpVelocity = m_JumpForce;
 
 			// 上方向に衝撃を加える
-			physics->AddImpulse(VEC3(0.0f, m_JumpForce, 0.0f));
+			rigidBody->AddImpulse(VEC3(0.0f, m_JumpForce, 0.0f));
 
 			// ****************************************************
 			//				 ジャンプ開始音/声 再生
@@ -321,7 +326,7 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 		{
 			m_IsJump = false;
 			m_JumpVelocity = 0.0f;
-			m_pMyTransformComp.lock()->set_Pos(VEC3(0.0f, 100.0f, 0.0f));
+			rigidBody->Teleport(VEC3(0.0f, 100.0f, 0.0f));
 			return;
 		}
 	}
@@ -333,58 +338,93 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 
 	float ang = 0.0f;
 
+	VEC3 velocity = rigidBody->GetLinearVelocity();
+	VEC3 horizontal = VEC3(velocity.x, 0.0f, velocity.z);
+
+	const bool hasInput = inputDir.LengthSq() > 0.0001f;	// 移動入力があったかどうか
+	const VEC3 target = inputDir * MAX_MOVE_SPEED;			// 目標とする水平速度ベクトル
+
+	VEC3 difference = target - horizontal;
+	const float distance = difference.Length();
+
+	// 移動入力があるなら加速し、無いなら減速する
+	const float maxChange =
+		(hasInput ? MOVE_ACCELERATION : MOVE_DECELERATION) * deltaTime;
+
+	// 移動入力なし
+	if (distance <= maxChange)
+	{
+		horizontal = target;
+	}
+	// 移動入力あり
+	else
+	{
+		horizontal += difference * (maxChange / distance);
+	}
+
+	// Y方向は維持し、重力やジャンプを消さない
+	rigidBody->SetLinearVelocity(
+		VEC3(horizontal.x, velocity.y, horizontal.z));
+
+
+
 	//-----------------------------------------------------------------------------
 	// ■ velocityをもとに実際に移動させ、回転も計算する
 	//-----------------------------------------------------------------------------
 	bool isMoving = m_MoveVelocity.Length() > 0.001f;
-	if (isMoving)
-	{
-		// 水平方向の移動ベクトル
-		VEC3 horizontalMove = m_MoveVelocity;
-		horizontalMove.y = 0;
+	//if (isMoving)
+	//{
+	//	// 水平方向の移動ベクトル
+	//	VEC3 horizontalMove = m_MoveVelocity;
+	//	horizontalMove.y = 0;
 
-		VEC3 moveForce = horizontalMove * m_MoveSpeed;
+	//	VEC3 moveForce = horizontalMove * m_MoveSpeed;
 
-		// 移動計算
-		//newPos = (crntPos + (horizontalMove * m_MoveSpeed * deltaTime) + (VEC3(0, m_JumpVelocity, 0) * deltaTime));
+	//	// 移動計算
+	//	//newPos = (crntPos + (horizontalMove * m_MoveSpeed * deltaTime) + (VEC3(0, m_JumpVelocity, 0) * deltaTime));
 
-		// =========================================================
-		// 空中にいるときは加える力を弱くする
-		// =========================================================
-		if (m_IsGrounded == false)
-		{
-			// 空中では地上より力を抑える
-			moveForce *= 0.5f;
-		}
+	//	// =========================================================
+	//	// 空中にいるときは加える力を弱くする
+	//	// =========================================================
+	//	if (m_IsGrounded == false)
+	//	{
+	//		// 空中では地上より力を抑える
+	//		moveForce *= 0.5f;
+	//	}
 
-		physics->AddForce(moveForce);
+	//	//rigidBody->AddForce(moveForce);
 
-		/*
-		// 移動ベクトルに合わせてY軸のみ回転させる
-		// ジャンプ時に回転しないよう、X/Zのみ考慮
-		*/
-		if (horizontalMove.Length() > 0.001f)
-		{
-			//!***********************************
-			// 方向の処理を外に出すとガタガタする
-			//!***********************************
-			float targetAngle = 0.0f;      //目標角度	
+	//	// Y方向は維持し、重力やジャンプを消さない
+	//	//rigidBody->SetLinearVelocity(
+	//	//	VEC3(horizontalMove.x, 0.0f, horizontalMove.z));
 
-			// ジャンプ中でないなら走る
-			if (m_IsJump == false)
-			{
-				// 走りアニメーション
-				//ChangeAnimation(PLAYER_RANGER_ANIM_ID::RUNING);
-			}
 
-			if (!m_IsContinuousAngle)
-			{
-				MovedAngle(crntRot, m_MoveVelocity);
-			}
-		}
+	//	/*
+	//	// 移動ベクトルに合わせてY軸のみ回転させる
+	//	// ジャンプ時に回転しないよう、X/Zのみ考慮
+	//	*/
+	//	if (horizontalMove.Length() > 0.001f)
+	//	{
+	//		//!***********************************
+	//		// 方向の処理を外に出すとガタガタする
+	//		//!***********************************
+	//		float targetAngle = 0.0f;      //目標角度	
 
-		//m_pMyTransformComp.lock()->set_Pos(newPos);
-	}
+	//		// ジャンプ中でないなら走る
+	//		if (m_IsJump == false)
+	//		{
+	//			// 走りアニメーション
+	//			//ChangeAnimation(PLAYER_RANGER_ANIM_ID::RUNING);
+	//		}
+
+	//		if (!m_IsContinuousAngle)
+	//		{
+	//			MovedAngle(crntRot, m_MoveVelocity);
+	//		}
+	//	}
+
+	//	//m_pMyTransformComp.lock()->set_Pos(newPos);
+	//}
 
 
 
@@ -468,7 +508,7 @@ void PlayerController::RollingUpdate()
 
 	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 	
-
+	auto rigidBody = m_pRigidBodyComp.lock();
 	auto pOwner = m_pOwner.lock();
 	m_pMyTransformComp = pOwner->get_Transform().lock();
 
@@ -477,16 +517,31 @@ void PlayerController::RollingUpdate()
 	VEC3 newPos = VEC3();	// 新しい位置
 
 	// 0.0 ～ 1.0 に正規化
-	float t = std::min(
-		m_RollingElapsedTime / m_RollingDuration,
-		1.0f); 
+	//float t = std::min(
+	//	m_RollingElapsedTime / m_RollingDuration,
+	//	1.0f); 
 
 	// ※ イージングより、経過時間の割合の方が、本家の挙動に似ている感じがするので、変更
 	// イージング関数でカウンタに合わせて速度を落としていく
 	//float easeOut = 1.0f - Tool::Easing::EaseOutSin(t);
-	newPos = crntPos + (m_MoveVelocity * (ROLLING_SPEED * (1.0f - t))) * deltaTime;
-
+	//newPos = crntPos + (m_MoveVelocity * (ROLLING_SPEED * (1.0f - t))) * deltaTime;
 	
+// ローリング中：速度を補間するが、現在速度への追従補間はしない
+	const float t = std::clamp(
+		m_RollingElapsedTime / m_RollingDuration, 0.0f, 1.0f);
+
+	const float endSpeed =6.0f;  // 終了後に残す速度
+	const float speed = ROLLING_SPEED + (endSpeed - ROLLING_SPEED) * t;
+
+	const VEC3 velocity = rigidBody->GetLinearVelocity();
+
+	rigidBody->SetLinearVelocity(VEC3(
+		m_MoveVelocity.x * speed,
+		velocity.y,
+		m_MoveVelocity.z * speed));
+
+
+
 	m_RollingElapsedTime += deltaTime;
 
 	// 時間で止める
@@ -502,15 +557,15 @@ void PlayerController::RollingUpdate()
 		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_LAND));
 	}
 	
-	m_pMyTransformComp.lock()->set_Pos(newPos);
+	//m_pMyTransformComp.lock()->set_Pos(newPos);
 
 	// ローリング方向に合わせて回転させる
 	MovedAngle(crntRot,m_MoveVelocity);
 }
 
-
 //*---------------------------------------------------------------------------------------
 //*【?】衝突処理
+//*		[衝突した瞬間]
 //*
 //* [引数]
 //* &other : 衝突相手の情報
@@ -518,20 +573,40 @@ void PlayerController::RollingUpdate()
 //* [返値]
 //* void
 //*----------------------------------------------------------------------------------------
-void PlayerController::OnCollisionEnter(const PhysicsData::CollisionInfo &other)
+void PlayerController::OnCollisionEnter(const PhysicsData::CollisionInfo& other)
 {
-	VEC3 normal = other.hitNormal;
+	CheckGround(other);
+}
 
-	// 法線のY成分が一定以上（例：0.7f以上で約45度以下の坂）なら床とみなす
-	if (normal.y < -0.7f)
-	{
-		m_IsGrounded = true;
 
-		// めり込み防止のため、下方向への速度（重力による落下速度）をリセット
-		if (m_JumpVelocity < 0.0f) {
-			m_JumpVelocity = 0.0f;
-		}
-	}
+//*---------------------------------------------------------------------------------------
+//*【?】衝突処理
+//*		[衝突中]
+//*
+//* [引数]
+//* &other : 衝突相手の情報
+//*
+//* [返値]
+//* void
+//*----------------------------------------------------------------------------------------
+void PlayerController::OnCollisionStay(const PhysicsData::CollisionInfo &other)
+{
+	CheckGround(other);
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】衝突処理
+//*		[離れた瞬間]
+//*
+//* [引数]
+//* &other : 衝突相手の情報
+//*
+//* [返値]
+//* void
+//*----------------------------------------------------------------------------------------
+void PlayerController::OnCollisionExit(const PhysicsData::CollisionInfo &other)
+{
+	CheckGround(other);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -589,6 +664,8 @@ void PlayerController::ChangeAnimation(PlayerData::PLAYER_RANGER_ANIM_ID id, flo
 //*----------------------------------------------------------------------------------------
 void PlayerController::ContinuousAngle(const VECTOR3::VEC3 &_crntRot)
 {
+	auto rigidBody = m_pRigidBodyComp.lock();
+
 	float angle_H = m_pCameraComp.lock()->get_Angle_H();	// 水平アングル取得
 	float angle_V = m_pCameraComp.lock()->get_Angle_V();	// 垂直アングル取得
 
@@ -598,11 +675,24 @@ void PlayerController::ContinuousAngle(const VECTOR3::VEC3 &_crntRot)
 	// 目標とするクォータニオン
 	XMVECTOR targetRotQ = XMQuaternionRotationRollPitchYaw(0.0f, targetAngleY, 0.0f);
 
-	XMVECTOR crntRotQ = m_pMyTransformComp.lock()->get_RotationQuaternion();
+	const VEC4 rot = rigidBody->GetRotation();
+
+	const XMVECTOR crntRotQ =
+		XMVectorSet(rot.x, rot.y, rot.z, rot.w);
+
 
 	// クォータニオンの球面線形補間
 	// 普通の線形補間だと、値が飛んでしまうためクォータニオンの場合は球面線形補間を使う
 	XMVECTOR newRotQ = XMQuaternionSlerp(crntRotQ, targetRotQ, 0.9f);
+
+
+	XMFLOAT4 q;
+	XMStoreFloat4(&q, newRotQ);
+
+	// 剛体の現在位置を維持して回転を設定
+	rigidBody->SetWorldTransform(
+		rigidBody->GetWorldPotision(),
+		VEC4(q.x, q.y, q.z, q.w));
 
 	m_pMyTransformComp.lock()->set_RotationQuaternion(newRotQ);
 }
@@ -615,6 +705,8 @@ void PlayerController::ContinuousAngle(const VECTOR3::VEC3 &_crntRot)
 //*----------------------------------------------------------------------------------------
 void PlayerController::MovedAngle(const VECTOR3::VEC3 &_crntRot, const VECTOR3::VEC3 &_velocity)
 {
+	auto rigidBody = m_pRigidBodyComp.lock();
+
 	//目標の方向ベクトルから角度値を算出c
 	float targetAngleY = atan2(_velocity.x, _velocity.z);
 	//targetAngleY -= 3.14f;	// ※ プレイヤーモデルが前後反転してしまっているため  追記：直した
@@ -622,11 +714,41 @@ void PlayerController::MovedAngle(const VECTOR3::VEC3 &_crntRot, const VECTOR3::
 	// 目標とするクォータニオン
 	XMVECTOR targetRotQ = XMQuaternionRotationRollPitchYaw(0.0f, targetAngleY, 0.0f);
 	
-    XMVECTOR crntRotQ = m_pMyTransformComp.lock()->get_RotationQuaternion();
+	const VEC4 rot = rigidBody->GetRotation();
+
+	const XMVECTOR crntRotQ =
+		XMVectorSet(rot.x, rot.y, rot.z, rot.w);
 
 	// クォータニオンの球面線形補間
 	// 普通の線形補間だと、値が飛んでしまうためクォータニオンの場合は球面線形補間を使う
     XMVECTOR newRotQ = XMQuaternionSlerp(crntRotQ, targetRotQ, 0.5f);
 
+
+	XMFLOAT4 q;
+	XMStoreFloat4(&q, newRotQ);
+
+	// 剛体の現在位置を維持して回転を設定
+	rigidBody->SetWorldTransform(
+		rigidBody->GetWorldPotision(),
+		VEC4(q.x, q.y, q.z, q.w));
+
 	m_pMyTransformComp.lock()->set_RotationQuaternion(newRotQ);
+}
+//*---------------------------------------------------------------------------------------
+//*【?】接地状態をチェックするs
+//*
+//* [引数]
+//* & info : 衝突情報
+//* [返値]なし
+//*----------------------------------------------------------------------------------------
+void PlayerController::CheckGround(const PhysicsData::CollisionInfo& info)
+{
+	for (int i = 0; i < info.contactCount; i++)
+	{
+		if (info.contacts[i].normal.y > GROUND_NORMAL_Y)
+		{
+			m_IsGrounded = true;
+			return;
+		}
+	}
 }

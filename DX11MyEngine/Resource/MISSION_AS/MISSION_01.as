@@ -55,7 +55,7 @@ void mission_main()
     // 八面体 
     enemyID = SpawnEnemy(
         ENEMY_TYPE::OCTAHEDRON,
-        VEC3(0.0f,150.0f,0.0f),
+        VEC3(-200.0f,150.0f,0.0f),
         VEC3(0.0f),
         600.0f,
         true

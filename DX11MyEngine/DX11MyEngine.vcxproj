@@ -203,6 +203,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\Building_State.h" />
     <ClInclude Include="Source\Header\BulletBehaviour.h" />
     <ClInclude Include="Source\Header\BulletManager.h" />
+    <ClInclude Include="Source\Header\Component_CapsuleCollider.h" />
     <ClInclude Include="Source\Header\Component_Bullet.h" />
     <ClInclude Include="Source\Header\Component_ConfigSetting.h" />
     <ClInclude Include="Source\Header\Component_DistortionEffect.h" />
@@ -427,6 +428,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Building_State.cpp" />
     <ClCompile Include="Source\Cpp\BulletBehaviour.cpp" />
     <ClCompile Include="Source\Cpp\BulletManager.cpp" />
+    <ClCompile Include="Source\Cpp\Component_CapsuleCollider.cpp" />
     <ClCompile Include="Source\Cpp\Component_Bullet.cpp" />
     <ClCompile Include="Source\Cpp\Component_ConfigSetting.cpp" />
     <ClCompile Include="Source\Cpp\Component_DistortionEffect.cpp" />

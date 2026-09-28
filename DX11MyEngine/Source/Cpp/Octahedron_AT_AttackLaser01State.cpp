@@ -73,6 +73,7 @@ int Octahedron_AT_AttackLaser01State::Update(class EnemyController* pOwner)
 		movePram._moveSpeed = 1.0f;
 		movePram._turnSpeed = 0.5f;
 		movePram._targetPos = targetPos;
+		movePram._isPhysicsMove = true;
 		auto move = pOwner->get_MoveLogicComponent();
 		move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す
 

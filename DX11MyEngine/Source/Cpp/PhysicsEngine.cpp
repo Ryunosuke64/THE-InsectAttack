@@ -48,7 +48,7 @@ bool PhysicsEngine::Setup()
     // 衝突判定の設定
     m_pConfig = std::make_unique<btDefaultCollisionConfiguration>();
 
-    // 衝突判定を管理（自分で定義したやつ）
+    // 衝突判定を管理（自分で衝突定義したやつ）
     m_pDispatcher = std::make_unique <MyCollisionDispatcher>(m_pConfig.get());
 
     // GImpactの登録
@@ -445,6 +445,7 @@ SetWorldPosition(
     }
 }
 
+
 //*---------------------------------------------------------------------------------------
 //*【?】ワールド座標を取得
 //*
@@ -468,9 +469,9 @@ GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle)
     btVector3 pos = transform.getOrigin();
 
     return VEC3(
-        static_cast<float>(pos.getX()),
-        static_cast<float>(pos.getY()),
-        static_cast<float>(pos.getZ())
+        FLOAT_CAST(pos.getX()),
+        FLOAT_CAST(pos.getY()),
+        FLOAT_CAST(pos.getZ())
     );
 }
 
@@ -498,12 +499,40 @@ GetRotation(const PhysicsData::PhysicsBodyHandle& handle)
     btQuaternion rot = transform.getRotation();
 
     return VEC4(
-        static_cast<float>(rot.getX()),
-        static_cast<float>(rot.getY()),
-        static_cast<float>(rot.getZ()),
-        static_cast<float>(rot.getW())
+        FLOAT_CAST(rot.getX()),
+        FLOAT_CAST(rot.getY()),
+        FLOAT_CAST(rot.getZ()),
+        FLOAT_CAST(rot.getW())
     );
 }
+
+//*---------------------------------------------------------------------------------------
+//*【?】線形速度を取得
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* [返値] 
+//* 線形速度
+//*----------------------------------------------------------------------------------------
+VECTOR3::VEC3 PhysicsEngine::
+GetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle)const
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return VEC3();
+    }
+    auto body = m_RigidBodies[handle.index].rigidBody;
+
+    btVector3 vel = body->getLinearVelocity();
+
+    return VEC3(
+        FLOAT_CAST(vel.getX()),
+        FLOAT_CAST(vel.getY()),
+        FLOAT_CAST(vel.getZ())
+    );
+}
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】マスクの設定

@@ -34,7 +34,7 @@ EnemyController::EnemyController(std::weak_ptr<GameObject> pOwner, int updateRan
 	m_pAnimatorComp(nullptr),
 	m_pColliderComp(nullptr),
 	m_pMoveLogicComp(nullptr),
-	m_pPhysicsComp(nullptr),
+	m_pRigidBodyComp(nullptr),
 	m_pTransformComp(nullptr),
 	m_pTarget(nullptr),
 	m_IsAnim(false),
@@ -84,7 +84,7 @@ void EnemyController::Start(RendererEngine& renderer)
 	m_pMoveLogicComp = ownerObj->get_Component<MoveLogic>().get();
 
 	// 物理コンポーネントの取得
-	m_pPhysicsComp = ownerObj->get_Component<Physics>().get();
+	m_pRigidBodyComp = ownerObj->get_Component<RigidBody>().get();
 
 	// HP管理コンポーネントの取得
 	m_pHealthComp = m_pOwner.lock()->get_Component<Health>().get();
@@ -177,7 +177,7 @@ void EnemyController::LateUpdate(RendererEngine& renderer)
 	{
 		m_GravityVelocity = 0.0f;
 		transform->set_Pos(VEC3(0.0f, 100.0f, 0.0f));
-		m_pPhysicsComp->SetZeroVelocity();
+		m_pRigidBodyComp->SetZeroVelocity();
 	}
 }
 

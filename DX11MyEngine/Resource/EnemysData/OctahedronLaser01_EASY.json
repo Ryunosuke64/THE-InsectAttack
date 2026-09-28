@@ -40,13 +40,13 @@
       "type" : "EXPLOSION",
       "decalMaterialTag" : "Decal_Ant_Splash",
       "hitEffectTag" : "BulletHit_Acid",
-      "explosionRadius" : 20.0,
+      "explosionRadius" : 30.0,
       "explosionEffectTag" : "Explosion_01",
-      "explosionEffectAliveTime" :3.0,
+      "explosionEffectAliveTime" :1.0,
       "isSmoke" : true,
 
       "expLightColor" : [0, 1, 0],
-      "expLightIntensity" : 3.0,
+      "expLightIntensity" : 1.0,
       "expLightDuration" : 10.0
     },
     "visual" :  

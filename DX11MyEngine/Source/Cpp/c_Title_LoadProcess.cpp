@@ -8,6 +8,7 @@
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_PlayerController.h"
 #include "Component_BoxCollider.h"
+#include "Component_CapsuleCollider.h"
 #include "Component_3DCamera.h"
 #include "Component_Transform.h"
 #include "Component_TrailRenderer.h"
@@ -202,7 +203,7 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         matInfo[2].Index = 2;
         matInfo[2].pMaterialData = matPtr2; // 頭
 
-        VEC3 pos = VEC3(-900.0f, 0.0f, 900.0f);
+        VEC3 pos = VEC3(0.0f, 0.0f, 0.0f);
 
         CreateModelInfo model;
         model.pRenderer = m_pRenderer;
@@ -246,9 +247,10 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         auto rigidBody = pPlayerObj->add_Component<RigidBody>();
 
         // コライダーの追加
-        auto collider = pPlayerObj->add_Component<BoxCollider>();
-        collider->set_Size(VEC3(0.5f, 1.0f, 0.5f));
-        collider->set_Center(VEC3(0.0f, 1.0f, 0.0f));
+        auto collider = pPlayerObj->add_Component<CapsuleCollider>();
+        collider->set_Height(0.75f);
+        collider->set_Radius(0.5f);
+        collider->set_Center(VEC3(0.0f, 0.75f, 0.0f));
 
         // コリジョンのカテゴリ
         collider->set_CollisionCategory(COLLISION_CATEGORY::PLAYER);
@@ -260,13 +262,14 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
 
         // コライダーの登録
-        Master::m_pCollisionManager->RegisterCollider(collider);
+        //Master::m_pCollisionManager->RegisterCollider(collider);
 
 
         PhysicsData::RigidBodyDesc rbDesc;
         rbDesc.mass = 1.0f;
-        rbDesc.friction = 0.5f;
+        rbDesc.friction = 0.0f;
         rbDesc.restitution = 0.0f;
+        rbDesc.angularFactor = 0.0f;
         rbDesc.pos = pos;
         rbDesc.owner = pPlayerObj;     // オーナーオブジェクトの設定
         rbDesc.collider = collider;    // コライダーの設定

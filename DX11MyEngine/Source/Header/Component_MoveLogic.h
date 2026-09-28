@@ -33,6 +33,10 @@ public:
     void Update(RendererEngine &renderer) override;		// 更新
 	void set_MoveParam(const MoveParam& _param) { m_MoveParam = _param; }	// 移動パラメータの設定
 
+    void PhysicsMovement(const ResultMove& _param, const MyTransform& _transform, float deltaTime);
+    void NormalMovement(const ResultMove& _param,  MyTransform& _transform, float deltaTime);
+
+
     /// <summary>
     /// パラメータのリセット
     /// </summary>

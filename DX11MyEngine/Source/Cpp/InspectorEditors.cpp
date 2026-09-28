@@ -464,6 +464,7 @@ void PlayerControllerEditor::OnEditorGUI(RendererEngine &renderer, GameObject &p
 
     // beginはInspectorWindowで行っている
     float moveSpeed             = pComp->get_MoveSpeed();
+    float moveMaxSpeed          = pComp->get_MoveMaxSpeed();
     PlayerData::PLAYER_RANGER_ANIM_ID animId  = pComp->get_AnimID();
     VEC3 moveVelocity           = pComp->get_MoveVelocity();
     bool isJump                 = pComp->get_IsJump();
@@ -480,6 +481,10 @@ void PlayerControllerEditor::OnEditorGUI(RendererEngine &renderer, GameObject &p
         Master::m_pDebugger->DG_BulletText(U8ToChar(u8"移動速度"));
         Master::m_pDebugger->DG_SameLine();
         Master::m_pDebugger->DG_DragFloat("##MoveSpeed", 1, &moveSpeed, 1.0f, 0.0f, 1000.0f);
+        
+        Master::m_pDebugger->DG_BulletText(U8ToChar(u8"moveMaxSpeed移動x速度"));
+        Master::m_pDebugger->DG_SameLine();
+        Master::m_pDebugger->DG_DragFloat("##MoveMaxSpeed", 1, &moveMaxSpeed, 1.0f, 0.0f, 1000.0f);
 
         Master::m_pDebugger->DG_BulletText(U8ToChar(u8"速度ベクトル"));
         Master::m_pDebugger->DG_SameLine();

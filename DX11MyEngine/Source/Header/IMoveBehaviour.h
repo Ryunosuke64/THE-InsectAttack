@@ -18,7 +18,7 @@ struct MoveParam
     float _turnSpeed;               // 回転速度 
     float _gravity;                 // 重力
     bool _isAcceleration;           // 加速度があるか
-
+    bool _isPhysicsMove;            // 物理移動をするか（RigidBodyで移動する場合）
 
     MoveParam() : 
         _moveDirection(VECTOR3::VEC3()),
@@ -28,7 +28,8 @@ struct MoveParam
         _turnSpeed(0.0f),
         _moveSpeed(0.0f),
         _isAcceleration(false),
-        _gravity(0.0f)
+        _gravity(0.0f),
+        _isPhysicsMove(false)
     {
     }
 };

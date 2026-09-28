@@ -144,6 +144,7 @@ namespace PhysicsData
 
 	/// <summary>
 	/// 衝突判定ペア
+	/// [PhysicsEngine側で使う内部的なデータ]
 	/// </summary>
 	struct CollisionPair
 	{
@@ -161,6 +162,7 @@ namespace PhysicsData
 
 	/// <summary>
 	/// 衝突ペアのためのハッシュ値
+	/// [PhysicsEngine側で使う内部的なデータ]
 	/// </summary>
 	struct CollisionPairHash
 	{
@@ -179,6 +181,7 @@ namespace PhysicsData
 
 	/// <summary>
 	/// 衝突点情報 ペア用
+	/// [PhysicsEngine側で使う内部的なデータ]
 	/// </summary>
 	struct PairContactPoint
 	{
@@ -193,6 +196,7 @@ namespace PhysicsData
 
 	/// <summary>
 	/// 衝突情報 ペア用
+	/// [PhysicsEngine側で使う内部的なデータ]
 	/// </summary>
 	struct PairCollisionInfo
 	{
@@ -217,6 +221,7 @@ namespace PhysicsData
 	/* --- @:CollisionInfo Class --- */
 	//
 	// 【?】衝突時の情報をまとめたクラス
+	//		ゲーム側から参照するやつ
 	//
 	// ***************************************************************************************
 	struct CollisionInfo
