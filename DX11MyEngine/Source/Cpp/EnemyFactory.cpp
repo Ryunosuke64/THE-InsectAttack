@@ -241,30 +241,71 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     // コントローラー側に怯み耐久を設定する
     enemyController->set_StaggerThreshold(hp * ANT_THRESHOLD_RATE);
 
-    //
-    // 物理コンポーネント追加
-    //
-    auto physics = generatedObject->add_Component<Physics>();
-    physics->set_AirDrag(1.0f);
-    physics->set_Restitution(0.5f); // 跳ねない
-    physics->set_AngularDrag(0.98f);
-    //
-    // コライダーの追加
-    //
+    auto modelResource = generatedObject->get_Component<ModelMeshResource>();
+    
+    auto rb = generatedObject->add_Component<RigidBody>();
     auto collider = generatedObject->add_Component<BoxCollider>();
-    collider->set_Size(VEC3(2.0f, 2.0f, 2.0f));
-    collider->set_Center(VEC3(0.0f, 2.0f, 0.0f));
-    // 衝突カテゴリ
-    collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);
-    // 衝突マスクの設定
-    collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING,               COLLISION_RESPONSE::RESPONSE_BLOCK);          // 建物
-    collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING,   COLLISION_RESPONSE::RESPONSE_BLOCK);          // 破壊可能建物
-    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY,                  COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー
-    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET,           COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
-    collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM,                   COLLISION_RESPONSE::RESPONSE_IGNORE);         // アイテム
-    collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER_BULLET,          COLLISION_RESPONSE::RESPONSE_OVERLAP);        // アイテム
-    // コライダーの登録
-    Master::m_pCollisionManager->RegisterCollider(collider);
+
+    //collider->SetupModelData(modelResource->get_ModelData());
+    collider->set_Size(VEC3(2.0f, 1.5f, 2.0f));
+    collider->set_Center(VEC3(0.0f, 1.5f, 0.0f));
+    collider->set_IsStatic(false);
+    collider->set_IsConvex(false);
+    collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
+
+    //*****************************************************************************************
+    //						衝突マスクの設定
+    //*****************************************************************************************
+    // 
+    // 押し出しあり
+    //
+    collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
+    collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
+    collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_BLOCK);                // プレイヤー
+
+    //
+    // 判定なし
+    //
+    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);                // エネミー
+    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
+    collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // アイテム
+
+
+    PhysicsData::RigidBodyDesc rbDesc;
+    rbDesc.mass = 5.0f;
+    rbDesc.pos = pos;
+    rbDesc.restitution = 0.0f;          // 跳ねない
+    rbDesc.friction = 1.0f;             // 摩擦なし
+    rbDesc.owner = generatedObject;     // オーナーオブジェクトの設定
+    rbDesc.collider = collider;         // コライダーの設定
+    rbDesc.gravity = VEC3(0.0f, -9.8f, 0.0f);
+
+    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+
+    ////
+    //// 物理コンポーネント追加
+    ////
+    //auto physics = generatedObject->add_Component<Physics>();
+    //physics->set_AirDrag(1.0f);
+    //physics->set_Restitution(0.5f); // 跳ねない
+    //physics->set_AngularDrag(0.98f);
+    ////
+    //// コライダーの追加
+    ////
+    //auto collider = generatedObject->add_Component<BoxCollider>();
+    //collider->set_Size(VEC3(2.0f, 2.0f, 2.0f));
+    //collider->set_Center(VEC3(0.0f, 2.0f, 0.0f));
+    //// 衝突カテゴリ
+    //collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);
+    //// 衝突マスクの設定
+    //collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING,               COLLISION_RESPONSE::RESPONSE_BLOCK);          // 建物
+    //collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING,   COLLISION_RESPONSE::RESPONSE_BLOCK);          // 破壊可能建物
+    //collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY,                  COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー
+    //collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET,           COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
+    //collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM,                   COLLISION_RESPONSE::RESPONSE_IGNORE);         // アイテム
+    //collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER_BULLET,          COLLISION_RESPONSE::RESPONSE_OVERLAP);        // アイテム
+    //// コライダーの登録
+    //Master::m_pCollisionManager->RegisterCollider(collider);
     
     //
     // ステートの登録
@@ -367,18 +408,28 @@ std::shared_ptr<GameObject> EnemyFactory::CreateOctahedron(const EnemyGeneration
     collider->set_IsConvex(false);
     collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
 
-    // 衝突マスクの設定
+    //*****************************************************************************************
+    //						衝突マスクの設定
+    //*****************************************************************************************
+    // 
+    // 押し出しあり
+    //
     collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
     collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
+    collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_BLOCK);                // プレイヤー
+
+    //
+    // 判定なし
+    //
     collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);                // エネミー
     collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
     collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // アイテム
 
     PhysicsData::RigidBodyDesc rbDesc;
-    rbDesc.mass = 1000.0f;
+    rbDesc.mass = 10.0f;
     rbDesc.pos = pos;
     rbDesc.restitution = 0.0f;
-    rbDesc.friction = 0.0f;
+    rbDesc.friction = 1.0f;
     rbDesc.owner = generatedObject;     // オーナーオブジェクトの設定
     rbDesc.collider = collider;         // コライダーの設定
     rbDesc.gravity = VEC3(0.0f, 0.0f, 0.0f);

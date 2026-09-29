@@ -7,6 +7,7 @@
 #include "Component_TimerDestruction.h"
 #include "Component_Collider.h"
 #include "Component_BoxCollider.h"
+#include "Component_RigidBody.h"
 #include "Component_Health.h"
 #include "Component_Physics.h"
 #include "RendererEngine.h"
@@ -176,8 +177,9 @@ void EnemyController::LateUpdate(RendererEngine& renderer)
 	if (newPos.y < -100.0f)
 	{
 		m_GravityVelocity = 0.0f;
-		transform->set_Pos(VEC3(0.0f, 100.0f, 0.0f));
-		m_pRigidBodyComp->SetZeroVelocity();
+		m_pRigidBodyComp->Teleport(VEC3(0.0f, 100.0f, 0.0f));
+		//transform->set_Pos(VEC3(0.0f, 100.0f, 0.0f));
+		//m_pRigidBodyComp->SetZeroVelocity();
 	}
 }
 

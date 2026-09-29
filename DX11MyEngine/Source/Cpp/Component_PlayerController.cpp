@@ -27,11 +27,11 @@ using namespace Tool;
 constexpr float MOVE_SPEED        = 10.0f;	// プレイヤーの移動速度
 constexpr float MAX_MOVE_SPEED    = 11.0f;	// プレイヤーの最大移動速度
 constexpr float MOVE_ACCELERATION = 40.0f;	// 移動加速度
-constexpr float MOVE_DECELERATION = 20.0f;	// 移動減速
+constexpr float MOVE_DECELERATION = 30.0f;	// 移動減速
 constexpr float ROLLING_SPEED     = 26.0f;	// ローリング時初速
 constexpr float ROLLING_DURATION  = 1.0f;	// ローリング時間
 constexpr float JUMP_HEIGHT       = 2.5f;	// ジャンプの高さ
-constexpr float GRAVITY           = 9.8f;	// 重力
+constexpr float GRAVITY           = 18.0f;	// 重力
 constexpr float ANIM_SPEED        = 1.25f;	// アニメーション速度
 constexpr float GROUND_NORMAL_Y   = 0.8f;	// 地面とするY法線
 
@@ -117,7 +117,7 @@ void PlayerController::Start(RendererEngine& renderer)
 	// ジャンプ力の計算
 	// https://heron-no-suugaku.sakura.ne.jp/jump-implementation-math/#toc1
 	m_JumpForce = sqrtf(2.0f * m_Gravity * JUMP_HEIGHT);
-	m_JumpForce = 8.0f;
+	//m_JumpForce = 8.0f;
 
 	// 被弾時のコールバック
 	m_pHealthComp.lock()->RegisterOnDamage(
@@ -451,10 +451,11 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 		ray._dir = -upVec; // 下方向
 
 		unsigned hitMask = UINT_CAST(COLLISION_CATEGORY::BUILDING) | UINT_CAST(COLLISION_CATEGORY::BUILDING) | UINT_CAST(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
+		unsigned group = UINT_CAST(COLLISION_CATEGORY::PLAYER);
 		CollisionInfo hitInfo;
 
 		// レイキャストして当たりそうになっていたら、ジャンプダウン状態に移行する
-		if (Master::m_pCollisionManager->CheckRaycast(ray, hitMask, &hitInfo))
+		if (Master::m_pPhysicsEngine->Raycast(ray, group, hitMask, &hitInfo))
 		{
 			ChangeAnimation(PLAYER_RANGER_ANIM_ID::JUMP_DOWN, 0.5f);
 		}

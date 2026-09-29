@@ -152,6 +152,7 @@ int Ant_PT_MoveState::Update(class EnemyController* pOwner)
 		/* 親の移動コンポーネントを使い、移動処理を行う */
 		// 方向を変えて、移動させる
 		MoveParam movePram;
+		movePram._isPhysicsMove = true;
 		movePram._moveSpeed = pOwner->get_MoveSpeed();
 		movePram._maxSpeed = pOwner->get_MoveSpeed();
 		movePram._turnSpeed = 0.05f;	// 急に振り向くと変なので、少し優しめに

@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Component_EnemyController.h"
 #include "Component_BoxCollider.h"
+#include "Component_MeshCollider.h"
 #include "Component_Physics.h"
 #include "Component_DecalRenderer.h"
+#include "Component_RigidBody.h"
 #include "Component_TimerDestruction.h"
 #include "Octahedron_StateHeader.h"
 #include "GameObject.h"
@@ -54,17 +56,11 @@ void Octahedron_AT_DeadState::OnEnter(class EnemyController* pOwner)
 	knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-10.0f, 10.0f);
 
 	// 物理コンポーネントの設定
-	auto physics = pOwner->get_PhysicsComponent();
-	physics->set_Mass(1.0f);
-	physics->set_GravityScale(10.0f);
-	physics->AddImpulse(knockbackDir);
-	physics->set_Restitution(0.5f);
-
-	// コライダーの判定をオフに
-	//pOwner->get_OwnerObj().lock()->get_Component<BoxCollider>()->set_IsEnable(false);	
-	auto collider = pOwner->get_OwnerObj().lock()->get_Component<BoxCollider>();
-	collider->set_Center(VEC3(0.0f, -5.0f, 0.0f));
-	collider->set_Size(VEC3(10.0f, 10.0f, 10.0f));
+	auto rigidBody = pOwner->get_RigidBodyComponent();
+	rigidBody->SetMass(1.0f);
+	rigidBody->SetGravity(VEC3(0.0f, -9.8f, 0.0f));
+	rigidBody->SetRestitution(0.5f);
+	rigidBody->AddImpulse(knockbackDir);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -136,8 +132,8 @@ int Octahedron_AT_DeadState::Update(class EnemyController* pOwner)
 		//*****************************************************************************************
 		if (timer > DELETE_TIME)
 		{
-			auto physics = pOwner->get_PhysicsComponent();
-			physics->set_IsEnable(false);
+			auto rigidBody = pOwner->get_RigidBodyComponent();
+			//rigidBody->set_IsEnable(false);
 			pOwner->get_OwnerObj().lock()->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_DELETE);
 
 

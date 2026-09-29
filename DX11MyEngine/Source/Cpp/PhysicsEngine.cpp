@@ -383,6 +383,50 @@ SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
     body->updateInertiaTensor();
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】反発係数を設定
+//*
+//* [引数] 
+//* & handle    : ハンドル
+//* restitution : 反発（0 = 跳ねない）
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetRestitution(const PhysicsData::PhysicsBodyHandle& handle, float restitution)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+    auto body = m_RigidBodies[handle.index].rigidBody;
+
+    body->setRestitution(btScalar(restitution));
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】摩擦係数を設定
+//*
+//* [引数] 
+//* & handle    : ハンドル
+//* friction    : 摩擦（0 = 摩擦なし）
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetFriction(const PhysicsData::PhysicsBodyHandle& handle, float friction)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+    auto body = m_RigidBodies[handle.index].rigidBody;
+
+    body->setFriction(btScalar(friction));
+}
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】重力を設定

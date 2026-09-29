@@ -539,10 +539,11 @@ namespace BulletBehaviour
                     // ÕŒ‚ƒxƒNƒgƒ‹‚ÌÝ’è
                     rb->AddImpulse(knockbackDir * _common._knockbackForce);
 
-                    //knockbackDir.y = Master::m_pRandomManager->GetFloatRandom(-1, 1);
-                    //knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-1, 1);
-                    //knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-1, 1);
-                    //rb->AddAngularImpulse(knockbackDir * _common._knockbackForce);
+                    // ‰ñ“]‚É‚àÕŒ‚‚ð—^‚¦‚é
+                    knockbackDir.y = Master::m_pRandomManager->GetFloatRandom(-1, 1);
+                    knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-1, 1);
+                    knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-1, 1);
+                    rb->AddAngularImpulse(knockbackDir * _common._knockbackForce);
                 }
             }
         }

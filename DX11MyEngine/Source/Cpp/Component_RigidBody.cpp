@@ -151,6 +151,18 @@ void RigidBody::AddImpulse(const VECTOR3::VEC3& impulse)
 {
     m_pEngine->AddImpulse(m_Handle, impulse, VEC3());
 }
+//*---------------------------------------------------------------------------------------
+//*y?zuŠÔ“I‚È‰ñ“]‚É‘Î‚·‚éÕŒ‚‚ð‰Á‚¦‚é
+//*
+//* [ˆø”]
+//* &_impulse : ÕŒ‚ƒxƒNƒgƒ‹
+//* 
+//* [•Ô’l] ‚È‚µ
+//*----------------------------------------------------------------------------------------
+void RigidBody::AddAngularImpulse(const VECTOR3::VEC3& impulse)
+{
+    m_pEngine->AddAngularImpulse(m_Handle, impulse);
+}
 
 //*---------------------------------------------------------------------------------------
 //*y?züŒ`‘¬“x‚ðÝ’è
@@ -269,6 +281,22 @@ VECTOR3::VEC3 RigidBody::GetLinearVelocity() const
 void RigidBody::SetMass(float mass)
 {
     m_pEngine->SetMass(m_Handle, mass);
+}
+
+//*---------------------------------------------------------------------------------------
+//*y?z”½”­‚ÌÝ’è
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetRestitution(float restitution)
+{
+    m_pEngine->SetRestitution(m_Handle, restitution);
+}
+
+//*---------------------------------------------------------------------------------------
+//*y?z–€ŽC‚ÌÝ’è
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetFriction(float friction)
+{
+    m_pEngine->SetFriction(m_Handle, friction);
 }
 
 //*---------------------------------------------------------------------------------------

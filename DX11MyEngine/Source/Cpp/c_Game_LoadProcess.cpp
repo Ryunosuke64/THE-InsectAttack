@@ -402,8 +402,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
         }
 
-        Master::m_pItemManager->SpawnItemRand(100, 100, VEC3(-150.0f, 50.0f, 100.0f), 10.0f);
-
         /* キューブの生成 */
         {
             // マテリアル取得
@@ -423,7 +421,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             mesh.IsNormalMap = true;
             mesh.ObjLayer = 105;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10; i++)
             {
                 VEC3 pos;
                 pos.x = -100.0f;
@@ -454,44 +452,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
                 rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
             }
         }
-    }
-
-    /* 地面の生成 */
-    {
-        // マテリアル取得
-        auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
-        //auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
-
-        SetupMaterialInfo matInfo[1];
-        matInfo[0].Index = 0;
-        matInfo[0].pMaterialData = matPtr;
-
-        CreateUtilityMeshInfo mesh;
-        mesh.pRenderer = m_pRenderer;
-        mesh.Type = UTILITY_MESH_TYPE::PLANE;
-        mesh.ObjTag = "Ground";
-        mesh.MatNum = 1;
-        mesh.MaterialData = matInfo;
-        mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-        mesh.IsNormalMap = true;
-		mesh.TilingScale = VEC2(60.0f, 60.0f);
-        mesh.ObjLayer = 90;
-
-        auto obj = MeshFactory::CreateUtilityMesh(mesh);
-        obj->get_Transform().lock()->set_Scale(400.0f, 1.0f, 400.0f);
-        obj->get_Transform().lock()->set_Pos(0.0f, 0.0f, 0.0f);
-        obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
-
-        // コライダーの追加
-        auto collider = obj->add_Component<BoxCollider>();
-        collider->set_Size(VEC3(400.0f, 0.5f, 400.0f));
-        collider->set_Center(VEC3(0, -0.5f, 0)); // コライダーの中心を地面の厚み分だけ下げる
-        collider->set_IsStatic(true);
-        // 衝突カテゴリ
-        collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
-
-        // コライダーの登録
-        Master::m_pCollisionManager->RegisterCollider(collider);
     }
 
     /* ディストーション */

@@ -254,12 +254,25 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
 
         // コリジョンのカテゴリ
         collider->set_CollisionCategory(COLLISION_CATEGORY::PLAYER);
-
-        // 衝突マスクの設定
-        collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);                // エネミー
-        collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_OVERLAP);                // アイテム
+        //*****************************************************************************************
+        //						衝突マスクの設定
+        //*****************************************************************************************
+        // 
+        // 押し出しあり
+        //
         collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
         collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
+        collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_BLOCK);                // エネミー
+
+        // 
+        // 押し出しなし 判定あり
+        //
+        collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_OVERLAP);                // アイテム
+
+        // 
+        // 判定なし
+        //
+
 
         // コライダーの登録
         //Master::m_pCollisionManager->RegisterCollider(collider);
@@ -270,6 +283,7 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         rbDesc.friction = 0.0f;
         rbDesc.restitution = 0.0f;
         rbDesc.angularFactor = 0.0f;
+        rbDesc.gravity = VEC3(0.0f, -18.0f, 0.0f);
         rbDesc.pos = pos;
         rbDesc.owner = pPlayerObj;     // オーナーオブジェクトの設定
         rbDesc.collider = collider;    // コライダーの設定

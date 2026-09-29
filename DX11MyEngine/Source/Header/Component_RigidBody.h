@@ -40,6 +40,7 @@ public:
     //
     void AddForce(const VECTOR3::VEC3& force);
     void AddImpulse(const VECTOR3::VEC3& impulse);
+    void AddAngularImpulse(const VECTOR3::VEC3& impulse);
     void SetLinearVelocity(const VECTOR3::VEC3& velocity);
     void AddCentralForce(const VECTOR3::VEC3& force);
     void AddCentralImpulse(const VECTOR3::VEC3& impulse);
@@ -47,12 +48,13 @@ public:
     void SetWorldTransform(const VECTOR3::VEC3& position,const VECTOR4::VEC4& rotation);
     void SetRotation(const VECTOR4::VEC4& rotation);
 
-
     VECTOR3::VEC3 GetWorldPotision()const;
     VECTOR4::VEC4 GetRotation()const;
     VECTOR3::VEC3 GetLinearVelocity() const;
 
     void SetMass(float mass);
+    void SetRestitution(float restitution);
+    void SetFriction(float friction);
     void SetGravity(const VECTOR3::VEC3& gravity);
 
     void SetEnabled(bool enabled);

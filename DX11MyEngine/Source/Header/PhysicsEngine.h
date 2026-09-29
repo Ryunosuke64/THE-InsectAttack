@@ -59,6 +59,8 @@ public:
 	void SetWorldTransform(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& pos, const VECTOR4::VEC4& rot);
 	
 	void SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass);
+	void SetRestitution(const PhysicsData::PhysicsBodyHandle& handle, float restitution);
+	void SetFriction(const PhysicsData::PhysicsBodyHandle& handle, float friction);
 	void SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gravity);
 	void SetWorldPosition(
 		const PhysicsData::PhysicsBodyHandle& handle,

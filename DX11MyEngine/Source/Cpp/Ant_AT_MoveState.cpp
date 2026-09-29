@@ -95,6 +95,7 @@ int Ant_AT_MoveState::Update(class EnemyController* pOwner)
 	movePram._moveSpeed = pOwner->get_MoveSpeed();
 	movePram._maxSpeed = pOwner->get_MoveSpeed();
 	movePram._turnSpeed = 0.05f;	// 急に振り向くと変なので、少し優しめに
+	movePram._isPhysicsMove = true;
 	movePram._moveDirection = m_MoveDir;
 	auto move = pOwner->get_MoveLogicComponent();
 	move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す

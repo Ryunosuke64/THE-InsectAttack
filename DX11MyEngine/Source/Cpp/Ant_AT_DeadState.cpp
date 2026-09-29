@@ -2,6 +2,7 @@
 #include "Component_EnemyController.h"
 #include "Component_BoxCollider.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 #include "Component_DecalRenderer.h"
 #include "Component_TimerDestruction.h"
 #include "Ant_StateHeader.h"
@@ -11,6 +12,7 @@
 #include "ResourceManager.h"
 
 using namespace DirectX;
+using namespace VECTOR4;
 using namespace VECTOR3;
 using namespace VECTOR2;
 using namespace UtilityData;
@@ -54,17 +56,19 @@ void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 
 	// 少し上（Y軸）に向かせることで、綺麗な放物線を描いて吹き飛ばせる
 	knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
-	knockbackDir.y += 6.0f;
+	knockbackDir.y += 30.0f;
 	knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
 
-	auto physics = pOwner->get_PhysicsComponent();
-	physics->AddImpulse(knockbackDir);
+	// 物理コンポーネントの設定
+	auto rigidBody = pOwner->get_RigidBodyComponent();
+	rigidBody->SetRestitution(0.5f);		// 吹っ飛んだ時に跳ねるように
+	rigidBody->AddImpulse(knockbackDir);
 
 	// コライダーの判定をオフに
 	//pOwner->get_OwnerObj().lock()->get_Component<BoxCollider>()->set_IsEnable(false);	
 	auto collider = pOwner->get_OwnerObj().lock()->get_Component<BoxCollider>();
-	collider->set_Center(VEC3(0.0f, -0.5f, 0.0f));
-	collider->set_Size(VEC3(1.0f, 1.0f, 1.0f));
+	// collider->set_Center(VEC3(0.0f, -0.5f, 0.0f));
+	// collider->set_Size(VEC3(1.0f, 1.0f, 1.0f));
 }
 
 //*---------------------------------------------------------------------------------------
@@ -103,10 +107,15 @@ int Ant_AT_DeadState::Update(class EnemyController* pOwner)
 		}
 
 		float deltaTime = Master::m_pTimeManager->get_DeltaTime();
-		auto myTransform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
-		VEC3 crntPos = myTransform->get_VEC3ToPos();					// 現在の座標
-		VEC3 crntRot = myTransform->get_VEC3ToLocal_RotateToRad();		// 現在のオイラー
-		XMVECTOR crntRotQ = myTransform->get_RotationQuaternion();		// 現在のクオータニオン
+		auto rigidBody = pOwner->get_RigidBodyComponent();
+		VEC3 crntPos = rigidBody->GetWorldPotision();
+		VEC4 crntRot = rigidBody->GetRotation();
+		
+		//auto myTransform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
+
+		//VEC3 crntPos = myTransform->get_VEC3ToPos();					// 現在の座標
+		//VEC3 crntRot = myTransform->get_VEC3ToLocal_RotateToRad();		// 現在のオイラー
+		//XMVECTOR crntRotQ = myTransform->get_RotationQuaternion();		// 現在のクオータニオン
 		float timer = pOwner->get_StateTimer();
 
 
@@ -115,9 +124,20 @@ int Ant_AT_DeadState::Update(class EnemyController* pOwner)
 		//*****************************************************************************************
 		float t = timer / OVERTURN_TIME;
 		if (t <= 1.0f) {
-			float ease = std::min(Tool::Easing::EaseOutBounce(t), 1.0f);
-			crntRotQ = XMQuaternionSlerp(crntRotQ, m_TargetRotQ, ease);	// 球面補間でひっくり返らせる
-			myTransform->set_RotationQuaternion(crntRotQ);
+			float ease = std::min(Tool::Easing::EaseOutCubic(t), 1.0f);
+
+			const XMVECTOR crntRotQ =
+				XMVectorSet(crntRot.x, crntRot.y, crntRot.z, crntRot.w);
+
+			XMVECTOR newRotQ = XMQuaternionSlerp(crntRotQ, m_TargetRotQ, ease);	// 球面補間でひっくり返らせる
+
+			XMFLOAT4 ConvertToXMF;
+			XMStoreFloat4(&ConvertToXMF, newRotQ);
+
+			// 回転設定
+			rigidBody->SetRotation(VEC4(ConvertToXMF.x, ConvertToXMF.y, ConvertToXMF.z, ConvertToXMF.w));
+
+			//myTransform->set_RotationQuaternion(crntRotQ);
 
 			// 跳ねる感じに
 			//crntPos.y = ((Tool::Easing::EaseOutBounce(t)*-1.0f) * -3.0f);
@@ -130,9 +150,9 @@ int Ant_AT_DeadState::Update(class EnemyController* pOwner)
 		//*****************************************************************************************
 		if (timer - OVERTURN_TIME > DELETE_TIME)
 		{
-			auto physics = pOwner->get_PhysicsComponent();
+			auto rigidBody = pOwner->get_RigidBodyComponent();
 
-			physics->set_IsEnable(false);
+			//physics->set_IsEnable(false);
 			pOwner->get_OwnerObj().lock()->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_DELETE);
 		}
 	}
