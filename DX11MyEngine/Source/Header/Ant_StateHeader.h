@@ -89,7 +89,7 @@ private:
 
 	const float TRACKING_TIME_MAX = 7.0f;	// 追跡の最大時間
 	const float TRACKING_TIME_MIN = 1.0f;	// 追跡の最小時間
-	const float ATTACK_POSSIBLE_RANGE_MAX = 60.0f;	// 攻撃可能最大距離
+	const float ATTACK_POSSIBLE_RANGE_MAX = 100.0f;	// 攻撃可能最大距離
 	const float ATTACK_POSSIBLE_RANGE_MIN = 5.0f;	// 攻撃可能最小距離
 	const float MOVE_SPEED = 12.0f;
 	const float ANIM_SPEED = 1.6f;			// アニメーション速度
