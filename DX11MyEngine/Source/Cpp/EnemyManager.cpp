@@ -87,12 +87,12 @@ EnemyID EnemyManager::RegisterEnemy(std::weak_ptr<GameObject> pEnemy)
 //*----------------------------------------------------------------------------------------
 void EnemyManager::UnregisterEnemy(EnemyID id)
 {
-	if (!IsValidEnemy(id)) {
-		return;
-	}
+	if (id.index >= m_Enemies.size()) return;
+
+	EnemySlot& slot = m_Enemies[id.index];
+	if (!slot.active || slot.generation != id.generation) return;
 
 	// ó‘Ô‚ğƒŠƒZƒbƒg
-	EnemySlot& slot = m_Enemies[id.index];
 	slot.enemy.reset();
 	slot.active = false;
 

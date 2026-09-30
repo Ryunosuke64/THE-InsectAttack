@@ -44,7 +44,7 @@ MoveLogic::~MoveLogic()
 void MoveLogic::Start(RendererEngine &renderer)
 {
     // デフォルトは直線移動
-    ChangeBehaviour(MOVE_BEHAVIOUR_TYPE::LINEAR);
+    //ChangeBehaviour(MOVE_BEHAVIOUR_TYPE::LINEAR);
 }
 
 //*---------------------------------------------------------------------------------------

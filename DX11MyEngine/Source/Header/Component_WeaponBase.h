@@ -31,7 +31,7 @@ public:
 
 	GIGA_Engine::BitFlag::BIT_FLAG<unsigned int>& get_WeaponFlags() { return m_WeaponFlags; }
 	const GIGA_Engine::BitFlag::BIT_FLAG<unsigned int>& get_WeaponFlags() const { return m_WeaponFlags; }
-
+		
 	virtual bool Setup(const WeaponData::BaseWeaponData* _pWeaponData) = 0;
 	virtual void SwicthReset() = 0;	// •ŠíØ‚è‘Ö‚¦‚ÌƒŠƒZƒbƒg
 
