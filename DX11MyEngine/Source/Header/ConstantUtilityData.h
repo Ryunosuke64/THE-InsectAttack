@@ -168,9 +168,11 @@ namespace UtilityData
 		RECOVERY_LARGE,	// 回復 - 大 30%
 		ARMOR,			// アーマー
 		WEAPON,			// 武器箱
+		POINT,			// ポイント
 
 		NUM
 	};
+
 
 
 	/// <summary>

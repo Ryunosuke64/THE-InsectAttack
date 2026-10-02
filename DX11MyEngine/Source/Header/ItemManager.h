@@ -13,8 +13,8 @@
 class ItemManager
 {
 private:
-	std::unique_ptr<ObjectPool<GameObject>> m_pItemObjectPool;			// アイテムプール
-	std::vector<GameObject* > m_ExtractedItemObject;	// 取り出したアイテムオブジェクトのvector
+	std::unique_ptr<ObjectPool<GameObject>> m_pItemObjectPool;	// アイテムプール
+	std::vector<GameObject* > m_ExtractedItemObject;			// 取り出したアイテムオブジェクトのvector
 
 public:
 	ItemManager();
@@ -51,6 +51,14 @@ public:
 	/// <param name="_type">種類</param>
 	/// <param name="_pos">位置</param>
 	void SpawnItemRand(int _minNum, int _maxNum, const VECTOR3::VEC3& _pos, float _radiuse);
+
+
+	/// <summary>
+	/// ポイントアイテムをスポーンさせる
+	/// </summary>
+	/// <param name="_pos">位置</param>
+	/// <param name="point">設定するポイント（大きければ表示サイズも大きくなる）</param>
+	void SpawnPointItem(const VECTOR3::VEC3& _pos, int point);
 
 private:
 	// コピー禁止

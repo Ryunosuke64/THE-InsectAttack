@@ -7,20 +7,21 @@
 #include "ResourceManager.h"
 #include "GameObject.h"
 #include "MeshFactory.h"
-#include "Component_BoxCollider.h"
-#include "Component_SphereCollider.h"
 #include "Component_EnemyController.h"
 #include "Component_Health.h"
 #include "Component_LineRenderer.h"
 #include "Component_WeaponController.h"
 #include "Component_ModelMeshResource.h"
 #include "Component_RigidBody.h"
-#include "Component_MeshCollider.h"
+#include "Component_Physics.h"
 #include "Component_MoveLogic.h"
 #include "Component_Faction.h"
-#include "Component_Physics.h"
 #include "Component_SkinnedMeshAnimator.h"
 
+#include "Component_CapsuleCollider.h"
+#include "Component_SphereCollider.h"
+#include "Component_MeshCollider.h"
+#include "Component_BoxCollider.h"
 
 using namespace VECTOR2;
 using namespace VECTOR3;
@@ -250,7 +251,7 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     collider->set_Size(VEC3(2.0f, 1.5f, 2.0f));
     collider->set_Center(VEC3(0.0f, 1.5f, 0.0f));
     collider->set_IsStatic(false);
-    collider->set_IsConvex(false);
+    collider->set_IsConvex(true);
     collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
 
     //*****************************************************************************************

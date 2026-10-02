@@ -14,7 +14,8 @@ using namespace PhysicsData;
 CapsuleCollider::CapsuleCollider(std::weak_ptr<GameObject> pOwner, int updateRank)
 	:Collider(pOwner, updateRank),
 	m_Height(0.0f),
-	m_Radius(0.0f)
+	m_Radius(0.0f),
+	m_CapsuleAxis(CAPSULE_AXIS::Y)
 {
 	this->set_Tag("CapsuleCollider");
 }
@@ -50,5 +51,6 @@ PhysicsShapeDesc CapsuleCollider::GetShapeDesc()const
 	PhysicsData::CapsuleShapeDesc desc;
 	desc.height = m_Height;
 	desc.radius = m_Radius;
+	desc.capsuleAxis = m_CapsuleAxis;
 	return desc;
 }

@@ -31,6 +31,15 @@ namespace PhysicsData
 		COMPOUND,			// 形状の組み合わせ
 	};
 
+
+	/// カプセルの軸方向
+	enum class CAPSULE_AXIS
+	{
+		X,
+		Y,
+		Z
+	};
+
 	// ボックスシェイプセット用
 	struct BoxShapeDesc
 	{
@@ -48,6 +57,7 @@ namespace PhysicsData
 	{
 		float radius = 0.0f;
 		float height = 0.0f;
+		PhysicsData::CAPSULE_AXIS capsuleAxis = PhysicsData::CAPSULE_AXIS::Y;	// カプセルの軸方向
 	};
 
 	// 円柱シェイプセット用
@@ -126,6 +136,7 @@ namespace PhysicsData
 		BvhTriangleShapeDesc,
 		GImpactShapeDesc
 	>;
+
 
 	enum class BodyType
 	{

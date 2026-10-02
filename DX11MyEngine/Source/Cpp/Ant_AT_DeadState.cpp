@@ -181,6 +181,7 @@ void Ant_AT_DeadState::SpawnDeadEffect(class EnemyController* pOwner)
 	//				アイテム出現
 	// ****************************************************
 	Master::m_pItemManager->SpawnItemRand(DROP_ITEM_MIN, DROP_ITEM_MAX, pos, 0.0f);
+	Master::m_pItemManager->SpawnPointItem(pos, 1);	// ポイントアイテムをスポーン
 
 	pOwner->set_IsAnim(false);	// アニメーションを停止
 

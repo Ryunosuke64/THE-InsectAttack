@@ -940,7 +940,7 @@ btCollisionShape* PhysicsEngine::CreateShape(const SphereShapeDesc& desc)
 //*-----------------------------------------------------------------------------------------
 btCollisionShape* PhysicsEngine::CreateShape(const CapsuleShapeDesc& desc)
 {
-    return CreateShapeCapsule(desc.radius, desc.height);
+    return CreateShapeCapsule(desc.radius, desc.height, desc.capsuleAxis);
 }
 
 //*-----------------------------------------------------------------------------------------
@@ -1040,9 +1040,23 @@ btSphereShape* PhysicsEngine::CreateShapeSphere(float radius)
 //*-----------------------------------------------------------------------------------------
 //*【?】カプセルシェイプ作成
 //*-----------------------------------------------------------------------------------------
-btCapsuleShape* PhysicsEngine::CreateShapeCapsule(float radius, float height)
+btCapsuleShape* PhysicsEngine::CreateShapeCapsule(float radius, float height, PhysicsData::CAPSULE_AXIS capsuleAxis)
 {
-    return new btCapsuleShape(btScalar(radius), btScalar(height));
+    switch (capsuleAxis)
+    {
+    case PhysicsData::CAPSULE_AXIS::X:
+        return new btCapsuleShapeX(btScalar(radius), btScalar(height));
+
+    case PhysicsData::CAPSULE_AXIS::Y:
+        return new btCapsuleShape(btScalar(radius), btScalar(height));
+
+    case PhysicsData::CAPSULE_AXIS::Z:
+        return new btCapsuleShapeZ(btScalar(radius), btScalar(height));
+
+    default:
+        assert(false && "Invalid capsule axis");
+        break;
+    }
 }
 
 //*-----------------------------------------------------------------------------------------

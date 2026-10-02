@@ -65,6 +65,11 @@ void MeshRenderer::Update(RendererEngine& renderer)
 //*----------------------------------------------------------------------------------------
 void MeshRenderer::Draw(RendererEngine& renderer)
 {
+    if (this->get_IsEnable() == false)
+    {
+        return;
+    }
+
     auto pContext = renderer.get_DeviceContext();
     std::shared_ptr<MeshResourceData> meshInfo = m_pMeshResource.lock()->m_pMeshData;
     ID3D11Buffer* vtxBuff = meshInfo->pVertexBuffer;

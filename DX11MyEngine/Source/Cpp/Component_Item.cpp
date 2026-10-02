@@ -6,6 +6,7 @@
 #include "Component_Health.h"
 #include "Component_BoxCollider.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
 
 using namespace UtilityData;
 using namespace VECTOR4;
@@ -17,7 +18,8 @@ using namespace VECTOR3;
 Item::Item(std::weak_ptr<GameObject> pOwner, int updateRank) : 
 	IComponent(pOwner,updateRank),
 	m_ItemType(ITEM_TYPE::RECOVERY_SMALL),
-	m_Timer(0.0f)
+	m_SuctionElapsedTime(0.0f),
+	m_EffectHandle(-1)
 {
 
 }
@@ -42,7 +44,7 @@ Item::~Item()
 void Item::Start(RendererEngine& renderer)
 {
 	m_pTransform = m_pOwner.lock()->get_Transform().lock().get();
-	m_pPhysics = m_pOwner.lock()->get_Component<Physics>().get();
+	m_pRigidBody = m_pOwner.lock()->get_Component<RigidBody>().get();
 	m_pBoxCollider = m_pOwner.lock()->get_Component<BoxCollider>().get();
 }
 
@@ -57,23 +59,62 @@ void Item::Start(RendererEngine& renderer)
 //*----------------------------------------------------------------------------------------
 void Item::Update(RendererEngine& renderer)
 {
-	//float deltaTime = Master::m_pTimeManager->get_DeltaTime();
-	//m_Timer += deltaTime;
-	//VEC3 crntPos = m_pTransform->get_VEC3ToPos();
-	//
-	//// ふわふわする（0～1）
-	////crntPos.y += (sinf(m_Timer) * 0.5f) + 0.5f;
-	////crntPos.y += 1.0f; // そのままだと下にめり込んでしまうため
+	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 
-	//// ほぼ停止状態の際は物理コンポーネントを停止し、
-	//// コライダーをstaticにする
-	//if (m_pPhysics->get_Velocity().LengthSq() < 0.001f)
-	//{
-	//	//m_pPhysics->set_IsEnable(false);
-	//	//m_pBoxCollider->set_IsStatic(true);
-	//}
+	if (m_pPlayerObj.expired())
+	{
+		// プレイヤーオブジェクトを取得
+		auto playerObj = Master::m_pGameObjectManager->get_ObjectByTag("Player");
+		if (playerObj)
+		{
+			m_pPlayerObj = playerObj;
+		}
+	}
 
-	//m_pTransform->set_Pos(crntPos);
+	VEC3 myCrntPos = m_pTransform->get_VEC3ToPos();
+
+	if (auto playerObj = m_pPlayerObj.lock())
+	{
+		const auto playerTransform = playerObj->get_TransformConst();
+		VEC3 playerPos = playerTransform->get_VEC3ToPos();
+
+		float distSq = VEC3::DistanceSq(myCrntPos, playerPos);
+		
+		if (distSq <= SUCTION_DISTANCE * SUCTION_DISTANCE)
+		{
+			m_SuctionElapsedTime += deltaTime;
+
+			float t = m_SuctionElapsedTime / 2.0f;
+			t = std::clamp(t, 0.0f, 1.0f);
+			VEC3 newPos = VEC3::Lerp(myCrntPos, playerPos, t);
+			m_pRigidBody->Teleport(newPos);
+
+			//VEC3 dir = playerPos - myCrntPos;
+			//dir = dir.Normalize();
+			//m_pRigidBody->SetLinearVelocity(dir * 10.0f);
+
+			VEC3 crntScale = m_pTransform->get_VEC3ToScale();
+			VEC3 newScale = VEC3::Lerp(crntScale, VEC3(0.0f), t);
+			m_pTransform->set_Scale(newScale);
+		}
+	}
+
+	// ポイントアイテムのエフェクト再生
+	if (m_ItemType == ITEM_TYPE::POINT)
+	{
+		// 再生されていないなら、エフェクトを再生
+		if (!Master::m_pEffectManager->IsPlayingEffect(m_EffectHandle))
+		{
+			m_EffectHandle = Master::m_pEffectManager->PlayEffect("PointItem", myCrntPos);
+
+			// エフェクトの大きさをポイント値に応じて設定
+			Master::m_pEffectManager->SetScaleEffect(m_EffectHandle, VEC3(FLOAT_CAST(m_PointValue)));
+		}
+		else
+		{
+			Master::m_pEffectManager->SetPositionEffect(m_EffectHandle, myCrntPos);
+		}
+	}
 }
 
 
@@ -100,8 +141,8 @@ void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 			// アイテムの種別ごとの処理
 			switch (m_ItemType)
 			{
-			case UtilityData::ITEM_TYPE::RECOVERY_SMALL:ApplyRecovery(hitObj.get(),0.15f); break;	// 回復 - 小 15%
-			case UtilityData::ITEM_TYPE::RECOVERY_LARGE:ApplyRecovery(hitObj.get(),0.3f); break;	// 回復 - 大 30%
+			case UtilityData::ITEM_TYPE::RECOVERY_SMALL:ApplyRecovery(hitObj.get(), 0.15f); break;	// 回復 - 小 15%
+			case UtilityData::ITEM_TYPE::RECOVERY_LARGE:ApplyRecovery(hitObj.get(), 0.3f); break;	// 回復 - 大 30%
 			case UtilityData::ITEM_TYPE::ARMOR:			AddArmor(hitObj.get());		break;	// アーマー
 			case UtilityData::ITEM_TYPE::WEAPON:		AddWeapon(hitObj.get());	break;	// 武器箱
 			default:break;
@@ -115,24 +156,40 @@ void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 
 			// プールへ返す
 			m_pOwner.lock()->clear_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
+
+
+			// ポイントアイテムの場合のエフェクト再生
+			if (m_ItemType == ITEM_TYPE::POINT)
+			{
+				int pointGetEffectHandle = Master::m_pEffectManager->PlayEffect("PointItemGet", pos);
+				float scale = std::clamp(FLOAT_CAST(m_PointValue), 1.0f, 3.0f);	// 大きさの補正
+
+				// エフェクトの大きさをポイント値に応じて設定
+				Master::m_pEffectManager->SetScaleEffect(
+					pointGetEffectHandle,
+					VEC3(scale));
+
+				// エフェクト停止
+				Master::m_pEffectManager->StopEffect(m_EffectHandle);
+			}
 		}
 	}
 }
 
 
 //*---------------------------------------------------------------------------------------
-//*【?】衝突処理
+//*【?】パラメータのリセット
 //*
-//* [引数]
-//* &other : 衝突相手の情報
-//*
-//* [返値]
-//* void
+//* [引数] なし
+//* [返値] なし
 //*----------------------------------------------------------------------------------------
-void Item::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
+void Item::ResetParam()
 {
-
+	m_SuctionElapsedTime = 0.0f;
+	m_PointValue = 0;
 }
+
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】回復処理

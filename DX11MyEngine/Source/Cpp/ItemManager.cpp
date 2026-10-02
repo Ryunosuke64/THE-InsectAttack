@@ -8,6 +8,7 @@
 #include "Component_Faction.h"
 #include "Component_Physics.h"
 #include "Component_RigidBody.h"
+#include "Component_BillboardRenderer.h"
 
 using namespace VECTOR4;
 using namespace VECTOR3;
@@ -15,7 +16,7 @@ using namespace VECTOR2;
 using namespace UtilityData;
 
 
-constexpr int NUM_DEFAULT_ITEM = 32;    // デフォルトの生成数
+constexpr int NUM_DEFAULT_ITEM = 64;    // デフォルトの生成数
 constexpr int NUM_MAX_ITEM = 256;       // 最大アイテム数
 
 //*---------------------------------------------------------------------------------------
@@ -63,9 +64,19 @@ bool ItemManager::Init(RendererEngine& renderer)
             // アクティブに
             obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
 
+            // スケールを元に戻す
+            obj->get_Transform().lock()->set_Scale(1.0f);
+
             // コライダーを有効状態に
-            auto collider = obj->get_Component<BoxCollider>();
-            collider->set_IsEnable(true);
+            if (auto collider = obj->get_Component<BoxCollider>()) {
+                collider->set_IsEnable(true);
+            }
+
+            // 描画する
+            if (auto billboardRenderer = obj->get_Component<BillboardRenderer>()) {
+                billboardRenderer->set_IsEnable(true); 
+            }
+
 
         },
         // 返却時に実行 ******************************************************************************************
@@ -74,7 +85,6 @@ bool ItemManager::Init(RendererEngine& renderer)
             // コライダーを無効状態に
             auto collider = obj->get_Component<BoxCollider>();
             collider->set_IsEnable(false);
-
         },
         // 生成時に実行 ******************************************************************************************
         [&renderer]()->GameObject*
@@ -101,8 +111,8 @@ bool ItemManager::Init(RendererEngine& renderer)
             // 生成
             auto obj = MeshFactory::CreateBillboard(billboard);
             obj->get_Transform().lock()->set_Pos(VEC3(0.0f, 0.0f, 0.0f));
-            obj->get_Transform().lock()->set_Scale(1.0f, 1.0f, 1.0f);
-            obj->set_Tag("Recovey_Large");
+            obj->get_Transform().lock()->set_Scale(0.0f, 0.0f,0.0f);
+            obj->set_Tag("Item");
             obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_DONT_DESTROY);    // ノンデストロイ
             obj->clear_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);        // ノンアクティブ
 
@@ -198,6 +208,9 @@ void ItemManager::Update(RendererEngine& renderer)
         // アクティブフラグが降りていれば、プールへ返却
         if (item->get_IsStatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE) == false)
         {
+			// パラメータのリセット
+            item->get_Component<Item>()->ResetParam();
+
             // 返却
             m_pItemObjectPool->release(item);
 
@@ -365,4 +378,39 @@ void ItemManager::SpawnItemRand(int _minNum, int _maxNum, const VECTOR3::VEC3& _
         // 更新リストに登録
         m_ExtractedItemObject.push_back(obj);
     }
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】ポイントアイテムをスポーンさせる
+//*
+//* [引数]
+//* _pos : 位置
+//* point : 設定するポイント（大きければ表示サイズも大きくなる）
+//*
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void ItemManager::SpawnPointItem(const VECTOR3::VEC3& _pos, int point)
+{
+    auto obj = m_pItemObjectPool->get();
+    if (obj == nullptr)
+    {
+        OutputDebugStringA("プールに空きがありません");
+        return;
+    }
+
+    // リジッドボディから位置の設定
+    auto rigidBody = obj->get_Component<RigidBody>();
+    rigidBody->Teleport(_pos);
+
+    // アイテムコンポーネントのセットアップ
+    auto itemComp = obj->get_Component<Item>();
+    itemComp->set_ItemType(ITEM_TYPE::POINT);
+    itemComp->set_PointValue(point);
+
+    if (auto billboardRenderer = obj->get_Component<BillboardRenderer>()) {
+        billboardRenderer->set_IsEnable(false); // 描画しない
+    }
+
+    // 更新リストに登録
+    m_ExtractedItemObject.push_back(obj);
 }

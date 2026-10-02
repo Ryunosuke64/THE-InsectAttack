@@ -15,6 +15,7 @@ class CapsuleCollider : public Collider
 private:
 	float m_Height;		// ‚‚³
 	float m_Radius;		// ”¼Œa
+	PhysicsData::CAPSULE_AXIS m_CapsuleAxis;	// ƒJƒvƒZƒ‹‚Ì²•ûŒü
 
 public:
 	CapsuleCollider(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
@@ -24,6 +25,8 @@ public:
 	PhysicsData::PhysicsShapeDesc GetShapeDesc() const override;
 
 
+	void set_CapsuleAxis(PhysicsData::CAPSULE_AXIS _axis) { m_CapsuleAxis = _axis; }
+	PhysicsData::CAPSULE_AXIS get_CapsuleAxis()const { return m_CapsuleAxis; }
 
 	void set_Height(float _h) { m_Height = _h; }
 	void set_Radius(float _r) { m_Radius = _r; }

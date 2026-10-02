@@ -72,6 +72,11 @@ void ModelMeshRenderer::Update(RendererEngine &renderer)
 //*----------------------------------------------------------------------------------------
 void ModelMeshRenderer::Draw(RendererEngine &renderer)
 {
+    if (this->get_IsEnable() == false)
+    {
+        return;
+    }
+
     if (m_pMeshResource.lock() == nullptr) return;
     auto meshResource = m_pMeshResource.lock();
 

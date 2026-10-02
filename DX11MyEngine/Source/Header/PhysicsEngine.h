@@ -112,7 +112,7 @@ private:
 
 	class btBoxShape* CreateShapeBox(const VECTOR3::VEC3& boxHalfExtents);
 	class btSphereShape* CreateShapeSphere(float radius);
-	class btCapsuleShape* CreateShapeCapsule(float radius, float height);
+	class btCapsuleShape* CreateShapeCapsule(float radius, float height, PhysicsData::CAPSULE_AXIS capsuleAxis);
 	class btCylinderShape* CreateShapeCylinder(const VECTOR3::VEC3& halfExtents);
 	class btConeShape* CreateShapeCone(float radius, float height);
 	class btBU_Simplex1to4* CreateShapePyramid(const std::array<VECTOR3::VEC3, 4> v4);

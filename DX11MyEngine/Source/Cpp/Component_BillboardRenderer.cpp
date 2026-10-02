@@ -75,6 +75,11 @@ void BillboardRenderer::Update(RendererEngine& renderer)
 //*----------------------------------------------------------------------------------------
 void BillboardRenderer::Draw(RendererEngine& renderer)
 {
+    if(this->get_IsEnable() == false)
+    {
+        return;
+    }
+
     // シャドウパス時には返す
     if (renderer.get_CrntRenderPass() == RENDER_PASS::SHADOW) {
         return;
