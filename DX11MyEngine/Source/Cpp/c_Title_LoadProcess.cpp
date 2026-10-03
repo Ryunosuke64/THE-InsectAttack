@@ -20,6 +20,7 @@
 #include "Component_Faction.h"
 #include "Component_Physics.h"
 #include "Component_RigidBody.h"
+#include "Component_MissionInventory.h"
 #include "GameObject.h"
 #include "MeshFactory.h"
 #include "InputFactory.h"
@@ -229,10 +230,19 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
 
         float hp = Master::m_pDataManager->get_PlayerHP();
 
+        //======================================
         // 体力コンポーネントの追加
+        //======================================
         auto health = pPlayerObj->add_Component<Health>();
         health->set_MaxHP(hp);
 		health->set_CrntHP(hp);
+
+        //======================================
+        // インベントリコンポーネントの追加
+        //======================================
+        auto inventory = pPlayerObj->add_Component<MissionInventory>();
+        inventory->ResetInventory();
+
 
         // 派閥コンポーネントの追加
         auto faction = pPlayerObj->add_Component<Faction>();
@@ -241,12 +251,14 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         //auto physics = pPlayerObj->add_Component<Physics>();
         //physics->set_GravityScale(0.0f);
 
-        //
+        //======================================
         // リジッドボディの追加
-        //
+        //======================================
         auto rigidBody = pPlayerObj->add_Component<RigidBody>();
 
+        //======================================
         // コライダーの追加
+        //======================================
         auto collider = pPlayerObj->add_Component<CapsuleCollider>();
         collider->set_Height(0.75f);
         collider->set_Radius(0.5f);

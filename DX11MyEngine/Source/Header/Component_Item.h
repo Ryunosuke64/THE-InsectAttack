@@ -48,5 +48,6 @@ public:
 	void ApplyRecovery(class GameObject* _pPlayerObj, float _rate);
 	void AddWeapon(class GameObject* _pPlayerObj);
 	void AddArmor(class GameObject* _pPlayerObj);
+	void AddPoint(class GameObject* _pPlayerObj, int value);
 };
 

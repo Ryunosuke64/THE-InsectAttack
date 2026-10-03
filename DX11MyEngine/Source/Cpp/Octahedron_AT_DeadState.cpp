@@ -38,7 +38,7 @@ void Octahedron_AT_DeadState::OnEnter(class EnemyController* pOwner)
 	//				アイテム出現
 	// ****************************************************
 	Master::m_pItemManager->SpawnItemRand(DROP_ITEM_MIN, DROP_ITEM_MAX, pos, 10.0f);
-	Master::m_pItemManager->SpawnPointItem(pos, 10);	// ポイントアイテムをスポーン
+	Master::m_pItemManager->SpawnPointItem(pos, 1000);	// ポイントアイテムをスポーン
 
 	// ****************************************************
 	//				 死亡音再生

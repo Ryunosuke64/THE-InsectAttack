@@ -32,6 +32,8 @@
 #include "Component_BuildingController.h"
 #include "Component_MiniMapRader.h"
 #include "Component_Player_HPBar.h"
+#include "Component_MissionInventory.h"
+#include "Component_MissionLootUI.h"
 #include "Component_MoveLogic.h"
 #include "Component_Faction.h"
 #include "Component_Item.h"
@@ -621,6 +623,12 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     }
 
 
+
+    // プレイヤーオブジェクトの取得
+    auto playerObj = Master::m_pGameObjectManager->get_ObjectByTag("Player");
+    playerObj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
+
+
     /* 画面上のUIの生成 */
     {
 
@@ -663,12 +671,23 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             obj->set_LayerRank(100);
             obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
         }
+
+
+		// ミッションの戦利品UI
+        {
+            auto obj = GIGA_Engine::Instantiate2D(std::make_shared<GameObject>(), true);
+            auto lootUI = obj->add_Component<MissionLootUI>();
+            obj->set_Tag("MissionLootUI");
+			obj->set_LayerRank(100);
+            obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
+			// プレイヤーのミッションインベントリを取得してUIに設定
+            if (auto inventory = playerObj->get_Component<MissionInventory>())
+            {
+                lootUI->set_MissionInventory(inventory);
+            }
+        }
     }
 
-
-    // プレイヤーオブジェクトの取得
-    auto playerObj = Master::m_pGameObjectManager->get_ObjectByTag("Player");
-    playerObj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
 
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -835,10 +854,16 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     playerRigidBody->SetLinearVelocity(VEC3(0.0f, 0.0f, 0.0f));
 
     playerObj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
-    auto playerControl = playerObj->add_Component<PlayerController>(1); // コンポーネントの追加
+
+    //======================================
+	// プレイヤーの操作コンポーネントを追加
+    //======================================
+    auto playerControl = playerObj->add_Component<PlayerController>(1); 
     playerControl->Reset(); // パラメータ等リセットする
 
+    //======================================
     // 体力コンポーネントの追加
+    //======================================
     float hp = Master::m_pDataManager->get_PlayerHP();
     auto health = playerObj->get_Component<Health>();
     health->Reset();    // 前回までの値が残っているのでリセット

@@ -1,16 +1,24 @@
 #include "pch.h"
 #include "CollisionInfo.h"
 #include "GameObject.h"
+#include "ConstantGameData.h"
 #include "Component_Item.h"
 #include "Component_Faction.h"
 #include "Component_Health.h"
 #include "Component_BoxCollider.h"
 #include "Component_Physics.h"
 #include "Component_RigidBody.h"
+#include "Component_MissionInventory.h"
 
 using namespace UtilityData;
+using namespace GameData;
 using namespace VECTOR4;
 using namespace VECTOR3;
+
+namespace
+{
+	const float RATE_POINT_EFFECT_SCALE = 0.01f;	// ポイントアイテムのエフェクトの大きさを決めるための係数
+}
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -108,7 +116,7 @@ void Item::Update(RendererEngine& renderer)
 			m_EffectHandle = Master::m_pEffectManager->PlayEffect("PointItem", myCrntPos);
 
 			// エフェクトの大きさをポイント値に応じて設定
-			Master::m_pEffectManager->SetScaleEffect(m_EffectHandle, VEC3(FLOAT_CAST(m_PointValue)));
+			Master::m_pEffectManager->SetScaleEffect(m_EffectHandle, VEC3(FLOAT_CAST(m_PointValue * RATE_POINT_EFFECT_SCALE)));
 		}
 		else
 		{
@@ -141,10 +149,11 @@ void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 			// アイテムの種別ごとの処理
 			switch (m_ItemType)
 			{
-			case UtilityData::ITEM_TYPE::RECOVERY_SMALL:ApplyRecovery(hitObj.get(), 0.15f); break;	// 回復 - 小 15%
-			case UtilityData::ITEM_TYPE::RECOVERY_LARGE:ApplyRecovery(hitObj.get(), 0.3f); break;	// 回復 - 大 30%
-			case UtilityData::ITEM_TYPE::ARMOR:			AddArmor(hitObj.get());		break;	// アーマー
-			case UtilityData::ITEM_TYPE::WEAPON:		AddWeapon(hitObj.get());	break;	// 武器箱
+			case UtilityData::ITEM_TYPE::RECOVERY_SMALL:ApplyRecovery(hitObj.get(), RATE_MIN_RECOVERY); break;	// 回復 - 小 15%
+			case UtilityData::ITEM_TYPE::RECOVERY_LARGE:ApplyRecovery(hitObj.get(), RATE_BIG_RECOVERY); break;	// 回復 - 大 30%
+			case UtilityData::ITEM_TYPE::ARMOR:			AddArmor(hitObj.get());		break;						// アーマー
+			case UtilityData::ITEM_TYPE::WEAPON:		AddWeapon(hitObj.get());	break;						// 武器箱
+			case UtilityData::ITEM_TYPE::POINT:			AddPoint(hitObj.get(), m_PointValue); break;			// ポイント
 			default:break;
 			}
 
@@ -162,7 +171,7 @@ void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 			if (m_ItemType == ITEM_TYPE::POINT)
 			{
 				int pointGetEffectHandle = Master::m_pEffectManager->PlayEffect("PointItemGet", pos);
-				float scale = std::clamp(FLOAT_CAST(m_PointValue), 1.0f, 3.0f);	// 大きさの補正
+				float scale = std::clamp(FLOAT_CAST(m_PointValue * RATE_POINT_EFFECT_SCALE), 1.0f, 3.0f);	// 大きさの補正
 
 				// エフェクトの大きさをポイント値に応じて設定
 				Master::m_pEffectManager->SetScaleEffect(
@@ -222,7 +231,10 @@ void Item::ApplyRecovery(class GameObject* _pPlayerObj, float _rate)
 //*----------------------------------------------------------------------------------------
 void Item::AddWeapon(class GameObject* _pPlayerObj)
 {
-
+	if (auto inventory = _pPlayerObj->get_Component<MissionInventory>())
+	{
+		inventory->AddWeapon();
+	}
 }
 
 //*---------------------------------------------------------------------------------------
@@ -236,5 +248,26 @@ void Item::AddWeapon(class GameObject* _pPlayerObj)
 //*----------------------------------------------------------------------------------------
 void Item::AddArmor(class GameObject* _pPlayerObj)
 {
+	if (auto inventory = _pPlayerObj->get_Component<MissionInventory>())
+	{
+		inventory->AddArmor();
+	}
+}
 
+//*---------------------------------------------------------------------------------------
+//*【?】ポイントの取得処理
+//*
+//* [引数]
+//* *_pObj : プレイヤーオブジェクトのポインタ
+//* _value : ポイント値
+//* 
+//* [返値]
+//* void
+//*----------------------------------------------------------------------------------------
+void Item::AddPoint(class GameObject* _pPlayerObj, int value)
+{
+	if (auto inventory = _pPlayerObj->get_Component<MissionInventory>())
+	{
+		inventory->AddPoint(value);
+	}
 }
