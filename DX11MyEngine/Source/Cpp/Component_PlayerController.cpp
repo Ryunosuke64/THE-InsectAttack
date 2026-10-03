@@ -121,7 +121,7 @@ void PlayerController::Start(RendererEngine& renderer)
 
 	// 被弾時のコールバック
 	m_pHealthComp.lock()->RegisterOnDamage(
-		[this] (float _damage)
+		[this] (float _damage, const PhysicsData::CollisionInfo& collisionInfo)
 		{
 			//ChangeAnimation(PLAYER_ANIMATION_ID::HIT_HEAD); 
 		}

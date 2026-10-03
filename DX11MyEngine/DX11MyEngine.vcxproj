@@ -207,6 +207,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\Component_Bullet.h" />
     <ClInclude Include="Source\Header\Component_ConfigSetting.h" />
     <ClInclude Include="Source\Header\Component_DistortionEffect.h" />
+    <ClInclude Include="Source\Header\Component_MissionLootUI.h" />
     <ClInclude Include="Source\Header\Component_Item.h" />
     <ClInclude Include="Source\Header\CollisionManager.h" />
     <ClInclude Include="Source\Header\Component_BoxCollider.h" />
@@ -250,6 +251,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\Component_MoveLogic.h" />
     <ClInclude Include="Source\Header\Component_Physics.h" />
     <ClInclude Include="Source\Header\Component_PlayerController.h" />
+    <ClInclude Include="Source\Header\Component_MissionInventory.h" />
     <ClInclude Include="Source\Header\Component_Player_HPBar.h" />
     <ClInclude Include="Source\Header\Component_RectTransform.h">
       <SubType>
@@ -271,12 +273,14 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\ConstantBuildingData.h" />
     <ClInclude Include="Source\Header\ConstantBulletData.h" />
     <ClInclude Include="Source\Header\ConstantEnemyData.h" />
+    <ClInclude Include="Source\Header\ConstantGameData.h" />
     <ClInclude Include="Source\Header\ConstantPhysicsData.h" />
     <ClInclude Include="Source\Header\ConstantPlayerData.h" />
     <ClInclude Include="Source\Header\ConstantRenderData.h" />
     <ClInclude Include="Source\Header\ConstantUIData.h" />
     <ClInclude Include="Source\Header\ConstantUtilityData.h" />
     <ClInclude Include="Source\Header\ConstantWeaponData.h" />
+    <ClInclude Include="Source\Header\DamageTextManager.h" />
     <ClInclude Include="Source\Header\DataManager.h" />
     <ClInclude Include="Source\Header\DebugMesh.h" />
     <ClInclude Include="Source\Header\EditorBase.h" />
@@ -432,10 +436,12 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Component_Bullet.cpp" />
     <ClCompile Include="Source\Cpp\Component_ConfigSetting.cpp" />
     <ClCompile Include="Source\Cpp\Component_DistortionEffect.cpp" />
+    <ClCompile Include="Source\Cpp\Component_MissionLootUI.cpp" />
     <ClCompile Include="Source\Cpp\Component_Item.cpp" />
     <ClCompile Include="Source\Cpp\Component_MeshCollider.cpp" />
     <ClCompile Include="Source\Cpp\Component_MuzzleFlashEffect.cpp" />
     <ClCompile Include="Source\Cpp\Component_Physics.cpp" />
+    <ClCompile Include="Source\Cpp\Component_MissionInventory.cpp" />
     <ClCompile Include="Source\Cpp\Component_Render.cpp" />
     <ClCompile Include="Source\Cpp\Component_RigidBody.cpp" />
     <ClCompile Include="Source\Cpp\Component_SpotLight.cpp" />
@@ -508,6 +514,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\c_Title_MainMenu.cpp" />
     <ClCompile Include="Source\Cpp\c_Title_MissionSelect.cpp" />
     <ClCompile Include="Source\Cpp\c_Title_SoldierSelect.cpp" />
+    <ClCompile Include="Source\Cpp\DamageTextManager.cpp" />
     <ClCompile Include="Source\Cpp\DataManager.cpp" />
     <ClCompile Include="Source\Cpp\DebugMesh.cpp" />
     <ClCompile Include="Source\Cpp\EditorBase.cpp" />

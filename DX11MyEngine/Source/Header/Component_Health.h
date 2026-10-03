@@ -22,8 +22,9 @@ private:
 	float m_DamageAmount;	// 受けたダメージ量(最後に受けたダメージ量が入る)
 	//bool m_IsOnDamage;  // ダメージを受けたか
 
-	std::vector<std::function<void(float)>> m_DamageTasks;	// ダメージを受けた際の処理
-	std::vector<std::function<void()>> m_DeathTasks;		// 死んだときの処理
+	std::vector<std::function<								// ダメージを受けた際のコールバック
+		void(float, const PhysicsData::CollisionInfo&)>> m_DamageTasks;	
+	std::vector<std::function<void()>> m_DeathTasks;		// 死んだときのコールバック
 
 	PhysicsData::CollisionInfo m_CollisionInfo;	// 衝突情報
 
@@ -37,7 +38,7 @@ public:
 	void TakeDamage(const float _dmg, const PhysicsData::CollisionInfo& _collInfo);	// ダメージ処理
 
 	void RegisterOnDead(std::function<void()> _callback);	// 死んだときの処理の登録
-	void RegisterOnDamage(std::function<void(float)> _callback);	// ダメージを受けた際の処理の登録
+	void RegisterOnDamage(std::function<void(float, const PhysicsData::CollisionInfo&)> _callback);	// ダメージを受けた際の処理の登録
 
 	/* HP */
 	const float get_CrntHP()const { return m_CrntHP; }

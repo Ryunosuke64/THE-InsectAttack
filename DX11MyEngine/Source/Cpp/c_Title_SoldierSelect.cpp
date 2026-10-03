@@ -267,12 +267,12 @@ void c_Title_SoldierSelect::DrawWeaponInfo(const WeaponData::GunWeaponData* weap
 
 	/* 各パラメータの変換 */
 	std::wstring laserSightStr = weaponData->_isLaserSight ? L"装備" : L"----";																// レーザーサイト
-	std::wstring zoomStr = weaponData->_zoomLength > 1.0f ? FormatFloat(weaponData->_zoomLength) + L"倍" : L"----";							// ズーム
-	std::wstring fireRateStr = FormatFloat(weaponData->_fireRate) + L"発／秒";																// 連射速度
-	std::wstring speedStr = L"秒速" + FormatFloat(commonData._speed) + L"m";																// 弾速
+	std::wstring zoomStr = weaponData->_zoomLength > 1.0f ? FormatFloatW(weaponData->_zoomLength) + L"倍" : L"----";							// ズーム
+	std::wstring fireRateStr = FormatFloatW(weaponData->_fireRate) + L"発／秒";																// 連射速度
+	std::wstring speedStr = L"秒速" + FormatFloatW(commonData._speed) + L"m";																// 弾速
 	std::wstring penetrationsStr = commonData._penetrationsCount > 0 ? std::to_wstring(commonData._penetrationsCount) + L"回" : L"なし";	// 貫通可能回数
-	std::wstring reloadTimeStr = FormatFloat(weaponData->_reloadTime) + L"秒";																// リロード時間
-	std::wstring rangeStr = FormatFloat(range) + L"m";																						// 射程距離
+	std::wstring reloadTimeStr = FormatFloatW(weaponData->_reloadTime) + L"秒";																// リロード時間
+	std::wstring rangeStr = FormatFloatW(range) + L"m";																						// 射程距離
 	std::wstring accuracyStr;																												// 精度
 
 	if (weaponData->_accuracy <= 0.01f)accuracyStr = L"S";
@@ -286,7 +286,7 @@ void c_Title_SoldierSelect::DrawWeaponInfo(const WeaponData::GunWeaponData* weap
 	else accuracyStr = L"F";
 	
 	// 同時発射数が1より多い場合はダメージに「x N」を追加
-	std::wstring damageStr = FormatFloat((commonData._damage));
+	std::wstring damageStr = FormatFloatW((commonData._damage));
 	damageStr = (weaponData->_bulletSimultaneousNum > 1) ? damageStr + L" x " + std::to_wstring(weaponData->_bulletSimultaneousNum) : damageStr;
 
 	// 弾種ごとの固有パラメータを取得して文字列化
@@ -298,7 +298,7 @@ void c_Title_SoldierSelect::DrawWeaponInfo(const WeaponData::GunWeaponData* weap
 		// 爆発弾の場合のみ、爆発半径の文字列を追加する
 		if constexpr (std::is_same_v<T, BulletData::ExplosionHitConfig>) {
 			extraLabelStr = L"爆発半径：";
-			extraValueStr = FormatFloat(arg._explosionRadius, 1) + L"m";
+			extraValueStr = FormatFloatW(arg._explosionRadius, 1) + L"m";
 		}
 		// 将来的にショットガン（散弾）などの型が増えたら、ここに else if constexpr を足すだけで対応可能
 		}, weaponData->_bulletData._hitData);

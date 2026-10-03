@@ -5,7 +5,8 @@
 #define WND_RECT_BOTTOM		1080	// 下部
 #define WND_RECT_RIGHT		1920	// 右側
 #define WND_RECT_LEFT		0		// 左側
-
+#define WND_CENTER_X			((WND_RECT_RIGHT - WND_RECT_LEFT) / 2)	// 中心X座標
+#define WND_CENTER_Y			((WND_RECT_BOTTOM - WND_RECT_TOP) / 2)	// 中心Y座標
 
 // ウインドウのタイトルバーのとこ
 constexpr LPCWSTR g_WindowTitle = L"THE INSECT ATTACK";

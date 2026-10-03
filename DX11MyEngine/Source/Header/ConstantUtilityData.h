@@ -287,7 +287,7 @@ namespace UtilityData
 			case VALUE_TYPE::INT:
 				return std::to_string(std::get<int>(_value));
 			case VALUE_TYPE::FLOAT:
-				return Tool::WStringToString(Tool::FormatFloat(std::get<float>(_value)));
+				return Tool::WStringToString(Tool::FormatFloatW(std::get<float>(_value)));
 			default:
 				return "";
 			}

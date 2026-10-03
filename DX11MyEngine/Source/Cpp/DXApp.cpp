@@ -44,6 +44,7 @@ BuildingManager         *Master::m_pBuildingManager     = nullptr;   // 建物管理
 ScriptManager           *Master::m_pScriptManager       = nullptr;   // AngelScript管理
 EnemyManager            *Master::m_pEnemyManager        = nullptr;   // エネミー管理
 MissionDirector         *Master::m_pMissionDirector     = nullptr;   // ミッション管理
+DamageTextManager       *Master::m_pDamageTextManager   = nullptr;   // ダメージテキスト管理
 PhysicsEngine           *Master::m_pPhysicsEngine       = nullptr;   // Bullet物理エンジン
 
 //*---------------------------------------------------------------------------------------
@@ -122,6 +123,7 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
     Master::m_pScriptManager        = new ScriptManager();          // AngelScript管理
     Master::m_pEnemyManager         = new EnemyManager();           // エネミー管理
     Master::m_pMissionDirector      = new MissionDirector();        // ミッション管理
+    Master::m_pDamageTextManager    = new DamageTextManager();      // ダメージテキスト管理
     Master::m_pPhysicsEngine        = new PhysicsEngine();          // Bullet物理エンジン
 
 
@@ -219,8 +221,6 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
         return false;
     }
 
-
-
     // *************************************************************************************************
     /**  サウンドマネージャの初期化 **/
     // *************************************************************************************************
@@ -252,15 +252,6 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
     /**  ゲームマネージャー初期化 **/
     // *************************************************************************************************
     if (!m_pGameManager->Init(*m_pRenderer))
-    {
-        assert(false);
-        return false;
-    }
-
-    // *************************************************************************************************
-    /**  武器データマネージャー初期化 **/
-    // *************************************************************************************************
-    if (!Master::m_pWeaponDataManager->Init())
     {
         assert(false);
         return false;
@@ -311,14 +302,7 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
         return false;
     }
 
-    // *************************************************************************************************
-    /**  タイムマネージャの初期化 **/
-    // *************************************************************************************************
-    if (!Master::m_pTimeManager->Init())
-    {
-        assert(false);
-        return false;
-    }
+
 
 
     /** フォントデータ作成 **/

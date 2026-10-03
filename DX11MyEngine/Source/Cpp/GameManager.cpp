@@ -59,6 +59,34 @@ bool GameManager::Init(RendererEngine& renderer)
 
 	m_pSceneManager->set_GM(*this);
 
+
+	// *************************************************************************************************
+	/**  武器データマネージャー初期化 **/
+	// *************************************************************************************************
+	if (!Master::m_pWeaponDataManager->Init())
+	{
+		assert(false);
+		return false;
+	}
+
+	// *************************************************************************************************
+	/**  タイムマネージャの初期化 **/
+	// *************************************************************************************************
+	if (!Master::m_pTimeManager->Init())
+	{
+		assert(false);
+		return false;
+	}
+
+	// *************************************************************************************************
+	/**  ダメージテキストマネージャの初期化 **/
+	// *************************************************************************************************
+	if (!Master::m_pDamageTextManager->Init())
+	{
+		assert(false);
+		return false;
+	}
+
 	//
 	// 物理エンジンの作成・セットアップ
 	//
@@ -105,6 +133,9 @@ void GameManager::Update(RendererEngine& renderer)
 	// UIの更新
 	Master::m_pUIManager->Update(renderer);
 
+	// ダメージテキストの更新
+	Master::m_pDamageTextManager->Update(deltaTime);
+
 	// 弾の更新
 	Master::m_pBulletManager->Update(renderer);
 
@@ -133,6 +164,9 @@ void GameManager::Draw(RendererEngine& renderer)
 	}
 
 	m_pSceneManager->Draw(renderer);
+
+	// ダメージテキストの描画
+	Master::m_pDamageTextManager->Draw();
 }
 
 

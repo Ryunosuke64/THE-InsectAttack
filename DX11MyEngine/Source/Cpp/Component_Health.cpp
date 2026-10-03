@@ -72,9 +72,12 @@ void Health::TakeDamage(const float _dmg)
 
     m_CrntHP -= _dmg;
     
+    // 仮の衝突情報
+    PhysicsData::CollisionInfo collisionInfo;
+
     // ダメージ処理を行う
     for (auto& callback : m_DamageTasks) {
-        callback(_dmg);
+        callback(_dmg, collisionInfo);
     }
 
     // 死亡
@@ -115,7 +118,7 @@ void Health::TakeDamage(const float _dmg, const PhysicsData::CollisionInfo& _col
 
     // ダメージ処理を行う
     for (auto& callback : m_DamageTasks) {
-        callback(_dmg);
+        callback(_dmg, _collInfo);
     }
 
     // 死亡
@@ -156,7 +159,7 @@ void Health::RegisterOnDead(std::function<void()> _callback)
 //* [返値]
 //* なし 
 //*----------------------------------------------------------------------------------------
-void Health::RegisterOnDamage(std::function<void(float)> _callback)
+void Health::RegisterOnDamage(std::function<void(float, const PhysicsData::CollisionInfo&)> _callback)
 {
     m_DamageTasks.push_back(_callback);
 }

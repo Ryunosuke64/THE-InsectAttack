@@ -40,7 +40,7 @@ void BuildingController::Start(RendererEngine& renderer)
 
 	// ダメージを受けた時の処理を登録
 	m_pHealthComp->RegisterOnDamage(
-		[this, &renderer](float _damage) {
+		[this, &renderer](float _damage, const PhysicsData::CollisionInfo& collisionInfo) {
 			m_IsOnDamage = true;	// ダメージを受けたフラグをオンにする
 		});
 	// 死亡時の処理を登録

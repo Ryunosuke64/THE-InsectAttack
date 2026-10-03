@@ -82,9 +82,6 @@
     <Filter Include="ソース ファイル\Game\Component\Enemy\State_Ant">
       <UniqueIdentifier>{e6f22279-2d15-4337-8f78-ca333e4d7010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Component\Enemy\State_Ant\Active">
-      <UniqueIdentifier>{937c8d4c-69cb-4bf1-a82d-3d0f82d2afe2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Component\Enemy\State_Ant\Patrol">
       <UniqueIdentifier>{0735c5e9-e9fb-479a-8392-3720bdef1e41}</UniqueIdentifier>
     </Filter>
@@ -351,6 +348,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Singleton\Physics">
       <UniqueIdentifier>{0a3f1a41-086d-4645-aa5c-216e74f97d8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Enemy\State_Ant\Active">
+      <UniqueIdentifier>{937c8d4c-69cb-4bf1-a82d-3d0f82d2afe2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -936,6 +936,15 @@
     <ClCompile Include="Source\Cpp\Component_CapsuleCollider.cpp">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_MissionInventory.cpp">
+      <Filter>ソース ファイル\Game\Component\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_MissionLootUI.cpp">
+      <Filter>ソース ファイル\Game\Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DamageTextManager.cpp">
+      <Filter>ソース ファイル\Singleton\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1498,6 +1507,18 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_CapsuleCollider.h">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_MissionInventory.h">
+      <Filter>ソース ファイル\Game\Component\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\ConstantGameData.h">
+      <Filter>ソース ファイル\Constant</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_MissionLootUI.h">
+      <Filter>ソース ファイル\Game\Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\DamageTextManager.h">
+      <Filter>ソース ファイル\Singleton\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

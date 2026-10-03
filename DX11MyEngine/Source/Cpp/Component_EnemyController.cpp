@@ -99,10 +99,18 @@ void EnemyController::Start(RendererEngine& renderer)
 	// TODO:処理関数を外から入れるようにする
 	// 被弾時の処理登録
 	m_pHealthComp->RegisterOnDamage(
-		[this, &renderer](float _damage)
+		[this, &renderer](float _damage, const PhysicsData::CollisionInfo& collisionInfo)
 		{
 			m_IsOnDamage = true;
 			m_StaggerInfo._cumulativeValue += _damage;	// ダメージ蓄積
+
+
+			// ダメージテキストを登録する
+			Master::m_pDamageTextManager->Register(
+				//collisionInfo.hitPoint,
+				m_pTransformComp->get_VEC3ToPos(),
+				_damage
+			);
 		}
 	);
 	// 死亡時の処理登録

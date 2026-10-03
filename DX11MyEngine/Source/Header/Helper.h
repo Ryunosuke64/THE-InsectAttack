@@ -514,9 +514,17 @@ namespace Tool
     }
 
     // value: 変換したい数値 / precision: 小数点以下の表示桁数（デフォルトは1桁）
-    inline std::wstring FormatFloat(float value, int precision = 1)
+    inline std::wstring FormatFloatW(float value, int precision = 1)
     {
         std::wstringstream stream;
+        // std::fixed で固定小数点表記にし、std::setprecision で桁数を指定
+        stream << std::fixed << std::setprecision(precision) << value;
+        return stream.str();
+    }
+    // value: 変換したい数値 / precision: 小数点以下の表示桁数（デフォルトは1桁）
+    inline std::string FormatFloat(float value, int precision = 1)
+    {
+        std::stringstream stream;
         // std::fixed で固定小数点表記にし、std::setprecision で桁数を指定
         stream << std::fixed << std::setprecision(precision) << value;
         return stream.str();
@@ -675,6 +683,14 @@ namespace Tool
         //生成したハッシュを合成する。このコードはboostものを使用する
         seed ^= primitive_type_hash(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
+
+
+    /// <summary>
+    /// 3D空間の位置をスクリーン座標に変換する
+    /// </summary>
+    /// <param name="position">3D空間の位置</param>
+    /// <returns>スクリーン座標</returns>
+    VECTOR2::VEC2 ConvertWorldToScreen(const VECTOR3::VEC3& position);
 }
 
 
