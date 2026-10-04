@@ -72,10 +72,6 @@ private:
 	std::weak_ptr<class GameObject>m_pBomber[3];
 	std::weak_ptr<class GameObject>m_pPlayerObj;
 	class GameObject* m_pEnemyNumBackSpriteObj;	// 残り敵数の背景に使用するスプライト
-	
-	/* 定数 */
-	const VECTOR2::VEC2 ENEMY_NUM_BACK_SPRITE_SIZE = VECTOR2::VEC2(300.0f, 60.0f);	// 残り敵数の背景に使用するスプライトのサイズ
-	const VECTOR2::VEC2 ENEMY_NUM_BACK_SPRITE_POS = VECTOR2::VEC2(0.0f, 540.0f);	// 残り敵数の背景に使用するスプライトの位置
 
 public:
 	void OnEnter(SceneManager* pOwner) override;

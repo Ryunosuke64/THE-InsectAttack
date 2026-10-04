@@ -17,6 +17,13 @@ using namespace VECTOR4;
 using namespace VECTOR3;
 using namespace VECTOR2;
 
+namespace
+{
+    /* 定数 */
+    const VECTOR2::VEC2 ENEMY_NUM_BACK_SPRITE_SIZE = VECTOR2::VEC2(400.0f, 80.0f);	// 残り敵数の背景に使用するスプライトのサイズ
+    const VECTOR2::VEC2 ENEMY_NUM_BACK_SPRITE_POS = VECTOR2::VEC2(840.0f, 30.0f);	// 残り敵数の背景に使用するスプライトの位置
+    const VECTOR2::VEC2 ENEMY_NUM_TEXT_POS = VECTOR2::VEC2(880.0f, 50.0f);	// 残り敵数のテキスト位置
+}
 
 //*---------------------------------------------------------------------------------------
 //* @:c_Game_Play Class 
@@ -49,7 +56,7 @@ void c_Game_Play::OnEnter(SceneManager* pOwner)
     UIData::SpriteUIData spriteData;
     UIData::RectTransformData rectTrans;
     spriteData._tag = "EnemyNumBackSprite";
-    spriteData._color = VEC4(1.0f, 0.0f, 0.0f, 0.5f);
+    spriteData._color = VEC4(0.1f, 0.1f, 0.1f, 0.5f);
     spriteData._shaderType = SHADER_TYPE::FORWARD_UNLIT_UI_NOTEXTURE_SPRITE;
     spriteData._layerRank = 110;
     rectTrans._size = ENEMY_NUM_BACK_SPRITE_SIZE;
@@ -206,9 +213,21 @@ int c_Game_Play::Update(SceneManager *pOwner)
 //*----------------------------------------------------------------------------------------
 void c_Game_Play::Draw(SceneManager* pOwner)
 {
+    std::string enemyNumStr = "残りエネミー：" + std::to_string(m_EnemyNum);
+    float width = Master::m_pDataManager->get_ScreenWidth();
+    float height = Master::m_pDataManager->get_ScreenHeight();
 
     Master::m_pDirectWriteManager->SetOutLine(3.0f, D2D1::ColorF(0.0f, 0.0f, 0.0f));
-    Master::m_pDirectWriteManager->DrawFormatString("残りの敵数：{:d}", VECTOR2::VEC2(0, 540), "White_40_STD", m_EnemyNum);
+    //Master::m_pDirectWriteManager->DrawFormatString("残りの敵数：{:d}", VECTOR2::VEC2(0, 540), "White_40_STD", m_EnemyNum);
+    Master::m_pDirectWriteManager->DrawStringToAligment(
+        enemyNumStr,
+        ENEMY_NUM_TEXT_POS,
+        "White_30_STD",
+        H_ALIGNMENT::LEADING,
+        V_ALIGNMENT::TOP,
+        VEC2(width, height)
+    );
+
     Master::m_pDirectWriteManager->DrawFormatString("TABでポーズを開く", VECTOR2::VEC2(0, 620), "White_30_STD");
     Master::m_pDirectWriteManager->SetOutLine(0.0f);
 
