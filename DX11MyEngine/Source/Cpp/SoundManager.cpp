@@ -1112,6 +1112,9 @@ bool SoundManager::Internal_SoundPlay_3D(SOUND_TYPE _type, int _id, const VECTOR
 
 		float volume = slot._volumeDefault * slot._volumeFactor;
 
+		hr = slot._pSourceVoice->SetFrequencyRatio(1.0f);	// ƒsƒbƒ`‚ÍŒ³‚Ì‰¹º‚Ì‚Ü‚Ü
+		if (FAILED(hr)) return false;
+
 		// ‰¹—Ê
 		hr = slot._pSourceVoice->SetVolume(volume);
 		if (FAILED(hr)) {
