@@ -9,7 +9,7 @@ using namespace Tool;
 //*【?】コンストラクタ
 //*----------------------------------------------------------------------------------------
 DamageTextManager::DamageTextManager():
-	m_PositionType(DAMAGE_TEXT_POSITION_TYPE::HIT)
+	m_PositionType(DAMAGE_TEXT_POSITION_TYPE::FIXED)
 {
 }
 
@@ -72,7 +72,7 @@ void DamageTextManager::Update(float deltaTime)
 		case DAMAGE_TEXT_POSITION_TYPE::FIXED:
 		{
 			const VEC2 FixedPosition = VEC2(1220.0f, 850.0f);	// 固定位置のスクリーン座標
-			const float RiseSpeed = 90.0f;						// 上昇速度
+			const float RiseSpeed = 150.0f;						// 上昇速度
 
 			damageText.screenPos = VEC2(FixedPosition.x, FixedPosition.y);
 

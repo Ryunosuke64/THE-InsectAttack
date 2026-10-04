@@ -107,8 +107,8 @@ void EnemyController::Start(RendererEngine& renderer)
 
 			// ダメージテキストを登録する
 			Master::m_pDamageTextManager->Register(
-				//collisionInfo.hitPoint,
-				m_pTransformComp->get_VEC3ToPos(),
+				collisionInfo.hitPoint,
+				//m_pTransformComp->get_VEC3ToPos(),
 				_damage
 			);
 		}

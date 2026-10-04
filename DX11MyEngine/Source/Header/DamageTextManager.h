@@ -41,7 +41,7 @@ enum class DAMAGE_TEXT_POSITION_TYPE
 class DamageTextManager
 {
 private:
-	const float DAMAGE_TEXT_LIFETIME = 1.5f; // ダメージテキストの表示時間
+	const float DAMAGE_TEXT_LIFETIME = 1.0f; // ダメージテキストの表示時間
 	std::vector<DamageText> m_DamageTexts; // ダメージテキストの配列
     DAMAGE_TEXT_POSITION_TYPE m_PositionType;
 public:

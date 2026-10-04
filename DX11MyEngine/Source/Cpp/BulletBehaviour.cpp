@@ -366,7 +366,10 @@ namespace BulletBehaviour
         //*****************************************************************************************
         //						ヒットサウンド再生
         //*****************************************************************************************
-        Master::m_pSoundManager->Play_RandPitch_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ROCOCHET01), hitPoint, 40, 300);
+        Master::m_pSoundManager->Play_RandPitch_3D(
+            SOUND_TYPE::SE, 
+            SOUND_ID_TO_INT(SOUND_ID::ROCOCHET01),
+            hitPoint, 40, 300);
 
         return result;
     }
@@ -510,23 +513,27 @@ namespace BulletBehaviour
         //auto targets = Master::m_pCollisionManager->CheckSphere(hitPoint, _hitData._explosionRadius, mask);
         auto targets = Master::m_pPhysicsEngine->CheckSphere(hitPoint, _hitData._explosionRadius, mask);
 
+        CollisionInfo damageCollisionInfo = _collision;
+
         // 範囲内の全員にダメージ
         for (auto& target : targets)
         {
             if (auto obj = target.lock())
             {
+                auto targetTransform = obj->get_Transform().lock();
+                VEC3 targetPos = targetTransform->get_VEC3ToPos();
+
                 // ダメージ
                 if (auto health = obj->get_Component<Health>())
                 {
-                    health->TakeDamage(_common._damage, _collision);
+                    // ダメージテキストが弾の衝突点に固まってしまうため、ターゲットの位置にする
+                    damageCollisionInfo.hitPoint = targetPos;
+                    health->TakeDamage(_common._damage, damageCollisionInfo);
                 }
 
                 // 吹っ飛び
                 if (auto rb = obj->get_Component<RigidBody>())
                 {
-                    auto targetTransform = obj->get_Transform().lock();
-                    VEC3 targetPos = targetTransform->get_VEC3ToPos();
-
                     VECTOR3::VEC3 knockbackDir = targetPos - hitPoint;   // 爆心地から外（衝突オブジェクト）へ向かうベクトル
                     knockbackDir = knockbackDir.Normalize();
 

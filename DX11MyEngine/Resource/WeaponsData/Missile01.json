@@ -33,10 +33,10 @@
     "movement" :
     {
       "type" : "HOMING",
-      "turnSpeed" : 0.9,
-      "targetingStartDelay" : 4.0,
+      "turnSpeed" : 0.1,
+      "targetingStartDelay" : 3.0,
       "accelerationStartDelay" : 1.0,
-      "targetingDuration" : 10.0,
+      "targetingDuration" : 3.0,
       "lockOnRange" : 500.0,
       "lockOnHalfAngleDeg" : 90.0
     },
