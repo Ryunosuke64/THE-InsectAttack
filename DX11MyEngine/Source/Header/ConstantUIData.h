@@ -102,7 +102,7 @@ namespace UIData
         std::shared_ptr<SpriteRenderer> _pSprite;                         // 使用する画像
         VECTOR2::VEC2 _textOffsetPos = VECTOR2::VEC2();                   // 文字の位置補正
         STATE _inputValidationState = STATE::PRESSED;	                  // 入力判定とするステート（functionの実行タイミング）
-        int _inputSoundID = SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION01); // 入力されたときのサウンドID
+        int _inputSoundID = SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION02); // 入力されたときのサウンドID
 		int _repeatInputInterval = 1;                                     // 入力のリピート間隔
 		int _inputWaitFrame = 0;                                           // 入力受付開始までの待ち時間（フレーム数）
 

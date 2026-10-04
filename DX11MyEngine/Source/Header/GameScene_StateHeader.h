@@ -100,6 +100,8 @@ private:
 	std::array<std::weak_ptr<class RectTransform>, UINT_CAST(UtilityData::PAUSE_ITEM::NUM)> m_pPauseItemBackRectTransformArray;			// 項目背景のRectTransform
 	SceneStateEnums::c_GAME m_NextState;
 	UtilityData::PAUSE_ITEM m_CrntSelectPauseState;	// 現在の選択中のポーズ項目
+	std::weak_ptr<class ButtonUI> m_pButtonArray[static_cast<int>(UtilityData::PAUSE_ITEM::NUM)];// 項目のButtonUI配列  
+
 
 	/* 定数 */
 	const VECTOR2::VEC2 PAUSE_BACK_SPRITE_SIZE = VECTOR2::VEC2(550.0f, 550.0f);	// ポーズの背景スプライトをのサイズ

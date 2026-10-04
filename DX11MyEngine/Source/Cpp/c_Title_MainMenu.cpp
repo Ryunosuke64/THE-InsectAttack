@@ -190,10 +190,10 @@ int c_Title_MainMenu::Update(SceneManager* pOwner)
 		case UIData::STATE::HIGH_LIGHTED:
 			if (m_CrntSelectItem != static_cast<TITLEMENU_ITEM>(i))
 			{
-				// ****************************************************
-				//				カーソルが載った時のSE再生
-				// ****************************************************
-				Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+			//	// ****************************************************
+			//	//				カーソルが載った時のSE再生
+			//	// ****************************************************
+			//	Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
 			}
 			m_CrntSelectItem = static_cast<TITLEMENU_ITEM>(i);
 			m_MenuItemInfoArray[i]._isHovered = true;	// マウスが乗ってる

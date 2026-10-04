@@ -158,18 +158,18 @@ void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 			}
 
 			VEC3 pos = m_pTransform->get_VEC3ToPos();
-			//*****************************************************************************************
-			//						アイテム取得音再生
-			//*****************************************************************************************
-			Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ITEM_GET), pos, 500.0f);
 
 			// プールへ返す
 			m_pOwner.lock()->clear_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
 
+			// サウンドID
+			SOUND_ID getSoundID = SOUND_ID::ITEM_GET;
 
 			// ポイントアイテムの場合のエフェクト再生
 			if (m_ItemType == ITEM_TYPE::POINT)
 			{
+				getSoundID = SOUND_ID::POINT_GET;	// サウンドをポイントアイテム用のものに
+
 				int pointGetEffectHandle = Master::m_pEffectManager->PlayEffect("PointItemGet", pos);
 				float scale = std::clamp(FLOAT_CAST(m_PointValue * RATE_POINT_EFFECT_SCALE), 1.0f, 3.0f);	// 大きさの補正
 
@@ -181,6 +181,11 @@ void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 				// エフェクト停止
 				Master::m_pEffectManager->StopEffect(m_EffectHandle);
 			}
+
+			//*****************************************************************************************
+			//						アイテム取得音再生
+			//*****************************************************************************************
+			Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(getSoundID), pos, 500.0f);
 		}
 	}
 }

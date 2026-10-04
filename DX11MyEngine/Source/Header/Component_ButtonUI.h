@@ -23,6 +23,7 @@ private:
 	std::array<VECTOR4::VEC4, UINT_CAST(UIData::STATE::NUM)> m_StateColor;	// それぞれのステートごとのカラ;
 	VECTOR2::VEC2 m_TextOffsetPos;					// テキストの位置補正用
 	UIData::STATE m_CrntState;						// 現在の状態
+	UIData::STATE m_PrevState;						// 前の状態
 	UIData::STATE m_InputValidationState;			// 入力判定とするステート
 	std::function<void()> m_OnClick;				// クリックされた際の処理
 	std::string m_Text;								// テキスト

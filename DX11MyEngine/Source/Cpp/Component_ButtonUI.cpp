@@ -17,6 +17,7 @@ using namespace VECTOR4;
 ButtonUI::ButtonUI(std::weak_ptr<GameObject> pOwner, int updateRank)
 	: IComponent(pOwner, updateRank),
 	m_CrntState(UIData::STATE::NORMAL),
+	m_PrevState(UIData::STATE::NORMAL),
 	m_InputValidationState(UIData::STATE::PRESSED),
 	m_FadeDuration(0.1f),
 	m_IsInteractable(true),
@@ -103,7 +104,10 @@ void ButtonUI::Update(RendererEngine &renderer)
 		bool isInputUp = GetInputUp(GAME_CONFIG::DECITION);;
 		bool isInputHold = GetInputHold(GAME_CONFIG::DECITION, 1);
 
+		// ハイライト状態
 		m_CrntState = UIData::STATE::HIGH_LIGHTED;
+
+
 
 		// 押し始め
 		if (GetMouseClickDown(MOUSE_BUTTON_STATE::LEFT) ||
@@ -158,6 +162,18 @@ void ButtonUI::Update(RendererEngine &renderer)
 				isTriggeredThisFrame = true;
 			}
 		}
+
+		// 今フレームで初めてハイライトされた
+		if (m_PrevState != UIData::STATE::HIGH_LIGHTED&&
+			m_PrevState != UIData::STATE::SELECTED &&
+			m_CrntState == UIData::STATE::HIGH_LIGHTED)
+		{
+			// ****************************************************
+			//				カーソルが載った時のSE再生
+			// ****************************************************
+			Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+		}
+
 	}
 	else
 	{
@@ -167,6 +183,9 @@ void ButtonUI::Update(RendererEngine &renderer)
 			m_CurrentRepeatTimer = 0;
 		}
 	}
+
+	// 前の状態として保持
+	m_PrevState = m_CrntState;
 
 	// 発動フラグが立っており、かつ入力処理を行うステートと一致すれば実行
 	if (isTriggeredThisFrame && m_InputValidationState == m_CrntState)

@@ -87,6 +87,11 @@ int c_Game_Manual::Update(SceneManager* pOwner)
 	// 右クリックでポーズへ戻る
 	if (GetMouseClickDown(MOUSE_BUTTON_STATE::RIGHT) || GetInputDown(GAME_CONFIG::PAUSE))
 	{
+		// ****************************************************
+		//				戻る際のSE再生
+		// ****************************************************
+		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+
 		return c_GAME::c_GAME_PAUSE;
 	}
 

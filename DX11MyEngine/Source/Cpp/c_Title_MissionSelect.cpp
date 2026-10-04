@@ -135,6 +135,11 @@ int c_Title_MissionSelect::Update(SceneManager *pOwner)
 	// 右クリックでメインメニューへ戻る
 	if (GetMouseClickDown(MOUSE_BUTTON_STATE::RIGHT))
 	{
+		// ****************************************************
+		//				戻る際のSE再生
+		// ****************************************************
+		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+
 		return c_TITLE::c_TITLE_MAIN_MENU;
 	}	
 
@@ -153,13 +158,13 @@ int c_Title_MissionSelect::Update(SceneManager *pOwner)
 			break;
 		case UIData::STATE::HIGH_LIGHTED:	// マウスが乗ってる
 
-			// 前回と値が違うなら音を鳴らす
-			if (m_CrntSelectItem != i) {
-				// ****************************************************
-				//				カーソルが載った時のSE再生
-				// ****************************************************
-				Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
-			}
+			//// 前回と値が違うなら音を鳴らす
+			//if (m_CrntSelectItem != i) {
+			//	// ****************************************************
+			//	//				カーソルが載った時のSE再生
+			//	// ****************************************************
+			//	Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+			//}
 			m_CrntSelectItem = i;
 			break;
 		case UIData::STATE::PRESSED:

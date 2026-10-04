@@ -98,6 +98,12 @@ int c_MissionSelect_DifficultSelect::Update(SceneManager* pOwner)
 	// 右クリックでミッション選択へ戻る
 	if (GetMouseClickDown(MOUSE_BUTTON_STATE::RIGHT))
 	{
+		// ****************************************************
+		//				戻る際のSE再生
+		// ****************************************************
+		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+
+
 		return c_TITLE::c_TITLE_MISSION_SELECT;
 	}
 	int i = 0;

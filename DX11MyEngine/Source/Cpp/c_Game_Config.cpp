@@ -60,6 +60,11 @@ int c_Game_Config::Update(SceneManager* pOwner)
 	// 右クリックでメインメニューへ戻る
 	if (GetMouseClickDown(MOUSE_BUTTON_STATE::RIGHT))
 	{
+		// ****************************************************
+		//				戻る際のSE再生
+		// ****************************************************
+		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+
 		return c_GAME::c_GAME_PAUSE;
 	}
 

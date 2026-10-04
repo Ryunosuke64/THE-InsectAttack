@@ -74,12 +74,15 @@ enum class SOUND_ID
 
     /* アイテム */
     ITEM_GET,                // 取得
+    POINT_GET,               // 取得
 
 
     
     /* システム */
     SYSTEM_MOVING_CURSOR01,  // 項目にカーソルがホバーしている状態
-	SYSTEM_DECISION01,       // 決定音
+	SYSTEM_DECISION01,       // 決定音 1 
+	SYSTEM_DECISION02,       // 決定音 2
+	SYSTEM_BACK01,           // 戻る
     
     TEST,
 

@@ -262,8 +262,10 @@ bool SoundManager::InitXA2Sound(void)
 	// ############################################################################
 
 	// システム
-	Load_Wav("Resource/Sound/SE/System/moving-cursor-2.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+	Load_Wav("Resource/Sound/SE/System/MovingCursor_03.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
 	Load_Wav("Resource/Sound/SE/System/Decision_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION01));
+	Load_Wav("Resource/Sound/SE/System/Decision_02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION02));
+	Load_Wav("Resource/Sound/SE/System/Back_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
 
 	// 武器
 	Load_Wav("Resource/Sound/SE/Weapon/GunFire_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE01));
@@ -289,6 +291,7 @@ bool SoundManager::InitXA2Sound(void)
 	
 	// アイテム
 	Load_Wav("Resource/Sound/SE/Game/ItemGet.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ITEM_GET));
+	Load_Wav("Resource/Sound/SE/Game/PointGet.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::POINT_GET));
 
 	
 	// BGM
