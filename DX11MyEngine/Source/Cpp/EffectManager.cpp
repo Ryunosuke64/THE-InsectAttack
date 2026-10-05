@@ -117,6 +117,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/MuzzleEffect_Flame_01.efkefc", "MuzzleEffect_Flame_01");
     LoadEffect(u"Resource/Effect/Bullet_Laser_01.efkefc", "Bullet_Laser_01");
     LoadEffect(u"Resource/Effect/BulletHit_Laser.efkefc", "BulletHit_Laser");
+    LoadEffect(u"Resource/Effect/BulletHit_Soil.efkefc", "BulletHit_Soil");
     LoadEffect(u"Resource/Effect/Fragment_Ant.efkefc", "Fragment_Ant");
     LoadEffect(u"Resource/Effect/PointItem.efkefc", "PointItem");
     LoadEffect(u"Resource/Effect/PointItemGet.efkefc", "PointItemGet");

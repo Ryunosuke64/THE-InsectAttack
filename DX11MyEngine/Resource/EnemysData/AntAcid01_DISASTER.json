@@ -11,7 +11,7 @@
   "soundID": 0,
   "muzzleFlashEffectTag" : "",
   "muzzleFlashEffectScale" :  [1.0, 1.0, 1.0],
-  "bulletType": "NORMAL",
+  "bulletType": "ACID",
   "bulletParam": 
   {
     "common" :  
@@ -25,7 +25,7 @@
       "collisionSize": 0.0,
       "gravityScale": 2.0,
       "knockbackForce" : 10.0,
-      "bulletType" : "NORMAL",
+      "bulletType" : "ACID",
       "collisionCategory" : "ENEMY_BULLET",
       "collisionMask": ["PLAYER", "BUILDING", "DESTRUCTION_BUILDING"]
     },

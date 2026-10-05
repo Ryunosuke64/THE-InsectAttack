@@ -208,6 +208,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
                     collider->set_IsStatic(true);
                     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// Õ“ËƒJƒeƒSƒŠ
                     collider->set_IsConvex(false);
+                    collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
 
                     PhysicsData::RigidBodyDesc rbDesc;
                     rbDesc.mass = 0.0f;
@@ -298,6 +299,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             collider->SetupModelData(modelResource->get_ModelData());
             collider->set_IsStatic(true);
             collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// Õ“ËƒJƒeƒSƒŠ
+            collider->set_SurfaceType(SURFACE_TYPE::METAL);
 
             PhysicsData::RigidBodyDesc rbDesc;
             rbDesc.mass = 0.0f;
@@ -345,6 +347,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         collider->set_IsStatic(false);
         collider->set_IsConvex(false);
         collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// Õ“ËƒJƒeƒSƒŠ
+        collider->set_SurfaceType(SURFACE_TYPE::METAL);
+
         PhysicsData::RigidBodyDesc rbDesc;
         rbDesc.mass = 1000.0f;
         rbDesc.pos = pos;
@@ -393,6 +397,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             collider->set_Center(VEC3(0.0f, -1.0f, 0.0f));
             collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// Õ“ËƒJƒeƒSƒŠ
             collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
+            collider->set_SurfaceType(SURFACE_TYPE::SOIL);
 
             PhysicsData::RigidBodyDesc rbDesc;
             rbDesc.mass = 0.0f;

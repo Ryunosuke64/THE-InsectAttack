@@ -1,4 +1,5 @@
 #pragma once
+#include "Component_Collider.h"
 
 namespace BulletData
 {
@@ -133,6 +134,23 @@ namespace BulletData
         std::weak_ptr<GameObject> _target;        // 追尾などで参照する対象
         std::weak_ptr<GameObject> _shooter;       // この弾を発射したオブジェクト
     };
+
+
+    /// <summary>
+    /// サーフェイスごとのヒットデータ
+    /// </summary>
+    struct SurfaceHitData
+    {
+        std::string effectName;
+        SOUND_ID soundID = SOUND_ID::ROCOCHET02;
+    };
+
+    //
+    // 材質ごとのヒットデータ
+    //
+    using SurfaceHitTable =
+        std::array<BulletData::SurfaceHitData,
+        static_cast<size_t>(SURFACE_TYPE::NUM)>;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //

@@ -1,0 +1,50 @@
+{
+    "NORMAL" : 
+    {
+        "DEFAULT"  : ["BulletHit_Standard",0],
+        "CONCRETE" : ["BulletHit_Standard", 0],
+        "METAL"    : ["BulletHit_Metal", 0],
+        "SOIL"     : ["BulletHit_Soil", 0],
+        "ANT"      : ["AntHit_01", 0]
+    },
+    "EXPLOSION" : 
+    {
+        "DEFAULT"  : ["", 0],
+        "CONCRETE" : ["", 0],
+        "METAL"    : ["", 0],
+        "SOIL"     : ["", 0],
+        "ANT"      : ["", 0]
+    },
+    "HORMING" : 
+    {
+        "DEFAULT"  : ["", 0],
+        "CONCRETE" : ["", 0],
+        "METAL"    : ["", 0],
+        "SOIL"     : ["", 0],
+        "ANT"      : ["", 0]
+    },
+    "LASER" : 
+    {
+        "DEFAULT"  : ["BulletHit_Laser", 0],
+        "CONCRETE" : ["BulletHit_Laser", 0],
+        "METAL"    : ["BulletHit_Laser", 0],
+        "SOIL"     : ["BulletHit_Laser", 0],
+        "ANT"      : ["BulletHit_Laser", 0]
+    },
+    "FLAME" : 
+    {
+        "DEFAULT"  : ["BulletHit_Flame", 0],
+        "CONCRETE" : ["BulletHit_Flame", 0],
+        "METAL"    : ["BulletHit_Flame", 0],
+        "SOIL"     : ["BulletHit_Flame", 0],
+        "ANT"      : ["BulletHit_Flame", 0]
+    },
+    "ACID" : 
+    {
+        "DEFAULT"  : ["BulletHit_Acid", 0],
+        "CONCRETE" : ["BulletHit_Acid", 0],
+        "METAL"    : ["BulletHit_Acid", 0],
+        "SOIL"     : ["BulletHit_Acid", 0],
+        "ANT"      : ["BulletHit_Acid", 0]
+    }
+}

@@ -1,6 +1,34 @@
 #pragma once
 #include "IComponent.h"
 
+/// <summary>
+/// オブジェクトの材質タイプ
+/// </summary>
+enum class SURFACE_TYPE
+{
+	// 配列のインデックスにするため、0 から
+	DEFAULT = 0,    // 未設定・汎用
+
+	CONCRETE,       // コンクリート、建物、道路
+	METAL,          // 金属全般
+	SOIL,           // 土
+
+	//
+	// エネミー
+	//
+	ANT,			// アリ
+
+	NUM,
+};
+
+const std::string g_SurfaceNames[UINT_CAST(SURFACE_TYPE::NUM)] =
+{
+	"DEFAULT",
+	"CONCRETE",
+	"METAL",
+	"SOIL",
+	"ANT",
+};
 
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
@@ -26,7 +54,7 @@ protected:
 	unsigned m_CollisionBitMask;					// 衝突判定を分けるためのビットマスク
 	unsigned m_ResponseBitMask;						// 押し出し処理を行うかどうかのビットマスク
 	bool m_IsDrawDebugMesh;							// デバッグ用メッシュを表示するか
-
+	SURFACE_TYPE m_SurfaceType;						// 材質
 
 	std::weak_ptr<class RigidBody> m_pRigidBody;
 
@@ -70,6 +98,10 @@ public:
 	/* デバッグメッシュ表示するか */
 	void set_IsDrawDebugMesh(bool _flag) { m_IsDrawDebugMesh = _flag; }
 	bool get_IsDrawDebugMesh()const { return m_IsDrawDebugMesh; }
+
+	/* 材質の設定 */
+	void set_SurfaceType(SURFACE_TYPE type) { m_SurfaceType = type; }
+	SURFACE_TYPE get_SurfaceType()const { return m_SurfaceType; }
 
 
 	/* 衝突のカテゴリ 自身のタイプ */

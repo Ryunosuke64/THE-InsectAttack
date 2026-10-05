@@ -199,8 +199,18 @@ namespace BulletBehaviour
         //						衝突した際の処理
         //*****************************************************************************************
         auto hitObj = _collision.hitObject.lock();
-        if (!hitObj) return result;
-        COLLISION_CATEGORY hitCategory = _collision.hitCollider.lock()->get_CollisionCategory();
+        if (!hitObj) 
+        {
+            return result;
+        }
+        // コライダー
+        auto collider = _collision.hitCollider.lock();
+        if (!collider)
+        {
+            return result;
+        }
+
+        COLLISION_CATEGORY hitCategory = collider->get_CollisionCategory();
 
         // 相手がHealthComponentを持っているか確認（破壊可能な建物は壊せないように）
         auto health = hitObj->get_Component<Health>();
@@ -351,9 +361,18 @@ namespace BulletBehaviour
         //*****************************************************************************************
         if (_hitData._hitEffectTag.empty() == false)
         {
-            VEC3 effectRot = VEC3(pitch, yaw, 0.0f);
-            int effectHandle = Master::m_pEffectManager->PlayEffect(_hitData._hitEffectTag);
+            SURFACE_TYPE hitSurface = collider->get_SurfaceType();
 
+            //
+            // 弾タイプと衝突したサーフェイスからヒット時に再生するエフェクトを探す
+            //
+            const std::string hitEffectTag = 
+                Master::m_pWeaponDataManager->FindSurfaceHitEffectTag(_common._bulletType, hitSurface);
+
+            // 再生
+            int effectHandle = Master::m_pEffectManager->PlayEffect(hitEffectTag);
+
+            VEC3 effectRot = VEC3(pitch, yaw, 0.0f);
             VEC3 effectScale = transform->get_VEC3ToScale();
             effectScale *= EFFECTL_SIZE_FACTOR;     // 大きさの補正
 

@@ -9,7 +9,7 @@ using namespace Tool;
 //*【?】コンストラクタ
 //*----------------------------------------------------------------------------------------
 DamageTextManager::DamageTextManager():
-	m_PositionType(DAMAGE_TEXT_POSITION_TYPE::FIXED)
+	m_PositionType(DAMAGE_TEXT_POSITION_TYPE::HIT)
 {
 }
 
@@ -194,5 +194,5 @@ VEC2 DamageTextManager::ConvertTextPosition_Fixed(const VEC3& position)
 	const VEC2 FixedPosition = VEC2(1220.0f, 650.0f);
 	VEC2 screenPos = Tool::ConvertWorldToScreen(position);
 
-
+	return screenPos;
 }

@@ -28,6 +28,11 @@ private:
 
 
 
+    std::array<
+        BulletData::SurfaceHitTable,
+        static_cast<size_t>(BulletData::BULLET_TYPE::NUM)> m_SurfaceHitData;
+
+
 public:
     WeaponDataManager();
     ~WeaponDataManager();
@@ -52,10 +57,18 @@ public:
     /// <returns>読み取り専用武器データ</returns>
     const WeaponData::BaseWeaponData* FindEnemysWeaponData(int _id)const;
 
-
-
+    // 武器の読み込み
     bool LoadGunWeaponData(const std::string& filepath, WeaponData::GunWeaponData& outData);
 
+
+    // 材質ごとのヒットデータ読み込み
+    bool LoadSurfaceHitData(const std::string& filepath);
+
+    // ヒットテーブルの検索
+    const BulletData::SurfaceHitTable& FindSurfaceHitTable(BulletData::BULLET_TYPE bulletType);
+
+    // エフェクトタグの検索
+    const std::string& FindSurfaceHitEffectTag(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType);
 
 private:
     // コピー禁止
@@ -85,5 +98,6 @@ private:
         const nlohmann::json& json,
         BulletData::Definition& outData);
 
+    bool ExtractionSurfacesHitData(const nlohmann::json& _json, BulletData::SurfaceHitTable& _outData);
 };
 

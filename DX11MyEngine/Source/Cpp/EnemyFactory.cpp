@@ -253,6 +253,7 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     collider->set_IsStatic(false);
     collider->set_IsConvex(true);
     collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
+    collider->set_SurfaceType(SURFACE_TYPE::ANT);
 
     //*****************************************************************************************
     //						衝突マスクの設定
@@ -408,6 +409,7 @@ std::shared_ptr<GameObject> EnemyFactory::CreateOctahedron(const EnemyGeneration
     collider->set_IsStatic(false);
     collider->set_IsConvex(false);
     collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
+    collider->set_SurfaceType(SURFACE_TYPE::METAL);
 
     //*****************************************************************************************
     //						衝突マスクの設定

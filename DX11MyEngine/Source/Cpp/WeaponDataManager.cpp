@@ -5,6 +5,7 @@
 #include <fstream>
 
 using namespace WeaponData;
+using namespace BulletData;
 using namespace UtilityData;
 using namespace BulletData;
 using namespace Tool::Json;
@@ -35,6 +36,15 @@ WeaponDataManager::~WeaponDataManager()
 //*----------------------------------------------------------------------------------------
 bool WeaponDataManager::Init()
 {
+    //*****************************************************************************************
+    //						材質ヒットデータの読み込み
+    //*****************************************************************************************
+    if (LoadSurfaceHitData("Resource/WeaponsData/SurfaceHitData.json") == false)
+    {
+        assert(false);
+    }
+
+
     GunWeaponData gunData;
     
     //// TEST ************************************************************************************
@@ -47,6 +57,8 @@ bool WeaponDataManager::Init()
     //}
     //m_AllWeaponsDataMap[1] = std::make_unique<GunWeaponData>(gunData);
     //
+
+
     
     // スタンダード ************************************************************************************
     if (LoadGunWeaponData("Resource/WeaponsData/AssultRifle01.json", gunData) == false){
@@ -181,6 +193,7 @@ const WeaponData::BaseWeaponData* WeaponDataManager::FindEnemysWeaponData(int _i
 //* [引数] 
 //* filepath : jsonのファイルパス
 //* &outData : 出力先 
+//* 
 //* [返値]
 //* 読み取り専用武器データ
 //* nullptr:見つからなかった 
@@ -237,6 +250,120 @@ bool WeaponDataManager::LoadGunWeaponData(const std::string& _filepath, WeaponDa
 
     // 完成した弾データを武器へ格納
     _outData._bulletData = std::move(bulletData);
+
+    return true;
+}
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】材質ヒットデータ読み込み（json）
+//*
+//* [引数] 
+//* filepath : jsonのファイルパス
+//* &outData : 出力先 
+//* 
+//* [返値]
+//* 読み込めたかどうか
+//*----------------------------------------------------------------------------------------
+bool WeaponDataManager::LoadSurfaceHitData(const std::string& _filepath)
+{
+    using json = nlohmann::json;
+    std::ifstream ifs(_filepath);
+    if (!ifs.is_open()) return false;
+
+    json j;
+    ifs >> j;
+
+    const nlohmann::json normalJson    = j["NORMAL"];
+    const nlohmann::json explosionJson = j["EXPLOSION"];
+    const nlohmann::json hormingJson   = j["HORMING"];
+    const nlohmann::json laserJson     = j["LASER"];
+    const nlohmann::json flameJson     = j["FLAME"];
+    const nlohmann::json acidJson      = j["ACID"];
+
+    bool isResult = true;
+
+    // 通常弾
+    isResult = ExtractionSurfacesHitData(normalJson,   m_SurfaceHitData[UINT_CAST(BULLET_TYPE::NORMAL)]);
+    if (isResult == false) 
+    {
+        assert(false);
+        return false;
+    }
+    // 爆発弾
+    isResult = ExtractionSurfacesHitData(explosionJson,m_SurfaceHitData[UINT_CAST(BULLET_TYPE::EXPLOSION)]);
+    if (isResult == false) 
+    {
+        assert(false);
+        return false;
+    }
+    // ホーミング弾
+    isResult = ExtractionSurfacesHitData(hormingJson,  m_SurfaceHitData[UINT_CAST(BULLET_TYPE::HORMING)]);
+    if (isResult == false) 
+    {
+        assert(false);
+        return false;
+    }
+    // レーザー
+    isResult = ExtractionSurfacesHitData(laserJson,    m_SurfaceHitData[UINT_CAST(BULLET_TYPE::LASER)]);
+    if (isResult == false)
+    {
+        assert(false);
+        return false;
+    }
+    // 火炎
+    isResult = ExtractionSurfacesHitData(flameJson,    m_SurfaceHitData[UINT_CAST(BULLET_TYPE::FLAME)]);
+    if (isResult == false)
+    {
+        assert(false);
+        return false;
+    }
+    // 酸
+    isResult = ExtractionSurfacesHitData(acidJson,     m_SurfaceHitData[UINT_CAST(BULLET_TYPE::ACID)]);
+    if (isResult == false) 
+    {
+        assert(false);
+        return false;
+    }
+
+    return true;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】材質ヒットデータをjsonから取り出す
+//*
+//* [引数] 
+//* &_json : json
+//* &_outData : 出力先 
+//* 
+//* [返値]
+//* 読み込めたかどうか
+//*----------------------------------------------------------------------------------------
+bool WeaponDataManager::
+ExtractionSurfacesHitData(const nlohmann::json& _json, SurfaceHitTable& _outData)
+{
+    const int SurfaceNum = UINT_CAST(SURFACE_TYPE::NUM);
+
+
+    for (int i = 0; i < SurfaceNum; i++)
+    {
+        if (_json.contains(g_SurfaceNames[i]) &&
+            _json[g_SurfaceNames[i]].is_array())
+        {
+            // エフェクトタグ
+            _outData[i].effectName = _json[g_SurfaceNames[i]][0].get<std::string>();
+
+            // 値がなければデフォルト値を入れる
+            if (_outData[i].effectName.empty())
+            {
+                //_outData[i].effectName = "BulletHit_Standard";
+            }
+
+            // サウンドもここに追加予定
+            _outData[i].soundID = static_cast<SOUND_ID>(_json[g_SurfaceNames[i]][1].get<int>());
+
+        }
+    }
 
     return true;
 }
@@ -517,3 +644,61 @@ bool WeaponDataManager::LoadVisualData(const nlohmann::json& _json, BulletData::
     return true;
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】対象の弾タイプのヒットテーブルを探す
+//*
+//* [引数] 
+//* bulletType : 弾タイプ
+//* 
+//* [返値]
+//* ヒットテーブル 
+//*----------------------------------------------------------------------------------------
+const SurfaceHitTable& WeaponDataManager::
+FindSurfaceHitTable(BulletData::BULLET_TYPE bulletType)
+{
+    size_t index = static_cast<size_t>(bulletType);
+
+    // 範囲チェック
+    if (index >= m_SurfaceHitData.size())
+    {
+        assert(false);
+        return {};
+    }
+
+    return m_SurfaceHitData[index];
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】対象の弾タイプ、サーフェイスタイプのエフェクトタグを探す
+//*
+//* [引数] 
+//* bulletType  : 弾タイプ
+//* surfaceType : サーフェイスタイプ
+//* 
+//* [返値]
+//* エフェクトタグ 
+//*----------------------------------------------------------------------------------------
+const std::string& WeaponDataManager::
+FindSurfaceHitEffectTag(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType)
+{
+    size_t indexBullet = static_cast<size_t>(bulletType);
+    size_t indexSurface = static_cast<size_t>(surfaceType);
+
+    // 範囲チェック 対象の弾があるか
+    if (indexBullet >= m_SurfaceHitData.size())
+    {
+        assert(false);
+        return {};
+    }
+
+    const SurfaceHitTable& surfaceHitTable = m_SurfaceHitData[indexBullet];
+    
+    // 範囲チェック 対象のサーフェイスがあるか
+    if (indexSurface >= surfaceHitTable.size())
+    {
+        assert(false);
+        return {};
+    }
+
+    return surfaceHitTable[indexSurface].effectName;
+}
