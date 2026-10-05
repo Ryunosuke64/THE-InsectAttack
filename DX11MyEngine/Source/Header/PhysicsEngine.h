@@ -90,6 +90,23 @@ public:
 	class btCollisionShape* CreateShape(const PhysicsData::BvhTriangleShapeDesc& desc);
 
 	bool Raycast(const CollInData_Ray& ray, unsigned group, unsigned mask, PhysicsData::CollisionInfo* _hitInfo);
+	/// <summary>
+	/// 球の中心をstartからendへ移動させ、経路上の最初の衝突を調べる。
+	/// group/maskはRaycastと同じ双方向の衝突フィルター。無効なColliderは除外する。
+	/// Trigger/Overlapも対象。ignoreObjectを指定すると、そのオブジェクトを除外する。
+	/// 非衝突・無効入力ではfalseを返し、hitInfoがあれば初期化する。
+	/// 半径は正、座標は有限値、移動距離は0より大きいこと。
+	/// 開始時点の重なり解消、押し出し、停止位置の余白は呼び出し側で処理する。
+	/// </summary>
+	bool SphereCast(
+		const VECTOR3::VEC3& start,
+		const VECTOR3::VEC3& end,
+		float radius,
+		unsigned group,
+		unsigned mask,
+		PhysicsData::SweepHitInfo* hitInfo = nullptr,
+		const GameObject* ignoreObject = nullptr) const;
+
 	std::vector<std::weak_ptr<GameObject>> CheckSphere(
 		const VECTOR3::VEC3& position,
 		float radius,

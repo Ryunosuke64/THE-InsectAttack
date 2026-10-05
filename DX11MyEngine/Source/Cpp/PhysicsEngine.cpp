@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <cmath>
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/NarrowPhaseCollision/btRaycastCallback.h>
 
@@ -1293,6 +1294,140 @@ Raycast(
     }
 
     return false;
+}
+
+//*-----------------------------------------------------------------------------------------
+//*【?】球を移動させたときの、経路上の最初の衝突を調べる
+//*-----------------------------------------------------------------------------------------
+bool PhysicsEngine::SphereCast(
+    const VEC3& start,
+    const VEC3& end,
+    float radius,
+    unsigned group,
+    unsigned mask,
+    SweepHitInfo* hitInfo,
+    const GameObject* ignoreObject) const
+{
+    if (hitInfo)
+    {
+        *hitInfo = SweepHitInfo{};
+    }
+
+    const auto isFinite = [](const VEC3& position)
+    {
+        return std::isfinite(position.x) &&
+            std::isfinite(position.y) && std::isfinite(position.z);
+    };
+    if (!m_pWorld || !std::isfinite(radius) || radius <= 0.0f ||
+        !isFinite(start) || !isFinite(end) || group == 0 || mask == 0)
+    {
+        return false;
+    }
+
+    const btVector3 start_bt(start.x, start.y, start.z);
+    const btVector3 end_bt(end.x, end.y, end.z);
+    const btScalar distanceSq = (end_bt - start_bt).length2();
+    if (!std::isfinite(distanceSq) || distanceSq <= SIMD_EPSILON * SIMD_EPSILON)
+    {
+        return false;
+    }
+
+    // 無効な剛体・Colliderと、指定されたオブジェクトを候補から除外する。
+    // ヒット後の除外では、その奥にある有効な障害物を見逃してしまう。
+    struct ClosestSphereResultCallback final
+        : btCollisionWorld::ClosestConvexResultCallback
+    {
+        const btAlignedObjectArray<RigidBodySlot>& bodies;
+        const GameObject* ignoredObject;
+
+        ClosestSphereResultCallback(
+            const btVector3& from,
+            const btVector3& to,
+            const btAlignedObjectArray<RigidBodySlot>& bodySlots,
+            const GameObject* ignored)
+            : btCollisionWorld::ClosestConvexResultCallback(from, to),
+            bodies(bodySlots), ignoredObject(ignored)
+        {
+        }
+
+        bool needsCollision(btBroadphaseProxy* proxy) const override
+        {
+            if (!proxy || !btCollisionWorld::ClosestConvexResultCallback::needsCollision(proxy))
+            {
+                return false;
+            }
+
+            const auto* object = static_cast<const btCollisionObject*>(proxy->m_clientObject);
+            if (!object)
+            {
+                return false;
+            }
+            const int index = object->getUserIndex();
+            if (index < 0 || index >= bodies.size())
+            {
+                return false;
+            }
+
+            const auto& slot = bodies[index];
+            if (!slot.active || slot.rigidBody != object)
+            {
+                return false;
+            }
+            const auto owner = slot.owner.lock();
+            const auto collider = slot.collider.lock();
+            return owner && owner.get() != ignoredObject &&
+                collider && collider->get_IsEnable();
+        }
+    };
+
+    ClosestSphereResultCallback callback(start_bt, end_bt, m_RigidBodies, ignoreObject);
+    callback.m_collisionFilterGroup = static_cast<int>(group);
+    callback.m_collisionFilterMask = static_cast<int>(mask);
+
+    // 一時的な判定形状。物理ワールドへの登録や剛体の移動は行わない。
+    btSphereShape sphere(radius);
+    btTransform from;
+    btTransform to;
+    from.setIdentity();
+    to.setIdentity();
+    from.setOrigin(start_bt);
+    to.setOrigin(end_bt);
+    m_pWorld->convexSweepTest(&sphere, from, to, callback);
+
+    if (!callback.hasHit())
+    {
+        return false;
+    }
+
+    const auto handle = GetBodyHandle(callback.m_hitCollisionObject);
+    if (!IsValidRigidBody(handle))
+    {
+        return false;
+    }
+
+    if (hitInfo)
+    {
+        const auto& slot = m_RigidBodies[handle.index];
+        const btVector3 center = start_bt.lerp(end_bt, callback.m_closestHitFraction);
+        hitInfo->hitFraction = static_cast<float>(callback.m_closestHitFraction);
+        hitInfo->castPosition = VEC3(center.getX(), center.getY(), center.getZ());
+
+        auto& collision = hitInfo->hitInfo;
+        collision.hitObject = slot.owner;
+        collision.hitCollider = slot.collider;
+        if (const auto owner = slot.owner.lock())
+        {
+            collision.hitTransform = owner->get_Transform();
+        }
+        const auto& point = callback.m_hitPointWorld;
+        const auto& normal = callback.m_hitNormalWorld;
+        collision.hitPoint = VEC3(point.getX(), point.getY(), point.getZ());
+        collision.hitNormal = VEC3(normal.getX(), normal.getY(), normal.getZ());
+        collision.contactCount = 1;
+        collision.contacts[0].position = collision.hitPoint;
+        collision.contacts[0].normal = collision.hitNormal;
+    }
+    return true;
 }
 
 //*-----------------------------------------------------------------------------------------

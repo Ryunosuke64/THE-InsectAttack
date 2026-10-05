@@ -249,6 +249,16 @@ namespace PhysicsData
 	};
 
 	/// <summary>
+	/// 移動経路の衝突判定結果。hitPointは接触点、castPositionは判定形状の位置。
+	/// </summary>
+	struct SweepHitInfo
+	{
+		CollisionInfo hitInfo;
+		VECTOR3::VEC3 castPosition = VECTOR3::VEC3();
+		float hitFraction = 1.0f; // 開始から終了までの移動割合（0～1）
+	};
+
+	/// <summary>
 	/// リジッドボディのセットアップデータ
 	/// </summary>
 	struct RigidBodyDesc
