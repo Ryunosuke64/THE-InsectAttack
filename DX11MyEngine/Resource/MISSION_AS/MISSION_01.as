@@ -12,10 +12,14 @@ void mission_setup()
     environmentParam.dirLightColor     = VEC3(1.0f);              // ライトカラー
     environmentParam.dirLightIntensity = 1.5f;                    // ライトの強さ
     environmentParam.fogColor          = VEC3(0.6f, 0.0f, 0.0f);  // フォグカラー
-    environmentParam.fogStart          = 50.0f;                    // フォグ開始距離
-    environmentParam.fogEnd            = 150.0f;                    // フォグ最大距離
-    environmentParam.dofStart          = 50.0f;                  // 被写界深度開始距離
-    environmentParam.dofEnd            = 150.0f;                 // 被写界深度最大距離
+    // environmentParam.fogStart          = 50.0f;                    // フォグ開始距離
+    // environmentParam.fogEnd            = 150.0f;                    // フォグ最大距離
+    // environmentParam.dofStart          = 50.0f;                  // 被写界深度開始距離
+    // environmentParam.dofEnd            = 150.0f;                 // 被写界深度最大距離
+    environmentParam.fogStart          = 0.0f;                    // フォグ開始距離
+    environmentParam.fogEnd            = 0.0f;                    // フォグ最大距離
+    environmentParam.dofStart          = 1000.0f;                  // 被写界深度開始距離
+    environmentParam.dofEnd            = 2000.0f;                 // 被写界深度最大距離
     SetStageEnvironmentParam(environmentParam);
 
     // アリ 

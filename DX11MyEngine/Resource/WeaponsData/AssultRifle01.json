@@ -54,7 +54,7 @@
       "smokeSize" : 0.0,                     
       "smokeEffectTag" : "",
       "trailColor" : [1.5, 1.5, 1.5],
-      "scale" :  [0.25, 0.25, 0.25],
+      "scale" :  [0.05, 0.05, 0.05],
 
       "custom" : 
       {

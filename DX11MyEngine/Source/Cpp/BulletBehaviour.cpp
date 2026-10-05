@@ -29,7 +29,7 @@ using namespace BulletData;
 constexpr float DECAL_SIZE_FACTOR        = 7.0f;   // デカールの大きさの補正値（transformのスケールだと小さすぎるため）
 constexpr float DECAL_Z_AXIS_SIZE_FACTOR = 0.0f;   // デカールの奥行に加算する補正値
 constexpr float DECAL_LIFE_TIME          = 5.0f;   // デカールの生存時間
-constexpr float EFFECTL_SIZE_FACTOR      = 2.0f;   // エフェクトの大きさの補正値（transformのスケールだと小さすぎるため）
+constexpr float EFFECTL_SIZE_FACTOR      = 4.0f;   // エフェクトの大きさの補正値（transformのスケールだと小さすぎるため）
 
 constexpr float EXP_SHAKE_MAX_RANGE_EXPLOSION_SCALE_FACTOR  = 15.0f;    // カメラシェイク時、シェイクの最大距離を求める際に掛ける補正値
 constexpr float EXP_SHAKE_LENGTH_SCALE_FACTOR               = 0.004f;   // カメラシェイク時、シェイクの大きさを求める際に掛ける補正値
@@ -438,12 +438,12 @@ namespace BulletBehaviour
         VEC3 hitPoint = _collision.hitPoint;      // 衝突位置
 
         // 水平方向の向きを求める
-        float angleY = atan2(hitNormal.x, hitNormal.z);
+        float yaw = atan2(hitNormal.x, hitNormal.z);
         // 水平成分の長さ
         float xzLen = sqrtf(hitNormal.x * hitNormal.x + hitNormal.z * hitNormal.z);
         // 垂直方向の角度を求める
         // 法線の逆を向かせたいのでマイナスを付ける
-        float angleX = atan2(-hitNormal.y, xzLen);
+        float pitch = atan2(-hitNormal.y, xzLen);
         float angleZ = Tool::RandRange(0.0f, 6.14f);
 
         // デカールの作成
@@ -487,7 +487,7 @@ namespace BulletBehaviour
         scale.z = expSize;
 
         // エフェクト
-        VEC3 effectRot = VEC3(abs(angleX - 0.05f), angleY, 0.0f);
+        VEC3 effectRot = VEC3(pitch, yaw, 0.0f);
         int exp_handle = Master::m_pEffectManager->PlayEffect(_hitData._explosionEffectHandleTag);   // 爆発
 
         float effectExpSize = expSize * EXP_EFFECT_SIZE_FACTOR;   // 爆発半径（そのままだと大きすぎるので補正）
@@ -504,11 +504,10 @@ namespace BulletBehaviour
 
             Master::m_pEffectManager->SetDynamicParameter(exp_smoke_handle, 1, _hitData._explosionEffectAliveTime); // 生存時間を変更
         }
-
         // 爆発
         Master::m_pEffectManager->SetScaleEffect(exp_handle, effectExpSize, effectExpSize, effectExpSize);
         Master::m_pEffectManager->SetPositionEffect(exp_handle, hitPoint.x, hitPoint.y, hitPoint.z);
-        //Master::m_pEffectManager->SetRotationEffect(exp_handle, expRot.x, expRot.y, expRot.z);
+        Master::m_pEffectManager->SetRotationEffect(exp_handle, expRot.x, expRot.y, expRot.z);
         // 動的パラメータの設定
         Master::m_pEffectManager->SetDynamicParameter(exp_handle, 1, _hitData._explosionEffectAliveTime); // 生存時間を変更
 

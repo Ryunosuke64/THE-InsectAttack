@@ -13,8 +13,8 @@ using namespace DirectX;
 
 #define CAMERA_ANGLE_SPEED		0.05f		// カメラの方向転換スピード
 #define CAMERA_MOVE_FACTOR		0.5f		// 
-#define CAMERA_POS_OFFSET		3.0f		// 位置のオフセット
-#define CAMERA_FOCUS_Y_OFFSET	2.0f		// 中視点オブジェクトのオフセット
+#define CAMERA_POS_OFFSET		3.7f		// 位置のオフセット
+#define CAMERA_FOCUS_Y_OFFSET	1.9f		// 中視点オブジェクトのオフセット
 
 //*---------------------------------------------------------------------------------------
 //* @:Camera3D Class 
