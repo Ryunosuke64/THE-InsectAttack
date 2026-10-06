@@ -244,7 +244,7 @@ bool WeaponDataManager::LoadGunWeaponData(const std::string& _filepath, WeaponDa
     
     // 通常弾・爆発弾で共通して使うデータ
     Definition bulletData;
-    if (!LoadBulletData(paramJson, bulletData))
+    if (!ExtractionBulletData(paramJson, bulletData))
     {
         return false;
     }
@@ -380,7 +380,7 @@ ExtractionSurfacesHitData(const nlohmann::json& _json, SurfaceHitTable& _outData
 //* true : 読みとり成功
 //* false : 読みとり失敗
 //*----------------------------------------------------------------------------------------
-bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::Definition& _outData)
+bool WeaponDataManager::ExtractionBulletData(const nlohmann::json& _json, BulletData::Definition& _outData)
 {
     //*****************************************************************************************
     //						共通データの読み取り
@@ -469,7 +469,7 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
     //*****************************************************************************************
     //						移動データの読み取り
     //*****************************************************************************************
-    if (!LoadMovementData(movementJson, _outData))
+    if (!ExtractionMovementData(movementJson, _outData))
     {
         return false;
     }
@@ -477,7 +477,7 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
     //*****************************************************************************************
     //						ヒットデータの読み取り
     //*****************************************************************************************
-    if (!LoadHitData(hitJson, _outData))
+    if (!ExtractionHitData(hitJson, _outData))
     {
         return false;
     }
@@ -485,7 +485,7 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
     //*****************************************************************************************
     //						見た目データの読み取り
     //*****************************************************************************************
-    if (!LoadVisualData(visualJson, _outData))
+    if (!ExtractionVisualData(visualJson, _outData))
     {
         return false;
     }
@@ -503,7 +503,7 @@ bool WeaponDataManager::LoadBulletData(const nlohmann::json& _json, BulletData::
 //* true : 読みとり成功
 //* false : 読みとり失敗
 //*----------------------------------------------------------------------------------------
-bool WeaponDataManager::LoadMovementData(const nlohmann::json& _json, BulletData::Definition& _outData)
+bool WeaponDataManager::ExtractionMovementData(const nlohmann::json& _json, BulletData::Definition& _outData)
 {
     const std::string type =
         _json.value("type", "LINEAR");
@@ -539,7 +539,7 @@ bool WeaponDataManager::LoadMovementData(const nlohmann::json& _json, BulletData
 //* true : 読みとり成功
 //* false : 読みとり失敗
 //*----------------------------------------------------------------------------------------
-bool WeaponDataManager::LoadHitData(const nlohmann::json& _json, BulletData::Definition& _outData)
+bool WeaponDataManager::ExtractionHitData(const nlohmann::json& _json, BulletData::Definition& _outData)
 {
     using namespace BulletData;
 
@@ -593,7 +593,7 @@ bool WeaponDataManager::LoadHitData(const nlohmann::json& _json, BulletData::Def
 //* true : 読みとり成功
 //* false : 読みとり失敗
 //*----------------------------------------------------------------------------------------
-bool WeaponDataManager::LoadVisualData(const nlohmann::json& _json, BulletData::Definition& _outData)
+bool WeaponDataManager::ExtractionVisualData(const nlohmann::json& _json, BulletData::Definition& _outData)
 {
     using namespace BulletData;
 

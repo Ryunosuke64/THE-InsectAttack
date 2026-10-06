@@ -82,19 +82,19 @@ private:
     /// <param name="json"></param>
     /// <param name="outData"></param>
     /// <returns></returns>
-    bool LoadBulletData(
+    bool ExtractionBulletData(
         const nlohmann::json& json,
         BulletData::Definition& outData);    
     
-    bool LoadMovementData(
+    bool ExtractionMovementData(
         const nlohmann::json& json,
         BulletData::Definition& outData);
         
-    bool LoadHitData(
+    bool ExtractionHitData(
         const nlohmann::json& json,
         BulletData::Definition& outData);
 
-    bool LoadVisualData(
+    bool ExtractionVisualData(
         const nlohmann::json& json,
         BulletData::Definition& outData);
 
