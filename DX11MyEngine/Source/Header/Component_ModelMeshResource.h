@@ -53,9 +53,12 @@ public:
             {
                 // モデルデータがなければ、飛ばす
                 if (m_LODModels[i]._pModelData.expired())
+                {
                     continue;
+                }
 
-                return { 
+                return 
+                { 
                     m_LODModels[i]._pModelData.lock() ,
                     static_cast<LOD_QUALITY>(i)
                 };

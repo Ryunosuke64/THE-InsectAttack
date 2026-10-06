@@ -193,6 +193,7 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
     if (!Master::m_pShaderManager->CreateShader(SHADER_TYPE::FORWARD_UNLIT_STATIC,              SHADER_CREATE_TYPE::CSO))return false;
     if (!Master::m_pShaderManager->CreateShader(SHADER_TYPE::FORWARD_UNLIT_UI_NOTEXTURE_SPRITE, SHADER_CREATE_TYPE::CSO))return false;
     if (!Master::m_pShaderManager->CreateShader(SHADER_TYPE::FORWARD_UNLIT_TRAIL,               SHADER_CREATE_TYPE::RUNTIME))return false;
+    if (!Master::m_pShaderManager->CreateShader(SHADER_TYPE::FORWARD_UNLIT_WATER,               SHADER_CREATE_TYPE::RUNTIME))return false;
     if (!Master::m_pShaderManager->CreateShader(SHADER_TYPE::POST_GAUSSIAN_BLUR_HORIZONTAL,     SHADER_CREATE_TYPE::CSO))return false;
     if (!Master::m_pShaderManager->CreateShader(SHADER_TYPE::POST_GAUSSIAN_BLUR_VERTICAL,       SHADER_CREATE_TYPE::CSO))return false;
     if (!Master::m_pShaderManager->CreateShader(SHADER_TYPE::POST_SKYBOX,                       SHADER_CREATE_TYPE::CSO))return false;

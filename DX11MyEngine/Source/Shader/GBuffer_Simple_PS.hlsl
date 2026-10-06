@@ -50,6 +50,8 @@ PS_OUT PSMain(PS_IN input)
     
     finalCol = diffuseMap * cb_DiffuseColor;
     
+    clip(diffuseMap.a - 0.7f);
+    
     //finalCol.xyz = input.Color.xyz;
     
     // こっちは法線マップなしver

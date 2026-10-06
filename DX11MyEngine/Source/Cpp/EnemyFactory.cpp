@@ -186,6 +186,7 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     model.ObjTag = "Ant";
     model.IsAnim = true;
     model.MatNum = 1;
+  
     model.SetupMaterial = matInfo;
     model.ShaderType = SHADER_TYPE::DEFERRED_STD_SKINNED_N;
 

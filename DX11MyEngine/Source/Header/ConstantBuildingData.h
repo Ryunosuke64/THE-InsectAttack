@@ -55,4 +55,20 @@ namespace BuildingData
 
         BUILDING_STATE_HIT,				// ”í’e
     };
+
+    struct TransformData
+    {
+        VECTOR3::VEC3 position = VECTOR3::VEC3();
+        VECTOR3::VEC3 rotation = VECTOR3::VEC3();
+        VECTOR3::VEC3 scale = VECTOR3::VEC3();
+    };
+
+    struct MapObjectData
+    {
+        std::string name = "";
+        std::string modelPath = "";
+        TransformData transform;
+
+
+    };
 };

@@ -53,32 +53,32 @@ Variables:
    41  30 *    CALLSYS  1, 140           (VEC3& VEC3::opAssign(const VEC3&in))
    43  26 *    PSF      v17
    44  28 *    CALLSYS  0, 139           (VEC3::~VEC3())
-- 15,5 -
+- 19,5 -
                ObjInfo  v17, 0
    46  26 *    SUSPEND
-   47  26 *    SetV4    v18, 0x42480000          (i:1112014848, f:50)
+   47  26 *    SetV4    v18, 0x0          (i:0, f:0)
    49  26 *    LoadVObjR v14, v40, 67108880
    52  26 *    WRTV4    v18
-- 16,5 -
+- 20,5 -
    53  26 *    SUSPEND
-   54  26 *    SetV4    v19, 0x43160000          (i:1125515264, f:150)
+   54  26 *    SetV4    v19, 0x0          (i:0, f:0)
    56  26 *    LoadVObjR v14, v44, 67108880
    59  26 *    WRTV4    v19
-- 17,5 -
+- 21,5 -
    60  26 *    SUSPEND
-   61  26 *    SetV4    v18, 0x42480000          (i:1112014848, f:50)
+   61  26 *    SetV4    v18, 0x447a0000          (i:1148846080, f:1000)
    63  26 *    LoadVObjR v14, v48, 67108880
    66  26 *    WRTV4    v18
-- 18,5 -
+- 22,5 -
    67  26 *    SUSPEND
-   68  26 *    SetV4    v19, 0x43160000          (i:1125515264, f:150)
+   68  26 *    SetV4    v19, 0x44fa0000          (i:1157234688, f:2000)
    70  26 *    LoadVObjR v14, v52, 67108880
    73  26 *    WRTV4    v19
-- 19,5 -
+- 23,5 -
    74  26 *    SUSPEND
    75  26 *    PSF      v14
    76  28 *    CALLSYS  1, 148           (void SetStageEnvironmentParam(const StageEnvironmentParam&in))
-- 22,5 -
+- 26,5 -
    78  26 *    SUSPEND
    79  26 *    SetV1    v24, 0x1
    81  26 *    PshV4    v24
@@ -106,8 +106,8 @@ Variables:
   110  26 *    PSF      v23
   111  28 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v23, 0
-  113  26 *    CpyVtoG4 v20, 0x1ad868541b0          (i:1844797850032, f:9.11451e-312)
-- 29,2 -
+  113  26 *    CpyVtoG4 v20, 0x1df068df7d0          (i:2057399302096, f:1.01649e-311)
+- 33,2 -
   116  26 *    SUSPEND
   117  26 *    PSF      v14
   118  28 *    CALLSYS  0, 145           (StageEnvironmentParam::~StageEnvironmentParam())

@@ -6,7 +6,7 @@ Bullet,1,1,1,1,1,1,1,1,200,1,1,1,0,Resource/Texture/rust_coarse_01_arm_1k.jpg,-1
 AssultRifle,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Wall_W030.jpg,-1,-1,0
 DirLight,1,1,1,1,1,1,1,1,100,1,1,1,0.1,Resource/Texture/Light_Img.png,-1,-1,0
 Canonn,1,1,1,1,1,1,1,1,20,0,1,0,200,Resource/Texture/Wall_W040.jpg,Resource/Texture/Wall_W040_n.png,-1,0
-Ant,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/Enemy/GiantAnt01/textures/new_bake_ant.png,Resource/Model/Enemy/GiantAnt01/textures/new_bake_ant_n.png,-1,0
+Ant,1,1,1,1,0,0,0,0,1,0,0,0,0,Resource/Model/Enemy/GiantAnt01/textures/new_bake_ant.png,Resource/Model/Enemy/GiantAnt01/textures/new_bake_ant_n.png,-1,0
 B_2,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/b-2/textures/ggg_diffuseOriginal.jpeg,Resource/Model/b-2/textures/ggg_normal.jpeg,Resource/Model/b-2/textures/ggg_metallic.jpeg,0
 Claymore,1,1,1,1,1,1,1,1,200,0,0,0,0,Resource/Model/Weapon/Claymore/Mat_Base_Color.png,Resource/Model/Weapon/Claymore/Mat_Normal_DirectX.png,Resource/Model/Weapon/Claymore/Mat_Roughness.png,0
 Building01_Top,1,1,1,1,1,1,1,1,50,0,0,0,0,Resource/Model/Building/02/Textures/BL_tex04.jpg,Resource/Model/Building/02/Textures/BL_tex04_normal.png,-1,0
@@ -46,4 +46,6 @@ Grass,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Materials/grass.png,-1,-1,1
 TestBlock,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Materials/260718150419111.JPG,Resource/Texture/DefaultN_Map.png,-1,0
 UTDecal_01,4,4,1,1,1,1,1,1,100,1,1,1,1,Resource/Texture/Particle/UTDecal01.png,Resource/Texture/Particle/UTDecal01_n.png,-1,1
 Acid_04,1,1,0,1,1,1,1,1,100,1,1,1,1,Resource/Texture/Particle/UTDecal01.png,-1,-1,1
-Water,1,1,1,1,1,1,1,1,100,1,1,0,0.1,Resource/Texture/Materials/water_map.png,Resource/Texture/Materials/water_map.png,-1,1
+Water,1,1,1,0.4,1,1,1,1,100,1,1,0,0.1,Resource/Texture/Materials/water_map.png,Resource/Texture/Materials/water_map.png,-1,1
+Tree_Lerf,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/leaf.png,-1,-1,1
+Tree_Wood,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/Bark09_1K_BaseColor.png,-1,-1,1
