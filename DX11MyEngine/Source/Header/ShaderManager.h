@@ -49,6 +49,7 @@ enum class SHADER_TYPE
     FORWARD_UNLIT_UI_NOTEXTURE_SPRITE,  // スプライト 標準 UI用  ライティングなし テクスチャ無し
     _FORWARD_STD_BILLBOARD,             // ◆ ビルボード
     FORWARD_UNLIT_STATIC,               // 簡易3Dオブジェクト ライティングなし
+    FORWARD_UNLIT_WATER,                // 水用 ライティングなし
     FORWARD_UNLIT_TRAIL,                // 軌跡 ライティングなし
 
     /////////////////////////////////////////////////////////////////////
@@ -127,6 +128,7 @@ enum class CONSTANT_BUFFER_TYPE
 	DECAL,  		        // デカール用  
 	WINDOW, 			    // ウインドウ情報用
 	DISTORTION,             // ディストーション用
+	FRAME,                  // 毎フレーム代わるデータ用
 
     NUM,
 };

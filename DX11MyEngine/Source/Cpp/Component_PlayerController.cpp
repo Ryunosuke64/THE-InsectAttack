@@ -33,7 +33,7 @@ constexpr float ROLLING_DURATION  = 1.0f;	// ローリング時間
 constexpr float JUMP_HEIGHT       = 2.5f;	// ジャンプの高さ
 constexpr float GRAVITY           = 18.0f;	// 重力
 constexpr float ANIM_SPEED        = 1.25f;	// アニメーション速度
-constexpr float GROUND_NORMAL_Y   = 0.8f;	// 地面とするY法線
+constexpr float GROUND_NORMAL_Y   = 0.7f;	// 地面とするY法線
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -57,7 +57,8 @@ m_JumpVelocity(0.0f),
 m_Gravity(GRAVITY),
 m_JumpForce(0.0f),
 m_RollingElapsedTime(0.0f),
-m_RollingDuration(ROLLING_DURATION)
+m_RollingDuration(ROLLING_DURATION),
+m_FlightTime(0)
 {
 	this->set_Tag("PlayerController");
 }
@@ -283,6 +284,8 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 	// 接地しているならジャンプ可能
 	if (m_IsGrounded)
 	{
+		m_FlightTime = 0;
+
 		// ジャンプ中に接地した場合、リセット
 		if (m_IsJump)
 		{
@@ -320,6 +323,8 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 		// 空中にいる場合は重力をかけ続ける
 		//ChangeAnimation(PLAYER_RANGER_ANIM_ID::JUMP_LOOP, 0.5f);
 		//m_JumpVelocity -= m_Gravity * deltaTime;
+
+		m_FlightTime++;	// 空中
 
 		// 世界の裏側に落下した場合
 		if (crntPos.y < -100.0f)
@@ -457,7 +462,10 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 		// レイキャストして当たりそうになっていたら、ジャンプダウン状態に移行する
 		if (Master::m_pPhysicsEngine->Raycast(ray, group, hitMask, &hitInfo))
 		{
-			ChangeAnimation(PLAYER_RANGER_ANIM_ID::JUMP_DOWN, 0.5f);
+			if (m_FlightTime > 30 || m_IsJump)
+			{
+				ChangeAnimation(PLAYER_RANGER_ANIM_ID::JUMP_DOWN, 0.5f);
+			}
 		}
 		else
 		{

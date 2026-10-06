@@ -284,4 +284,14 @@ cbuffer CB_DISTORTION : register(b12)
     float2 cb_Distortion_UVScale;   // ディストーションのUVスケール
 };
 
+//* =========================================================================
+//*- @:毎フレーム変わる用データ -        >>>>>>>【１３】
+//* =========================================================================
+cbuffer CB_FRAME : register(b13)
+{
+    float cb_Time;
+    float cb_DeltaTime;
+    float2 pad8;
+};
+
 #endif

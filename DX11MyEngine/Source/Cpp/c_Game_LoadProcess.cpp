@@ -331,7 +331,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         model.IsActive = true;
         model.SetupMaterial = matInfo;
         model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC;
-        VEC3 pos = VEC3(0.0f, 350.0f, 0.0f);
+        VEC3 pos = VEC3(0.0f, 400.0f, 0.0f);
 
         auto obj = MeshFactory::CreateModel(model);
 		obj->set_IsStatic(false);
@@ -368,40 +368,112 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         /* 地面の生成 */
         {
             // マテリアル取得
+            auto matPtr = Master::m_pResourceManager->FindMaterial("Water");
+        
+            SetupMaterialInfo matInfo[1];
+            matInfo[0].Index = 0;
+            matInfo[0].pMaterialData = matPtr;
+        
+            CreateUtilityMeshInfo mesh;
+            mesh.pRenderer = m_pRenderer;
+            mesh.Type = UTILITY_MESH_TYPE::PLANE;
+            mesh.ObjTag = "Water";
+            mesh.MatNum = 1;
+            mesh.MaterialData = matInfo;
+            mesh.ShaderType = SHADER_TYPE::FORWARD_UNLIT_WATER;
+            mesh.IsNormalMap = false;
+            mesh.TilingScale = VEC2(60.0f, 60.0f);
+            mesh.ObjLayer = 120;
+            mesh.IsTransparent = true;
+        
+            auto obj = MeshFactory::CreateUtilityMesh(mesh);
+            obj->get_Transform().lock()->set_Scale(400.0f, -10.0f, 400.0f);
+            obj->get_Transform().lock()->set_Pos(0.0f, 0.0f, 0.0f);
+            obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+
+            auto modelRenderer = obj->get_Component<ModelMeshRenderer>();
+        }
+
+        ///* 地面の生成 */
+        //{
+        //    // マテリアル取得
+        //    auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
+        //    //auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
+
+        //    SetupMaterialInfo matInfo[1];
+        //    matInfo[0].Index = 0;
+        //    matInfo[0].pMaterialData = matPtr;
+
+        //    CreateUtilityMeshInfo mesh;
+        //    mesh.pRenderer = m_pRenderer;
+        //    mesh.Type = UTILITY_MESH_TYPE::PLANE;
+        //    mesh.ObjTag = "RBGround";
+        //    mesh.MatNum = 1;
+        //    mesh.MaterialData = matInfo;
+        //    mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+        //    mesh.IsNormalMap = true;
+        //    mesh.TilingScale = VEC2(60.0f, 60.0f);
+        //    mesh.ObjLayer = 90;
+
+        //    auto obj = MeshFactory::CreateUtilityMesh(mesh);
+        //    obj->get_Transform().lock()->set_Scale(400.0f, 1.0f, 400.0f);
+        //    obj->get_Transform().lock()->set_Pos(0.0f, 0.0f, 0.0f);
+        //    obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+
+        //    auto rb = obj->add_Component<RigidBody>();
+        //    auto collider = obj->add_Component<BoxCollider>();
+        //    collider->set_Size(VEC3(400.0f, 1.0f, 400.0f));
+        //    collider->set_Center(VEC3(0.0f, -1.0f, 0.0f));
+        //    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
+        //    collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
+        //    collider->set_SurfaceType(SURFACE_TYPE::SOIL);
+
+        //    PhysicsData::RigidBodyDesc rbDesc;
+        //    rbDesc.mass = 0.0f;
+        //    rbDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
+        //    rbDesc.restitution = 1.0f;
+        //    rbDesc.owner = obj;         // オーナーオブジェクトの設定
+        //    rbDesc.collider = collider; // コライダーの設定
+
+        //    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+        //}
+        /* 地面の生成 */
+        {
+            // マテリアル取得
             auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
             //auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
 
             SetupMaterialInfo matInfo[1];
             matInfo[0].Index = 0;
             matInfo[0].pMaterialData = matPtr;
+            CreateModelInfo model;
+            model.pRenderer = m_pRenderer;
+            model.ObjTag = "Ground";
+            model.IsAnim = false;
+            model.LODModels[0] = { "Resource/Model/Building/Ground/Ground01.fbx", 0.0f };
+            model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+            model.MatNum = 1;
+            model.SetupMaterial = matInfo;
 
-            CreateUtilityMeshInfo mesh;
-            mesh.pRenderer = m_pRenderer;
-            mesh.Type = UTILITY_MESH_TYPE::PLANE;
-            mesh.ObjTag = "RBGround";
-            mesh.MatNum = 1;
-            mesh.MaterialData = matInfo;
-            mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-            mesh.IsNormalMap = true;
-            mesh.TilingScale = VEC2(60.0f, 60.0f);
-            mesh.ObjLayer = 90;
+            VEC3 pos = VEC3(0.0f, 0.0f, 0.0f);
+            VEC3 scale = VEC3(1.0f);
+            auto obj = MeshFactory::CreateModel(model);
+            obj->get_Component<MyTransform>()->set_Scale(scale);
+            obj->get_Component<MyTransform>()->set_Pos(pos);
+            obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
 
-            auto obj = MeshFactory::CreateUtilityMesh(mesh);
-            obj->get_Transform().lock()->set_Scale(400.0f, 1.0f, 400.0f);
-            obj->get_Transform().lock()->set_Pos(0.0f, 0.0f, 0.0f);
-            obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+            auto modelResource = obj->get_Component<ModelMeshResource>();
 
             auto rb = obj->add_Component<RigidBody>();
-            auto collider = obj->add_Component<BoxCollider>();
-            collider->set_Size(VEC3(400.0f, 1.0f, 400.0f));
-            collider->set_Center(VEC3(0.0f, -1.0f, 0.0f));
+            auto collider = obj->add_Component<MeshCollider>();
+            collider->SetupModelData(modelResource->get_ModelData());
+            collider->set_IsStatic(true);
             collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
-            collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
             collider->set_SurfaceType(SURFACE_TYPE::SOIL);
 
             PhysicsData::RigidBodyDesc rbDesc;
             rbDesc.mass = 0.0f;
-            rbDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
+            rbDesc.pos = pos;
             rbDesc.restitution = 1.0f;
             rbDesc.owner = obj;         // オーナーオブジェクトの設定
             rbDesc.collider = collider; // コライダーの設定

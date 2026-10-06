@@ -1,0 +1,1354 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192b34">
+  <title>武器をつくる | THE Insect Attack</title>
+  <link rel="stylesheet" href="WeaponGenerator.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="武器と設定の選択">
+      <div class="brand">
+        <div class="brand-mark" data-icon="layers" aria-hidden="true"></div>
+        <div><strong>ARMORY</strong><small>THE INSECT ATTACK</small></div>
+      </div>
+      <p class="sidebar-heading">START WITH A WEAPON</p>
+      <div class="base-card">
+        <label for="templateSelect">ベースにする武器</label>
+        <select id="templateSelect"></select>
+        <p class="base-caption">好きな武器を選んで、調整を始めよう。</p>
+        <button id="templateButton" type="button" class="sidebar-button">この武器を使う</button>
+        <button id="libraryButton" type="button" class="library-link"><span data-icon="grid" aria-hidden="true"></span>武器一覧を見る</button>
+      </div>
+      <p class="sidebar-heading">CUSTOMIZE</p>
+      <nav id="sectionNav" class="section-nav" aria-label="設定カテゴリ"></nav>
+      <div class="sidebar-bottom">
+        <button id="resetButton" type="button"><span data-icon="reset" aria-hidden="true"></span>最初の設定に戻す</button>
+        <button id="helpButton" type="button"><span data-icon="help" aria-hidden="true"></span>使い方を見る</button>
+        <div class="offline-note">インストール不要・オフライン対応</div>
+      </div>
+    </aside>
+    <main class="app-main">
+      <header class="topbar">
+        <div><div class="topbar-label">WEAPON STUDIO</div><div id="currentWeaponName" class="topbar-name">新しい武器</div></div>
+        <div class="topbar-actions">
+          <span id="dirtyBadge" class="badge">変更なし</span>
+          <button id="openButton" type="button" class="button"><span data-icon="folder" aria-hidden="true"></span>読み込む</button>
+          <button id="saveQuickButton" type="button" class="button primary"><span data-icon="save" aria-hidden="true"></span>保存する</button>
+        </div>
+        <input id="fileInput" type="file" accept=".json,application/json" hidden>
+      </header>
+      <div class="content">
+        <div class="intro">
+          <div><div class="eyebrow">MAKE IT YOURS</div><h1>自分だけの武器をつくろう。</h1><p>威力、撃ち心地、弾の見た目。好みに合わせて、ひとつずつ。</p></div>
+          <div class="step-hint">武器を選ぶ<span>›</span><strong>好みに調整</strong><span>›</span>保存する</div>
+        </div>
+        <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+        <section id="legacyNotice" class="legacy" hidden>
+          <strong>この武器は以前のバージョンで作られています。</strong>
+          <p>今の形式に更新すると、すべての項目を編集できます。更新した後、値を確認して保存してください。</p>
+          <button id="convertButton" type="button" class="button">今の形式に更新する</button>
+          <details><summary>更新する内容</summary><p>最大速度は元の速度、弾の寿命は射程÷速度×60（切り上げ・最低1フレーム）で補完します。移動は直進、命中は直接命中、分類はプレイヤー弾になります。旧rangeとdamageDistAttenuationRateは保持しますが、今のゲームでは使用されません。保存するまで元ファイルは変更されません。</p></details>
+        </section>
+        <div class="workspace">
+          <div class="editor-column">
+            <div class="page-heading"><h2 id="pageTitle">基本性能</h2><p id="pageDescription">威力と撃ち心地を調整します。</p></div>
+            <form id="editor" novalidate></form>
+            <div class="page-footer"><p>変更は保存するまで元の武器に反映されません。</p><button id="nextPageButton" type="button" class="button">弾の動きへ →</button></div>
+          </div>
+          <aside class="summary-column" aria-label="性能の確認と保存">
+            <section class="weapon-card">
+              <div class="weapon-card-top"><span>YOUR WEAPON</span><div id="weaponKind" class="weapon-kind">ライフル</div></div>
+              <div id="weaponArt" class="weapon-art" role="img" aria-label="武器の種類を表すイラスト"></div>
+              <div class="weapon-card-title"><h2 id="summaryWeaponName">新しい武器</h2><p id="summaryDescription">自分好みの撃ち心地に。</p><div id="weaponPills" class="weapon-pills"></div></div>
+              <div class="stats">
+                <div class="stat"><span>1発の威力</span><strong id="statDamage">—</strong></div>
+                <div class="stat"><span>連射速度</span><strong id="statRate">—</strong><small>回/秒</small></div>
+                <div class="stat"><span>理論DPS</span><strong id="statDps">—</strong></div>
+                <div class="stat"><span>弾の寿命</span><strong id="statLife">—</strong><small>秒</small></div>
+              </div>
+              <div class="estimate-note">DPSは1秒あたりの威力の目安です。リロードは含みません。イラストは武器の種類を表しています。</div>
+            </section>
+            <section class="save-card" id="saveCard">
+              <h3>この武器を保存</h3>
+              <div id="validation" aria-live="polite"></div>
+              <label for="fileName">ファイル名</label>
+              <input id="fileName" value="NewWeapon.json" aria-describedby="saveHint" autocomplete="off" spellcheck="false">
+              <button id="saveAsButton" type="button" class="button primary full"><span data-icon="save" aria-hidden="true"></span>武器ファイルを保存</button>
+              <button id="overwriteButton" type="button" class="text-button" disabled>読み込んだファイルを更新</button>
+              <p id="saveHint" class="save-hint">保存先はWeaponsDataフォルダを選んでください。</p>
+            </section>
+            <details class="json-details" id="jsonDetails">
+              <summary>保存されるJSONを確認</summary>
+              <p id="sourceLabel"></p>
+              <pre id="jsonPreview" tabindex="0" aria-label="保存するJSON"></pre>
+            </details>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+  <dialog id="libraryDialog" aria-labelledby="libraryTitle">
+    <div class="dialog-head"><div><h2 id="libraryTitle">どの武器から始める？</h2><p>気になる武器を選んで、自分好みに調整しよう。</p></div><button class="dialog-close" data-close="libraryDialog" aria-label="武器一覧を閉じる" type="button">×</button></div>
+    <div class="dialog-content">
+      <div class="library-controls"><input id="librarySearch" type="search" placeholder="武器の名前で検索" aria-label="武器を検索"><select id="libraryFilter" aria-label="武器の種類で絞り込む"><option value="all">すべての種類</option><option value="rifle">ライフル</option><option value="launcher">ロケット</option><option value="shotgun">ショットガン</option><option value="sniper">スナイパー</option><option value="laser">レーザー</option><option value="flame">火炎放射器</option><option value="acid">酸の武器</option></select></div>
+      <div id="libraryGrid" class="library-grid"></div><p id="libraryEmpty" class="library-empty" hidden>一致する武器がありません。検索条件を変えてみてください。</p>
+    </div>
+  </dialog>
+  <dialog id="helpDialog" aria-labelledby="helpTitle">
+    <div class="dialog-head"><div><h2 id="helpTitle">武器づくりは、3ステップ。</h2><p>JSONを直接編集する必要はありません。</p></div><button class="dialog-close" data-close="helpDialog" aria-label="使い方を閉じる" type="button">×</button></div>
+    <div class="dialog-content">
+      <div class="help-steps">
+        <section><div class="help-step-number">1</div><h3>ベースを選ぶ</h3><p>武器一覧から選んで始めます。保存済みの武器は「読み込む」やドラッグ＆ドロップで開けます。</p></section>
+        <section><div class="help-step-number">2</div><h3>好みに調整する</h3><p>まずは基本性能から。弾の動きや見た目も設定できます。専門的な項目は詳細設定にあります。</p></section>
+        <section><div class="help-step-number">3</div><h3>ファイルを保存</h3><p>「保存する」でJSONを保存します。保存先を選べないブラウザーでは、ダウンロードしたファイルをWeaponsDataへ移動してください。</p></section>
+      </div>
+      <div class="help-notes">
+        <p>新しい名前のファイルをゲームで使う場合は、ゲーム側の武器登録も必要です。すでに登録されている武器の更新は、保存後にゲームを再起動して確認できます。</p>
+        <p>見た目の素材やエフェクトは、ゲームに登録されているものから指定します。候補は同梱の武器データをもとにしています。</p>
+        <p>同梱の武器はこの画面を作成した時点のデータです。最新の内容で編集したいときは、実際のJSONを読み込んでください。SurfaceHitData.jsonはこの画面の対象外です。</p>
+        <p>配布するときはWeaponGenerator.html・WeaponGenerator.css・WeaponGenerator.jsの3ファイルを同じフォルダに置いてください。</p>
+      </div>
+    </div>
+  </dialog>
+  <!-- Weapon snapshots keep this editor usable without a server or network. -->
+  <script type="application/json" id="weaponTemplates">
+{
+  "AcidGun01.json": {
+    "level": 0,
+    "name": "アシッドシューター",
+    "bulletMaxNum": 60,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 10,
+    "reloadTime": 1.5,
+    "accuracy": 0.05,
+    "zoomLength": 1,
+    "isLaserSight": false,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "",
+    "muzzleFlashEffectScale": [
+      0.6,
+      0.6,
+      0.6
+    ],
+    "bulletType": "ACID",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 120,
+        "speed": 40,
+        "maxSpeed": 70,
+        "damage": 35,
+        "acceleration": 0,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 12,
+        "knockbackForce": 3,
+        "bulletType": "ACID",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "Decal_Ant_Splash",
+        "hitEffectTag": "BulletHit_Acid",
+        "environmentResponse": "DEACTIVATE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Acid_02",
+        "trailDrawTime": 0,
+        "trailWidth": 0,
+        "enableFlightSmoke": true,
+        "smokeInterval": 0.001,
+        "smokeSize": 0.3,
+        "smokeEffectTag": "Fragment_Acid_01",
+        "trailColor": [
+          1,
+          1,
+          1
+        ],
+        "scale": [
+          0.3,
+          0.3,
+          0.3
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    }
+  },
+  "AssultRifle01.json": {
+    "level": 0,
+    "name": "ART-26",
+    "bulletMaxNum": 120,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 12,
+    "reloadTime": 1.5,
+    "accuracy": 0.03,
+    "zoomLength": 1,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_01",
+    "muzzleFlashEffectScale": [
+      0.6,
+      0.6,
+      0.6
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 52,
+        "speed": 228,
+        "maxSpeed": 228,
+        "damage": 35,
+        "acceleration": 0,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 8,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "Decal_BulletHole",
+        "hitEffectTag": "BulletHit_Standard",
+        "environmentResponse": "DEACTIVATE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Bullet_01",
+        "trailDrawTime": 0.02,
+        "trailWidth": 0.8,
+        "enableFlightSmoke": false,
+        "smokeInterval": 0,
+        "smokeSize": 0,
+        "smokeEffectTag": "",
+        "trailColor": [
+          1.5,
+          1.5,
+          1.5
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.05
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    }
+  },
+  "AssultRifle02.json": {
+    "level": 0,
+    "name": "ヘクターG3",
+    "bulletMaxNum": 28,
+    "bulletSimultaneousNum": 3,
+    "fireRate": 2.5,
+    "reloadTime": 1.7,
+    "accuracy": 0.05,
+    "zoomLength": 1.5,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_01",
+    "muzzleFlashEffectScale": [
+      1.2,
+      1.2,
+      1.2
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 60,
+        "speed": 300,
+        "maxSpeed": 300,
+        "damage": 60,
+        "acceleration": 0,
+        "penetrationsCount": 3,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 10,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "Decal_BulletHole",
+        "hitEffectTag": "BulletHit_Standard",
+        "environmentResponse": "BOUNCE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Bullet_03",
+        "trailDrawTime": 0.1,
+        "trailWidth": 0.5,
+        "enableFlightSmoke": false,
+        "smokeInterval": 0,
+        "smokeSize": 0,
+        "smokeEffectTag": "",
+        "trailColor": [
+          1,
+          2,
+          1
+        ],
+        "scale": [
+          0.25,
+          0.25,
+          0.25
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    }
+  },
+  "AssultRifle03.json": {
+    "level": 0,
+    "name": "ART-26R",
+    "bulletMaxNum": 600,
+    "bulletSimultaneousNum": 3,
+    "fireRate": 30,
+    "reloadTime": 3.5,
+    "accuracy": 0.066,
+    "zoomLength": 1,
+    "isLaserSight": false,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_01",
+    "muzzleFlashEffectScale": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 30,
+        "speed": 350,
+        "maxSpeed": 350,
+        "damage": 10,
+        "acceleration": 0,
+        "penetrationsCount": 1,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 8,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "Decal_BulletHole",
+        "hitEffectTag": "BulletHit_Standard",
+        "environmentResponse": "DEACTIVATE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Bullet_01",
+        "trailDrawTime": 0.04,
+        "trailWidth": 0.8,
+        "enableFlightSmoke": false,
+        "smokeInterval": 0,
+        "smokeSize": 0,
+        "smokeEffectTag": "",
+        "trailColor": [
+          1.5,
+          1.5,
+          1.5
+        ],
+        "scale": [
+          0.05,
+          0.05,
+          0.05
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    }
+  },
+  "Flamethrower01.json": {
+    "level": 0,
+    "name": "火炎放射器Σ",
+    "bulletMaxNum": 400,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 30,
+    "reloadTime": 3.5,
+    "accuracy": 0.05,
+    "zoomLength": 1,
+    "isLaserSight": false,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_Flame_01",
+    "muzzleFlashEffectScale": [
+      2,
+      2,
+      2
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "damage": 5,
+      "damageDistAttenuationRate": 0.5,
+      "speed": 140.8,
+      "acceleration": 0,
+      "range": 40,
+      "penetrationsCount": 5,
+      "collisionSize": 0,
+      "gravityScale": 0,
+      "knockbackForce": 1,
+      "collisionMask": [
+        "ENEMY",
+        "BUILDING",
+        "DESTRUCTION_BUILDING"
+      ],
+      "bulletMaterialTag": "Flame_01",
+      "decalMaterialTag": "",
+      "hitEffectTag": "BulletHit_Flame",
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    }
+  },
+  "Flamethrower02.json": {
+    "level": 0,
+    "name": "火炎放射器P2",
+    "bulletMaxNum": 10,
+    "bulletSimultaneousNum": 8,
+    "fireRate": 10,
+    "reloadTime": 3.5,
+    "accuracy": 0.1,
+    "zoomLength": 2,
+    "isLaserSight": false,
+    "soundID": 0,
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "damage": 5,
+      "damageDistAttenuationRate": 0.5,
+      "speed": 100,
+      "acceleration": 0,
+      "range": 100,
+      "penetrationsCount": 5,
+      "collisionSize": 0,
+      "gravityScale": 0,
+      "collisionMask": [
+        "ENEMY",
+        "BUILDING",
+        "DESTRUCTION_BUILDING"
+      ],
+      "bulletMaterialTag": "Flame_01",
+      "decalMaterialTag": "",
+      "hitEffectTag": "BulletHit_Flame",
+      "scale": [
+        2.5,
+        2.5,
+        2.5
+      ]
+    }
+  },
+  "Flamethrower03.json": {
+    "level": 0,
+    "name": "火炎放射器F28",
+    "bulletMaxNum": 300,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 60,
+    "reloadTime": 1.5,
+    "accuracy": 0.05,
+    "zoomLength": 1,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "",
+    "muzzleFlashEffectScale": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 60,
+        "speed": 60,
+        "maxSpeed": 100,
+        "damage": 3,
+        "acceleration": 0,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 1,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "",
+        "hitEffectTag": "",
+        "environmentResponse": "SLIDE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Flame_01",
+        "trailDrawTime": 0,
+        "trailWidth": 0,
+        "enableFlightSmoke": false,
+        "smokeInterval": 0,
+        "smokeSize": 0,
+        "smokeEffectTag": "",
+        "trailColor": [
+          10,
+          1,
+          3
+        ],
+        "scale": [
+          0.1,
+          0.1,
+          0.1
+        ],
+        "custom": {
+          "type": "ScaleLerp",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            6,
+            6,
+            6
+          ],
+          "duration": 1
+        }
+      }
+    }
+  },
+  "LaserRifle01.json": {
+    "level": 0,
+    "name": "パイルブラスターY",
+    "bulletMaxNum": 999,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 60,
+    "reloadTime": 3.5,
+    "accuracy": 0.0001,
+    "zoomLength": 1,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "",
+    "muzzleFlashEffectScale": [
+      0,
+      0,
+      0
+    ],
+    "bulletType": "LASER",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 40,
+        "speed": 600,
+        "maxSpeed": 1000,
+        "damage": 24,
+        "acceleration": 0,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 1,
+        "bulletType": "LASER",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "",
+        "hitEffectTag": "BulletHit_Laser",
+        "environmentResponse": "DEACTIVATE"
+      },
+      "visual": {
+        "type": "EFFECT",
+        "bulletEffectTag": "Bullet_Laser_01",
+        "trailDrawTime": 0,
+        "trailWidth": 0,
+        "enableFlightSmoke": false,
+        "smokeInterval": 0,
+        "smokeSize": 0,
+        "smokeEffectTag": "",
+        "effectColor": [
+          255,
+          64,
+          64,
+          255
+        ],
+        "trailColor": [
+          1,
+          1,
+          1
+        ],
+        "scale": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    }
+  },
+  "Launcher01.json": {
+    "level": 0,
+    "name": "ハウンドカノンTA-1",
+    "bulletMaxNum": 3,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 1,
+    "reloadTime": 2,
+    "accuracy": 0.005,
+    "zoomLength": 2,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_Rocket_01",
+    "muzzleFlashEffectScale": [
+      2,
+      2,
+      2
+    ],
+    "bulletType": "EXPLOSION",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 300,
+        "speed": 10,
+        "maxSpeed": 1000,
+        "damage": 200,
+        "acceleration": 100,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 1,
+        "knockbackForce": 20,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "EXPLOSION",
+        "decalMaterialTag": "",
+        "hitEffectTag": "BulletHit_Flame",
+        "explosionRadius": 10,
+        "explosionEffectTag": "Explosion_01",
+        "explosionEffectAliveTime": 1,
+        "isSmoke": true,
+        "expLightColor": [
+          0.8,
+          0.4,
+          0.1
+        ],
+        "expLightIntensity": 8,
+        "expLightDuration": 5
+      },
+      "visual": {
+        "type": "MODEL",
+        "bulletMaterialTag": "Bullet_01",
+        "trailDrawTime": 10,
+        "trailWidth": 1.5,
+        "enableFlightSmoke": true,
+        "smokeInterval": 0.005,
+        "smokeSize": 1,
+        "smokeEffectTag": "Fragment_Smoke_01",
+        "trailColor": [
+          1,
+          2,
+          1
+        ],
+        "scale": [
+          5,
+          5,
+          5
+        ],
+        "custom": {}
+      }
+    }
+  },
+  "Launcher02.json": {
+    "level": 0,
+    "name": "プラズマカノンTA-2R",
+    "bulletMaxNum": 24,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 6,
+    "reloadTime": 2.5,
+    "accuracy": 0.05,
+    "zoomLength": 1,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_Rocket_01",
+    "muzzleFlashEffectScale": [
+      1,
+      1,
+      1
+    ],
+    "bulletType": "EXPLOSION",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 300,
+        "speed": 50,
+        "maxSpeed": 1000,
+        "damage": 50,
+        "acceleration": 50,
+        "range": 1000,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 8,
+        "knockbackForce": 20,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "EXPLOSION",
+        "decalMaterialTag": "",
+        "hitEffectTag": "BulletHit_Flame",
+        "explosionRadius": 10,
+        "explosionEffectTag": "Explosion_Plasma_01",
+        "explosionEffectAliveTime": 1,
+        "isSmoke": false,
+        "expLightColor": [
+          0.2,
+          0.2,
+          0.9
+        ],
+        "expLightIntensity": 3,
+        "expLightDuration": 3
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Bullet_02",
+        "trailDrawTime": 0.1,
+        "trailWidth": 1.5,
+        "enableFlightSmoke": true,
+        "smokeInterval": 0.001,
+        "smokeSize": 1,
+        "smokeEffectTag": "Fragment_Plasma_01",
+        "trailColor": [
+          1,
+          2,
+          2
+        ],
+        "scale": [
+          0.2,
+          0.2,
+          0.2
+        ],
+        "custom": {}
+      }
+    }
+  },
+  "Launcher03.json": {
+    "level": 0,
+    "name": "カイロスD1",
+    "bulletMaxNum": 1,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 1,
+    "reloadTime": 10,
+    "accuracy": 0.001,
+    "zoomLength": 2,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_Rocket_01",
+    "muzzleFlashEffectScale": [
+      3,
+      3,
+      3
+    ],
+    "bulletType": "EXPLOSION",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 500,
+        "speed": 10,
+        "maxSpeed": 1000,
+        "damage": 600,
+        "acceleration": 100,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 8,
+        "knockbackForce": 100,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "EXPLOSION",
+        "decalMaterialTag": "",
+        "hitEffectTag": "BulletHit_Flame",
+        "explosionRadius": 50,
+        "explosionEffectTag": "Explosion_03",
+        "explosionEffectAliveTime": 1,
+        "isSmoke": true,
+        "expLightColor": [
+          1,
+          0.3,
+          0.9
+        ],
+        "expLightIntensity": 50,
+        "expLightDuration": 10
+      },
+      "visual": {
+        "type": "MODEL",
+        "bulletMaterialTag": "Bullet_01",
+        "trailDrawTime": 0.3,
+        "trailWidth": 3,
+        "enableFlightSmoke": true,
+        "smokeInterval": 0.001,
+        "smokeSize": 1,
+        "smokeEffectTag": "Fragment_Smoke_01",
+        "trailColor": [
+          5,
+          1,
+          4
+        ],
+        "scale": [
+          10,
+          10,
+          10
+        ],
+        "custom": {}
+      }
+    }
+  },
+  "Launcher_RaptorX1.json": {
+    "level": 0,
+    "name": "ラプターX1",
+    "bulletMaxNum": 6,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 2,
+    "reloadTime": 2.2,
+    "accuracy": 0.001,
+    "zoomLength": 1.4,
+    "isLaserSight": false,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_Rocket_01",
+    "muzzleFlashEffectScale": [
+      2,
+      2,
+      2
+    ],
+    "bulletType": "EXPLOSION",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 180,
+        "speed": 10,
+        "maxSpeed": 1000,
+        "damage": 75,
+        "acceleration": 1000,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 1,
+        "knockbackForce": 40,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "HOMING",
+        "turnSpeed": 0.9,
+        "targetingStartDelay": 3,
+        "accelerationStartDelay": 0.5,
+        "targetingDuration": 0,
+        "lockOnRange": 500,
+        "lockOnHalfAngleDeg": 90
+      },
+      "hit": {
+        "type": "EXPLOSION",
+        "decalMaterialTag": "Decal_BulletHole",
+        "hitEffectTag": "BulletHit_Flame",
+        "explosionRadius": 14,
+        "explosionEffectTag": "Explosion_01",
+        "explosionEffectAliveTime": 1,
+        "isSmoke": true,
+        "expLightColor": [
+          0.8,
+          0.4,
+          0.1
+        ],
+        "expLightIntensity": 4,
+        "expLightDuration": 3
+      },
+      "visual": {
+        "type": "MODEL",
+        "bulletMaterialTag": "Bullet_01",
+        "trailDrawTime": 0.05,
+        "trailWidth": 0.07,
+        "enableFlightSmoke": true,
+        "smokeInterval": 0.001,
+        "smokeSize": 1.3,
+        "smokeEffectTag": "Fragment_Smoke_01",
+        "trailColor": [
+          1,
+          0.5,
+          1.5
+        ],
+        "scale": [
+          3,
+          3,
+          3
+        ],
+        "custom": {}
+      }
+    }
+  },
+  "Missile01.json": {
+    "level": 0,
+    "name": "誘導ミサイル",
+    "bulletMaxNum": 30,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 10,
+    "reloadTime": 2,
+    "accuracy": 0.001,
+    "zoomLength": 2,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_Rocket_01",
+    "muzzleFlashEffectScale": [
+      2,
+      2,
+      2
+    ],
+    "bulletType": "EXPLOSION",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 1200,
+        "speed": 1,
+        "maxSpeed": 200,
+        "damage": 200,
+        "acceleration": 100,
+        "penetrationsCount": 0,
+        "collisionSize": 0,
+        "gravityScale": 2,
+        "knockbackForce": 40,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "HOMING",
+        "turnSpeed": 0.1,
+        "targetingStartDelay": 3,
+        "accelerationStartDelay": 1,
+        "targetingDuration": 3,
+        "lockOnRange": 500,
+        "lockOnHalfAngleDeg": 90
+      },
+      "hit": {
+        "type": "EXPLOSION",
+        "decalMaterialTag": "",
+        "hitEffectTag": "BulletHit_Flame",
+        "explosionRadius": 10,
+        "explosionEffectTag": "Explosion_01",
+        "explosionEffectAliveTime": 1,
+        "isSmoke": true,
+        "expLightColor": [
+          0.8,
+          0.4,
+          0.1
+        ],
+        "expLightIntensity": 8,
+        "expLightDuration": 5
+      },
+      "visual": {
+        "type": "MODEL",
+        "bulletMaterialTag": "Bullet_01",
+        "trailDrawTime": 0.3,
+        "trailWidth": 0.75,
+        "enableFlightSmoke": true,
+        "smokeInterval": 0.01,
+        "smokeSize": 0.5,
+        "smokeEffectTag": "Fragment_Smoke_01",
+        "trailColor": [
+          2,
+          1,
+          1
+        ],
+        "scale": [
+          3,
+          3,
+          3
+        ],
+        "custom": {}
+      }
+    }
+  },
+  "NewWeapon.json": {
+    "level": 0,
+    "name": "オックスDF24",
+    "bulletMaxNum": 82,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 8,
+    "accuracy": 0.06,
+    "zoomLength": 1,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_01",
+    "muzzleFlashEffectScale": [
+      0.6,
+      0.6,
+      0.6
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 60,
+        "speed": 150,
+        "maxSpeed": 150,
+        "damage": 42,
+        "acceleration": 0,
+        "penetrationsCount": 3,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 15,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "Decal_BulletHole",
+        "hitEffectTag": "BulletHit_Standard",
+        "environmentResponse": "DEACTIVATE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Bullet_02",
+        "trailDrawTime": 0.04,
+        "trailWidth": 1,
+        "enableFlightSmoke": false,
+        "smokeInterval": 0,
+        "smokeSize": 0,
+        "smokeEffectTag": "",
+        "trailColor": [
+          1.5,
+          1.5,
+          1.5
+        ],
+        "scale": [
+          0.15,
+          0.15,
+          0.15
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    },
+    "reloadTime": 3
+  },
+  "Shotgun01.json": {
+    "level": 0,
+    "name": "SG-A10",
+    "bulletMaxNum": 10,
+    "bulletSimultaneousNum": 12,
+    "fireRate": 2,
+    "reloadTime": 5,
+    "accuracy": 0.05,
+    "zoomLength": 1,
+    "isLaserSight": false,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_01",
+    "muzzleFlashEffectScale": [
+      1,
+      1,
+      1
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 30,
+        "speed": 150,
+        "maxSpeed": 150,
+        "damage": 30,
+        "acceleration": 0,
+        "penetrationsCount": 3,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 20,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "Decal_BulletHole",
+        "hitEffectTag": "BulletHit_Standard",
+        "environmentResponse": "PENETRATE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Bullet_04",
+        "trailDrawTime": 0.03,
+        "trailWidth": 1,
+        "enableFlightSmoke": false,
+        "smokeInterval": 0,
+        "smokeSize": 0,
+        "smokeEffectTag": "",
+        "trailColor": [
+          5,
+          1,
+          1
+        ],
+        "scale": [
+          0.2,
+          0.2,
+          0.2
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    }
+  },
+  "Sniper01.json": {
+    "level": 0,
+    "name": "スティンガーK41",
+    "bulletMaxNum": 7,
+    "bulletSimultaneousNum": 1,
+    "fireRate": 0.5,
+    "reloadTime": 2.5,
+    "accuracy": 0,
+    "zoomLength": 3,
+    "isLaserSight": true,
+    "soundID": 0,
+    "muzzleFlashEffectTag": "MuzzleEffect_01",
+    "muzzleFlashEffectScale": [
+      2,
+      2,
+      2
+    ],
+    "bulletType": "NORMAL",
+    "bulletParam": {
+      "common": {
+        "aliveFrame": 60,
+        "speed": 700,
+        "maxSpeed": 700,
+        "damage": 250,
+        "acceleration": 0,
+        "penetrationsCount": 6,
+        "collisionSize": 0,
+        "gravityScale": 0,
+        "knockbackForce": 20,
+        "bulletType": "NORMAL",
+        "collisionCategory": "PLAYER_BULLET",
+        "collisionMask": [
+          "ENEMY",
+          "BUILDING",
+          "DESTRUCTION_BUILDING"
+        ]
+      },
+      "movement": {
+        "type": "LINEAR"
+      },
+      "hit": {
+        "type": "DIRECT",
+        "decalMaterialTag": "Decal_BulletHole",
+        "hitEffectTag": "BulletHit_Standard",
+        "environmentResponse": "PENETRATE"
+      },
+      "visual": {
+        "type": "BILLBOARD",
+        "bulletMaterialTag": "Bullet_04",
+        "trailDrawTime": 0.3,
+        "trailWidth": 0.2,
+        "enableFlightSmoke": true,
+        "smokeInterval": 0.05,
+        "smokeSize": 0.5,
+        "smokeEffectTag": "Fragment_Smoke_01",
+        "trailColor": [
+          10,
+          10,
+          10
+        ],
+        "scale": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "custom": {
+          "type": "",
+          "startScale": [
+            0,
+            0,
+            0
+          ],
+          "endScale": [
+            0,
+            0,
+            0
+          ],
+          "duration": 0
+        }
+      }
+    }
+  }
+}
+  </script>
+  <script src="WeaponGenerator.js"></script>
+</body>
+</html>

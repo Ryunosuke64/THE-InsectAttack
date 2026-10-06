@@ -143,6 +143,7 @@ private:
 	VECTOR3::VEC3 m_MoveVelocity;	// 移動
 	float m_JumpVelocity;			// ジャンプベクトル
 	bool m_IsGrounded;				// 地面にいるか
+	int m_FlightTime;				// 空中にいる時間
 	PlayerData::PLAYER_RANGER_ANIM_ID m_CrntAnimID;	// 現在のアニメーションID
 	bool m_IsRolling;
 

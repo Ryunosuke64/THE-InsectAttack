@@ -34,6 +34,8 @@ private:
 
 	std::vector<Timer> m_Timers; // タイマーのリスト
 
+	float m_GameElapsedTime;	// ゲーム開始時からの経過時間
+
 public:
 	TimeManager();
 	~TimeManager();
@@ -43,11 +45,15 @@ public:
 
 	float get_DeltaTime()const {return m_DeltaTime;}			// デルタタイムの取得
 	float get_TimeScale()const { return m_TimeScale; }
+	float get_GameElapsedTime()const { return m_GameElapsedTime; }
+	
 	void set_TimeScale(float _scale) { m_TimeScale = _scale; }	// タイムスケール（倍率）の設定
 
 	void TriggerHitStop(float _duration, float _scale = 0.5f);
 
 	void AddTimer(float _duration, std::function<void()> _callback);
+
+
 private:
 	// コピー禁止
 	TimeManager(const TimeManager&) = delete;

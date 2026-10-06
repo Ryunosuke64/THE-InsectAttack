@@ -1634,6 +1634,9 @@
     <FxCompile Include="Source\Shader\Distortion_VS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
+    <FxCompile Include="Source\Shader\Water_PS.hlsl">
+      <Filter>HLSL\PS\Foward</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Source\Lib\DirectXTex\DirectXTexd.lib">

@@ -159,6 +159,17 @@ void RendererEngine::BeginRender()
 
     // サンプラー設定
     m_pImmediateContext->PSSetSamplers(0, ARRAYSIZE(samplers), samplers);
+
+
+    //*****************************************************************************************
+    //						フレーム定数バッファを設定する
+    //*****************************************************************************************
+    CB_FRAME cbFrame{};
+    float gameElapsedTime =  Master::m_pTimeManager->get_GameElapsedTime();
+    float deltaTime =  Master::m_pTimeManager->get_DeltaTime();
+    cbFrame.time = gameElapsedTime;
+    cbFrame.deltaTime = deltaTime;
+    Master::m_pShaderManager->BindConstantBuffer(CONSTANT_BUFFER_TYPE::FRAME, (void*)&cbFrame, sizeof(CB_FRAME));
 }
 
 

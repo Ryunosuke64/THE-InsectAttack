@@ -167,6 +167,13 @@ bool ShaderManager::Init(std::shared_ptr<RendererEngine> renderer)
             SHADER_TYPE::FORWARD_UNLIT_TRAIL,
             ARRAYSIZE(g_Static_Layout),
             g_Static_Layout,
+        },         
+        //FORWARD_UNLIT_TRAIL
+        {
+            /* 水 ライティング無し  */
+            SHADER_TYPE::FORWARD_UNLIT_WATER,
+            ARRAYSIZE(g_Static_Layout),
+            g_Static_Layout,
         }, 
 
         ///////////////////////////////////////////////////
@@ -275,6 +282,7 @@ bool ShaderManager::Init(std::shared_ptr<RendererEngine> renderer)
 	m_ConstantBuffers[UINT_CAST(CONSTANT_BUFFER_TYPE::DECAL)]               = std::make_unique<ConstantBuffer<CB_DECAL>>();
 	m_ConstantBuffers[UINT_CAST(CONSTANT_BUFFER_TYPE::WINDOW)]              = std::make_unique<ConstantBuffer<CB_WINDOW>>();
 	m_ConstantBuffers[UINT_CAST(CONSTANT_BUFFER_TYPE::DISTORTION)]          = std::make_unique<ConstantBuffer<CB_DISTORTION>>();
+	m_ConstantBuffers[UINT_CAST(CONSTANT_BUFFER_TYPE::FRAME)]               = std::make_unique<ConstantBuffer<CB_FRAME>>();
     
 	auto device = m_pRenderer.lock()->get_Device();
 
@@ -562,6 +570,9 @@ bool ShaderManager::VertexShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADE
             break; 
         case SHADER_TYPE::FORWARD_UNLIT_TRAIL:       // 軌跡 ライティング無し
             hr = this->CompileShader(HLSL__Trail_VS_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
+            break;       
+        case SHADER_TYPE::FORWARD_UNLIT_WATER:       // 水 ライティング無し
+            hr = this->CompileShader(HLSL__Static_VS_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
             break; 
             
         ///////////////////////////////////////////////////
@@ -670,6 +681,9 @@ bool ShaderManager::VertexShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADE
             break;
         case SHADER_TYPE::FORWARD_UNLIT_TRAIL:              // 軌跡 ライティング無し
             this->LoadCSOFile(HLSL_CSO__Trail_VS_PATH.c_str(),&csoByteCode);
+            break;        
+        case SHADER_TYPE::FORWARD_UNLIT_WATER:              // 水 ライティング無し
+            this->LoadCSOFile(HLSL_CSO__Static_VS_PATH.c_str(),&csoByteCode);
             break;
         case SHADER_TYPE::POST_GAUSSIAN_BLUR_HORIZONTAL:     // ガウシアン水平ブラー
             this->LoadCSOFile(HLSL_CSO__XBlur_VS_PATH.c_str(), &csoByteCode);
@@ -803,6 +817,9 @@ bool ShaderManager::PixelShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADER
             break;        
         case SHADER_TYPE::FORWARD_UNLIT_TRAIL:    // 軌跡 ライティング無し
             hr = this->CompileShader(HLSL__Simple_PS_PATH.c_str(), "PSMain", "ps_5_0", &pPSBlob);
+            break;          
+        case SHADER_TYPE::FORWARD_UNLIT_WATER:    // 水 ライティング無し
+            hr = this->CompileShader(HLSL__Water_PS_PATH.c_str(), "PSMain", "ps_5_0", &pPSBlob);
             break;        
 
         ///////////////////////////////////////////////////
@@ -909,6 +926,9 @@ bool ShaderManager::PixelShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADER
             break;
         case SHADER_TYPE::FORWARD_UNLIT_TRAIL:
             this->LoadCSOFile(HLSL_CSO__Simple_PS_PATH.c_str(), &csoByteCode);
+            break;     
+        case SHADER_TYPE::FORWARD_UNLIT_WATER:
+            this->LoadCSOFile(HLSL_CSO__Water_PS_PATH.c_str(), &csoByteCode);
             break;
         case SHADER_TYPE::POST_GAUSSIAN_BLUR_HORIZONTAL:
             this->LoadCSOFile(HLSL_CSO__GaussianBlur_PS_PATH.c_str(), &csoByteCode);

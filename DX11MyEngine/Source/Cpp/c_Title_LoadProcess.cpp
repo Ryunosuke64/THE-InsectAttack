@@ -260,9 +260,9 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
         // コライダーの追加
         //======================================
         auto collider = pPlayerObj->add_Component<CapsuleCollider>();
-        collider->set_Height(0.75f);
-        collider->set_Radius(0.5f);
-        collider->set_Center(VEC3(0.0f, 0.75f, 0.0f));
+        collider->set_Height(0.6f);
+        collider->set_Radius(0.3f);
+        collider->set_Center(VEC3(0.0f, 0.6f, 0.0f));
 
         // コリジョンのカテゴリ
         collider->set_CollisionCategory(COLLISION_CATEGORY::PLAYER);

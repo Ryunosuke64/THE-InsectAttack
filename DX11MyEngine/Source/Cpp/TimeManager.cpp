@@ -10,6 +10,7 @@ TimeManager::TimeManager():
 	m_DeltaTime(0.0f),
 	m_HitStopScale(1.0f),
 	m_HitStopTimer(0.0f),
+	m_GameElapsedTime(0.0f),
 	m_TimeScale(1.0f)
 {
 }
@@ -68,6 +69,10 @@ void TimeManager::Update()
 
 	// タイムスケール適用
 	m_DeltaTime = m_DeltaTime * m_TimeScale * m_HitStopScale;
+
+
+	// 経過時間を記録
+	m_GameElapsedTime += m_DeltaTime;
 
 	// --- 追加：デルタタイムの上限（Clamp）処理 ---
 	// 例: 0.1秒（10fps相当の処理落ち）を上限とする

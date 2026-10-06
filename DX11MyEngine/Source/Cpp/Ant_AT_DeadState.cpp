@@ -56,7 +56,7 @@ void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 
 	// 少し上（Y軸）に向かせることで、綺麗な放物線を描いて吹き飛ばせる
 	knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
-	knockbackDir.y += 30.0f;
+	knockbackDir.y += 60.0f;
 	knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
 
 	// 物理コンポーネントの設定

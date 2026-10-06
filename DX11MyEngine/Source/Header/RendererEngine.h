@@ -61,7 +61,6 @@ private:
 	CB_WINDOW_SET *m_pCBWindowSet;                  // ウインドウ情報の定数バッファセット
 
     DirectX::BoundingFrustum m_MainCameraFrustum;   // メインカメラフラスタム
-
 public:
     RendererEngine();
     ~RendererEngine();
