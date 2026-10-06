@@ -4,8 +4,10 @@
 #include "InputFactory.h"
 #include "DirectWriteManager.h"
 #include "RendererEngine.h"
+#include <cmath>
 
 using namespace Input;
+using namespace UtilityData;
 using namespace VECTOR3;
 using namespace VECTOR2;
 
@@ -37,6 +39,11 @@ m_CameraMode(CAMERA_MODE::TPS),
 m_Shaker()
 {
 	this->set_Tag("Camera3D"); 
+	// 最初の更新前にも、初期角度に対応する有効な視線方向を持たせる。
+	m_LookDir = VEC3(
+		-cosf(m_Angle_V) * cosf(m_Angle_H),
+		-sinf(m_Angle_V),
+		-cosf(m_Angle_V) * sinf(m_Angle_H));
 	m_PosOffset.x = CAMERA_POS_OFFSET;
 	m_PosOffset.y = CAMERA_POS_OFFSET;
 	m_PosOffset.z = CAMERA_POS_OFFSET;
@@ -139,10 +146,73 @@ void Camera3D::LateUpdate(RendererEngine &renderer)
 		m_CameraPos = m_Shaker.Apply(m_CameraPos);
 	}
 
+	ResolveObstacleCollision(renderer);
+
+
 	// カメラの位置
 	m_pOwner.lock()->get_Transform().lock()->set_Pos(m_CameraPos);
 }
 
+
+void Camera3D::ResolveObstacleCollision(RendererEngine& renderer)
+{
+	if (!Master::m_pPhysicsEngine)
+	{
+		return;
+	}
+
+	constexpr float collisionSkin = 0.02f;
+	constexpr int maxPushOutIterations = 8;
+	const unsigned hitMask = UINT_CAST(COLLISION_CATEGORY::BUILDING) |
+		UINT_CAST(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
+	const unsigned group = UINT_CAST(COLLISION_CATEGORY::PLAYER);
+	const auto focusObject = m_pFocusObject.lock();
+	auto& physics = *Master::m_pPhysicsEngine;
+
+	// ニアクリップ面の四隅を含む球で判定し、画面の端が壁に入るのも防ぐ。
+	const float aspect = renderer.get_ScreenHeight() > 0 ?
+		static_cast<float>(renderer.get_ScreenWidth()) / renderer.get_ScreenHeight() : 1.0f;
+	const float halfFov = XMConvertToRadians(std::clamp(m_Fov, 1.0f, 179.0f)) * 0.5f;
+	const float halfHeight = std::max(m_NearClipDist, 0.0f) * tanf(halfFov);
+	const float radius = std::max(0.2f, sqrtf(m_NearClipDist * m_NearClipDist +
+		halfHeight * halfHeight * (1.0f + aspect * aspect)));
+
+	const auto pushOut = [&](VEC3& position)
+	{
+		for (int i = 0; i < maxPushOutIterations; ++i)
+		{
+			PhysicsData::CollisionInfo contact{};
+			if (!physics.GetSpherePenetration(position, radius, group, hitMask,
+				&contact, focusObject.get()))
+			{
+				break;
+			}
+
+			// 法線は障害物から球へ向く。補間せず、めり込み量を全て解消する。
+			position += contact.hitNormal * (contact.penetrationDepth + collisionSkin);
+		}
+	};
+
+	// 開始点も押し出してから判定する。重なったままのSphereCastは当たりを保証しない。
+	VEC3 castStart = m_FocusPoint;
+	pushOut(castStart);
+
+	// 注視点からシェイク適用後の予定位置へ判定し、壁の手前でカメラを止める。
+	PhysicsData::SweepHitInfo sweepHit{};
+	if (physics.SphereCast(castStart, m_CameraPos, radius, group, hitMask,
+		&sweepHit, focusObject.get()))
+	{
+		const VEC3 movement = m_CameraPos - castStart;
+		const float distance = movement.Length();
+		const float safeDistance = std::max(0.0f, distance * sweepHit.hitFraction - collisionSkin);
+		m_CameraPos = castStart + movement.Normalize() * safeDistance;
+	}
+
+	// 初期配置や複数の壁との接触による、残っためり込みを解消する。
+	pushOut(m_CameraPos);
+
+	// 押し出しで注視点を越えても、操作で決めたm_LookDirは変更しない。
+}
 
 void Camera3D::CamraControl(RendererEngine& renderer)
 {
@@ -217,13 +287,13 @@ void Camera3D::CamraControl(RendererEngine& renderer)
 XMMATRIX Camera3D::get_ViewMatrix()const
 {
 	XMFLOAT3 eye = m_pOwner.lock()->get_Transform().lock()->get_VEC3ToPos();
-	XMFLOAT3 foucus = m_FocusPoint;
+	XMFLOAT3 lookDirection = m_LookDir;
 	XMFLOAT3 upVec = m_UpVec;
 
-	// ビュー行列の作成
-	XMMATRIX viewMat = XMMatrixLookAtLH(
+	// 位置補正と視線方向を分離し、注視点を越えたときの反転を防ぐ。
+	XMMATRIX viewMat = XMMatrixLookToLH(
 		XMLoadFloat3(&eye),
-		XMLoadFloat3(&foucus),
+		XMLoadFloat3(&lookDirection),
 		XMLoadFloat3(&upVec)
 	);
 

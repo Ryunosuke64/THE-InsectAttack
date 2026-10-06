@@ -160,12 +160,13 @@ void EffectManager::UpdateEffect(RendererEngine& renderer)
     ::Effekseer::Matrix44 projectionMatrix;
     projectionMatrix.PerspectiveFovLH(XMConvertToRadians(fov),(float)screenW / (float)screenH, camera_near, camera_far);
 
-    VECTOR3::VEC3 forcus = camera->get_FocusPoint();
+    const VECTOR3::VEC3 viewTarget = viewPos + camera->get_LookDir();
+    const VECTOR3::VEC3 upVec = camera->get_UpVec();
 
     // Specify a camera matrix
     // カメラ行列を設定
     ::Effekseer::Matrix44 cameraMatrix;
-    cameraMatrix.LookAtLH(viewerPosition, ::Effekseer::Vector3D(forcus.x, forcus.y, forcus.z), ::Effekseer::Vector3D(0.0f, 1.0f, 0.0f));
+    cameraMatrix.LookAtLH(viewerPosition, ::Effekseer::Vector3D(viewTarget.x, viewTarget.y, viewTarget.z), ::Effekseer::Vector3D(upVec.x, upVec.y, upVec.z));
 
     // Set layer parameters
     // レイヤーパラメータの設定

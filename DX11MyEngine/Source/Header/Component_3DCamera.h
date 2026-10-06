@@ -20,6 +20,8 @@ public:
 	};
 
 private:
+	void ResolveObstacleCollision(RendererEngine& renderer);
+
 	std::weak_ptr<class GameObject> m_pFocusObject;		// フォーカス対象
 	VECTOR3::VEC3 m_FocusPoint;			// 注視位置
 	VECTOR3::VEC3 m_UpVec;				// 上ベクトル　

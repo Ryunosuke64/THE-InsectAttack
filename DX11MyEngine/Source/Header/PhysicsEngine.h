@@ -107,6 +107,21 @@ public:
 		PhysicsData::SweepHitInfo* hitInfo = nullptr,
 		const GameObject* ignoreObject = nullptr) const;
 
+	/// <summary>
+	/// 現在位置の球と重なる障害物のうち、最も深い接触を返す。
+	/// hitNormalは障害物から球への単位法線、penetrationDepthは正のめり込み量。
+	/// group/maskとignoreObjectの扱いはSphereCastと同じ。
+	/// 複数の障害物は、法線 * (めり込み量 + 余白)で移動し、再判定して解消する。
+	/// 非衝突・無効入力ではfalseを返し、hitInfoがあれば初期化する。
+	/// </summary>
+	bool GetSpherePenetration(
+		const VECTOR3::VEC3& position,
+		float radius,
+		unsigned group,
+		unsigned mask,
+		PhysicsData::CollisionInfo* hitInfo = nullptr,
+		const GameObject* ignoreObject = nullptr) const;
+
 	std::vector<std::weak_ptr<GameObject>> CheckSphere(
 		const VECTOR3::VEC3& position,
 		float radius,

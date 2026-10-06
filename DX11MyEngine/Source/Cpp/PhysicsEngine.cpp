@@ -1431,6 +1431,151 @@ bool PhysicsEngine::SphereCast(
 }
 
 //*-----------------------------------------------------------------------------------------
+//*Åy?Åzåªç›à íuÇÃãÖÇÃÇﬂÇËçûÇ›ó Ç∆ÅAè·äQï®Ç©ÇÁäOÇ÷å¸Ç≠ñ@ê¸ÇéÊìæÇ∑ÇÈ
+//*-----------------------------------------------------------------------------------------
+bool PhysicsEngine::GetSpherePenetration(
+    const VEC3& position,
+    float radius,
+    unsigned group,
+    unsigned mask,
+    CollisionInfo* hitInfo,
+    const GameObject* ignoreObject) const
+{
+    if (hitInfo)
+    {
+        *hitInfo = CollisionInfo{};
+    }
+
+    if (!m_pWorld || !std::isfinite(radius) || radius <= 0.0f ||
+        !std::isfinite(position.x) || !std::isfinite(position.y) ||
+        !std::isfinite(position.z) || group == 0 || mask == 0)
+    {
+        return false;
+    }
+
+    btSphereShape sphere(radius);
+    btCollisionObject queryObject;
+    queryObject.setCollisionShape(&sphere);
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(btVector3(position.x, position.y, position.z));
+    queryObject.setWorldTransform(transform);
+
+    struct SpherePenetrationCallback final : btCollisionWorld::ContactResultCallback
+    {
+        const btCollisionObject* query;
+        const btAlignedObjectArray<RigidBodySlot>& bodies;
+        const GameObject* ignoredObject;
+        const btCollisionObject* hitObject = nullptr;
+        btVector3 hitPoint = btVector3(0, 0, 0);
+        btVector3 hitNormal = btVector3(0, 0, 0);
+        btScalar penetrationDepth = 0;
+
+        SpherePenetrationCallback(
+            const btCollisionObject* querySphere,
+            const btAlignedObjectArray<RigidBodySlot>& bodySlots,
+            const GameObject* ignored)
+            : query(querySphere), bodies(bodySlots), ignoredObject(ignored)
+        {
+        }
+
+        bool needsCollision(btBroadphaseProxy* proxy) const override
+        {
+            if (!proxy || !btCollisionWorld::ContactResultCallback::needsCollision(proxy))
+            {
+                return false;
+            }
+
+            const auto* object = static_cast<const btCollisionObject*>(proxy->m_clientObject);
+            if (!object)
+            {
+                return false;
+            }
+            const int index = object->getUserIndex();
+            if (index < 0 || index >= bodies.size())
+            {
+                return false;
+            }
+
+            const auto& slot = bodies[index];
+            if (!slot.active || slot.rigidBody != object)
+            {
+                return false;
+            }
+            const auto owner = slot.owner.lock();
+            const auto collider = slot.collider.lock();
+            return owner && owner.get() != ignoredObject &&
+                collider && collider->get_IsEnable();
+        }
+
+        btScalar addSingleResult(
+            btManifoldPoint& contact,
+            const btCollisionObjectWrapper* object0, int, int,
+            const btCollisionObjectWrapper* object1, int, int) override
+        {
+            const btScalar depth = -contact.getDistance();
+            if (!std::isfinite(depth) || depth <= penetrationDepth)
+            {
+                return 0;
+            }
+
+            const bool queryIsA = object0->getCollisionObject() == query;
+            if (!queryIsA && object1->getCollisionObject() != query)
+            {
+                return 0;
+            }
+            const btVector3 normal = queryIsA ?
+                contact.m_normalWorldOnB : -contact.m_normalWorldOnB;
+            const btScalar normalLengthSq = normal.length2();
+            if (!std::isfinite(normalLengthSq) || normalLengthSq <= SIMD_EPSILON * SIMD_EPSILON)
+            {
+                return 0;
+            }
+
+            hitObject = queryIsA ? object1->getCollisionObject() : object0->getCollisionObject();
+            hitPoint = queryIsA ? contact.getPositionWorldOnB() : contact.getPositionWorldOnA();
+            hitNormal = normal.normalized();
+            penetrationDepth = depth;
+            return 0;
+        }
+    };
+
+    SpherePenetrationCallback callback(&queryObject, m_RigidBodies, ignoreObject);
+    callback.m_collisionFilterGroup = static_cast<int>(group);
+    callback.m_collisionFilterMask = static_cast<int>(mask);
+    m_pWorld->contactTest(&queryObject, callback);
+
+    if (!callback.hitObject)
+    {
+        return false;
+    }
+    const auto handle = GetBodyHandle(callback.hitObject);
+    if (!IsValidRigidBody(handle))
+    {
+        return false;
+    }
+
+    if (hitInfo)
+    {
+        const auto& slot = m_RigidBodies[handle.index];
+        hitInfo->hitObject = slot.owner;
+        hitInfo->hitCollider = slot.collider;
+        if (const auto owner = slot.owner.lock())
+        {
+            hitInfo->hitTransform = owner->get_Transform();
+        }
+        hitInfo->hitPoint = VEC3(callback.hitPoint.getX(), callback.hitPoint.getY(), callback.hitPoint.getZ());
+        hitInfo->hitNormal = VEC3(callback.hitNormal.getX(), callback.hitNormal.getY(), callback.hitNormal.getZ());
+        hitInfo->penetrationDepth = static_cast<float>(callback.penetrationDepth);
+        hitInfo->contactCount = 1;
+        hitInfo->contacts[0].position = hitInfo->hitPoint;
+        hitInfo->contacts[0].normal = hitInfo->hitNormal;
+        hitInfo->contacts[0].penetrationDepth = hitInfo->penetrationDepth;
+    }
+    return true;
+}
+
+//*-----------------------------------------------------------------------------------------
 //*Åy?ÅzÉXÉtÉBÉAîªíË
 //*-----------------------------------------------------------------------------------------
 std::vector<std::weak_ptr<GameObject>> PhysicsEngine::

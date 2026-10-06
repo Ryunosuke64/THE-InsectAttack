@@ -396,16 +396,14 @@ void GunWeapon::Fire(RendererEngine& renderer)
     // =====================================================================
 	// カメラの向きに合わせて発射するやり方
     // =====================================================================
-    // カメラの位置と、カメラの注視点を取得
-    VEC3 focusPoint = camera->get_FocusPoint();
+    // 描画と同じカメラの位置・視線方向を取得
     VEC3 cameraPos = camera->get_CameraPos();
     VEC3 lookDir = camera->get_LookDir();
 
     XMVECTOR vCamPos = XMVectorSet(cameraPos.x, cameraPos.y, cameraPos.z, 1.0f);
-    XMVECTOR vFocus = XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f);
 
-    // カメラの前方ベクトルを計算する (注視点 - カメラ位置 を正規化)
-    XMVECTOR camForward = XMVector3Normalize(XMVectorSubtract(vFocus, vCamPos));
+    // 押し出し後も、発射位置のオフセットはカメラの視線方向に合わせる。
+    XMVECTOR camForward = XMVector3Normalize(lookDir);
 
     // はるか遠くにある仮想のターゲット位置を計算
     float targetDistance = 1000.0f;
