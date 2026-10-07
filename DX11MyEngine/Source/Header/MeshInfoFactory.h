@@ -51,7 +51,6 @@ struct MeshResourceData
 	ID3D11Buffer* pIndexBuffer;			// インデックスバッファ
 	UINT NumIndex;						// インデックス数
 	MeshLocalBounds LocalBounds;		// ローカル境界
-	RenderData::CULL_MODE CullMode;		// カリングモード
 	std::weak_ptr<Material> pMaterials;	// マテリアル（基本一つだけ）
 	UINT NumMaterial;					// マテリアル数
 	bool IsDynamic;						// 動的メッシュか（バッファの切り替え）
@@ -64,8 +63,7 @@ struct MeshResourceData
 		NumIndex(0),
 		pMaterials(),
 		NumMaterial(0),
-		IsDynamic(false),
-		CullMode(RenderData::CULL_MODE::BACK)
+		IsDynamic(false)
 	{};
 };
 

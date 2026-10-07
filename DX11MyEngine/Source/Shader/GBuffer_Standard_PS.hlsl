@@ -54,6 +54,9 @@ PS_OUT PSMain(PS_IN input)
     // ディザリング
     //DitheringClip(input.Pos.xy, 60);
     
+    clip(diffuseMap.a - 0.75f); // アルファクリッピング
+    
+    
     // ディフューズマップとcpp側で設定したカラーを足す
     finalCol = diffuseMap * cb_DiffuseColor;
     

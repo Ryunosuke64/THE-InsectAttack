@@ -32,6 +32,7 @@ private:
 	friend class MeshRenderer;
 	friend class SkyRenderer;
 	friend class DecalRenderer;
+	friend class WaterRenderer;
 	friend class MeshResourceEditor;
 
 	std::shared_ptr<MeshResourceData> m_pMeshData; // ƒƒbƒVƒ…î•ñ

@@ -28,6 +28,9 @@ public:
 
     BLEND_MODE m_BlendMode;            // ブレンドモード
 
+    RenderData::CULL_MODE m_CullMode;  // カリングモード
+
+
     Material() :
         m_DiffuseColor(VECTOR4::VEC4(1.f, 1.f, 1.f, 1.f)),
         m_SpecularColor(VECTOR4::VEC4(1.f, 1.f, 1.f, 1.f)),
@@ -35,7 +38,8 @@ public:
         m_EnvironmentReflectionStrength(0.0f),
         m_BlendMode(BLEND_MODE::NONE),
         m_EmissivePower(0.0f),
-        m_EmissiveColor(VECTOR3::VEC3(0.0f,0.0f,0.0f))
+        m_EmissiveColor(VECTOR3::VEC3(0.0f,0.0f,0.0f)),
+        m_CullMode(RenderData::CULL_MODE::BACK)
     {
 
     };

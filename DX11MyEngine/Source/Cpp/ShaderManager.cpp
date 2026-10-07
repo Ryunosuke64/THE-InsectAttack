@@ -172,8 +172,8 @@ bool ShaderManager::Init(std::shared_ptr<RendererEngine> renderer)
         {
             /* 水 ライティング無し  */
             SHADER_TYPE::FORWARD_UNLIT_WATER,
-            ARRAYSIZE(g_Static_Layout),
-            g_Static_Layout,
+            ARRAYSIZE(g_Simple_Layout),
+            g_Simple_Layout,
         }, 
 
         ///////////////////////////////////////////////////
@@ -573,7 +573,7 @@ bool ShaderManager::VertexShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADE
             hr = this->CompileShader(HLSL__Trail_VS_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
             break;       
         case SHADER_TYPE::FORWARD_UNLIT_WATER:       // 水 ライティング無し
-            hr = this->CompileShader(HLSL__Static_VS_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
+            hr = this->CompileShader(HLSL__Water_VS_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
             break; 
             
         ///////////////////////////////////////////////////
@@ -684,7 +684,7 @@ bool ShaderManager::VertexShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADE
             this->LoadCSOFile(HLSL_CSO__Trail_VS_PATH.c_str(),&csoByteCode);
             break;        
         case SHADER_TYPE::FORWARD_UNLIT_WATER:              // 水 ライティング無し
-            this->LoadCSOFile(HLSL_CSO__Static_VS_PATH.c_str(),&csoByteCode);
+            this->LoadCSOFile(HLSL_CSO__Water_VS_PATH.c_str(),&csoByteCode);
             break;
         case SHADER_TYPE::POST_GAUSSIAN_BLUR_HORIZONTAL:     // ガウシアン水平ブラー
             this->LoadCSOFile(HLSL_CSO__XBlur_VS_PATH.c_str(), &csoByteCode);

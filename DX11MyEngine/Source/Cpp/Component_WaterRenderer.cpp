@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Component_WaterRenderer.h"
 #include "GameObject.h"
 #include "RendererEngine.h"
 #include "Component_IMeshResource.h"
@@ -12,60 +13,61 @@ using namespace RenderData;
 using namespace Tool::UV;
 
 //*---------------------------------------------------------------------------------------
-//* @:MeshRenderer Class 
+//* @:WaterRenderer Class 
 //*【?】コンストラクタ
 //* 引数：1.オーナーオブジェクト
 //* 引数：2.更新レイヤー
 //*----------------------------------------------------------------------------------------
-MeshRenderer::MeshRenderer(std::weak_ptr<GameObject> pOwner, int updateRank) : Render(pOwner,updateRank)
+WaterRenderer::WaterRenderer(std::weak_ptr<GameObject> pOwner, int updateRank)
+    : Render(pOwner, updateRank)
 {
-    this->set_Tag("MeshRenderer");
+    this->set_Tag("WaterRenderer");
 }
 
 
 //*---------------------------------------------------------------------------------------
-//* @:MeshRenderer Class 
+//* @:WaterRenderer Class 
 //*【?】デストラクタ
 //*----------------------------------------------------------------------------------------
-MeshRenderer::~MeshRenderer()
+WaterRenderer::~WaterRenderer()
 {
 
 }
 
 
 //*---------------------------------------------------------------------------------------
-//* @:MeshRenderer Class 
+//* @:WaterRenderer Class 
 //*【?】初期化
 //* 引数：1.RendererEngine
 //* 返値：void
 //*----------------------------------------------------------------------------------------
-void MeshRenderer::Start(RendererEngine& renderer)
+void WaterRenderer::Start(RendererEngine& renderer)
 {
 
 }
 
 
 //*---------------------------------------------------------------------------------------
-//* @:MeshRenderer Class 
+//* @:WaterRenderer Class 
 //*【?】更新
 //* 引数：1.RendererEngine
 //* 返値：void
 //*----------------------------------------------------------------------------------------
-void MeshRenderer::Update(RendererEngine& renderer)
+void WaterRenderer::Update(RendererEngine& renderer)
 {
 
 }
 
 
 //*---------------------------------------------------------------------------------------
-//* @:MeshRenderer Class 
+//* @:WaterRenderer Class 
 //*【?】描画
 //* 引数：1.RendererEngine
 //* 返値：void
 //*----------------------------------------------------------------------------------------
-void MeshRenderer::Draw(RendererEngine& renderer)
+void WaterRenderer::Draw(RendererEngine& renderer)
 {
-    if (this->get_IsEnable() == false)
+    if (this->get_IsEnable() == false || renderer.get_CrntRenderPass() == RENDER_PASS::SHADOW)
     {
         return;
     }
@@ -75,7 +77,7 @@ void MeshRenderer::Draw(RendererEngine& renderer)
     ID3D11Buffer* vtxBuff = meshInfo->pVertexBuffer;
     UINT vtxStride = meshInfo->VertexStride;
     ID3D11Buffer* idxBuff = meshInfo->pIndexBuffer;
-    CB_TRANSFORM cbTransform = {};  
+    CB_TRANSFORM cbTransform = {};
     CB_MATERIAL cbMaterial = {};
 
     auto transform = m_pOwner.lock()->get_Transform().lock();
@@ -88,7 +90,9 @@ void MeshRenderer::Draw(RendererEngine& renderer)
 
     // 通常パス **********************************************************
     if (renderer.get_CrntRenderPass() == RENDER_PASS::MAIN) {
-        Master::m_pShaderManager->DeviceToSetShader(m_pMeshResource.lock()->get_ShaderType());
+
+        // シェーダは水面用のにする ==========================
+        Master::m_pShaderManager->DeviceToSetShader(SHADER_TYPE::FORWARD_UNLIT_WATER);
 
         // マテリアル取得
         auto pMatData = meshInfo->pMaterials.lock();
@@ -101,45 +105,32 @@ void MeshRenderer::Draw(RendererEngine& renderer)
         cbMaterial.EmissivePower = pMatData->m_EmissivePower;
         cbMaterial.EmissiveColor = pMatData->m_EmissiveColor;
         cbMaterial.EnvironmentReflectionStrength = pMatData->m_EnvironmentReflectionStrength;
+        cbMaterial.OffsetUV;
 
         // 定数バッファをセット ==========================
         Master::m_pShaderManager->BindConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM, (void*)&cbTransform, sizeof(CB_TRANSFORM));
         Master::m_pShaderManager->BindConstantBuffer(CONSTANT_BUFFER_TYPE::MATERIAL, (void*)&cbMaterial, sizeof(CB_MATERIAL));
 
-        // テクスチャセット ==========================
-        ID3D11ShaderResourceView *diffuseSRV = nullptr;
-        ID3D11ShaderResourceView *normalSRV = nullptr;
-        ID3D11ShaderResourceView *specularSRV = nullptr;
+        // 水面用ノーマルマップセット ==========================
+        ID3D11ShaderResourceView* normalA = nullptr;
+        ID3D11ShaderResourceView* normalB = nullptr;
         if (auto tex = pMatData->m_DiffuseMap.Texture.lock()) {
-            diffuseSRV = tex.get()->get_SRV();
+            normalA = tex.get()->get_SRV();
         }
         if (auto tex = pMatData->m_NormalMap.Texture.lock()) {
-            normalSRV = tex.get()->get_SRV();
-        }
-        if (auto tex = pMatData->m_SpecularMap.Texture.lock()) {
-            specularSRV = tex.get()->get_SRV();
+            normalB = tex.get()->get_SRV();
         }
 
         // シェーダーリソースビューをセット
-        pContext->PSSetShaderResources(0, 1, &diffuseSRV);
-        pContext->PSSetShaderResources(1, 1, &normalSRV);
-        pContext->PSSetShaderResources(2, 1, &specularSRV);
+        pContext->PSSetShaderResources(0, 1, &normalA);
+        pContext->PSSetShaderResources(1, 1, &normalB);
 
-        //カリング設定 ==========================
-        renderer.RegisterCullMode(pMatData->m_CullMode);
+        // カリングはしない ==========================
+        renderer.RegisterCullMode(CULL_MODE::NONE);
     }
-    // シャドウパス **********************************************************
-    else if (renderer.get_CrntRenderPass() == RENDER_PASS::SHADOW) {
-        Master::m_pShaderManager->DeviceToSetShader(SHADER_TYPE::POST_SHADOWMAP);
-
-        // 定数バッファをセット ==========================
-        Master::m_pShaderManager->BindConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM, (void*)&cbTransform, sizeof(CB_TRANSFORM));
-    }
-
 
     //ブレンドステート設定 ==========================
     Master::m_pBlendManager->DeviceToSetBlendState(meshInfo->pMaterials.lock()->m_BlendMode);
-
 
     // 頂点＆インデックスバッファ設定 ==========================
     UINT offset = 0;
@@ -149,7 +140,6 @@ void MeshRenderer::Draw(RendererEngine& renderer)
 
     // 描画コール：インデックス数は（三角形個 × 3頂点） ==========================
     pContext->DrawIndexed(meshInfo->NumIndex, 0, 0);
-    //pContext->Draw(24,0);
 
     pContext->PSSetShaderResources(0, 0, nullptr);
     pContext->PSSetShaderResources(1, 0, nullptr);
@@ -158,12 +148,12 @@ void MeshRenderer::Draw(RendererEngine& renderer)
 
 
 //*---------------------------------------------------------------------------------------
-//* @:MeshRenderer Class 
+//* @:WaterRenderer Class 
 //*【?】IMeshResource参照用のポインタ設定
 //* 引数：1.IMeshResource
 //* 返値：void
 //*----------------------------------------------------------------------------------------
-void MeshRenderer::set_MeshResource(std::weak_ptr<class IMeshResource> meshResource)
+void WaterRenderer::set_MeshResource(std::weak_ptr<class IMeshResource> meshResource)
 {
     m_pMeshResource = meshResource;
 }
@@ -180,30 +170,9 @@ void MeshRenderer::set_MeshResource(std::weak_ptr<class IMeshResource> meshResou
 //* true : 表示
 //* false : 非表示
 //*----------------------------------------------------------------------------------------
-bool MeshRenderer::IsVisible(const DirectX::BoundingFrustum& _frustum) const
+bool WaterRenderer::IsVisible(const DirectX::BoundingFrustum& _frustum) const
 {
-    const auto resource = m_pMeshResource.lock();
-    if (!resource)
-        return true;
-    
-    const auto& bounds = resource->get_LocalBounds();
-
-    if (!bounds.IsValid)
-        return true;
-
-    const auto owner = m_pOwner.lock();
-    const auto transform = owner ? owner->get_Transform().lock() : nullptr;
-    if (!transform)
-        return true;
-
-    // バウンディングボックスをワールド変換
-    DirectX::BoundingBox worldBounds;
-    bounds.Box.Transform(
-        worldBounds,
-        transform->get_WorldMtx()
-    );
-
-    return worldBounds.Intersects(_frustum);
+    return true;
 }
 
 

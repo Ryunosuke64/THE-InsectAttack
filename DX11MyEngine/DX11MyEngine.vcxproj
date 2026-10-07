@@ -266,6 +266,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\Component_SpriteRenderer.h" />
     <ClInclude Include="Source\Header\Component_TimerDestruction.h" />
     <ClInclude Include="Source\Header\Component_TrailRenderer.h" />
+    <ClInclude Include="Source\Header\Component_WaterRenderer.h" />
     <ClInclude Include="Source\Header\Component_WeaponBase.h" />
     <ClInclude Include="Source\Header\CompositeState.h" />
     <ClInclude Include="Source\Header\Component_GunWeapon.h" />
@@ -445,6 +446,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Component_Render.cpp" />
     <ClCompile Include="Source\Cpp\Component_RigidBody.cpp" />
     <ClCompile Include="Source\Cpp\Component_SpotLight.cpp" />
+    <ClCompile Include="Source\Cpp\Component_WaterRenderer.cpp" />
     <ClCompile Include="Source\Cpp\ConstantPhysicsData.cpp" />
     <ClCompile Include="Source\Cpp\c_Game_Config.cpp" />
     <ClCompile Include="Source\Cpp\c_Game_Manual.cpp" />
@@ -1014,6 +1016,14 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PSMain</EntryPointName>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Resource\CSO\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)Resource\CSO\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Source\Shader\Water_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VSMain</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VSMain</EntryPointName>
     </FxCompile>
     <FxCompile Include="Source\Shader\XBlur_VS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

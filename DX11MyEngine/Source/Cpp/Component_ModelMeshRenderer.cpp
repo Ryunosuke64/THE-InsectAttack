@@ -151,25 +151,29 @@ void ModelMeshRenderer::Draw(RendererEngine &renderer)
 
                 /* SRVの設定 */
 
-                // ディフューズ
+                // ディフューズ ==========================
                 if (mat->m_DiffuseMap.Texture.lock() != nullptr) {
                     auto diff = mat->m_DiffuseMap.Texture.lock()->get_SRV();
                     if (diff != nullptr)
                         pDeviceContext->PSSetShaderResources(0, 1, &diff);
                 }
 
-                // ノーマル
+                // ノーマル ==========================
                 if (mat->m_NormalMap.Texture.lock() != nullptr) {
                     auto norm = mat->m_NormalMap.Texture.lock()->get_SRV();
                     if (norm != nullptr)
                         pDeviceContext->PSSetShaderResources(1, 1, &norm);
                 }
-                // スペキュラ
+                // スペキュラ ==========================
                 if (mat->m_SpecularMap.Texture.lock() != nullptr) {
                     auto spec = mat->m_SpecularMap.Texture.lock()->get_SRV();
                     if (spec != nullptr)
                         pDeviceContext->PSSetShaderResources(2, 1, &spec);
                 }
+
+
+                //カリング設定 ==========================
+                renderer.RegisterCullMode(mat->m_CullMode);
             }
 
             // メッシュの描画
@@ -203,6 +207,11 @@ void ModelMeshRenderer::Draw(RendererEngine &renderer)
             pMeshes[meshIdx].Draw(renderer);
         }
     }
+
+
+    pDeviceContext->PSSetShaderResources(0, 0, nullptr);
+    pDeviceContext->PSSetShaderResources(1, 0, nullptr);
+    pDeviceContext->PSSetShaderResources(2, 0, nullptr);
 }
 
 

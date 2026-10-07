@@ -8,19 +8,22 @@
 // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 #pragma once
 #include "ConstantBuffers_H.hlsli"
+#include "LightFunctions_H.hlsli"
+#include "UtilityFunctions_H.hlsli"
+
 SamplerState g_sSampler : register(s0);
 Texture2D g_tNormalTextureA : register(t0); // 水用ノーマルマップA
 Texture2D g_tNormalTextureB : register(t1); // 水用ノーマルマップB 
+Texture2D<float> g_tSceneDepth : register(t7);  // 深度テクスチャ
 
 /* =========================================================================
 /* - @:出力構造体 - */
 /* =========================================================================*/
 struct PS_SimpleIntput
 {
-    float4 Pos : SV_Position;
-    float3 Normal : NORMAL0;
-    float4 Color : COLOR0;
-    float2 UV : TEXCOORD0;
+    float4 Pos      : SV_Position;
+    float2 UV       : TEXCOORD0;
+    float ViewDepth : TEXCOORD1;
 };
 
 
@@ -29,62 +32,83 @@ struct PS_SimpleIntput
 // **************************************************************************
 float4 PSMain(PS_SimpleIntput input) : SV_TARGET
 {
-    // ===== 見た目の調整 =====
-    const float2 flowDirection = float2(1.0f, 0.0f);
-    const float flowSpeed = 0.06f;
-    const float normalStrength = 0.5f;
-    const float3 waterColor = float3(0.05f, 0.15f, 0.35f);
+    float3 finalColor = float3(0.0f, 0.0f, 0.0f);
+    float finalAlpha = cb_DiffuseColor.a;
 
-    // ① 時間に応じてテクスチャを流す
-    float2 flow = flowDirection * flowSpeed * cb_Time;
+    float2 uvA = input.UV;
+    float2 uvB = input.UV;
+    
+    //=====================================
+    // Aは右斜め前方向に 
+    // Bは左斜め前方向に
+    //=====================================
+    uvA += float2(0.04f, 0.07f) * cb_Time;
+    uvB += float2(-0.03f, 0.04f) * cb_Time;
+    
+    float3 normalA = g_tNormalTextureA.Sample(g_sSampler, uvA).rgb;
+    float3 normalB = g_tNormalTextureB.Sample(g_sSampler, uvB).rgb;
+    
+    // そのままだと、0～1になっているので、-1～1になるように補正する
+    normalA = normalA * 2.0f - 1.0f;
+    normalB = normalB * 2.0f - 1.0f;
+    
+    // 合成する
+    float3 waterNormal = normalize(normalA + normalB);
+    
+    float waterStlength =10.0f;
+    waterNormal.xy *= waterStlength;
+    waterNormal = normalize(waterNormal);
+    
+    float3 waterColor = float3(0.2f, 0.3f, 0.3f);
 
-    float2 uvA = input.UV - flow;
+    float2 screenUV;
+    screenUV.x = input.Pos.x / cb_WindowWidth;
+    screenUV.y = input.Pos.y / cb_WindowHeight;
+    
+    // 深度テクスチャのサンプリング
+    float sceneDepthRaw =
+    g_tSceneDepth.Sample(g_sSampler, screenUV).r;
+    
+    // ビュー空間の深度値を求める
+    float sceneDepth = LinearizeDepth(sceneDepthRaw);
+    
+    // 地面と水面との差
+    float depthDiff = sceneDepth - input.ViewDepth;
+    
+    float ShallowDistance = 2.0f;   // 
+    float shallowFactor = saturate(depthDiff / ShallowDistance);
+    
+    float3 DeepColor = float3(0.1f, 0.1f, 0.1f);    // 深部カラー（暗い）
+    float3 ShallowColor = float3(0.8, 0.8, 0.8f);   // 浅瀬カラー（白に近い）
+    
+    finalColor =
+        lerp(
+            ShallowColor,
+            DeepColor,
+            shallowFactor
+        );
+    
+    //************************************************************************
+    //                      ディレクションライト計算
+    //************************************************************************
+    for (int dirIdx = 0; dirIdx < DIRECTIONLIGHT_MAX_NUM; dirIdx++)
+    {
+        float3 lightDir = cb_DirLightData[dirIdx].Direction;
+        float lighting = saturate(dot(waterNormal, lightDir));
+        finalColor += waterColor * (0.5f + lighting * 0.5f);
+    }
+    
+    float ShallowAlpha = 0.1f;  // 最浅瀬のアルファ
+    float DeepAlpha = 0.85f;    // 最深部のアルファ
+    
+    finalAlpha =
+        lerp(
+            ShallowAlpha,
+            DeepAlpha,
+            shallowFactor
+        );
 
-    // 2枚目は波の大きさ・速度・開始位置を変える
-    float2 uvB = input.UV * 1.73f
-               - flow * 0.8f
-               + float2(0.17f, 0.09f);
+    
+    return float4(finalColor, finalAlpha);
 
-    // ② ノーマルマップの値を 0～1 から -1～1 に変換
-    float3 normalA =
-        g_tNormalTextureA.Sample(g_sSampler, uvA).xyz
-        * 2.0f - 1.0f;
-
-    float3 normalB =
-        g_tNormalTextureB.Sample(g_sSampler, uvB).xyz
-        * 2.0f - 1.0f;
-
-    // ③ 2枚のノーマルを合成し、水面の傾きを調整
-    float3 normalTS = normalA + normalB;
-    normalTS.xy *= normalStrength;
-    normalTS.z = max(normalTS.z, 0.001f);
-    normalTS = normalize(normalTS);
-
-    // ④ 現在の水平な板ポリに合わせて向きを変換
-    // テクスチャのU方向 = +X、V方向 = -Z、上方向 = +Y
-    float3 normalWS =
-        float3(normalTS.x, normalTS.z, -normalTS.y);
-
-    // ⑤ 固定方向の光で簡単な明暗を付ける
-    float3 lightDirection =
-        normalize(float3(-0.3f, 1.0f, -0.4f));
-
-    float lightAmount =
-        saturate(dot(normalWS, lightDirection));
-
-    float brightness = 0.6f + lightAmount * 0.4f;
-
-    // 光に向いた部分を少し明るくする簡易表現
-    float highlight = pow(lightAmount, 32.0f) * 0.15f;
-
-    float3 color = waterColor * brightness;
-    color += float3(0.8f, 0.95f, 1.0f) * highlight;
-
-    // マテリアル色・頂点色を反映
-    color *= cb_DiffuseColor.rgb * input.Color.rgb;
-
-    // ⑥ マテリアルの透明度を使う
-    float alpha = saturate(cb_DiffuseColor.a * input.Color.a);
-
-    return float4(color, alpha);
 }

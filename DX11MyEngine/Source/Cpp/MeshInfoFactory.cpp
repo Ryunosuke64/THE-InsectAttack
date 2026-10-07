@@ -158,8 +158,12 @@ std::shared_ptr<MeshResourceData> MeshInfoFactory::CreateQuadInfo(RendererEngine
 
 	// ƒ}ƒeƒŠƒAƒ‹î•ñÝ’è
 	meshData->pMaterials = materials;
-	meshData->CullMode = CULL_MODE::NONE;
 
+	// —¼–Ê•`‰æ
+	if(!meshData->pMaterials.expired())
+	{
+		meshData->pMaterials.lock()->m_CullMode = CULL_MODE::NONE;
+	}
 
 	return meshData;
 

@@ -943,28 +943,7 @@ void MeshResourceEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
             meshData->pIndexBuffer != nullptr ? U8ToChar(u8"有効") : U8ToChar(u8"未設定"));
 
         Master::m_pDebugger->DG_Separator();
-        Master::m_pDebugger->DG_BulletText(U8ToChar(u8"カリングモード"));
 
-        if (Master::m_pDebugger->DG_RadioButton(
-            U8ToChar(u8"なし##MeshResourceCullNone"),
-            meshData->CullMode == RenderData::CULL_MODE::NONE))
-        {
-            meshData->CullMode = RenderData::CULL_MODE::NONE;
-        }
-        Master::m_pDebugger->DG_SameLine();
-        if (Master::m_pDebugger->DG_RadioButton(
-            U8ToChar(u8"表面##MeshResourceCullFront"),
-            meshData->CullMode == RenderData::CULL_MODE::FRONT))
-        {
-            meshData->CullMode = RenderData::CULL_MODE::FRONT;
-        }
-        Master::m_pDebugger->DG_SameLine();
-        if (Master::m_pDebugger->DG_RadioButton(
-            U8ToChar(u8"裏面##MeshResourceCullBack"),
-            meshData->CullMode == RenderData::CULL_MODE::BACK))
-        {
-            meshData->CullMode = RenderData::CULL_MODE::BACK;
-        }
 
         auto material = meshData->pMaterials.lock();
         if (material == nullptr)
@@ -1049,6 +1028,28 @@ void MeshResourceEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
                 "##MeshResourceReflectionStrength", 1, &reflectionStrength, 0.01f, 0.0f, 1.0f))
             {
                 material->m_EnvironmentReflectionStrength = reflectionStrength;
+            }
+
+            Master::m_pDebugger->DG_BulletText(U8ToChar(u8"カリングモード"));
+            if (Master::m_pDebugger->DG_RadioButton(
+                U8ToChar(u8"なし##MeshResourceCullNone"),
+                material->m_CullMode == RenderData::CULL_MODE::NONE))
+            {
+                material->m_CullMode = RenderData::CULL_MODE::NONE;
+            }
+            Master::m_pDebugger->DG_SameLine();
+            if (Master::m_pDebugger->DG_RadioButton(
+                U8ToChar(u8"表面##MeshResourceCullFront"),
+                material->m_CullMode == RenderData::CULL_MODE::FRONT))
+            {
+                material->m_CullMode = RenderData::CULL_MODE::FRONT;
+            }
+            Master::m_pDebugger->DG_SameLine();
+            if (Master::m_pDebugger->DG_RadioButton(
+                U8ToChar(u8"裏面##MeshResourceCullBack"),
+                material->m_CullMode == RenderData::CULL_MODE::BACK))
+            {
+                material->m_CullMode = RenderData::CULL_MODE::BACK;
             }
 
             Master::m_pDebugger->DG_TreePop();

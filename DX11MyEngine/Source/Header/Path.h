@@ -40,6 +40,7 @@ namespace Path
     const std::wstring HLSL__Skinned_VS_PATH = std::wstring(Shader)                 + L"Skinned_VS.hlsl";
     const std::wstring HLSL__Static_VS_PATH = std::wstring(Shader)                  + L"Static_VS.hlsl";
     const std::wstring HLSL__Static_Tan_VS_PATH = std::wstring(Shader)              + L"Static_Tan_VS.hlsl";
+    const std::wstring HLSL__Water_VS_PATH = std::wstring(Shader)                   + L"Water_VS.hlsl";
     const std::wstring HLSL__Sprite_VS_PATH = std::wstring(Shader)                  + L"Sprite_VS.hlsl";
     const std::wstring HLSL__XBlur_VS_PATH = std::wstring(Shader)                   + L"XBlur_VS.hlsl";
     const std::wstring HLSL__YBlur_VS_PATH = std::wstring(Shader)                   + L"YBlur_VS.hlsl";
@@ -72,6 +73,7 @@ namespace Path
     const std::wstring HLSL_CSO__Skinned_VS_PATH = std::wstring(CSO)                + L"Skinned_VS.cso";
     const std::wstring HLSL_CSO__Static_VS_PATH = std::wstring(CSO)                 + L"Static_VS.cso";
     const std::wstring HLSL_CSO__Static_Tan_VS_PATH = std::wstring(CSO)             + L"Static_Tan_VS.cso";
+    const std::wstring HLSL_CSO__Water_VS_PATH = std::wstring(CSO)                  + L"Water_VS.cso";
     const std::wstring HLSL_CSO__Sprite_VS_PATH = std::wstring(CSO)                 + L"Sprite_VS.cso";
     const std::wstring HLSL_CSO__XBlur_VS_PATH = std::wstring(CSO)                  + L"XBlur_VS.cso";
     const std::wstring HLSL_CSO__YBlur_VS_PATH = std::wstring(CSO)                  + L"YBlur_VS.cso";

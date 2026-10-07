@@ -50,7 +50,7 @@ PS_OUT PSMain(PS_IN input)
     
     finalCol = diffuseMap * cb_DiffuseColor;
     
-    clip(diffuseMap.a - 0.7f);
+    clip(diffuseMap.a - 0.75f); // アルファクリッピング
     
     //finalCol.xyz = input.Color.xyz;
     

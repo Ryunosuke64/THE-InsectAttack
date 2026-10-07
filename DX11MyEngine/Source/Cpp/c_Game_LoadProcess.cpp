@@ -365,6 +365,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         // マテリアル取得
         auto matPtr1 = Master::m_pResourceManager->FindMaterial("Tree_Lerf");
         auto matPtr2 = Master::m_pResourceManager->FindMaterial("Tree_Wood");
+        matPtr1->m_CullMode = RenderData::CULL_MODE::NONE;  // 葉は両面描画
 
         SetupMaterialInfo matInfo[2];
         matInfo[0].Index = 0;
@@ -380,7 +381,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         model.MatNum = 2;
         model.IsActive = true;
         model.SetupMaterial = matInfo;
-        model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC;
+        model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
         model.IsTransparent = false;
         VEC3 pos = VEC3(-130.0f, 2.0f, 100.0f);
         auto obj = MeshFactory::CreateModel(model);
@@ -394,18 +395,18 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         auto rb = obj->add_Component<RigidBody>();
         auto collider = obj->add_Component<MeshCollider>();
         collider->SetupModelData(modelResource->get_ModelData());
-        collider->set_IsStatic(true);
+        collider->set_IsStatic(false);
         collider->set_IsConvex(true);
         collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
-        collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
+        collider->set_SurfaceType(SURFACE_TYPE::SOIL);
 
         PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 0.0f;
+        rbDesc.mass = 5.0f;
         rbDesc.pos = pos;
-        rbDesc.restitution = 0.1f;
+        rbDesc.restitution = 0.2f;
+        rbDesc.friction = 0.9f;
         rbDesc.owner = obj;         // オーナーオブジェクトの設定
         rbDesc.collider = collider; // コライダーの設定
-        rbDesc.gravity = VEC3(0.0f, 0.0f, 0.0f);
 
         rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }
@@ -419,7 +420,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         {
             // マテリアル取得
             auto matPtr = Master::m_pResourceManager->FindMaterial("Water");
-        
+            matPtr->m_CullMode = RenderData::CULL_MODE::NONE;
+
             SetupMaterialInfo matInfo[1];
             matInfo[0].Index = 0;
             matInfo[0].pMaterialData = matPtr;
@@ -438,7 +440,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         
             auto obj = MeshFactory::CreateUtilityMesh(mesh);
             obj->get_Transform().lock()->set_Scale(400.0f, 1.0f, 400.0f);
-            obj->get_Transform().lock()->set_Pos(0.0f, 0.0f, 0.0f);
+            obj->get_Transform().lock()->set_Pos(0.0f, -5.0f, 0.0f);
             obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
 
             auto modelRenderer = obj->get_Component<ModelMeshRenderer>();

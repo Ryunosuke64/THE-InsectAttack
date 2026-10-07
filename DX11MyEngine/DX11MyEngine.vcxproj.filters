@@ -945,6 +945,9 @@
     <ClCompile Include="Source\Cpp\DamageTextManager.cpp">
       <Filter>ソース ファイル\Singleton\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_WaterRenderer.cpp">
+      <Filter>ソース ファイル\Engine\BaseComponent\Renderer\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1520,6 +1523,9 @@
     <ClInclude Include="Source\Header\DamageTextManager.h">
       <Filter>ソース ファイル\Singleton\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Header\Component_WaterRenderer.h">
+      <Filter>ソース ファイル\Engine\BaseComponent\Renderer\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shader\ConstantBuffers_H.hlsli">
@@ -1636,6 +1642,9 @@
     </FxCompile>
     <FxCompile Include="Source\Shader\Water_PS.hlsl">
       <Filter>HLSL\PS\Foward</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Shader\Water_VS.hlsl">
+      <Filter>HLSL\VS</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

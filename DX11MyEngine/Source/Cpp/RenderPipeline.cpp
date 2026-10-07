@@ -679,17 +679,33 @@ void RenderPipeline::Forward_PathRender(RendererEngine& renderer)
     //深度テスト有効・書き込み無
     renderer.RegisterDepthStencilState(renderer.get_DepthWriteDisabled_DSS(), 0);
 
-    // Gbuffer作成時の深度バッファを設定
-    // ライティングパス時のRTに合成する
-    // 深度はGbuffer作成時のもの
-    renderer.RegisterRenderTarget(m_pSceneFinal_RT->get_RTV(), m_pDepth_RT->get_DSV());
+    auto context = renderer.get_DeviceContext();
 
+    // 読み取り専用深度バッファを設定
+    renderer.RegisterRenderTarget(m_pSceneFinal_RT->get_RTV(), m_pDepth_RT->get_ReadOnryDSV());
+
+    // 深度バッファの SRV を共通スロットへ
+    // スロット 7 に渡す
+    auto depthView = m_pDepth_RT->get_DepthSRV_ComPtr();
+    ID3D11ShaderResourceView* depthSRV = depthView.Get();
+    context->PSSetShaderResources(7, 1, &depthSRV);
+
+    // 裏面カリング
     renderer.RegisterCullMode(CULL_MODE::BACK);
+
+    /*
+    * フォワードオブジェクトの描画
+    */
+    Master::m_pGameObjectManager->Alpha_ObjectRenderPass(renderer);
+
+    // スロットの解除
+    ID3D11ShaderResourceView* nullSRV = nullptr;
+    context->PSSetShaderResources(7, 1, &nullSRV);
+
 
     /*
     * エフェクシアの描画もここでする！！
     */
-    Master::m_pGameObjectManager->Alpha_ObjectRenderPass(renderer);
     Master::m_pEffectManager->DrawEffect();
 
     // レンダリングターゲット解除

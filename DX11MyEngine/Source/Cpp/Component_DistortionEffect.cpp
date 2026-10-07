@@ -176,7 +176,6 @@ bool DistortionEffect::Setup(RendererEngine& renderer)
     *  ƒƒbƒVƒ…î•ñ‚Ìì¬
     */
     *m_pMeshData = MeshInfoFactory::CreateMesh(pDevice, g_QuadVertices, g_QuadVertexNum, g_QuadIndices, g_QuadIndexNum);
-    m_pMeshData->CullMode = CULL_MODE::NONE;
 
     return true;
 }

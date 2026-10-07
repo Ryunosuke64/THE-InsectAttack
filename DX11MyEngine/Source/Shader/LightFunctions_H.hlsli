@@ -76,7 +76,7 @@ float3 PhongSpecularLightCalc(float3 _ligDir, float3 _eyePos, float3 _spcCol, fl
     
     
     // 内積を求める（鏡面反射の強さ）
-    float refFactor = max(0.0, dot(toEye, refVec));
+    float refFactor = max(0.0, saturate(dot(toEye, refVec)));
     
     
     // ※ ポイントライトがおかしくなっていたのはここが原因…？

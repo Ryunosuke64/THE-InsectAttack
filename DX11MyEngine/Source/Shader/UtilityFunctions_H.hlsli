@@ -139,4 +139,15 @@ void DitheringClip(float2 screenPos, float threshold_value)
     clip(dither - threshold_value);
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】0～1の深度値をView空間の距離にする
+//* 引数：1.深度
+//* 返値：線形深度値
+//*----------------------------------------------------------------------------------------
+float LinearizeDepth(float depth)
+{
+    return cb_Projection._43 /
+           (depth - cb_Projection._33);
+}
+
 #endif

@@ -66,7 +66,7 @@ float4 PSMain(PS_IN input) : SV_TARGET
     
     // 法線取り出す（0～1 を -1～1 に）
     float3 normal = normalTex.xyz * 2.0f - 1.0f;
-    //normal = normalize(normal); // 頂点シェーダですでに正規化済み
+    normal = normalize(normal); // 頂点シェーダですでに正規化済み
     
     // スペキュラ強度・カラー
     float3 spcColor = specularTex.rgb;
