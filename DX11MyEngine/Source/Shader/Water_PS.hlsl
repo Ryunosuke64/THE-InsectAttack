@@ -75,11 +75,11 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     // 地面と水面との差
     float depthDiff = sceneDepth - input.ViewDepth;
     
-    float ShallowDistance = 2.0f;   // 
+    float ShallowDistance = 2.5f;   // 
     float shallowFactor = saturate(depthDiff / ShallowDistance);
     
-    float3 DeepColor = float3(0.1f, 0.1f, 0.1f);    // 深部カラー（暗い）
-    float3 ShallowColor = float3(0.8, 0.8, 0.8f);   // 浅瀬カラー（白に近い）
+    float3 DeepColor = float3(0.05f, 0.05f, 0.05f); // 深部カラー（暗い）
+    float3 ShallowColor = float3(0.9, 0.9, 0.9f);   // 浅瀬カラー（白に近い）
     
     finalColor =
         lerp(
