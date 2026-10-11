@@ -198,7 +198,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\AS_MathAPI.h" />
     <ClInclude Include="Source\Header\BitFlag.h" />
     <ClInclude Include="Source\Header\BlendManager.h" />
-    <ClInclude Include="Source\Header\BuildingManager.h" />
+    <ClInclude Include="Source\Header\MapManager.h" />
     <ClInclude Include="Source\Header\BuildingStateFactory.h" />
     <ClInclude Include="Source\Header\Building_State.h" />
     <ClInclude Include="Source\Header\BulletBehaviour.h" />
@@ -271,7 +271,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\CompositeState.h" />
     <ClInclude Include="Source\Header\Component_GunWeapon.h" />
     <ClInclude Include="Source\Header\ConstantBuffer.h" />
-    <ClInclude Include="Source\Header\ConstantBuildingData.h" />
+    <ClInclude Include="Source\Header\ConstantMapData.h" />
     <ClInclude Include="Source\Header\ConstantBulletData.h" />
     <ClInclude Include="Source\Header\ConstantEnemyData.h" />
     <ClInclude Include="Source\Header\ConstantGameData.h" />
@@ -428,7 +428,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\AS_MathAPI.cpp" />
     <ClCompile Include="Source\Cpp\BitFlag.cpp" />
     <ClCompile Include="Source\Cpp\BlendManager.cpp" />
-    <ClCompile Include="Source\Cpp\BuildingManager.cpp" />
+    <ClCompile Include="Source\Cpp\MapManager.cpp" />
     <ClCompile Include="Source\Cpp\BuildingStateFactory.cpp" />
     <ClCompile Include="Source\Cpp\Building_State.cpp" />
     <ClCompile Include="Source\Cpp\BulletBehaviour.cpp" />

@@ -2,10 +2,10 @@
 #include "Component_BuildingController.h"
 #include "Component_Health.h"
 #include "Component_RigidBody.h"
-#include "ConstantBuildingData.h"
+#include "ConstantMapData.h"
 #include "BuildingStateFactory.h"
 
-using namespace BuildingData;
+using namespace Map;
 
 constexpr float BUILDING_MAX_HP = 600.0f;	// åöï®ÇÃç≈ëÂHP
 

@@ -59,7 +59,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     waterNormal.xy *= waterStlength;
     waterNormal = normalize(waterNormal);
     
-    float3 waterColor = float3(0.2f, 0.3f, 0.3f);
+    float3 waterColor = float3(0.3f, 0.4f, 0.4f);
 
     float2 screenUV;
     screenUV.x = input.Pos.x / cb_WindowWidth;
@@ -99,7 +99,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     }
     
     float ShallowAlpha = 0.1f;  // 最浅瀬のアルファ
-    float DeepAlpha = 0.85f;    // 最深部のアルファ
+    float DeepAlpha = 0.9f;    // 最深部のアルファ
     
     finalAlpha =
         lerp(

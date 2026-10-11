@@ -52,17 +52,23 @@ void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 	XMVECTOR targetQuat = XMQuaternionRotationAxis(axis, angle);
 	m_TargetRotQ = XMQuaternionMultiply(m_StartRotQ, targetQuat);
 
-	VECTOR3::VEC3 knockbackDir;   // 爆心地から外（衝突オブジェクト）へ向かうベクトル
+	VEC3 knockbackDir;   // 爆心地から外（衝突オブジェクト）へ向かうベクトル
 
 	// 少し上（Y軸）に向かせることで、綺麗な放物線を描いて吹き飛ばせる
 	knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
-	knockbackDir.y += 60.0f;
+	knockbackDir.y += 50.0f;
 	knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
 
 	// 物理コンポーネントの設定
 	auto rigidBody = pOwner->get_RigidBodyComponent();
-	rigidBody->SetRestitution(0.5f);		// 吹っ飛んだ時に跳ねるように
+	rigidBody->SetRestitution(0.7f);		// 吹っ飛んだ時に跳ねるように
 	rigidBody->AddImpulse(knockbackDir);
+
+	VEC3 angularImpulse;
+	angularImpulse.x = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
+	angularImpulse.y = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
+	angularImpulse.z = Master::m_pRandomManager->GetFloatRandom(30.0f, 40.0f);
+	rigidBody->AddAngularImpulse(angularImpulse);
 
 	// コライダーの判定をオフに
 	//pOwner->get_OwnerObj().lock()->get_Component<BoxCollider>()->set_IsEnable(false);	
@@ -124,12 +130,12 @@ int Ant_AT_DeadState::Update(class EnemyController* pOwner)
 		//*****************************************************************************************
 		float t = timer / OVERTURN_TIME;
 		if (t <= 1.0f) {
-			float ease = std::min(Tool::Easing::EaseOutCubic(t), 1.0f);
+			float ease = std::min(Tool::Easing::EaseOutQuint(t), 1.0f);
 
 			const XMVECTOR crntRotQ =
 				XMVectorSet(crntRot.x, crntRot.y, crntRot.z, crntRot.w);
 
-			XMVECTOR newRotQ = XMQuaternionSlerp(crntRotQ, m_TargetRotQ, ease);	// 球面補間でひっくり返らせる
+			XMVECTOR newRotQ = XMQuaternionSlerp(m_StartRotQ, m_TargetRotQ, ease);	// 球面補間でひっくり返らせる
 
 			XMFLOAT4 ConvertToXMF;
 			XMStoreFloat4(&ConvertToXMF, newRotQ);
@@ -180,8 +186,10 @@ void Ant_AT_DeadState::SpawnDeadEffect(class EnemyController* pOwner)
 	// ****************************************************
 	//				アイテム出現
 	// ****************************************************
-	Master::m_pItemManager->SpawnItemRand(DROP_ITEM_MIN, DROP_ITEM_MAX, pos, 0.0f);
-	Master::m_pItemManager->SpawnPointItem(pos, 100);	// ポイントアイテムをスポーン
+	VEC3 spawnItemPos = pos;
+	spawnItemPos.y += 1.0f;
+	Master::m_pItemManager->SpawnItemRand(DROP_ITEM_MIN, DROP_ITEM_MAX, spawnItemPos, 0.0f);
+	Master::m_pItemManager->SpawnPointItem(spawnItemPos, 100);	// ポイントアイテムをスポーン
 
 	pOwner->set_IsAnim(false);	// アニメーションを停止
 

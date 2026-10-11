@@ -19,7 +19,7 @@
 #include "WeaponDataManager.h"
 #include "ItemManager.h"
 #include "TweenManager.h"
-#include "BuildingManager.h"
+#include "MapManager.h"
 #include "ScriptManager.h"
 #include "EnemyManager.h"
 #include "MissionDirector.h"
@@ -63,7 +63,7 @@ public:
 	static RandomManager		* m_pRandomManager;		// 乱数管理
 	static WeaponDataManager	* m_pWeaponDataManager;	// 武器データ管理
 	static ItemManager			* m_pItemManager;		// アイテム管理
-	static BuildingManager		* m_pBuildingManager;	// 建物管理
+	static MapManager			* m_pMapManager;		// マップ管理
 	static ScriptManager		* m_pScriptManager;		// AngelScript管理
 	static EnemyManager			* m_pEnemyManager;		// エネミー管理
 	static MissionDirector		* m_pMissionDirector;	// ミッション管理

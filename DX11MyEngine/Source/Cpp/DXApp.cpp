@@ -40,7 +40,7 @@ RandomManager           *Master::m_pRandomManager       = nullptr;   // 乱数管理
 WeaponDataManager       *Master::m_pWeaponDataManager   = nullptr;   // 武器データ管理
 ItemManager             *Master::m_pItemManager         = nullptr;   // アイテム管理
 TweenManager            *Master::m_pTweenManager        = nullptr;   // Tween管理
-BuildingManager         *Master::m_pBuildingManager     = nullptr;   // 建物管理
+MapManager         *Master::m_pMapManager     = nullptr;   // 建物管理
 ScriptManager           *Master::m_pScriptManager       = nullptr;   // AngelScript管理
 EnemyManager            *Master::m_pEnemyManager        = nullptr;   // エネミー管理
 MissionDirector         *Master::m_pMissionDirector     = nullptr;   // ミッション管理
@@ -119,7 +119,7 @@ bool DXApp::Init(HINSTANCE hInstance,LPSTR lpCmdLine, int nCmdShow)
     Master::m_pWeaponDataManager    = new WeaponDataManager();      // 武器管理
     Master::m_pItemManager          = new ItemManager();            // アイテム管理
     Master::m_pTweenManager         = new TweenManager();           // Tween管理
-    Master::m_pBuildingManager      = new BuildingManager();        // 建物管理
+    Master::m_pMapManager      = new MapManager();        // 建物管理
     Master::m_pScriptManager        = new ScriptManager();          // AngelScript管理
     Master::m_pEnemyManager         = new EnemyManager();           // エネミー管理
     Master::m_pMissionDirector      = new MissionDirector();        // ミッション管理

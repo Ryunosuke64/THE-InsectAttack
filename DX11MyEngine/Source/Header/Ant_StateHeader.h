@@ -205,7 +205,7 @@ private:
 class Ant_AT_DeadState : public IState<class EnemyController>
 {
 private:
-	const float OVERTURN_TIME = 0.5f;		// ‚Ğ‚Á‚­‚è•Ô‚é‚Ü‚Å‚ÌŠÔ
+	const float OVERTURN_TIME = 0.4f;		// ‚Ğ‚Á‚­‚è•Ô‚é‚Ü‚Å‚ÌŠÔ
 	const float DELETE_TIME = 10.0f;		// €–S‚Ü‚Å‚ÌŠÔ
 	const float SOUND_DEAD_RADIUS = 600.0f;				// €–S‰¹‚ª•·‚±‚¦‚é”ÍˆÍ
 	const int DROP_ITEM_MIN = 0;						// —‚Æ‚·ƒAƒCƒeƒ€‚ÌÅ¬”

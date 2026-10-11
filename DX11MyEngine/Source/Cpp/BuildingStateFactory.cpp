@@ -2,7 +2,7 @@
 #include "BuildingStateFactory.h"
 #include "Building_State.h"
 
-using namespace BuildingData;
+using namespace Map;
 
 //*---------------------------------------------------------------------------------------
 //*【?】ステートの作成

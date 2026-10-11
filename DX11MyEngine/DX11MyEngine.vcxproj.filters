@@ -843,7 +843,7 @@
     <ClCompile Include="Source\Cpp\Component_SpotLight.cpp">
       <Filter>ソース ファイル\Engine\BaseComponent\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Cpp\BuildingManager.cpp">
+    <ClCompile Include="Source\Cpp\MapManager.cpp">
       <Filter>ソース ファイル\Singleton\Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cpp\UIManager.cpp">
@@ -1247,7 +1247,7 @@
     <ClInclude Include="Source\Header\Building_State.h">
       <Filter>ソース ファイル\Game\Component\Building\State_Building</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Header\ConstantBuildingData.h">
+    <ClInclude Include="Source\Header\ConstantMapData.h">
       <Filter>ソース ファイル\Constant</Filter>
     </ClInclude>
     <ClInclude Include="Source\Header\ConstantEnemyData.h">
@@ -1415,7 +1415,7 @@
     <ClInclude Include="Source\Header\Component_SpotLight.h">
       <Filter>ソース ファイル\Engine\BaseComponent\Light</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Header\BuildingManager.h">
+    <ClInclude Include="Source\Header\MapManager.h">
       <Filter>ソース ファイル\Singleton\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Header\UIManager.h">

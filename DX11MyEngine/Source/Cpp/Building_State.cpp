@@ -11,7 +11,7 @@
 using namespace VECTOR2;
 using namespace VECTOR3;
 using namespace VECTOR4;
-using namespace BuildingData;
+using namespace Map;
 using namespace UtilityData;
 using namespace Tool;
 
