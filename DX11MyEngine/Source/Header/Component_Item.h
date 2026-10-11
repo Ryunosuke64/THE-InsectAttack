@@ -20,6 +20,7 @@ private:
 	class RigidBody* m_pRigidBody;
 	class BoxCollider* m_pBoxCollider;
 	std::weak_ptr<GameObject> m_pPlayerObj;
+	bool m_IsActive;
 	
 	const float SUCTION_DURATION = 2.0f;	// 吸引時間
 	const float SUCTION_DISTANCE = 10.0f;	// 吸引距離
@@ -36,7 +37,8 @@ public:
 	void Update(RendererEngine& renderer) override;		// 更新処理
 	void OnTriggerEnter(const PhysicsData::CollisionInfo& other)override;		// トリガー衝突処理
 
-	void ResetParam();
+	void Setup();
+	void Reset();
 
 	/* アイテムのタイプの設定 */
 	const UtilityData::ITEM_TYPE get_ItemType()const { return m_ItemType; }

@@ -77,7 +77,10 @@ bool ItemManager::Init(RendererEngine& renderer)
                 billboardRenderer->set_IsEnable(true); 
             }
 
-
+            // アイテムのセットアップ
+            if (auto item = obj->get_Component<Item>()) {
+                item->Setup();
+            }
         },
         // 返却時に実行 ******************************************************************************************
         [](GameObject* obj)
@@ -154,7 +157,7 @@ bool ItemManager::Init(RendererEngine& renderer)
             collider->set_CollisionCategory(COLLISION_CATEGORY::ITEM);
             // マスク設定
             collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_OVERLAP);
-            collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_BLOCK);
+            collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);
             collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);
             collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);
             collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);
@@ -173,6 +176,8 @@ bool ItemManager::Init(RendererEngine& renderer)
 
 
             rigidBody->Setup(*Master::m_pPhysicsEngine, rbDesc);
+            rigidBody->SetEnabled(false);
+
 
             return obj.get();
         },
@@ -209,7 +214,7 @@ void ItemManager::Update(RendererEngine& renderer)
         if (item->get_IsStatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE) == false)
         {
 			// パラメータのリセット
-            item->get_Component<Item>()->ResetParam();
+            item->get_Component<Item>()->Reset();
 
             // 返却
             m_pItemObjectPool->release(item);

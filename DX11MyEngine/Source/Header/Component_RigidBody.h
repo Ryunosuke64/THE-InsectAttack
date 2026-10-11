@@ -57,7 +57,8 @@ public:
     void SetFriction(float friction);
     void SetGravity(const VECTOR3::VEC3& gravity);
 
-    void SetEnabled(bool enabled);
+    void SetEnabled(bool enabled);  
+    void ResetPhysics();            // 物理状態のリセット
 
     // Kinematic用。瞬間移動とは区別する。
     void MovePosition(const VECTOR3::VEC3& position);

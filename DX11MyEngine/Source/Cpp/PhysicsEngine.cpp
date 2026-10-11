@@ -639,6 +639,66 @@ SetUserPointer(const PhysicsData::PhysicsBodyHandle& handle, void* userP)
     body->setUserPointer(userP);
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】物理処理をするかどうかのフラグ設定
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* enabled  : 物理処理をするか
+//* 
+//* [返値] 
+//* なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetPhysicsEnable(const PhysicsData::PhysicsBodyHandle& handle, bool enabled)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    auto* body = m_RigidBodies[handle.index].rigidBody;
+
+    if (enabled)
+    {
+        // 物理シミュレーション再開
+        body->forceActivationState(ACTIVE_TAG);
+        body->activate(true);
+    }
+    else
+    {
+        body->setActivationState(DISABLE_SIMULATION);
+    }
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】物理状態のリセットを取得
+//*
+//* [引数] 
+//* & handle : ハンドル
+//* [返値] 
+//* なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+ResetPhysics(const PhysicsData::PhysicsBodyHandle& handle)
+{
+    // 有効状態でなければ返す
+    if (!IsValidRigidBody(handle))
+    {
+        return;
+    }
+
+    auto* body = m_RigidBodies[handle.index].rigidBody;
+
+    // 蓄積した力とトルクを初期化
+    body->clearForces();
+    // 移動速度の初期化
+    body->setLinearVelocity(btVector3(0, 0, 0));
+    // 回転速度の初期化
+    body->setAngularVelocity(btVector3(0, 0, 0));
+}
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】リジッドボディの作成

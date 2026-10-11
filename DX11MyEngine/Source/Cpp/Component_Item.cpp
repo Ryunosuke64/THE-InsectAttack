@@ -27,7 +27,8 @@ Item::Item(std::weak_ptr<GameObject> pOwner, int updateRank) :
 	IComponent(pOwner,updateRank),
 	m_ItemType(ITEM_TYPE::RECOVERY_SMALL),
 	m_SuctionElapsedTime(0.0f),
-	m_EffectHandle(-1)
+	m_EffectHandle(-1),
+	m_IsActive(false)
 {
 
 }
@@ -81,6 +82,14 @@ void Item::Update(RendererEngine& renderer)
 
 	VEC3 myCrntPos = m_pTransform->get_VEC3ToPos();
 
+	// 世界の裏側に落下した場合
+	if (myCrntPos.y < -100.0f)
+	{
+		m_pRigidBody->ResetPhysics();
+		m_pRigidBody->Teleport(VEC3(0.0f, 100.0f, 0.0f));
+	}
+
+	// playerへの吸い寄せ
 	if (auto playerObj = m_pPlayerObj.lock())
 	{
 		const auto playerTransform = playerObj->get_TransformConst();
@@ -137,6 +146,8 @@ void Item::Update(RendererEngine& renderer)
 //*----------------------------------------------------------------------------------------
 void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 {
+	if (!m_IsActive)return;
+
 	auto hitObj = _other.hitObject.lock();
 	if (!hitObj){
 		return;
@@ -192,15 +203,42 @@ void Item::OnTriggerEnter(const PhysicsData::CollisionInfo& _other)
 
 
 //*---------------------------------------------------------------------------------------
+//*【?】データのセットアップ
+//*
+//* [引数] なし
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void Item::Setup()
+{
+	// 物理状態ON
+	if (m_pRigidBody != nullptr)
+	{
+		m_pRigidBody->SetEnabled(true);
+		m_pRigidBody->ResetPhysics();
+	}
+
+	m_IsActive = true;
+}
+
+
+
+//*---------------------------------------------------------------------------------------
 //*【?】パラメータのリセット
 //*
 //* [引数] なし
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void Item::ResetParam()
+void Item::Reset()
 {
 	m_SuctionElapsedTime = 0.0f;
 	m_PointValue = 0;
+
+	// 物理状態リセット & 物理状態から外す
+	if (m_pRigidBody != nullptr)
+	{
+		m_pRigidBody->SetEnabled(false);
+	}
+	m_IsActive = false;
 }
 
 

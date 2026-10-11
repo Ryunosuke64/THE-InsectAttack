@@ -68,7 +68,8 @@ public:
 
 	void SetMask(const PhysicsData::PhysicsBodyHandle& handle, unsigned group, unsigned mask);
 	void SetUserPointer(const PhysicsData::PhysicsBodyHandle& handle, void* userP);
-
+	void SetPhysicsEnable(const PhysicsData::PhysicsBodyHandle& handle, bool enabled);
+	void ResetPhysics(const PhysicsData::PhysicsBodyHandle& handle);
 
 	VECTOR3::VEC3 GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle);
 	VECTOR4::VEC4 GetRotation(const PhysicsData::PhysicsBodyHandle& handle);
