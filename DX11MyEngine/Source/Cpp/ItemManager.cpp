@@ -129,7 +129,6 @@ bool ItemManager::Init(RendererEngine& renderer)
             //
             auto item = obj->add_Component<Item>();
             item->set_ItemType(ITEM_TYPE::RECOVERY_SMALL);
-            item->Start(renderer);
 
             //
             // 派閥コンポーネントの追加
@@ -177,6 +176,8 @@ bool ItemManager::Init(RendererEngine& renderer)
 
             rigidBody->Setup(*Master::m_pPhysicsEngine, rbDesc);
             rigidBody->SetEnabled(false);
+
+            item->Start(renderer);
 
 
             return obj.get();
@@ -240,13 +241,19 @@ void ItemManager::clear_AllItem()
 {
     for (auto it = m_ExtractedItemObject.begin(); it != m_ExtractedItemObject.end(); )
     {
-        auto item = *it;
+        auto itemObj = *it;
+
+        // 状態のリセット
+        if (auto itemComp = itemObj->get_Component<Item>())
+        {
+            itemComp->Reset();
+        }
 
         // 非アクティブ化
-        item->clear_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
+        itemObj->clear_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
         
         // 返却
-        m_pItemObjectPool->release(item);
+        m_pItemObjectPool->release(itemObj);
 
         // 次の要素へ
         it = m_ExtractedItemObject.erase(it);

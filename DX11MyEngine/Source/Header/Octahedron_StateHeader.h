@@ -144,9 +144,11 @@ private:
 	const float PREATTACK_STUN_TIME_MAX = 1.0f;		// UŒ‚‘O‚Ìd’¼Å‘åŠÔ
 	const float PREATTACK_STUN_TIME_MIN = 0.5f;		// UŒ‚‘O‚Ìd’¼Å¬ŠÔ 
 	const float SOUND_RADIUS = 600.0f;				// ”­Ë‰¹‚ª•·‚±‚¦‚é”ÍˆÍ
+	const float MOVE_SPEED = 20.0f;					// ˆÚ“®‘¬“x
 
 	float m_PreAttackStunDuration = 0.0f;	// UŒ‚‘O‚Ìd’¼ŠÔ
-
+	float m_AttackTime = 0.0f;
+	int m_AttckCount = 0;
 public:
 	void OnEnter(class EnemyController* pOwner) override;
 	void OnExit(class EnemyController* pOwner)override;

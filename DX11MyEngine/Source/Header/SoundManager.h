@@ -69,7 +69,9 @@ enum class SOUND_ID
     ENEMY_ANT_DEAD,          // アリやられる
     ENEMY_ANT_ACID_SHOOT,    // 酸射出
 
-	ENEMY_OCTAHEDRON_DEAD, // 八面体の常時音
+	ENEMY_OCTAHEDRON_SHOT01, // 八面体発射01
+	ENEMY_OCTAHEDRON_SHOT02, // 八面体発射02
+	ENEMY_OCTAHEDRON_DEAD,   // 八面体やられる
 	ENEMY_OCTAHEDRON_ALWAYS, // 八面体の常時音
 
     /* アイテム */

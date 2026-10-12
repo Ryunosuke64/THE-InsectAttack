@@ -2,7 +2,7 @@
   "level": 0,
   "name": "OctahedronBomb",
   "bulletMaxNum": 1,
-  "bulletSimultaneousNum": 3,
+  "bulletSimultaneousNum": 5,
   "fireRate": 0.0,
   "reloadTime": 0.0,
   "accuracy": 0.3,
@@ -19,7 +19,7 @@
       "aliveFrame" : 900,
       "speed": 50.0,
       "maxSpeed": 50.0,
-      "damage": 25.0,
+      "damage": 60.0,
       "acceleration": 0.0,
       "penetrationsCount": 0,
       "collisionSize": 0.0,
@@ -38,16 +38,16 @@
     "hit" : 
     {
       "type" : "EXPLOSION",
-      "decalMaterialTag" : "Decal_Ant_Splash",
-      "hitEffectTag" : "BulletHit_Acid",
+      "decalMaterialTag" : "Decal_BulletHole",
+      "hitEffectTag" : "",
       "explosionRadius" : 30.0,
       "explosionEffectTag" : "Explosion_01",
       "explosionEffectAliveTime" :1.0,
       "isSmoke" : true,
 
       "expLightColor" : [0, 1, 0],
-      "expLightIntensity" : 1.0,
-      "expLightDuration" : 10.0
+      "expLightIntensity" : 3.0,
+      "expLightDuration" : 4.0
     },
     "visual" :  
     {

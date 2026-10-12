@@ -20,7 +20,7 @@ using namespace DirectX;
 //*----------------------------------------------------------------------------------------
 void Octahedron_AT_AttackLaser01State::OnEnter(class EnemyController* pOwner)
 {
-
+	pOwner->set_MoveSpeed(MOVE_SPEED * Master::m_pDataManager->get_EnemyDifficultyFactor()._moveSpeedRate);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -31,6 +31,8 @@ void Octahedron_AT_AttackLaser01State::OnEnter(class EnemyController* pOwner)
 //*----------------------------------------------------------------------------------------
 void Octahedron_AT_AttackLaser01State::OnExit(class EnemyController* pOwner)
 {
+	m_AttckCount = 0;
+	m_AttackTime = 0.0f;
 	pOwner->clear_StateTimer();
 }
 
@@ -70,7 +72,8 @@ int Octahedron_AT_AttackLaser01State::Update(class EnemyController* pOwner)
 
 		// 移動はさせずに、目標への方向だけ向かせる
 		MoveParam movePram;
-		movePram._moveSpeed = 1.0f;
+		movePram._moveSpeed = pOwner->get_MoveSpeed();
+		movePram._maxSpeed = pOwner->get_MoveSpeed();
 		movePram._turnSpeed = 0.5f;
 		movePram._targetPos = targetPos;
 		movePram._isPhysicsMove = true;
@@ -80,69 +83,83 @@ int Octahedron_AT_AttackLaser01State::Update(class EnemyController* pOwner)
 		/* 硬直時間を終えたら、攻撃 */
 		if (pOwner->get_StateTimer() > m_PreAttackStunDuration)
 		{
-			// ****************************************************
-			//				 発射音再生
-			// ****************************************************
-			Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_ACID_SHOOT), myPos, SOUND_RADIUS);
+			m_AttackTime += Master::m_pTimeManager->get_DeltaTime();
 
-			auto diffLevel = Master::m_pDataManager->get_DifficultyLevel();
-			int id = 0;
-			switch (diffLevel) {
-			case UtilityData::DIFFICULTY_LEVEL::EASY:id = 0; break;
-			case UtilityData::DIFFICULTY_LEVEL::NORMAL:id = 1; break;
-			case UtilityData::DIFFICULTY_LEVEL::HARD:id = 2; break;
-			case UtilityData::DIFFICULTY_LEVEL::DISASTER:id = 3; break;
-			case UtilityData::DIFFICULTY_LEVEL::IMPOSSIBLE:id = 4; break;
-			default:break;
-			}
-			auto data = static_cast<const WeaponData::GunWeaponData*>(Master::m_pWeaponDataManager->FindEnemysWeaponData(5));
-			data->_bulletData;
 
-			XMVECTOR rotQuat = myTransform->get_RotationQuaternion();
-
-			// 前方を向く回転行列（LookTo）
-			XMMATRIX lookAtRotationMatrix = XMMatrixLookToLH(XMVectorZero(), targetDir, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-
-			// 行列からクォータニオンへ変換
-			XMVECTOR targetQuat = XMQuaternionRotationMatrix(XMMatrixTranspose(lookAtRotationMatrix));
-
-			// 攻撃処理
-			for (int i = 0; i < data->_bulletSimultaneousNum; i++)
+			if (m_AttackTime > 1.0f)
 			{
-				// 弾のバラつき
-				float accuracy = data->_accuracy;
-				VEC3 accuracyRot;
-				accuracyRot.x += Master::m_pRandomManager->GetFloatRandom(-accuracy, accuracy);
-				accuracyRot.y += Master::m_pRandomManager->GetFloatRandom(-accuracy, accuracy);
-				accuracyRot.z += Master::m_pRandomManager->GetFloatRandom(-accuracy, accuracy);
+				m_AttackTime = 0.0f;
+				m_AttckCount++;
+
+				// ****************************************************
+				//				 発射音再生
+				// ****************************************************
+				Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_SHOT02), myPos, SOUND_RADIUS);
+
+				auto diffLevel = Master::m_pDataManager->get_DifficultyLevel();
+				int id = 0;
+				switch (diffLevel) {
+				case UtilityData::DIFFICULTY_LEVEL::EASY:id = 0; break;
+				case UtilityData::DIFFICULTY_LEVEL::NORMAL:id = 1; break;
+				case UtilityData::DIFFICULTY_LEVEL::HARD:id = 2; break;
+				case UtilityData::DIFFICULTY_LEVEL::DISASTER:id = 3; break;
+				case UtilityData::DIFFICULTY_LEVEL::IMPOSSIBLE:id = 4; break;
+				default:break;
+				}
+				auto data = static_cast<const WeaponData::GunWeaponData*>(Master::m_pWeaponDataManager->FindEnemysWeaponData(5));
+				data->_bulletData;
+
+				XMVECTOR rotQuat = myTransform->get_RotationQuaternion();
+
+				// 前方を向く回転行列（LookTo）
+				XMMATRIX lookAtRotationMatrix = XMMatrixLookToLH(XMVectorZero(), targetDir, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+
+				// 行列からクォータニオンへ変換
+				XMVECTOR targetQuat = XMQuaternionRotationMatrix(XMMatrixTranspose(lookAtRotationMatrix));
+
+				// 攻撃処理
+				for (int i = 0; i < data->_bulletSimultaneousNum; i++)
+				{
+					// 弾のバラつき
+					float accuracy = data->_accuracy;
+					VEC3 accuracyRot;
+					accuracyRot.x += Master::m_pRandomManager->GetFloatRandom(-accuracy, accuracy);
+					accuracyRot.y += Master::m_pRandomManager->GetFloatRandom(-accuracy, accuracy);
+					accuracyRot.z += Master::m_pRandomManager->GetFloatRandom(-accuracy, accuracy);
 
 
-				// バラつきクォータニオン
-				XMVECTOR spreadQuat = XMQuaternionRotationRollPitchYaw(accuracyRot.x, accuracyRot.y, accuracyRot.z);
+					// バラつきクォータニオン
+					XMVECTOR spreadQuat = XMQuaternionRotationRollPitchYaw(accuracyRot.x, accuracyRot.y, accuracyRot.z);
 
-				// 最終的なクォータニオン作成
-				XMVECTOR finalRotQuat = XMQuaternionMultiply(targetQuat, spreadQuat);
-				finalRotQuat = XMQuaternionNormalize(finalRotQuat); // 念のため正規化
+					// 最終的なクォータニオン作成
+					XMVECTOR finalRotQuat = XMQuaternionMultiply(targetQuat, spreadQuat);
+					finalRotQuat = XMQuaternionNormalize(finalRotQuat); // 念のため正規化
 
-				// 弾のトランスフォーム
-				BulletTransformData bulletTrans;
-				bulletTrans._pos = myPos;
-				bulletTrans._scale = 1.0;
-				bulletTrans._rotQ = finalRotQuat;
+					// 弾のトランスフォーム
+					BulletTransformData bulletTrans;
+					bulletTrans._pos = myPos;
+					bulletTrans._scale = 1.0;
+					bulletTrans._rotQ = finalRotQuat;
 
-				BulletSpawnContext spawnContext;
-				spawnContext._transform = bulletTrans;
+					BulletSpawnContext spawnContext;
+					spawnContext._transform = bulletTrans;
 
-				// 弾データを共用体で持っているので、弾タイプにあったパラメータを入れるようにする
-				Master::m_pBulletManager->Shot(*m_pRenderer, spawnContext, data->_bulletData);
+					// 弾データを共用体で持っているので、弾タイプにあったパラメータを入れるようにする
+					Master::m_pBulletManager->Shot(*m_pRenderer, spawnContext, data->_bulletData);
 
+				}
+
+				// 8連発
+				if (m_AttckCount >= 8)
+				{
+					//=========================================================================================
+					//
+					//						攻撃が終了したら、移動ステートへ
+					//
+					//=========================================================================================
+					return OCTAHEDRON_STATE::OCTAHEDRON_STATE_ACTIVE_MOVE;
+				}
 			}
-			//=========================================================================================
-			//
-			//						攻撃が終了したら、移動ステートへ
-			//
-			//=========================================================================================
-			return OCTAHEDRON_STATE::OCTAHEDRON_STATE_ACTIVE_MOVE;
 		}
 	}
 

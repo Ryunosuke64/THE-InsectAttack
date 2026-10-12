@@ -288,6 +288,8 @@ bool SoundManager::InitXA2Sound(void)
 	Load_Wav("Resource/Sound/SE/Enemy/DSGNImpt_Impact High Spark 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_DEAD));
 	Load_Wav("Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 06_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_ACID_SHOOT));
 	Load_Wav("Resource/Sound/SE/Enemy/DSGNImpt_Impact Pure Power 02_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_DEAD));
+	Load_Wav("Resource/Sound/SE/Enemy/Octh_Fire01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_SHOT01));
+	Load_Wav("Resource/Sound/SE/Enemy/Octh_Fire02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_SHOT02));
 	
 	// ƒAƒCƒeƒ€
 	Load_Wav("Resource/Sound/SE/Game/ItemGet.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ITEM_GET));
