@@ -85,7 +85,6 @@ int Octahedron_AT_AttackLaser01State::Update(class EnemyController* pOwner)
 		{
 			m_AttackTime += Master::m_pTimeManager->get_DeltaTime();
 
-
 			if (m_AttackTime > 1.0f)
 			{
 				m_AttackTime = 0.0f;

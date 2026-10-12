@@ -1,4 +1,5 @@
 #pragma once
+#include "MeshFactory.h"
 
 namespace Map
 {
@@ -8,6 +9,15 @@ namespace Map
         BUILDING,           // 建物
         EXPLOSION_BUILDING, // 爆発する建物
         PROP,               // 岩・車・柵など
+    };
+
+
+    // マップオブジェクトの種類を文字列からenumに変換するmap
+    static std::map<std::string, MAP_OBJECT_TYPE> g_MapObjectTypeMap =
+    {
+        {"BUILDING",           MAP_OBJECT_TYPE::BUILDING},
+        {"EXPLOSION_BUILDING", MAP_OBJECT_TYPE::EXPLOSION_BUILDING },
+        {"PROP",               MAP_OBJECT_TYPE::PROP},
     };
 
     ///* マップの保存する情報*/
@@ -55,6 +65,17 @@ namespace Map
 
     };
 
+    struct ColliderData
+    {
+        COLLIDER_TYPE type;
+
+        VECTOR3::VEC3 center;
+
+        VECTOR3::VEC3 size;
+        float radius = 0.0f;
+        float height = 0.0f;
+    };
+
 
     /* トランスフォームデータ */
     struct TransformData
@@ -83,7 +104,30 @@ namespace Map
     struct MapData
     {
         std::string mapName = "";
-        std::string terrainAssetId = "";
+        std::string groundAssetTag = "";
         std::vector<MapObjectData> objects; // マップ内に定義するオブジェクトの配列
+    };
+
+
+    /* マップの地面アセット */
+    struct Map_GroundAssetData
+    {
+
+    };
+
+    // オブジェクト定義
+    struct Map_ObjectAssetData
+    {
+        std::string assetID;
+
+        MAP_OBJECT_TYPE objectType;
+        std::string modelAssetID;
+        std::vector<SetupMaterialInfo> materials;
+        std::vector<> colliders;
+
+        bool isGrabbable;
+        bool isDestruction;
+
+        float health;
     };
 };
