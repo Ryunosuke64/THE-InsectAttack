@@ -42,6 +42,7 @@
 #include "Component_RigidBody.h"
 #include "Component_MeshCollider.h"
 #include "Component_CapsuleCollider.h"
+#include "Component_CylinderCollider.h"
 #include "EnemyFactory.h"
 
 using namespace UtilityData;
@@ -384,7 +385,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         model.SetupMaterial = matInfo;
         model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
         model.IsTransparent = false;
-        VEC3 pos = VEC3(-130.0f, 6.0f, 100.0f);
+        VEC3 pos = VEC3(-130.0f, 3.0f, 100.0f);
         auto obj = MeshFactory::CreateModel(model);
 		obj->set_IsStatic(false);
         obj->get_Component<MyTransform>()->set_Scale(1.0f, 1.0f, 1.0f);
@@ -394,10 +395,10 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         auto modelResource = obj->get_Component<ModelMeshResource>();
 
         auto rb = obj->add_Component<RigidBody>();
-        auto collider = obj->add_Component<CapsuleCollider>();
-        collider->set_Radius(2.0f);
-        collider->set_Height(3.0f);
-        collider->set_Center(VEC3(0.0f, 3.0f, 0.0f));
+        auto collider = obj->add_Component<CylinderCollider>();
+        collider->set_Radius(1.0f);
+        collider->set_Height(6.0f);
+        collider->set_Center(VEC3(0.0f, 6.0f, 0.0f));
         collider->set_IsStatic(false);
         //collider->SetupModelData(modelResource->get_ModelData());
         //collider->set_IsConvex(true);
@@ -406,6 +407,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
         PhysicsData::RigidBodyDesc rbDesc;
         rbDesc.mass = 1.0f;
+        rbDesc.centerOfMassOffset = collider->get_Center();
         rbDesc.pos = pos;
         rbDesc.restitution = 0.5f;
         rbDesc.friction = 0.5f;
@@ -603,7 +605,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     /* スカイボックスの生成 */
     {
         // マテリアル取得
-        auto matPtr = Master::m_pResourceManager->FindMaterial("SkyBox01");
+        auto matPtr = Master::m_pResourceManager->FindMaterial("SkyBox02");
 
         SetupMaterialInfo matInfo[1];
         matInfo[0].Index = 0;

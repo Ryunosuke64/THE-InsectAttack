@@ -948,6 +948,9 @@
     <ClCompile Include="Source\Cpp\Component_WaterRenderer.cpp">
       <Filter>ソース ファイル\Engine\BaseComponent\Renderer\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_CylinderCollider.cpp">
+      <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1525,6 +1528,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_WaterRenderer.h">
       <Filter>ソース ファイル\Engine\BaseComponent\Renderer\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_CylinderCollider.h">
+      <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

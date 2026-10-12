@@ -174,6 +174,11 @@ void RigidBody::AddAngularImpulse(const VECTOR3::VEC3& impulse)
 //*----------------------------------------------------------------------------------------
 void RigidBody::SetLinearVelocity(const VECTOR3::VEC3& velocity)
 {
+    if (!IsInitialized())
+    {
+        return;
+    }
+
     m_pEngine->SetLinearVelocity(m_Handle, velocity);
 }
 
@@ -271,7 +276,7 @@ VECTOR4::VEC4 RigidBody::GetRotation()const
 //*----------------------------------------------------------------------------------------
 VECTOR3::VEC3 RigidBody::GetLinearVelocity() const
 {
-    return m_pEngine->GetLinearVelocity(m_Handle);
+    return IsInitialized() ? m_pEngine->GetLinearVelocity(m_Handle) : VEC3();
 }
 
 
@@ -280,6 +285,11 @@ VECTOR3::VEC3 RigidBody::GetLinearVelocity() const
 //*----------------------------------------------------------------------------------------
 void RigidBody::SetMass(float mass)
 {
+    if (!IsInitialized())
+    {
+        return;
+    }
+
     m_pEngine->SetMass(m_Handle, mass);
 }
 
@@ -288,6 +298,11 @@ void RigidBody::SetMass(float mass)
 //*----------------------------------------------------------------------------------------
 void RigidBody::SetRestitution(float restitution)
 {
+    if (!IsInitialized())
+    {
+        return;
+    }
+
     m_pEngine->SetRestitution(m_Handle, restitution);
 }
 
@@ -296,6 +311,11 @@ void RigidBody::SetRestitution(float restitution)
 //*----------------------------------------------------------------------------------------
 void RigidBody::SetFriction(float friction)
 {
+    if (!IsInitialized())
+    {
+        return;
+    }
+
     m_pEngine->SetFriction(m_Handle, friction);
 }
 
@@ -304,6 +324,11 @@ void RigidBody::SetFriction(float friction)
 //*----------------------------------------------------------------------------------------
 void RigidBody::SetGravity(const VECTOR3::VEC3& gravity)
 {
+    if (!IsInitialized())
+    {
+        return;
+    }
+
     m_pEngine->SetGrivity(m_Handle, gravity);
 }
 
@@ -313,6 +338,11 @@ void RigidBody::SetGravity(const VECTOR3::VEC3& gravity)
 //*----------------------------------------------------------------------------------------
 void RigidBody::SetEnabled(bool enabled)
 {
+    if (!IsInitialized())
+    {
+        return;
+    }
+
     m_pEngine->SetPhysicsEnable(m_Handle, enabled);
 }
 
@@ -321,5 +351,66 @@ void RigidBody::SetEnabled(bool enabled)
 //*----------------------------------------------------------------------------------------
 void RigidBody::ResetPhysics()
 {
+    if (!IsInitialized())
+    {
+        return;
+    }
+
     m_pEngine->ResetPhysics(m_Handle);
+}
+
+// インスペクターから未セットアップ・解放済みの剛体を参照しても安全に扱う。
+bool RigidBody::IsInitialized() const
+{
+    return m_pEngine != nullptr && m_pEngine->IsValidRigidBody(m_Handle);
+}
+
+float RigidBody::GetMass() const
+{
+    return IsInitialized() ? m_pEngine->GetMass(m_Handle) : 0.0f;
+}
+
+float RigidBody::GetRestitution() const
+{
+    return IsInitialized() ? m_pEngine->GetRestitution(m_Handle) : 0.0f;
+}
+
+float RigidBody::GetFriction() const
+{
+    return IsInitialized() ? m_pEngine->GetFriction(m_Handle) : 0.0f;
+}
+
+VECTOR3::VEC3 RigidBody::GetGravity() const
+{
+    return IsInitialized() ? m_pEngine->GetGravity(m_Handle) : VEC3();
+}
+
+VECTOR3::VEC3 RigidBody::GetAngularFactor() const
+{
+    return IsInitialized() ? m_pEngine->GetAngularFactor(m_Handle) : VEC3();
+}
+
+VECTOR3::VEC3 RigidBody::GetAngularVelocity() const
+{
+    return IsInitialized() ? m_pEngine->GetAngularVelocity(m_Handle) : VEC3();
+}
+
+PhysicsData::BodyType RigidBody::GetBodyType() const
+{
+    return IsInitialized() ? m_pEngine->GetBodyType(m_Handle) : BodyType::Static;
+}
+
+bool RigidBody::IsSimulationEnabled() const
+{
+    return IsInitialized() ? m_pEngine->IsSimulationEnabled(m_Handle) : false;
+}
+
+void RigidBody::SetAngularFactor(const VECTOR3::VEC3& factor)
+{
+    if (!IsInitialized())
+    {
+        return;
+    }
+
+    m_pEngine->SetAngularFactor(m_Handle, factor);
 }

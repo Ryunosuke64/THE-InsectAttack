@@ -9,7 +9,7 @@ using namespace Tool;
 //*【?】コンストラクタ
 //*----------------------------------------------------------------------------------------
 DamageTextManager::DamageTextManager():
-	m_PositionType(DAMAGE_TEXT_POSITION_TYPE::HIT)
+	m_PositionType(DAMAGE_TEXT_POSITION_TYPE::FIXED)
 {
 }
 

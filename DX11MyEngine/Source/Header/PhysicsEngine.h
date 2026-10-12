@@ -62,6 +62,18 @@ public:
 	void SetRestitution(const PhysicsData::PhysicsBodyHandle& handle, float restitution);
 	void SetFriction(const PhysicsData::PhysicsBodyHandle& handle, float friction);
 	void SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gravity);
+	void SetAngularFactor(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& factor);
+
+	// 初期設定のコピーではなく、Bulletが保持する現在値を返す。
+	// 無効なハンドルでは数値0、ベクトル0、Static、falseを返す。
+	float GetMass(const PhysicsData::PhysicsBodyHandle& handle) const;
+	float GetRestitution(const PhysicsData::PhysicsBodyHandle& handle) const;
+	float GetFriction(const PhysicsData::PhysicsBodyHandle& handle) const;
+	VECTOR3::VEC3 GetGravity(const PhysicsData::PhysicsBodyHandle& handle) const;
+	VECTOR3::VEC3 GetAngularFactor(const PhysicsData::PhysicsBodyHandle& handle) const;
+	VECTOR3::VEC3 GetAngularVelocity(const PhysicsData::PhysicsBodyHandle& handle) const;
+	PhysicsData::BodyType GetBodyType(const PhysicsData::PhysicsBodyHandle& handle) const;
+	bool IsSimulationEnabled(const PhysicsData::PhysicsBodyHandle& handle) const;
 	void SetWorldPosition(
 		const PhysicsData::PhysicsBodyHandle& handle,
 		const VECTOR3::VEC3& pos);

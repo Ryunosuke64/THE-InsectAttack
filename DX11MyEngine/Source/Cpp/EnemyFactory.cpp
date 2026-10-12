@@ -276,6 +276,8 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
 
     PhysicsData::RigidBodyDesc rbDesc;
     rbDesc.mass = 5.0f;
+    rbDesc.centerOfMassOffset = collider->get_Center();
+    rbDesc.angularFactor = VEC3(0.5f, 1.0f, 0.5f); // Stay upright while alive; unlock on death.
     rbDesc.pos = pos;
     rbDesc.restitution = 0.0f;          // 跳ねない
     rbDesc.friction = 1.0f;             // 摩擦なし

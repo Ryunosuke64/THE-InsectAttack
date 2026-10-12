@@ -35,6 +35,7 @@ bool InspectorWindow::Init(RendererEngine &renderer)
     m_EditorMap["MyTransform"]          = std::make_unique<TransformEditor>();
     m_EditorMap["RectTransform"]        = std::make_unique<RectTransformEditor>();
     m_EditorMap["PhysicsEditor"]        = std::make_unique<PhysicsEditor>();
+    m_EditorMap["RigidBody"]            = std::make_unique<RigidBodyEditor>();
     m_EditorMap["DirectionalLight"]     = std::make_unique<DirectionLightEditor>();
     m_EditorMap["PointLight"]           = std::make_unique<PointLightEditor>();
     m_EditorMap["SpotLight"]            = std::make_unique<SpotLightEditor>();

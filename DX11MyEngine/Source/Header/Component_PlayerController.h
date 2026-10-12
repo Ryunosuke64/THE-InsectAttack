@@ -143,9 +143,12 @@ private:
 	VECTOR3::VEC3 m_MoveVelocity;	// 移動
 	float m_JumpVelocity;			// ジャンプベクトル
 	bool m_IsGrounded;				// 地面にいるか
+	VECTOR3::VEC3 m_GroundNormal;	// 地面の法線
+	VECTOR3::VEC3 m_SlideVelocity;	// 地面の法線
 	int m_FlightTime;				// 空中にいる時間
 	PlayerData::PLAYER_RANGER_ANIM_ID m_CrntAnimID;	// 現在のアニメーションID
 	bool m_IsRolling;
+	float m_MaxSlopDeg;				// 歩行可能な坂の角度
 
 	// リジッドボディコンポーネントを作って移す
 	float m_JumpForce;	// ジャンプ力
@@ -230,5 +233,19 @@ private:
 	/// </summary>
 	/// <param name="info"></param>
 	void CheckGround(const PhysicsData::CollisionInfo& info);
+
+	/// <summary>
+	/// 歩行可能な坂か
+	/// </summary>
+	/// <param name="groundNormal"></param>
+	/// <returns></returns>
+	bool IsWalkableSlope(const VECTOR3::VEC3& groundNormal);
+
+	/// <summary>
+	/// 斜面を判定して、移動を制限する
+	/// </summary>
+	/// <param name="velocity"></param>
+	/// <param name="groundNormal"></param>
+	void ApplySlopeSlide(VECTOR3::VEC3& velocity, const VECTOR3::VEC3& groundNormal);
 };
 

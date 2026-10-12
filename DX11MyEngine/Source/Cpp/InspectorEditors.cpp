@@ -18,6 +18,8 @@
 #include "Component_TrailRenderer.h"
 #include "Component_LineRenderer.h"
 #include "Component_Physics.h"
+#include "Component_RigidBody.h"
+#include <limits>
 
 using namespace VECTOR2;
 using namespace VECTOR3;
@@ -260,6 +262,131 @@ void PhysicsEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
     pPhysics->set_MoveDrag(moveDrag);
 }
 
+
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:RigidBodyEditor Class --- */
+//
+// ***************************************************************************************
+bool RigidBodyEditor::Init(RendererEngine& renderer)
+{
+    return true;
+}
+
+void RigidBodyEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
+{
+    auto body = pObj.get_Component<RigidBody>();
+    if (!body)
+    {
+        return;
+    }
+
+    auto& debugger = *Master::m_pDebugger;
+    // 他のコンポーネントや、選択を切り替えたオブジェクトと入力IDを共有しない。
+    ImGui::PushID(body.get());
+    if (debugger.DG_TreeNode(U8ToChar(u8"剛体 (RigidBody)")))
+    {
+        debugger.DG_Separator();
+        if (!body->IsInitialized())
+        {
+            debugger.DG_Text(U8ToChar(u8"未初期化、または解放済みです。"));
+            debugger.DG_TreePop();
+            ImGui::PopID();
+            return;
+        }
+
+        // 初期設定のコピーを持たず、開いている剛体の現在値を毎フレーム取得する。
+        const auto type = body->GetBodyType();
+        const char* typeName = type == PhysicsData::BodyType::Dynamic ? "Dynamic" :
+            type == PhysicsData::BodyType::Kinematic ? "Kinematic" : "Static";
+        debugger.DG_TextValue(U8ToChar(u8"剛体の種類: %s"), typeName);
+
+        bool enabled = body->IsSimulationEnabled();
+        if (debugger.DG_CheckBox(U8ToChar(u8"物理シミュレーション"), &enabled))
+        {
+            body->SetEnabled(enabled);
+        }
+
+        // 数値の直接入力にも範囲制限を適用する。変更時だけSetterを呼ぶ。
+        const auto drawScalar = [&debugger](const char* label, const char* id,
+            float& value, float speed, float maximum)
+        {
+            debugger.DG_BulletText(label);
+            debugger.DG_SameLine();
+            return ImGui::DragFloat(id, &value, speed, 0.0f, maximum,
+                "%.3f", ImGuiSliderFlags_AlwaysClamp);
+        };
+        const float maxValue = (std::numeric_limits<float>::max)();
+
+        float mass = body->GetMass();
+        ImGui::BeginDisabled(type == PhysicsData::BodyType::Kinematic);
+        if (drawScalar(U8ToChar(u8"質量"), "##Mass", mass, 0.1f, maxValue))
+        {
+            body->SetMass(mass);
+        }
+        ImGui::EndDisabled();
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("%s", U8ToChar(u8"0 = Static、正の値 = Dynamic。静的メッシュは0のみ。"));
+        }
+
+        VEC3 gravity = body->GetGravity();
+        debugger.DG_BulletText(U8ToChar(u8"重力加速度 (X / Y / Z)"));
+        if (debugger.DG_DragVec3("##Gravity", &gravity, 0.1f, 0.0f, 0.0f))
+        {
+            body->SetGravity(gravity);
+        }
+
+        float friction = body->GetFriction();
+        if (drawScalar(U8ToChar(u8"摩擦係数"), "##Friction", friction, 0.01f, maxValue))
+        {
+            body->SetFriction(friction);
+        }
+
+        float restitution = body->GetRestitution();
+        if (drawScalar(U8ToChar(u8"反発係数"), "##Restitution", restitution, 0.01f, 1.0f))
+        {
+            body->SetRestitution(restitution);
+        }
+
+        const VEC3 factor = body->GetAngularFactor();
+        float angularFactor[3] = { factor.x, factor.y, factor.z };
+        debugger.DG_BulletText(U8ToChar(u8"回転係数 (X / Y / Z)"));
+        if (ImGui::DragFloat3("##AngularFactor", angularFactor, 0.01f, 0.0f, 1.0f,
+            "%.3f", ImGuiSliderFlags_AlwaysClamp))
+        {
+            body->SetAngularFactor(VEC3(angularFactor[0], angularFactor[1], angularFactor[2]));
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("%s", U8ToChar(u8"0 = その軸の回転を抑制、1 = 通常。"));
+        }
+
+        debugger.DG_Separator();
+        VEC3 velocity = body->GetLinearVelocity();
+        debugger.DG_BulletText(U8ToChar(u8"移動速度 (X / Y / Z)"));
+        ImGui::BeginDisabled(body->GetBodyType() != PhysicsData::BodyType::Dynamic);
+        if (debugger.DG_DragVec3("##Velocity", &velocity, 0.1f, 0.0f, 0.0f))
+        {
+            body->SetLinearVelocity(velocity);
+        }
+        ImGui::EndDisabled();
+
+        const VEC3 angularVelocity = body->GetAngularVelocity();
+        debugger.DG_BulletText(U8ToChar(u8"角速度 (rad/s、確認用)"));
+        debugger.DG_TextValue("X: %.3f  Y: %.3f  Z: %.3f",
+            angularVelocity.x, angularVelocity.y, angularVelocity.z);
+
+        if (debugger.DG_Button(U8ToChar(u8"速度と蓄積した力をリセット")))
+        {
+            body->ResetPhysics();
+        }
+
+        debugger.DG_TreePop();
+    }
+    ImGui::PopID();
+}
 
 
 // ***************************************************************************************

@@ -263,6 +263,9 @@ namespace PhysicsData
 	/// </summary>
 	struct RigidBodyDesc
 	{
+		// Model origin -> center of mass, in local physics units (before rotation).
+		// Zero preserves the existing origin. For a uniform primitive, use Collider::get_Center().
+		VECTOR3::VEC3 centerOfMassOffset = VECTOR3::VEC3();
 		BodyType type = BodyType::Dynamic;
 		float mass = 0.0f;												// Ž¿—Ê
 		float friction = 0.5f;											// –€ŽC
@@ -292,6 +295,7 @@ namespace PhysicsData
 	struct RigidBodySlot
 	{
 		btRigidBody* rigidBody = nullptr;
+		VECTOR3::VEC3 centerOfMassOffset = VECTOR3::VEC3();
 		uint32_t generation = 0;
 		bool active = false;
 

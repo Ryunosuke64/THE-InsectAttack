@@ -198,6 +198,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\AS_MathAPI.h" />
     <ClInclude Include="Source\Header\BitFlag.h" />
     <ClInclude Include="Source\Header\BlendManager.h" />
+    <ClInclude Include="Source\Header\Component_CylinderCollider.h" />
     <ClInclude Include="Source\Header\MapManager.h" />
     <ClInclude Include="Source\Header\BuildingStateFactory.h" />
     <ClInclude Include="Source\Header\Building_State.h" />
@@ -428,6 +429,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\AS_MathAPI.cpp" />
     <ClCompile Include="Source\Cpp\BitFlag.cpp" />
     <ClCompile Include="Source\Cpp\BlendManager.cpp" />
+    <ClCompile Include="Source\Cpp\Component_CylinderCollider.cpp" />
     <ClCompile Include="Source\Cpp\MapManager.cpp" />
     <ClCompile Include="Source\Cpp\BuildingStateFactory.cpp" />
     <ClCompile Include="Source\Cpp\Building_State.cpp" />

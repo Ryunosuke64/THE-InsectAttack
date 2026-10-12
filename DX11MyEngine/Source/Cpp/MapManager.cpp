@@ -36,8 +36,13 @@ bool MapManager::LoadMapData(const std::string& _filePath)
     json j;
     ifs >> j;
     Map::MapData extractionMapData; // 抽出データ
+    
+    if (!ExtractionMapData(j, extractionMapData))
+    {
+        return false;
+    }
 
-    ExtractionMapData(j, extractionMapData);
+    return true;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -53,5 +58,5 @@ bool MapManager::LoadMapData(const std::string& _filePath)
 //*----------------------------------------------------------------------------------------
 bool MapManager::ExtractionMapData(const nlohmann::json& _json, Map::MapData& _outData)
 {
-
+    return true;
 }

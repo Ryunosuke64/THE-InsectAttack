@@ -24,16 +24,20 @@ using namespace PlayerData;
 using namespace DirectX;
 using namespace Tool;
 
-constexpr float MOVE_SPEED        = 10.0f;	// プレイヤーの移動速度
-constexpr float MAX_MOVE_SPEED    = 11.0f;	// プレイヤーの最大移動速度
-constexpr float MOVE_ACCELERATION = 40.0f;	// 移動加速度
-constexpr float MOVE_DECELERATION = 30.0f;	// 移動減速
-constexpr float ROLLING_SPEED     = 26.0f;	// ローリング時初速
-constexpr float ROLLING_DURATION  = 1.0f;	// ローリング時間
-constexpr float JUMP_HEIGHT       = 2.5f;	// ジャンプの高さ
-constexpr float GRAVITY           = 18.0f;	// 重力
-constexpr float ANIM_SPEED        = 1.25f;	// アニメーション速度
-constexpr float GROUND_NORMAL_Y   = 0.7f;	// 地面とするY法線
+namespace
+{
+	constexpr float MOVE_SPEED        = 10.0f;	// プレイヤーの移動速度
+	constexpr float MAX_MOVE_SPEED    = 11.0f;	// プレイヤーの最大移動速度
+	constexpr float MOVE_ACCELERATION = 40.0f;	// 移動加速度
+	constexpr float MOVE_DECELERATION = 30.0f;	// 移動減速
+	constexpr float ROLLING_SPEED     = 26.0f;	// ローリング時初速
+	constexpr float ROLLING_DURATION  = 1.0f;	// ローリング時間
+	constexpr float JUMP_HEIGHT       = 2.5f;	// ジャンプの高さ
+	constexpr float GRAVITY           = 18.0f;	// 重力
+	constexpr float ANIM_SPEED        = 1.25f;	// アニメーション速度
+	constexpr float GROUND_NORMAL_Y   = 0.7f;	// 地面とするY法線
+	constexpr float MAX_SLOP_DEG	  = 30.0f;	// 歩行制限傾斜角
+}
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -56,9 +60,11 @@ m_CrntAnimID(PLAYER_RANGER_ANIM_ID::RIFLE_AMING_IDLE),
 m_JumpVelocity(0.0f),
 m_Gravity(GRAVITY),
 m_JumpForce(0.0f),
+m_MaxSlopDeg(MAX_SLOP_DEG),
 m_RollingElapsedTime(0.0f),
 m_RollingDuration(ROLLING_DURATION),
-m_FlightTime(0)
+m_FlightTime(0),
+m_SlideVelocity(VEC3(0.0f))
 {
 	this->set_Tag("PlayerController");
 }
@@ -344,6 +350,10 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 	float ang = 0.0f;
 
 	VEC3 velocity = rigidBody->GetLinearVelocity();
+
+	// 傾斜制限
+	ApplySlopeSlide(velocity, m_GroundNormal);
+
 	VEC3 horizontal = VEC3(velocity.x, 0.0f, velocity.z);
 
 	const bool hasInput = inputDir.LengthSq() > 0.0001f;	// 移動入力があったかどうか
@@ -366,6 +376,7 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 	{
 		horizontal += difference * (maxChange / distance);
 	}
+
 
 	// Y方向は維持し、重力やジャンプを消さない
 	rigidBody->SetLinearVelocity(
@@ -539,14 +550,17 @@ void PlayerController::RollingUpdate()
 	const float t = std::clamp(
 		m_RollingElapsedTime / m_RollingDuration, 0.0f, 1.0f);
 
-	const float endSpeed =6.0f;  // 終了後に残す速度
+	const float endSpeed =10.0f;  // 終了後に残す速度
 	const float speed = ROLLING_SPEED + (endSpeed - ROLLING_SPEED) * t;
 
 	const VEC3 velocity = rigidBody->GetLinearVelocity();
+	m_MoveVelocity.y = velocity.y;
+
+	ApplySlopeSlide(m_MoveVelocity, m_GroundNormal);
 
 	rigidBody->SetLinearVelocity(VEC3(
 		m_MoveVelocity.x * speed,
-		velocity.y,
+		m_MoveVelocity.y,
 		m_MoveVelocity.z * speed));
 
 
@@ -754,10 +768,126 @@ void PlayerController::CheckGround(const PhysicsData::CollisionInfo& info)
 {
 	for (int i = 0; i < info.contactCount; i++)
 	{
-		if (info.contacts[i].normal.y > GROUND_NORMAL_Y)
+		VEC3 normal = info.contacts[i].normal;
+
+		if (normal.y > GROUND_NORMAL_Y)
 		{
+			m_GroundNormal = normal;
 			m_IsGrounded = true;
 			return;
 		}
 	}
+
+	m_GroundNormal.AllZero();
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】歩行可能な坂かどうかを調べる
+//*
+//* [引数]
+//* & groundNormal : 地面の法線
+//* 
+//* [返値]
+//* 歩行可能かどうかのフラグ
+//*----------------------------------------------------------------------------------------
+bool PlayerController::IsWalkableSlope(const VECTOR3::VEC3& groundNormal)
+{
+	// 最大登坂角度の内積
+	const float maxSlopeDot = std::cos(Tool::DegToRad(m_MaxSlopDeg));
+
+	float dot = VEC3::Dot(groundNormal, VEC3(0.0f, 1.0f, 0.0f));
+
+	if (dot >= maxSlopeDot)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】坂の斜面をチェックし、移動に制限をかける
+//*
+//* [引数]
+//* & velocity     : 移動ベロシティ
+//* & groundNormal : 地面の法線
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PlayerController::
+ApplySlopeSlide(VECTOR3::VEC3& velocity, const VECTOR3::VEC3& groundNormal)
+{
+	//VEC3 normal = groundNormal.Normalize();
+
+	//if (IsWalkableSlope(normal))
+	//{
+	//	// 登れる傾斜なら何もしない
+	//	return;
+	//}
+
+	//VEC3 upHill = VEC3(-normal.x, 0.0f, -normal.z);
+
+
+	//if (upHill.LengthSq() < SIMD_EPSILON)
+	//{
+	//	return;
+	//}
+	//upHill = upHill.Normalize();
+
+	//// 登る方向への速度
+	//float upHillSpeed = VEC3::Dot(velocity, upHill);
+
+	//// 登る方向の成分だけ取り除く
+	//if (upHillSpeed > 0.0f)
+	//{
+	//	velocity -= upHill * upHillSpeed;
+	//}
+
+
+	constexpr float START_ANGLE = 30.0f;
+	constexpr float FULL_ANGLE = 45.0f;
+	constexpr float SLIDE_POWER = 3.5f;
+	constexpr float MAX_SLIDE_SPEED = 7.0f;
+
+	VEC3 normal = groundNormal.Normalize();
+
+	// 接地していない、または滑るほど急でない場合
+	const float startDot = btCos(btRadians(START_ANGLE));
+
+	if (!m_IsGrounded || normal.y <= 0.0f ||
+		normal.y >= startDot)
+	{
+		m_SlideVelocity = VEC3(0, 0, 0);
+		return;
+	}
+
+	// 傾斜が急になるほど滑りやすくする
+	const float fullDot = btCos(btRadians(FULL_ANGLE));
+
+	float slideFactor = std::clamp(
+		(startDot - normal.y) / (startDot - fullDot),
+		0.0f, 1.0f
+	);
+
+	// 重力を斜面方向へ投影
+	VEC3 gravity = m_pRigidBodyComp.lock()->GetGravity();
+	VEC3 slideAccel =
+		gravity - normal * VEC3::Dot(gravity, normal);
+
+	// 垂直方向はBulletの重力処理に任せる
+	slideAccel.y = 0.0f;
+
+	// 滑落速度を加算
+	m_SlideVelocity +=
+		slideAccel * slideFactor * SLIDE_POWER * Master::m_pTimeManager->get_DeltaTime();
+
+	// 最大滑落速度
+	if (m_SlideVelocity.Length() > MAX_SLIDE_SPEED)
+	{
+		m_SlideVelocity =
+			m_SlideVelocity.Normalize() * MAX_SLIDE_SPEED;
+	}
+
+	// プレイヤーの移動速度に加算
+	velocity += m_SlideVelocity;
 }

@@ -85,11 +85,11 @@ bool DataManager::Init(class RendererEngine* pRenderer)
 	// TODO:ìGÇÃìÔà’ìxåWêîàÍíUÇ±Ç±Ç…èëÇ≠
 	// çUåÇÇìÔà’ìxÇ≤Ç∆Ç…jsonÇ≈ï™ÇØÇƒÇµÇ‹Ç¡ÇΩÇÃÇ≈ÅAçUåÇóÕÇ…ä÷ÇµÇƒÇÕç°ÇÃÇ∆Ç±ÇÎîΩâfÇµÇƒÇ»Ç¢
 	//																			hp	  atk   speed
-	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::EASY)]			= { 0.6f, 0.5f, 0.5f };
-	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::NORMAL)]		= { 1.0f, 1.0f, 0.5f };
-	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::HARD)]			= { 1.0f, 1.5f, 0.5f };
-	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::DISASTER)]		= { 1.0f, 3.5f, 0.5f };
-	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::IMPOSSIBLE)]	= { 1.0f, 4.0f, 0.5f };
+	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::EASY)]			= { 0.6f, 0.5f, 1.0f };
+	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::NORMAL)]		= { 1.0f, 1.0f, 1.0f };
+	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::HARD)]			= { 1.0f, 1.5f, 1.0f };
+	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::DISASTER)]		= { 1.0f, 3.5f, 1.0f };
+	m_EnemyDifficultyFactorArray[UINT_CAST(DIFFICULTY_LEVEL::IMPOSSIBLE)]	= { 1.0f, 4.0f, 1.0f };
 
 	return true;
 }

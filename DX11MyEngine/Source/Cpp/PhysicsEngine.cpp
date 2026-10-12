@@ -18,6 +18,40 @@ using namespace VECTOR3;
 using namespace VECTOR4;
 using namespace PhysicsData;
 
+namespace
+{
+    bool IsFiniteVector(const VEC3& value)
+    {
+        return std::isfinite(value.x) && std::isfinite(value.y) && std::isfinite(value.z);
+    }
+
+    // 編集による休止解除と、ユーザーが指定したシミュレーション停止を区別する。
+    void WakeForParameterChange(btRigidBody& body)
+    {
+        if (body.getActivationState() != DISABLE_SIMULATION)
+        {
+            body.activate(true);
+        }
+    }
+
+    bool SupportsDynamicMass(const btCollisionShape& shape)
+    {
+        // 中心オフセット付きの静的メッシュも、子形状まで確認する。
+        if (shape.isCompound())
+        {
+            const auto& compound = static_cast<const btCompoundShape&>(shape);
+            for (int i = 0; i < compound.getNumChildShapes(); ++i)
+            {
+                if (!SupportsDynamicMass(*compound.getChildShape(i)))
+                {
+                    return false;
+                }
+            }
+        }
+        return !shape.isNonMoving();
+    }
+}
+
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
 //*----------------------------------------------------------------------------------------
@@ -160,15 +194,14 @@ void PhysicsEngine::Update(float deltaTime)
 void PhysicsEngine::
 SetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& velocity)
 {
-    // 有効状態でなければ返す
-    if (!IsValidRigidBody(handle))
+    if (!IsValidRigidBody(handle) || !IsFiniteVector(velocity))
     {
         return;
     }
 
     auto& rb = m_RigidBodies[handle.index].rigidBody;
 
-    rb->activate(true); // アクティブ状態にする
+    WakeForParameterChange(*rb);
 
     rb->setLinearVelocity(
         btVector3(velocity.x, velocity.y, velocity.z)
@@ -342,9 +375,16 @@ SetWorldTransform(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
     transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
     transform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 
-    rb->setWorldTransform(
-        transform
-    );
+    // Public positions refer to the model origin; Bullet integrates the center of mass.
+    const auto& offset = m_RigidBodies[handle.index].centerOfMassOffset;
+    transform.setOrigin(transform * btVector3(offset.x, offset.y, offset.z));
+    rb->setCenterOfMassTransform(transform);
+    rb->setInterpolationWorldTransform(transform);
+    if (rb->getMotionState())
+    {
+        rb->getMotionState()->setWorldTransform(transform);
+    }
+    m_pWorld->updateSingleAabb(rb);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -359,29 +399,62 @@ SetWorldTransform(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
 void PhysicsEngine::
 SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
 {
-    // 有効状態でなければ返す
-    if (!IsValidRigidBody(handle))
+    if (!IsValidRigidBody(handle) || !std::isfinite(mass) || mass < 0.0f)
     {
         return;
     }
+
+    auto* body = m_RigidBodies[handle.index].rigidBody;
+    auto* shape = body->getCollisionShape();
+    if (shape == nullptr || body->isKinematicObject() ||
+        (mass > 0.0f && !SupportsDynamicMass(*shape)))
+    {
+        return;
+    }
+
     btVector3 inertia(0, 0, 0);
-    auto body = m_RigidBodies[handle.index].rigidBody;
-    auto shape = body->getCollisionShape();
-
-    if (shape == nullptr) 
-    {
-        return;
-    }
-
     if (mass > 0.0f)
     {
         shape->calculateLocalInertia(mass, inertia);
     }
 
-    body->setMassProps(mass, inertia);
+    const bool changeStatic = body->isStaticObject() != (mass == 0.0f);
+    const btVector3 gravity = body->getGravity();
+    const int activationState = body->getActivationState();
+    int group = 0;
+    int mask = 0;
 
-    // 慣性の更新
+    // Static/Dynamicの切替時だけ再登録し、ワールド内の更新対象も変更する。
+    // ハンドル・形状・衝突フィルター・個別重力は維持する。
+    if (changeStatic)
+    {
+        auto* proxy = body->getBroadphaseHandle();
+        if (proxy == nullptr)
+        {
+            return;
+        }
+        group = proxy->m_collisionFilterGroup;
+        mask = proxy->m_collisionFilterMask;
+        m_pWorld->removeRigidBody(body);
+    }
+
+    body->setMassProps(mass, inertia);
     body->updateInertiaTensor();
+
+    if (changeStatic)
+    {
+        if (mass == 0.0f)
+        {
+            body->clearForces();
+            body->setLinearVelocity(btVector3(0, 0, 0));
+            body->setAngularVelocity(btVector3(0, 0, 0));
+        }
+        m_pWorld->addRigidBody(body, group, mask);
+        body->setGravity(gravity);
+        body->forceActivationState(activationState);
+    }
+
+    WakeForParameterChange(*body);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -396,14 +469,14 @@ SetMass(const PhysicsData::PhysicsBodyHandle& handle, float mass)
 void PhysicsEngine::
 SetRestitution(const PhysicsData::PhysicsBodyHandle& handle, float restitution)
 {
-    // 有効状態でなければ返す
-    if (!IsValidRigidBody(handle))
+    if (!IsValidRigidBody(handle) || !std::isfinite(restitution) || restitution < 0.0f)
     {
         return;
     }
     auto body = m_RigidBodies[handle.index].rigidBody;
 
     body->setRestitution(btScalar(restitution));
+    WakeForParameterChange(*body);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -418,14 +491,14 @@ SetRestitution(const PhysicsData::PhysicsBodyHandle& handle, float restitution)
 void PhysicsEngine::
 SetFriction(const PhysicsData::PhysicsBodyHandle& handle, float friction)
 {
-    // 有効状態でなければ返す
-    if (!IsValidRigidBody(handle))
+    if (!IsValidRigidBody(handle) || !std::isfinite(friction) || friction < 0.0f)
     {
         return;
     }
     auto body = m_RigidBodies[handle.index].rigidBody;
 
     body->setFriction(btScalar(friction));
+    WakeForParameterChange(*body);
 }
 
 
@@ -441,8 +514,7 @@ SetFriction(const PhysicsData::PhysicsBodyHandle& handle, float friction)
 void PhysicsEngine::
 SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gravity)
 {
-    // 有効状態でなければ返す
-    if (!IsValidRigidBody(handle))
+    if (!IsValidRigidBody(handle) || !IsFiniteVector(gravity))
     {
         return;
     }
@@ -450,6 +522,7 @@ SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gr
     auto body = m_RigidBodies[handle.index].rigidBody;
     
     body->setGravity(btVector3(gravity.x, gravity.y, gravity.z));
+    WakeForParameterChange(*body);
 }
 
 
@@ -472,22 +545,7 @@ SetWorldPosition(
     {
         return;
     }
-    auto body = m_RigidBodies[handle.index].rigidBody;
-    btTransform transform = body->getWorldTransform();
-
-    // トランスフォームに位置を設定
-    transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-
-    body->activate(true);   // アクティブ状態に
-
-    // トランスフォーム再設定
-    body->setWorldTransform(transform);
-
-    // モーションステートがあるならそっちも変更
-    if (body->getMotionState())
-    {
-        body->getMotionState()->setWorldTransform(transform);
-    }
+    SetWorldTransform(handle, pos, GetRotation(handle));
 }
 
 
@@ -511,7 +569,8 @@ GetWorldPosition(const PhysicsData::PhysicsBodyHandle& handle)
 
     // トランスフォームを取得し、位置を取得
     btTransform transform = body->getWorldTransform();
-    btVector3 pos = transform.getOrigin();
+    const auto& offset = m_RigidBodies[handle.index].centerOfMassOffset;
+    btVector3 pos = transform * btVector3(-offset.x, -offset.y, -offset.z);
 
     return VEC3(
         FLOAT_CAST(pos.getX()),
@@ -668,7 +727,7 @@ SetPhysicsEnable(const PhysicsData::PhysicsBodyHandle& handle, bool enabled)
     }
     else
     {
-        body->setActivationState(DISABLE_SIMULATION);
+        body->forceActivationState(DISABLE_SIMULATION);
     }
 }
 
@@ -721,7 +780,8 @@ CreateRigidBody(const RigidBodyDesc& desc)
         return resultHandle;
     }
     
-    VEC3 center = collider->get_Center();
+    // Keep the collider in the same place relative to the model while moving Bullet's origin.
+    const VEC3 center = collider->get_Center() - desc.centerOfMassOffset;
 
     // シェイプ作成
     btCollisionShape* pShape = CreateShape(collider->GetShapeDesc(), center);
@@ -736,7 +796,10 @@ CreateRigidBody(const RigidBodyDesc& desc)
     // トランスフォーム設定
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(btVector3(desc.pos.x, desc.pos.y, desc.pos.z));
+    transform.setOrigin(btVector3(
+        desc.pos.x + desc.centerOfMassOffset.x,
+        desc.pos.y + desc.centerOfMassOffset.y,
+        desc.pos.z + desc.centerOfMassOffset.z));
 
     // MotionState
     btDefaultMotionState* motionState = new btDefaultMotionState(transform);
@@ -800,6 +863,7 @@ CreateRigidBody(const RigidBodyDesc& desc)
             rigidBody->setUserIndex(i);
 
             slot.rigidBody = rigidBody;
+            slot.centerOfMassOffset = desc.centerOfMassOffset;
             slot.active = true;
             slot.owner = desc.owner;
             slot.collider = desc.collider;
@@ -819,6 +883,7 @@ CreateRigidBody(const RigidBodyDesc& desc)
     RigidBodySlot rdSlot;
     rdSlot.active = true;
     rdSlot.rigidBody = rigidBody;
+    rdSlot.centerOfMassOffset = desc.centerOfMassOffset;
     rdSlot.owner = desc.owner;
     rdSlot.collider = desc.collider;
     rigidBody->setUserIndex(index);
@@ -2085,4 +2150,104 @@ CollisionInfo PhysicsEngine::BuildCollisionInfo(
     }
 
     return result;
+}
+
+// 軸ごとの回転制限と、インスペクター等で参照する現在の物理状態。
+void PhysicsEngine::SetAngularFactor(const PhysicsBodyHandle& handle, const VEC3& factor)
+{
+    if (!IsValidRigidBody(handle) || !IsFiniteVector(factor) ||
+        factor.x < 0.0f || factor.x > 1.0f ||
+        factor.y < 0.0f || factor.y > 1.0f ||
+        factor.z < 0.0f || factor.z > 1.0f)
+    {
+        return;
+    }
+
+    auto* body = m_RigidBodies[handle.index].rigidBody;
+    body->setAngularFactor(btVector3(factor.x, factor.y, factor.z));
+
+    // 既に回転中でも、係数0にした軸はその場で止める。
+    btVector3 velocity = body->getAngularVelocity();
+    if (factor.x == 0.0f) velocity.setX(0.0f);
+    if (factor.y == 0.0f) velocity.setY(0.0f);
+    if (factor.z == 0.0f) velocity.setZ(0.0f);
+    body->setAngularVelocity(velocity);
+    WakeForParameterChange(*body);
+}
+
+float PhysicsEngine::GetMass(const PhysicsBodyHandle& handle) const
+{
+    if (!IsValidRigidBody(handle))
+    {
+        return 0.0f;
+    }
+    return FLOAT_CAST(m_RigidBodies[handle.index].rigidBody->getMass());
+}
+
+float PhysicsEngine::GetRestitution(const PhysicsBodyHandle& handle) const
+{
+    if (!IsValidRigidBody(handle))
+    {
+        return 0.0f;
+    }
+    return FLOAT_CAST(m_RigidBodies[handle.index].rigidBody->getRestitution());
+}
+
+float PhysicsEngine::GetFriction(const PhysicsBodyHandle& handle) const
+{
+    if (!IsValidRigidBody(handle))
+    {
+        return 0.0f;
+    }
+    return FLOAT_CAST(m_RigidBodies[handle.index].rigidBody->getFriction());
+}
+
+VECTOR3::VEC3 PhysicsEngine::GetGravity(const PhysicsBodyHandle& handle) const
+{
+    if (!IsValidRigidBody(handle))
+    {
+        return VEC3();
+    }
+    const auto& value = m_RigidBodies[handle.index].rigidBody->getGravity();
+    return VEC3(FLOAT_CAST(value.x()), FLOAT_CAST(value.y()), FLOAT_CAST(value.z()));
+}
+
+VECTOR3::VEC3 PhysicsEngine::GetAngularFactor(const PhysicsBodyHandle& handle) const
+{
+    if (!IsValidRigidBody(handle))
+    {
+        return VEC3();
+    }
+    const auto& value = m_RigidBodies[handle.index].rigidBody->getAngularFactor();
+    return VEC3(FLOAT_CAST(value.x()), FLOAT_CAST(value.y()), FLOAT_CAST(value.z()));
+}
+
+VECTOR3::VEC3 PhysicsEngine::GetAngularVelocity(const PhysicsBodyHandle& handle) const
+{
+    if (!IsValidRigidBody(handle))
+    {
+        return VEC3();
+    }
+    const auto& value = m_RigidBodies[handle.index].rigidBody->getAngularVelocity();
+    return VEC3(FLOAT_CAST(value.x()), FLOAT_CAST(value.y()), FLOAT_CAST(value.z()));
+}
+
+PhysicsData::BodyType PhysicsEngine::GetBodyType(const PhysicsBodyHandle& handle) const
+{
+    if (!IsValidRigidBody(handle))
+    {
+        return BodyType::Static;
+    }
+    const auto* body = m_RigidBodies[handle.index].rigidBody;
+    if (body->isKinematicObject())
+    {
+        return BodyType::Kinematic;
+    }
+    return body->isStaticObject() ? BodyType::Static : BodyType::Dynamic;
+}
+
+bool PhysicsEngine::IsSimulationEnabled(const PhysicsBodyHandle& handle) const
+{
+    return IsValidRigidBody(handle) &&
+        m_RigidBodies[handle.index].rigidBody->getActivationState() != DISABLE_SIMULATION;
 }

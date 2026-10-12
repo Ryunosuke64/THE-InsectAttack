@@ -87,6 +87,15 @@ public:
 };
 
 
+// Bullet剛体の設定と、実行中の物理状態を表示するエディタ。
+class RigidBodyEditor : public EditorBase
+{
+public:
+    bool Init(RendererEngine& renderer) override;
+    void OnEditorGUI(RendererEngine& renderer, class GameObject& pObj) override;
+};
+
+
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
 /* --- @:DirectionLightEditor Class --- */
