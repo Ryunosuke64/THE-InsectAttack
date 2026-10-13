@@ -72,7 +72,8 @@ PS_OUT PSMain(PS_IN input)
     output.Specular.rgb = specularMap.rgb + cb_SpecularColor.rgb;       // スペキュラカラー格納
     output.Specular.a   = (cb_SpecularPower) / (255.0f);                // wに反射強度入れる
     output.Emissive.rgb = emissiveColor;                                // 発光カラー
-    output.Emissive.a   = 1.0f;   // エミッシブのaに環境反射の強さを入れる（0～1に収める）
+    //output.Emissive.a   = 1.0f;  
+    output.Emissive.a = saturate(cb_EnvironmentReflectionStrength); // エミッシブのaに環境反射の強さを入れる（0～1に収める）
 
     //output.Specular = input.WPos;
     return output;

@@ -71,7 +71,8 @@ PS_OUT PSMain(PS_IN input)
     output.Specular.rgb = cb_SpecularColor.rgb;             // スペキュラカラー格納
     output.Specular.a   = (cb_SpecularPower) / (255.0f);    // wに反射強度入れる（0～1に)
     output.Emissive.rgb = emissiveColor;                    // 発光カラー格納
-    output.Emissive.a   = 1.0f; // エミッシブのaに環境反射の強さを入れる（0～1に収める）
+    //output.Emissive.a   = 1.0f;
+    output.Emissive.a = saturate(cb_EnvironmentReflectionStrength); // エミッシブのaに環境反射の強さを入れる（0～1に収める）
     
     // 以下のように深度値を手動で入れてもライティングパス時には反映されないよ
     // 理由はDSVをパイプラインにバインドしているので、ハードウェア側が自動で深度値を入れてくれている。

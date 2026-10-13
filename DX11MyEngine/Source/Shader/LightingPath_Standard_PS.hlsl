@@ -265,29 +265,32 @@ float4 PSMain(PS_IN input) : SV_TARGET
         //}
     
     
-    //float reflectionStrength = emissiveTex.a;
+    float reflectionStrength = emissiveTex.a;
 
-    //if (reflectionStrength > 0.0f)
-    //{
-    //    float3 N = normalize(normal);
-    //    float3 toEye = normalize(cb_EyePos - worldPos.xyz);
+    if (reflectionStrength > 0.0f)
+    {
+        float3 N = normalize(normal);
+        float3 toEye = normalize(cb_EyePos - worldPos.xyz);
 
-    //// カメラから表面へ入ってくる向き
-    //    float3 reflectionDir = reflect(-toEye, N);
+        // カメラから表面へ入ってくる向き
+        float3 reflectionDir = reflect(-toEye, N);
 
-    //    float3 environmentColor =
-    //    g_tEnvironmentCube.Sample(g_sSampler, reflectionDir).rgb;
+        float3 environmentColor =
+        g_tEnvironmentCube.Sample(g_sSampler, reflectionDir).rgb;
 
-    //// 正面よりも斜めから見た方が強く反射する
-    //    float fresnel =
-    //    pow(1.0f - saturate(dot(N, toEye)), 5.0f);
+        // 明るさを抑える（無いとちらつきが出る）
+        environmentColor = saturate(environmentColor);
+        
+        // 正面よりも斜めから見た方が強く反射する
+        float fresnel =
+        pow(1.0f - saturate(dot(N, toEye)), 5.0f);
 
-    //    float reflectionWeight =
-    //    saturate(reflectionStrength * lerp(0.15f, 1.0f, fresnel));
+        float reflectionWeight =
+        saturate(reflectionStrength * lerp(0.5f, 1.0f, fresnel));
 
-    //    finalCol.rgb =
-    //    lerp(finalCol.rgb, environmentColor, reflectionWeight);
-    //}
+        finalCol.rgb =
+        lerp(finalCol.rgb, environmentColor, reflectionWeight);
+    }
     
     //************************************************************************
     // 最終調整

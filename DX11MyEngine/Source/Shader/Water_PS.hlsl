@@ -55,11 +55,11 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     // 合成する
     float3 waterNormal = normalize(normalA + normalB);
     
-    float waterStlength = 20.0f;
+    float waterStlength = 10.0f;
     waterNormal.xy *= waterStlength;
     waterNormal = normalize(waterNormal);
     
-    float3 waterColor = float3(0.1f, 0.2f, 0.2f);
+    float3 waterColor = float3(0.25f, 0.25f, 0.25f);
 
     float2 screenUV;
     screenUV.x = input.Pos.x / cb_WindowWidth;
@@ -79,7 +79,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     float shallowFactor = saturate(depthDiff / ShallowDistance);
     
     float3 DeepColor = float3(0.05f, 0.05f, 0.05f); // 深部カラー（暗い）
-    float3 ShallowColor = float3(0.95, 0.95, 0.95f);   // 浅瀬カラー（白に近い）
+    float3 ShallowColor = float3(1.0, 1.0, 1.0); // 浅瀬カラー（白に近い）
     
     finalColor =
         lerp(
@@ -93,7 +93,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     float4 worldPos = GetConvertPosFromDepthToWorld(sceneDepthRaw, input.UV);
     worldPos.w = 1.0f;
     
-    float specularPower = 70.0f;
+    float specularPower = 100.0f;
     
     //************************************************************************
     //                      ディレクションライト計算

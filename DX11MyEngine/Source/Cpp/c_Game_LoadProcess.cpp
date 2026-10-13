@@ -443,7 +443,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             mesh.MaterialData = matInfo;
             mesh.ShaderType = SHADER_TYPE::FORWARD_UNLIT_WATER;
             mesh.IsNormalMap = true;
-            mesh.TilingScale = VEC2(20.0f, 20.0f);
+            mesh.TilingScale = VEC2(30.0f, 30.0f);
             mesh.ObjLayer = 120;
             mesh.IsTransparent = true;
         

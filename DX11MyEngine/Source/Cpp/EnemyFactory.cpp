@@ -275,11 +275,11 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
 
 
     PhysicsData::RigidBodyDesc rbDesc;
-    rbDesc.mass = 5.0f;
+    rbDesc.mass = 15.0f;
     rbDesc.centerOfMassOffset = collider->get_Center();
     rbDesc.pos = pos;
     rbDesc.restitution = 0.0f;          // 跳ねない
-    rbDesc.friction = 1.0f;             // 摩擦なし
+    rbDesc.friction = 1.0f;             // 摩擦
     rbDesc.owner = generatedObject;     // オーナーオブジェクトの設定
     rbDesc.collider = collider;         // コライダーの設定
     rbDesc.gravity = VEC3(0.0f, -9.8f, 0.0f);
