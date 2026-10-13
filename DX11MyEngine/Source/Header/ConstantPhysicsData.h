@@ -42,10 +42,19 @@ namespace PhysicsData
 		CAPSULE,			// カプセル
 		CYLINDER,			// 円柱
 		CONVEX_HULL,		// 凸包
-		CONVEX_TRIANGLE,	// 凸面三角形
 		CONCAVE_TRIANGLE,	// 凹面三角形
 	};
 
+	static std::map<std::string, COLLIDER_TYPE>g_ColliderTypeMap =
+	{
+		{"NONE",			 COLLIDER_TYPE::NONE},
+		{"BOX",				 COLLIDER_TYPE::BOX},
+		{"SPHERE",			 COLLIDER_TYPE::SPHERE},
+		{"CAPSULE",			 COLLIDER_TYPE::CAPSULE},
+		{"CYLINDER",		 COLLIDER_TYPE::CYLINDER},
+		{"CONVEX_HULL",		 COLLIDER_TYPE::CONVEX_HULL},
+		{"CONCAVE_TRIANGLE", COLLIDER_TYPE::CONCAVE_TRIANGLE}
+	};
 
 	/// カプセルの軸方向
 	enum class CAPSULE_AXIS

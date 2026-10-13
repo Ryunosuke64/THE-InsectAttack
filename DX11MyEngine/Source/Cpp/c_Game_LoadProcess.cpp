@@ -362,6 +362,9 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }
 
+    Master::m_pMapManager->LoadMapObjectAssetDataAll("Resource/MapData/MAP_OBJECT_ASSETS.json");
+    Master::m_pMapManager->CreateMap("Resource/MapData/MAP_MOUNTAINS_A.json");
+
     /* –Ø‚Ì¶¬ */
     {
         // ƒ}ƒeƒŠƒAƒ‹æ“¾

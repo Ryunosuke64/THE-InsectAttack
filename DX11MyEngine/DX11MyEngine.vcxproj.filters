@@ -67,12 +67,6 @@
     <Filter Include="ソース ファイル\Game\Component\Player">
       <UniqueIdentifier>{f1d6915a-5824-41c8-bd1f-817eea48205c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Component\Building">
-      <UniqueIdentifier>{98a8be31-7d89-4b47-b8b2-05976746ce62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Game\Component\Building\State_Building">
-      <UniqueIdentifier>{93638b94-306b-4f19-abe5-c8ad00379e96}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Component\UI">
       <UniqueIdentifier>{37f4d51c-0b8e-4a97-8c45-9314ff031625}</UniqueIdentifier>
     </Filter>
@@ -351,6 +345,15 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\Component\Enemy\State_Ant\Active">
       <UniqueIdentifier>{937c8d4c-69cb-4bf1-a82d-3d0f82d2afe2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Map">
+      <UniqueIdentifier>{0baca07c-9236-4a6b-b1ee-1c8301f2f139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Map\Building">
+      <UniqueIdentifier>{98a8be31-7d89-4b47-b8b2-05976746ce62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Map\Building\State_Building">
+      <UniqueIdentifier>{93638b94-306b-4f19-abe5-c8ad00379e96}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -646,10 +649,10 @@
       <Filter>ソース ファイル\Constant</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cpp\Component_BuildingController.cpp">
-      <Filter>ソース ファイル\Game\Component\Building</Filter>
+      <Filter>ソース ファイル\Game\Component\Map\Building</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cpp\Building_State.cpp">
-      <Filter>ソース ファイル\Game\Component\Building\State_Building</Filter>
+      <Filter>ソース ファイル\Game\Component\Map\Building\State_Building</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cpp\Component_MiniMapRader.cpp">
       <Filter>ソース ファイル\Game\Component\UI</Filter>
@@ -951,6 +954,12 @@
     <ClCompile Include="Source\Cpp\Component_CylinderCollider.cpp">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_MapObject.cpp">
+      <Filter>ソース ファイル\Game\Component\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\MapObjectFactory.cpp">
+      <Filter>ソース ファイル\Game\Factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1245,10 +1254,10 @@
       <Filter>ソース ファイル\Constant</Filter>
     </ClInclude>
     <ClInclude Include="Source\Header\Component_BuildingController.h">
-      <Filter>ソース ファイル\Game\Component\Building</Filter>
+      <Filter>ソース ファイル\Game\Component\Map\Building</Filter>
     </ClInclude>
     <ClInclude Include="Source\Header\Building_State.h">
-      <Filter>ソース ファイル\Game\Component\Building\State_Building</Filter>
+      <Filter>ソース ファイル\Game\Component\Map\Building\State_Building</Filter>
     </ClInclude>
     <ClInclude Include="Source\Header\ConstantMapData.h">
       <Filter>ソース ファイル\Constant</Filter>
@@ -1531,6 +1540,12 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_CylinderCollider.h">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_MapObject.h">
+      <Filter>ソース ファイル\Game\Component\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\MapObjectFactory.h">
+      <Filter>ソース ファイル\Game\Factory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "MapManager.h"
+#include "MapObjectFactory.h"
 
 using namespace Map;
 
@@ -29,10 +30,8 @@ MapManager::~MapManager()
 //*----------------------------------------------------------------------------------------
 bool MapManager::CreateMap(const std::string& _filePath)
 {
-    const auto mapDataIt = m_MapDataMap.find(_filePath);
-
     // 登録されていないなら読み込む
-    if (mapDataIt == m_MapDataMap.end())
+    if (m_MapDataMap.find(_filePath) == m_MapDataMap.end())
     {
         if (!LoadMapData(_filePath))
         {
@@ -42,8 +41,8 @@ bool MapManager::CreateMap(const std::string& _filePath)
             return false;
         }
     }
-
-    const MapData& mapData = mapDataIt->second;
+    
+    const MapData& mapData = m_MapDataMap[_filePath];
 
     // 地面の生成
     SpawnGround(mapData.groundAssetTag);
@@ -136,32 +135,12 @@ bool MapManager::ExtractionMapData(const nlohmann::json& _json, Map::MapData& _o
     {
         MapObjectData data;
 
-        data.name = obj.at("name").get<std::string>();
-        data.modelPath = obj.at("modelPath").get<std::string>();
-
-        // マップオブジェクトのタイプ
-        std::string mapObjectType = _json.at("mapObjectType").get<std::string>();  
-        const auto mapObjectTypeIt = g_MapObjectTypeMap.find(mapObjectType);
-        // 未定義
-        if (mapObjectTypeIt == g_MapObjectTypeMap.end()) {
-            return false;
-        }
-        data.mapObjectType = mapObjectTypeIt->second;
-
+        data.assetID = obj.at("assetID").get<std::string>();
 
         // 位置/回転/拡縮を取得
         Tool::Json::LoadVEC3Data(obj, "position", data.transform.position);
         Tool::Json::LoadVEC3Data(obj, "rotation", data.transform.rotation);
         Tool::Json::LoadVEC3Data(obj, "scale", data.transform.scale);
-
-        // 掴めるか
-        data.isGrabbable = obj.at("isGrabbable").get<bool>();
-
-        // 破壊できるか
-        data.isDestruction = obj.at("isDestruction").get<bool>();
-
-        // 体力
-        data.health = obj.at("health").get<float>();
 
         // vectorに追加
         _outData.objects.push_back(data);
@@ -169,6 +148,197 @@ bool MapManager::ExtractionMapData(const nlohmann::json& _json, Map::MapData& _o
 
     return true;
 }
+
+//*---------------------------------------------------------------------------------------
+//*【?】マップオブジェクトデータの読み込み
+//*     マップの作成前にこれを呼ばないと、オブジェクトのデータが参照できない 
+//*
+//* [引数]
+//* _filePath : マップオブジェクトデータJsonのファイルパス
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::LoadMapObjectAssetData(const std::string& _filePath)
+{
+    using json = nlohmann::json;
+    std::ifstream ifs(_filePath);
+    if (!ifs.is_open())
+    {
+        Tool::ErrorMessage(L"マップオブジェクト定義ファイルを開けませんでした", L"MapManager");
+        assert(false);
+        return false;
+    }
+    
+    json j;
+    ifs >> j;
+    Map::Map_ObjectAssetData extractionMapObjectData; // 抽出データ
+
+    // アセットIDを抽出し、既に登録されているか確認
+    extractionMapObjectData.assetID = j.at("assetID").get<std::string>();
+    
+    // 登録されていれば、再度抽出はせず終了
+    if (IsRegisteredMapObjectAssetData(extractionMapObjectData.assetID))
+    {
+        return true;
+    }
+
+    // マップオブジェクトデータの読み込み
+    if (!ExtractionMapObjectAssetData(j, extractionMapObjectData))
+    {
+        Tool::ErrorMessage(L"マップオブジェクトの読み込みに失敗しました", L"MapManager");
+        assert(false);
+        return false;
+    }
+
+    // アセットIDをキーにしてマップデータを保存
+    m_MapObjectAssetDataMap[extractionMapObjectData.assetID] = extractionMapObjectData;
+
+    return true;
+}
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】マップオブジェクトデータの読み込み
+//*     すべてのマップオブジェクトデータを読み込む
+//*     指定ファイルにすべてのオブジェクト情報が書かれている必要がある 
+//*     ファイル内の形式も単一のものとは異なるので注意 
+//*     マップの作成前にこれを呼ばないと、オブジェクトのデータが参照できない 
+//*
+//* [引数]
+//* _filePath : マップオブジェクトデータJsonのファイルパス
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::LoadMapObjectAssetDataAll(const std::string& _filePath)
+{
+    using json = nlohmann::json;
+    std::ifstream ifs(_filePath);
+    if (!ifs.is_open())
+    {
+        Tool::ErrorMessage(L"マップオブジェクト定義ファイルを開けませんでした", L"MapManager");
+        assert(false);
+        return false;
+    }
+
+    json j;
+    ifs >> j;
+
+
+    // すべてのオブジェクトデータを取り出す
+    for (const auto& obj : j.at("objects"))
+    {
+        Map::Map_ObjectAssetData extractionMapObjectData; // 抽出データ
+
+        // アセットIDを抽出し、既に登録されているか確認
+        extractionMapObjectData.assetID = obj.at("assetID").get<std::string>();
+        // 登録されていれば、再度抽出はせず終了
+        if (IsRegisteredMapObjectAssetData(extractionMapObjectData.assetID))
+        {
+            return true;
+        }
+
+        // マップオブジェクトデータの読み込み
+        if (!ExtractionMapObjectAssetData(obj, extractionMapObjectData))
+        {
+            Tool::ErrorMessage(L"マップオブジェクトの読み込みに失敗しました", L"MapManager");
+            assert(false);
+            return false;
+        }
+
+        // アセットIDをキーにしてマップデータを保存
+        m_MapObjectAssetDataMap[extractionMapObjectData.assetID] = extractionMapObjectData;
+    }
+
+    return true;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】マップオブジェクトデータの抽出
+//*
+//* [引数]
+//* _json   : 読み込んだjson
+//*_outData : 出力データ
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::ExtractionMapObjectAssetData(const nlohmann::json& _json, Map::Map_ObjectAssetData& _outData)
+{
+    //
+    // assetIDは呼び出し元ですでに抽出済みなのでここではしない
+    //
+
+    // モデルパス
+    _outData.modelPath = _json.at("modelPath").get<std::string>();
+
+    // マップオブジェクトのタイプ
+    std::string mapObjectType = _json.at("mapObjectType").get<std::string>();
+    const auto mapObjectTypeIt = g_MapObjectTypeMap.find(mapObjectType);
+    // 未定義
+    if (mapObjectTypeIt == g_MapObjectTypeMap.end()) {
+        return false;
+    }
+    _outData.objectType = mapObjectTypeIt->second;
+
+    // マテリアルデータを取得
+    for (const auto& mat : _json.at("materials"))
+    {
+        SetupMaterialInfo setupMaterial;
+
+        // マテリアルスロット
+        setupMaterial.Index = mat.at("slot").get<int>();
+        // マテリアルのタグ
+        std::string materialTag = mat.at("tag").get<std::string>();
+
+        // マテリアルのタグから実際のマテリアルデータを取得
+        setupMaterial.pMaterialData = Master::m_pResourceManager->FindMaterial(materialTag);
+
+        // vectorに追加
+        _outData.materials.push_back(setupMaterial);
+    }
+
+
+    // コライダーデータを取得
+    for (const auto& coll : _json.at("colliders"))
+    {
+        ColliderData collider;
+
+        // コライダーのタイプ
+        std::string colliderTypeStr = coll.at("type").get<std::string>();
+        const auto colliderTypeIt = PhysicsData::g_ColliderTypeMap.find(colliderTypeStr);
+        // 未定義
+        if (colliderTypeIt == PhysicsData::g_ColliderTypeMap.end()) {
+            return false;
+        }
+        collider.type = colliderTypeIt->second;
+
+        collider.height = coll.value("height", 0.0f);
+        collider.radius = coll.value("radius", 0.0f);
+        Tool::Json::LoadVEC3Data(coll, "center", collider.center);
+        Tool::Json::LoadVEC3Data(coll, "size", collider.size);
+
+        // vectorに追加
+        _outData.colliders.push_back(collider);
+    }
+    // 掴めるか
+    _outData.isGrabbable = _json.at("isGrabbable").get<bool>();
+
+    // 破壊できるか
+    _outData.isDestruction = _json.at("isDestruction").get<bool>();
+
+    // 体力
+    _outData.health = _json.at("health").get<float>();
+
+
+
+    return true;
+}
+
 
 
 //*---------------------------------------------------------------------------------------
@@ -183,29 +353,66 @@ bool MapManager::ExtractionMapData(const nlohmann::json& _json, Map::MapData& _o
 //*----------------------------------------------------------------------------------------
 bool MapManager::SpawnGround(const std::string& _groundAssetTag)
 {
-
+    return true;
 }
 
 //*---------------------------------------------------------------------------------------
 //*【?】マップオブジェクトの生成
 //*
 //* [引数]
-//* _assetTag   : タグ（モデルパス）
-//* _data       : 生成データ
+//* _mapObjectData   : マップオブジェクトデータ
 //*
 //* [返値]
 //* true : 成功
 //* false : 失敗
 //*----------------------------------------------------------------------------------------
-bool MapManager::SpawnMapObject(const Map::MapObjectData& _data)
+bool MapManager::SpawnMapObject(const Map::MapObjectData& _mapObjectData)
 {
-    _data.health;
-    _data.isDestruction;
-    _data.isGrabbable;
-    _data.mapObjectType;
-    _data.modelPath;
-    _data.name;
-    _data.transform.position;
-    _data.transform.rotation;
-    _data.transform.scale;
+    return MapObjectFactory::CreateMapObject(_mapObjectData);
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】マップオブジェクトがあるかどうか探す
+//*
+//* [引数]
+//* _assetID   : マップオブジェクトに紐付けされているキー
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::IsRegisteredMapObjectAssetData(const std::string& _assetID)const
+{
+    const auto mapObjectDataIt = m_MapObjectAssetDataMap.find(_assetID);
+
+    // 登録されている
+    if (mapObjectDataIt != m_MapObjectAssetDataMap.end())
+    {
+        return true;
+    }
+
+    // されていない
+    return false;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】アセットIDからマップオブジェクトの定義データを探す
+//*
+//* [引数]
+//* _assetID   : マップオブジェクトに紐付けされているキー
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+Map::Map_ObjectAssetData MapManager::
+FindMapObjectAssetData(const std::string& _assetID)
+{
+    if (!IsRegisteredMapObjectAssetData(_assetID))
+    {
+        assert(false);
+        return {};
+    }
+
+    return m_MapObjectAssetDataMap[_assetID];
 }

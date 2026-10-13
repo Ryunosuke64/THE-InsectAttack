@@ -1,0 +1,56 @@
+{
+    "mapName" : "MountainsA",
+    "groundAssetTag" : "MountainsGroundA",
+    "objects" : 
+    [
+        {
+            "assetID" : "Tree_01",
+            "position" : [0.0,0.0,0.0],
+            "rotation" : [0.0,0.0,0.0],
+            "scale"    : [1.0,1.0,1.0]
+        },
+        {
+            "assetID" : "Tree_01",
+            "position" : [10.0,0.0,0.0],
+            "rotation" : [0.0,0.0,0.0],
+            "scale"    : [1.0,1.0,1.0]
+        },
+        {
+            "assetID" : "Tree_01",
+            "position" : [20.0, 0.0, 0.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        
+        {
+            "assetID" : "Tree_01",
+            "position" : [0.0,  0.0, 10.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        {
+            "assetID" : "Tree_01",
+            "position" : [10.0, 0.0, 10.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        {
+            "assetID" : "Tree_01",
+            "position" : [20.0, 0.0, 10.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        {
+            "assetID" : "Building_01",
+            "position" : [-120.0, 5.0, 50.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        {
+            "assetID" : "BuildingTW_01",
+            "position" : [120.0, 5.0, 50.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        }
+    ]
+}

@@ -199,6 +199,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\BitFlag.h" />
     <ClInclude Include="Source\Header\BlendManager.h" />
     <ClInclude Include="Source\Header\Component_CylinderCollider.h" />
+    <ClInclude Include="Source\Header\Component_MapObject.h" />
     <ClInclude Include="Source\Header\MapManager.h" />
     <ClInclude Include="Source\Header\BuildingStateFactory.h" />
     <ClInclude Include="Source\Header\Building_State.h" />
@@ -308,6 +309,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\ItemManager.h" />
     <ClInclude Include="Source\Header\KeyState.h" />
     <ClInclude Include="Source\Header\LightManager.h" />
+    <ClInclude Include="Source\Header\MapObjectFactory.h" />
     <ClInclude Include="Source\Header\MissionAction.h" />
     <ClInclude Include="Source\Header\MissionEvent.h" />
     <ClInclude Include="Source\Header\PhysicsEngine.h" />
@@ -430,6 +432,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\BitFlag.cpp" />
     <ClCompile Include="Source\Cpp\BlendManager.cpp" />
     <ClCompile Include="Source\Cpp\Component_CylinderCollider.cpp" />
+    <ClCompile Include="Source\Cpp\Component_MapObject.cpp" />
     <ClCompile Include="Source\Cpp\MapManager.cpp" />
     <ClCompile Include="Source\Cpp\BuildingStateFactory.cpp" />
     <ClCompile Include="Source\Cpp\Building_State.cpp" />
@@ -543,6 +546,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\InspectorWindow.cpp" />
     <ClCompile Include="Source\Cpp\ItemManager.cpp" />
     <ClCompile Include="Source\Cpp\LightManager.cpp" />
+    <ClCompile Include="Source\Cpp\MapObjectFactory.cpp" />
     <ClCompile Include="Source\Cpp\MissionAction.cpp" />
     <ClCompile Include="Source\Cpp\MissionEvent.cpp" />
     <ClCompile Include="Source\Cpp\PhysicsEngine.cpp" />

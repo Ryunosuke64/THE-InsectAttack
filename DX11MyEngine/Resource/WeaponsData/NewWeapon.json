@@ -4,7 +4,7 @@
   "bulletMaxNum": 82,
   "bulletSimultaneousNum": 1,
   "fireRate": 8,
-  "accuracy": 0.06,
+  "accuracy": 0.046,
   "zoomLength": 1,
   "isLaserSight": true,
   "soundID": 0,
@@ -35,7 +35,13 @@
       ]
     },
     "movement": {
-      "type": "LINEAR"
+      "type": "HOMING",
+      "turnSpeed": 0.1,
+      "targetingStartDelay": 0.1,
+      "accelerationStartDelay": 0,
+      "targetingDuration": 3,
+      "lockOnRange": 500,
+      "lockOnHalfAngleDeg": 90
     },
     "hit": {
       "type": "DIRECT",
@@ -46,16 +52,16 @@
     "visual": {
       "type": "BILLBOARD",
       "bulletMaterialTag": "Bullet_02",
-      "trailDrawTime": 0.04,
-      "trailWidth": 1,
+      "trailDrawTime": 0.03,
+      "trailWidth": 0.5,
       "enableFlightSmoke": false,
       "smokeInterval": 0,
       "smokeSize": 0,
       "smokeEffectTag": "",
       "trailColor": [
-        1.5,
-        1.5,
-        1.5
+        3,
+        3,
+        3
       ],
       "scale": [
         0.15,

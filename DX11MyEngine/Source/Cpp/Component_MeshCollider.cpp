@@ -86,7 +86,7 @@ PhysicsShapeDesc MeshCollider::GetShapeDesc()const
     std::vector<uint32_t> indices = m_pModelData.lock()->get_CollisionIndices();
     
     //*****************************************************************************************
-    // 静的メッシュ 凸形状
+    // 静的メッシュ 凹形状
     //*****************************************************************************************
     if (m_IsStatic)
     {

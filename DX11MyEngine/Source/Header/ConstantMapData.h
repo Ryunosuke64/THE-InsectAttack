@@ -88,16 +88,18 @@ namespace Map
     /* マップ内に配置されるオブジェクトのデータ */
     struct MapObjectData
     {
-        std::string name = "";
-        std::string modelPath = "";
+        std::string assetID = "";
         TransformData transform;
-        
-        MAP_OBJECT_TYPE mapObjectType   // マップオブジェクトの種類
-            = MAP_OBJECT_TYPE::BUILDING;
 
-        bool isGrabbable = false;       // 掴むことができるか
-        bool isDestruction = true;      // 破壊できるか
-        float health = 10.0f;           // 体力
+
+        //std::string modelPath = "";
+        //
+        //MAP_OBJECT_TYPE mapObjectType   // マップオブジェクトの種類
+        //    = MAP_OBJECT_TYPE::BUILDING;
+
+        //bool isGrabbable = false;       // 掴むことができるか
+        //bool isDestruction = true;      // 破壊できるか
+        //float health = 10.0f;           // 体力
     };
 
     /* マップのデータ */
@@ -116,19 +118,18 @@ namespace Map
 
     };
 
-    // オブジェクト定義
+    // マップ内に配置されるオブジェクトの定義
     struct Map_ObjectAssetData
     {
         std::string assetID;
+        std::string modelPath = "";
 
         MAP_OBJECT_TYPE objectType;
-        std::string modelAssetID;
         std::vector<SetupMaterialInfo> materials;
         std::vector<ColliderData> colliders;
 
-        bool isGrabbable;
-        bool isDestruction;
-
-        float health;
+        bool isGrabbable = false;       // 掴むことができるか
+        bool isDestruction = true;      // 破壊できるか
+        float health = 10.0f;           // 体力
     };
 };
