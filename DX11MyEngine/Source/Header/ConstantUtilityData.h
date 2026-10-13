@@ -19,17 +19,17 @@ namespace UtilityData
 		ITEM,		// アイテム
 	};
 
-	/// <summary>
-	/// コライダー種類
-	/// </summary>
-	enum class COLLIDER_TYPE
-	{
-		NONE,
-		BOX,
-		BOX_OBB,
-		SPHERE,
-		RAY,
-	};
+	///// <summary>
+	///// コライダー種類
+	///// </summary>
+	//enum class COLLIDER_TYPE
+	//{
+	//	NONE,
+	//	BOX,
+	//	BOX_OBB,
+	//	SPHERE,
+	//	RAY,
+	//};
 
 	/// <summary>
 	/// 衝突した際の処理

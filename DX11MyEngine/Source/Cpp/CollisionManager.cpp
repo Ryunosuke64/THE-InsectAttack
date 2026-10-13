@@ -679,8 +679,6 @@ bool CollisionManager::HitCheck_Raycast(
         }
     }
     break;
-    case COLLIDER_TYPE::RAY:
-        break;
     default:
         break;
     }

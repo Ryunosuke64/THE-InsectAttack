@@ -31,6 +31,21 @@ namespace PhysicsData
 		COMPOUND,			// 形状の組み合わせ
 	};
 
+	/// <summary>
+	/// コライダーの種類
+	/// </summary>
+	enum class COLLIDER_TYPE
+	{
+		NONE = -1,
+		BOX,				// ボックス
+		SPHERE,				// 球
+		CAPSULE,			// カプセル
+		CYLINDER,			// 円柱
+		CONVEX_HULL,		// 凸包
+		CONVEX_TRIANGLE,	// 凸面三角形
+		CONCAVE_TRIANGLE,	// 凹面三角形
+	};
+
 
 	/// カプセルの軸方向
 	enum class CAPSULE_AXIS

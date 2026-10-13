@@ -26,7 +26,7 @@ Collider::Collider(std::weak_ptr<GameObject> pOwner, int updateRank)
     m_IsStatic(false),
     m_IsDrawDebugMesh(false),
     m_Center(VEC3()),
-    m_ColliderType(COLLIDER_TYPE::BOX),
+    m_ColliderType(PhysicsData::COLLIDER_TYPE::BOX),
     m_CategoryBits(COLLISION_CATEGORY::NONE),
     m_CollisionBitMask(static_cast<unsigned>(COLLISION_CATEGORY::EVERY)),    // èâä˙ílÇÕëSè’ìÀÇ…Ç∑ÇÈ
     m_ResponseBitMask(0xFFFFFFFF),

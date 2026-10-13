@@ -65,6 +65,12 @@ float3 LambertDiffuseLightCalc(float3 _ligDir, float3 _ligCol, float3 _norm)
 //*----------------------------------------------------------------------------------------
 float3 PhongSpecularLightCalc(float3 _ligDir, float3 _eyePos, float3 _spcCol, float _spcPower, float3 _worldPos, float3 _norm)
 {
+    // スペキュラが 0 なら無効
+    if (_spcPower <= 0.0f)
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+    
     float3 finalSpc = float3(0.0f, 0.0f, 0.0f);
 
     // 反射ベクトル
@@ -76,7 +82,7 @@ float3 PhongSpecularLightCalc(float3 _ligDir, float3 _eyePos, float3 _spcCol, fl
     
     
     // 内積を求める（鏡面反射の強さ）
-    float refFactor = max(0.0, saturate(dot(toEye, refVec)));
+    float refFactor = saturate(dot(toEye, refVec));
     
     
     // ※ ポイントライトがおかしくなっていたのはここが原因…？

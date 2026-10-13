@@ -67,7 +67,7 @@ namespace Map
 
     struct ColliderData
     {
-        COLLIDER_TYPE type;
+        PhysicsData::COLLIDER_TYPE type;
 
         VECTOR3::VEC3 center;
 
@@ -112,6 +112,7 @@ namespace Map
     /* マップの地面アセット */
     struct Map_GroundAssetData
     {
+        std::string assetID;
 
     };
 
@@ -123,7 +124,7 @@ namespace Map
         MAP_OBJECT_TYPE objectType;
         std::string modelAssetID;
         std::vector<SetupMaterialInfo> materials;
-        std::vector<> colliders;
+        std::vector<ColliderData> colliders;
 
         bool isGrabbable;
         bool isDestruction;

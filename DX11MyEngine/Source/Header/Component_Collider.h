@@ -47,7 +47,7 @@ protected:
 	bool m_IsHit;									// 現在衝突しているかどうか
 	bool m_IsConvex;								// 凸形状か
 	bool m_IsStatic;								// 静的かどうか（建物など動かないもの）
-	UtilityData::COLLIDER_TYPE m_ColliderType;		// コライダーの種類
+	PhysicsData::COLLIDER_TYPE m_ColliderType;		// コライダーの種類
 	class MyTransform *m_pTransform;				// 自身のトランスフォームポインタ
 	VECTOR3::VEC3 m_Center;							// コライダーの中心位置
 	UtilityData::COLLISION_CATEGORY m_CategoryBits;	// 衝突判定を分けるためのカテゴリー
@@ -79,7 +79,7 @@ public:
 	void set_Center(const VECTOR3::VEC3 &_vIn) { m_Center = _vIn; }
 	VECTOR3::VEC3 get_Center()const { return m_Center; }
 
-	UtilityData::COLLIDER_TYPE get_ColliderType()const { return m_ColliderType; }
+	PhysicsData::COLLIDER_TYPE get_ColliderType()const { return m_ColliderType; }
 
 	class MyTransform* get_Transform() { return m_pTransform; };
 

@@ -42,8 +42,8 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     // Aは右斜め前方向に 
     // Bは左斜め前方向に
     //=====================================
-    uvA += float2(0.04f, 0.07f) * cb_Time;
-    uvB += float2(-0.03f, 0.04f) * cb_Time;
+    uvA += float2(0.04f, 0.06f) * cb_Time;
+    uvB += float2(-0.03f, 0.02f) * cb_Time;
     
     float3 normalA = g_tNormalTextureA.Sample(g_sSampler, uvA).rgb;
     float3 normalB = g_tNormalTextureB.Sample(g_sSampler, uvB).rgb;
@@ -55,11 +55,11 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     // 合成する
     float3 waterNormal = normalize(normalA + normalB);
     
-    float waterStlength =10.0f;
+    float waterStlength = 20.0f;
     waterNormal.xy *= waterStlength;
     waterNormal = normalize(waterNormal);
     
-    float3 waterColor = float3(0.3f, 0.4f, 0.4f);
+    float3 waterColor = float3(0.1f, 0.2f, 0.2f);
 
     float2 screenUV;
     screenUV.x = input.Pos.x / cb_WindowWidth;
@@ -70,16 +70,16 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     g_tSceneDepth.Sample(g_sSampler, screenUV).r;
     
     // ビュー空間の深度値を求める
-    float sceneDepth = LinearizeDepth(sceneDepthRaw);
+    float viewDepth = LinearizeDepth(sceneDepthRaw);
     
     // 地面と水面との差
-    float depthDiff = sceneDepth - input.ViewDepth;
+    float depthDiff = viewDepth - input.ViewDepth;
     
     float ShallowDistance = 2.5f;   // 
     float shallowFactor = saturate(depthDiff / ShallowDistance);
     
     float3 DeepColor = float3(0.05f, 0.05f, 0.05f); // 深部カラー（暗い）
-    float3 ShallowColor = float3(0.9, 0.9, 0.9f);   // 浅瀬カラー（白に近い）
+    float3 ShallowColor = float3(0.95, 0.95, 0.95f);   // 浅瀬カラー（白に近い）
     
     finalColor =
         lerp(
@@ -88,14 +88,34 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
             shallowFactor
         );
     
+    
+    // 深度値からワールド座標を求める
+    float4 worldPos = GetConvertPosFromDepthToWorld(sceneDepthRaw, input.UV);
+    worldPos.w = 1.0f;
+    
+    float specularPower = 70.0f;
+    
     //************************************************************************
     //                      ディレクションライト計算
     //************************************************************************
     for (int dirIdx = 0; dirIdx < DIRECTIONLIGHT_MAX_NUM; dirIdx++)
     {
+        // ディフューズ
         float3 lightDir = cb_DirLightData[dirIdx].Direction;
         float lighting = saturate(dot(waterNormal, lightDir));
         finalColor += waterColor * (0.5f + lighting * 0.5f);
+        
+        
+        // 鏡面（スペキュラ）反射
+        float3 specularLig = PhongSpecularLightCalc(
+        lightDir, 
+        cb_EyePos,
+        cb_DirLightData[dirIdx].SpecularColor,
+        specularPower,
+        worldPos.xyz,
+        waterNormal);
+    
+        finalColor += specularLig * cb_DirLightData[dirIdx].SpecularIntensity;
     }
     
     float ShallowAlpha = 0.1f;  // 最浅瀬のアルファ
