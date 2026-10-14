@@ -355,6 +355,9 @@
     <Filter Include="ソース ファイル\Game\Component\Map\Building\State_Building">
       <UniqueIdentifier>{93638b94-306b-4f19-abe5-c8ad00379e96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Map\DestructionBehaviour">
+      <UniqueIdentifier>{5cdaf874-1f1a-4ed7-abcc-78ec4b2de680}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Cpp\SHADER.cpp">
@@ -960,6 +963,15 @@
     <ClCompile Include="Source\Cpp\MapObjectFactory.cpp">
       <Filter>ソース ファイル\Game\Factory</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_Destructible.cpp">
+      <Filter>ソース ファイル\Game\Component\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DestructionBehavior.cpp">
+      <Filter>ソース ファイル\Game\Component\Map\DestructionBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\PropDestructionBehavior.cpp">
+      <Filter>ソース ファイル\Game\Component\Map\DestructionBehaviour</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1546,6 +1558,12 @@
     </ClInclude>
     <ClInclude Include="Source\Header\MapObjectFactory.h">
       <Filter>ソース ファイル\Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_Destructible.h">
+      <Filter>ソース ファイル\Game\Component\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\DestructionBehavior_Header.h">
+      <Filter>ソース ファイル\Game\Component\Map\DestructionBehaviour</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

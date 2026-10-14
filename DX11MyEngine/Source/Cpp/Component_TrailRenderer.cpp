@@ -168,11 +168,11 @@ void TrailRenderer::Draw(RendererEngine &renderer)
 	// 三角形ストリップ指定
 	pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	
-	Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::ALPHA);
+	//Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::ALPHA);
 
 	// 描画（頂点数は一つの座標につき左右で2つあるので2倍）
 	pContext->Draw(static_cast<UINT>(m_TrailInfoList.size() * 2), 0);
-	Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::NONE);
+	//Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::NONE);
 }
 
 

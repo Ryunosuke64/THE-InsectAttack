@@ -294,8 +294,12 @@ namespace PhysicsData
 		float mass = 0.0f;												// 質量
 		float friction = 0.5f;											// 摩擦
 		float restitution = 0.0f;										// 反発
+		float linearDamping = 0.0f;										// 移動減衰
+		float angularDamping = 0.0f;									// 回転減衰
 		VECTOR3::VEC3 gravity = VECTOR3::VEC3(0.0f, -9.8f, 0.0f);		// ワールド重力に対する倍率
 		VECTOR3::VEC3 angularFactor = VECTOR3::VEC3(1.0f, 1.0, 1.0f);	// 1.0 = 回転 0.0 = 回転させない
+		VECTOR3::VEC3 linearFactor = VECTOR3::VEC3(1.0f, 1.0, 1.0f);	// 各軸の移動制限
+
 		VECTOR3::VEC3 pos = VECTOR3::VEC3();							// 初期座標
 
 		std::weak_ptr<::GameObject> owner;

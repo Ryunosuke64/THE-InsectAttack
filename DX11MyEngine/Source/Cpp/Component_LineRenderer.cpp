@@ -102,11 +102,11 @@ void LineRenderer::Draw(RendererEngine& renderer)
 	// 三角形ストリップ指定
 	pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::ALPHA);
+	//Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::ALPHA);
 
 	// 描画
 	pContext->Draw(4, 0);
-	Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::NONE);
+	//Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::NONE);
 }
 
 

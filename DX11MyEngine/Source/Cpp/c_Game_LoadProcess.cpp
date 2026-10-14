@@ -362,6 +362,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }
 
+    Master::m_pMapManager->LoadPhysicsDataPreset("Resource/MapData/MAP_OBJECT_PHYSICS_PRESET.json");
     Master::m_pMapManager->LoadMapObjectAssetDataAll("Resource/MapData/MAP_OBJECT_ASSETS.json");
     Master::m_pMapManager->CreateMap("Resource/MapData/MAP_MOUNTAINS_A.json");
 
@@ -443,7 +444,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             mesh.MaterialData = matInfo;
             mesh.ShaderType = SHADER_TYPE::FORWARD_UNLIT_WATER;
             mesh.IsNormalMap = true;
-            mesh.TilingScale = VEC2(30.0f, 30.0f);
+            mesh.TilingScale = VEC2(24.0f, 24.0f);
             mesh.ObjLayer = 120;
             mesh.IsTransparent = true;
         
@@ -530,6 +531,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             collider->SetupModelData(modelResource->get_ModelData());
             collider->set_IsStatic(true);
             collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// Õ“ËƒJƒeƒSƒŠ
+            collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
             collider->set_SurfaceType(SURFACE_TYPE::SOIL);
 
             PhysicsData::RigidBodyDesc rbDesc;

@@ -24,10 +24,10 @@
       "penetrationsCount": 6,
       "collisionSize": 0.0,
       "gravityScale": 0.0,
-      "knockbackForce" : 20.0,
+      "knockbackForce" : 100.0,
       "bulletType" : "NORMAL",
       "collisionCategory" : "PLAYER_BULLET",
-      "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING"]
+      "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
     },
     
     "movement" :

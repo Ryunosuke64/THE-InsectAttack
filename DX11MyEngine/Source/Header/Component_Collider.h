@@ -20,6 +20,15 @@ enum class SURFACE_TYPE
 
 	NUM,
 };
+static std::map<std::string, SURFACE_TYPE> g_SurfaceTypeMap =
+{
+	{"DEFAULT",		SURFACE_TYPE::DEFAULT},
+	{"CONCRETE",	SURFACE_TYPE::CONCRETE},
+	{"METAL",		SURFACE_TYPE::METAL},
+	{"SOIL",		SURFACE_TYPE::SOIL},
+	{"ANT",			SURFACE_TYPE::ANT},
+};
+
 
 const std::string g_SurfaceNames[UINT_CAST(SURFACE_TYPE::NUM)] =
 {

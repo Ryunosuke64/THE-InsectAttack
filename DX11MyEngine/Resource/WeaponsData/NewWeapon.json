@@ -31,7 +31,8 @@
       "collisionMask": [
         "ENEMY",
         "BUILDING",
-        "DESTRUCTION_BUILDING"
+        "DESTRUCTION_BUILDING", 
+        "PROP"
       ]
     },
     "movement": {
@@ -44,10 +45,16 @@
       "lockOnHalfAngleDeg": 90
     },
     "hit": {
-      "type": "DIRECT",
-      "decalMaterialTag": "Decal_BulletHole",
-      "hitEffectTag": "BulletHit_Standard",
-      "environmentResponse": "DEACTIVATE"
+      "type" : "EXPLOSION",
+      "decalMaterialTag" : "Decal_BulletHole",
+      "hitEffectTag" : "BulletHit_Flame",
+      "explosionRadius" : 2.0,
+      "explosionEffectTag" : "Explosion_Plasma_01",
+      "explosionEffectAliveTime" : 0.3,
+      "isSmoke" : false,
+      "expLightColor" : [0.2, 0.2, 0.9],
+      "expLightIntensity" : 8.0,
+      "expLightDuration" : 3.0
     },
     "visual": {
       "type": "BILLBOARD",

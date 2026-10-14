@@ -54,6 +54,7 @@ namespace UtilityData
 		DESTRUCTION_BUILDING	= 1 << 4,	// 破壊可能な建物
 		BUILDING				= 1 << 5,	// 破壊不可能な建物
 		ITEM					= 1 << 6,	// アイテム
+		PROP					= 1 << 7,	// 小物系オブジェクト
 
 		EVERY = 0xFFFFFFFF	// 全てに衝突
 	};
@@ -68,6 +69,7 @@ namespace UtilityData
 		{"BUILDING",			 COLLISION_CATEGORY::BUILDING},
 		{"EVERY",				 COLLISION_CATEGORY::EVERY},
 		{"ITEM",				 COLLISION_CATEGORY::ITEM},
+		{"PROP",				 COLLISION_CATEGORY::PROP},
 	};
 	// 衝突判定 Enumを文字列に変換するマップ
 	static std::map<COLLISION_CATEGORY, std::string > g_CollisionCategoryStringMap = {
@@ -79,6 +81,7 @@ namespace UtilityData
 		{COLLISION_CATEGORY::BUILDING			  ,"BUILDING",			  },
 		{COLLISION_CATEGORY::EVERY				  ,"EVERY",				  },
 		{COLLISION_CATEGORY::ITEM				  ,"ITEM",				  },
+		{COLLISION_CATEGORY::PROP				  ,"PROP",				  },
 	};
 
 	/// <summary>

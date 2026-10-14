@@ -492,6 +492,8 @@ bool Bullet::HitCheck_Sphere(CollisionInfo& _outCollisionInfo)
     float radius = m_pDefinition->_commonData._collisionSize;
     unsigned mask = m_pDefinition->_commonData._collisionMask;
 
+    Master::m_pPhysicsEngine->CheckSphere(pos, radius, mask);
+
     return false;
 }
 

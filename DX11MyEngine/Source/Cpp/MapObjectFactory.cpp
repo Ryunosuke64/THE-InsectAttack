@@ -10,6 +10,8 @@
 #include "Component_MeshCollider.h"
 #include "Component_BoxCollider.h"
 #include "Component_CylinderCollider.h"
+#include "Component_Destructible.h"
+#include "DestructionBehavior_Header.h"
 #include "RendererEngine.h"
 #include "ResourceManager.h"
 #include "GameObject.h"
@@ -37,15 +39,9 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     // マップオブジェクトの定義データを探す
     auto assetData = Master::m_pMapManager->FindMapObjectAssetData(data.assetID);
 
-    switch (assetData.objectType)
-    {
-    case MAP_OBJECT_TYPE::PROP : 
-        break;    
-    case MAP_OBJECT_TYPE::BUILDING : 
-        break;  
-    case MAP_OBJECT_TYPE::EXPLOSION_BUILDING : 
-        break;
-    }
+    // 物理プリセットを探す
+    MO_PhysicsData physicsData = 
+        Master::m_pMapManager->FindPhysicsDataPreset(assetData.physicsPresetID);
 
     std::shared_ptr<GameObject>generatedObject;
 
@@ -53,12 +49,6 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     VEC3 pos = data.transform.position;
     VEC3 rot = data.transform.rotation;
     VEC3 scl = data.transform.scale;
-
-
-    //SetupMaterialInfo *matInfo = nullptr;
-    //// マテリアル取得
-    //matInfo.Index = assetData.materials[i].Index;
-    //matInfo.pMaterialData = assetData.materials[i].pMaterialData;
 
     CreateModelInfo model;
     model.pRenderer = renderer;
@@ -95,13 +85,45 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     health->set_MaxHP(hp);
     health->set_CrntHP(hp);
 
-    auto modelResource = generatedObject->get_Component<ModelMeshResource>();
+    // 
+    // 破壊コンポーネント追加
+    // Setup内で体力コンポーネントを取得しているので、
+    // 必ず体力コンポーネントをつけた後に追加する
+    //
+    if (assetData.isDestruction)
+    {
+        auto destructible = generatedObject->add_Component<Destructible>();
+        switch (assetData.objectType)
+        {
+            // ***************************************
+            // 小物系
+            // ***************************************
+        case MAP_OBJECT_TYPE::PROP:
+            destructible->Setup(std::make_unique<PropDestructionBehavior>());
+            break;
 
+            // ***************************************
+            // 建物
+            // ***************************************
+        case MAP_OBJECT_TYPE::BUILDING:
+            destructible->Setup(std::make_unique<PropDestructionBehavior>());
+            break;
+
+            // ***************************************
+            // 爆発建物
+            // ***************************************
+        case MAP_OBJECT_TYPE::EXPLOSION_BUILDING:
+            destructible->Setup(std::make_unique<PropDestructionBehavior>());
+            break;
+        }
+    }
+
+    auto modelResource = generatedObject->get_Component<ModelMeshResource>();
 
     //
     // コライダーの装着
     //
-    for (const auto& colliderData : assetData.colliders)
+    for (const auto& colliderData : physicsData.colliders)
     {
         auto rb = generatedObject->add_Component<RigidBody>();
         std::shared_ptr<Collider> collider;
@@ -147,6 +169,8 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
             continue;
         }
 
+        collider->set_CollisionCategory(physicsData._myCollisionCategory);
+
         //*****************************************************************************************
         //						衝突マスクの設定
         //*****************************************************************************************
@@ -159,21 +183,30 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
         collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_BLOCK);                 // エネミー
         collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_BLOCK);          // エネミー弾
         collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_BLOCK);                  // アイテム
+        collider->set_CollisionResponse(COLLISION_CATEGORY::PROP, COLLISION_RESPONSE::RESPONSE_BLOCK);                  // 小物
 
         //
         // 判定なし
         //
 
+        MO_RigidBodyData rigidBody = physicsData.rigidBody;
 
         PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 0.0f;
-        rbDesc.centerOfMassOffset = collider->get_Center();
-        rbDesc.pos = pos;
-        rbDesc.restitution = 0.0f;          // 跳ねない
-        rbDesc.friction = 1.0f;             // 摩擦なし
-        rbDesc.owner = generatedObject;     // オーナーオブジェクトの設定
-        rbDesc.collider = collider;         // コライダーの設定
-        rbDesc.gravity = VEC3(0.0f, -9.8f, 0.0f);
+        rbDesc.mass = rigidBody.mass;                           // 質量
+        rbDesc.restitution = rigidBody.restitution;             // 反発係数
+        rbDesc.friction = rigidBody.friction;                   // 摩擦係数
+        rbDesc.linearFactor = rigidBody.linearFactor;           // 移動制限
+        rbDesc.angularFactor = rigidBody.angularFactor;         // 回転制限
+        rbDesc.linearDamping = rigidBody.linearDamping;         // 移動減衰
+        rbDesc.angularDamping = rigidBody.angularDamping;       // 回転減衰
+        rbDesc.gravity = VEC3(0.0f, -9.8f * rigidBody.gravityScale , 0.0f); // 重力
+
+        rbDesc.centerOfMassOffset = collider->get_Center();     // 中心位置オフセット
+        rbDesc.collider = collider;                             // コライダーの設定
+        rbDesc.pos = pos;                                       // 位置
+        rbDesc.owner = generatedObject;                         // オーナーオブジェクトの設定
+
+             
 
         rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }
@@ -182,7 +215,7 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
 }
 
 std::shared_ptr<class Collider> MapObjectFactory::
-SetupColliderBox(const Map::ColliderData& data, std::shared_ptr<GameObject> obj)
+SetupColliderBox(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj)
 {
     auto collider = obj->add_Component<BoxCollider>();
     collider->set_Size(data.size);
@@ -195,7 +228,7 @@ SetupColliderBox(const Map::ColliderData& data, std::shared_ptr<GameObject> obj)
 }
 
 std::shared_ptr<class Collider> MapObjectFactory::
-SetupColliderSphere(const Map::ColliderData& data, std::shared_ptr<GameObject> obj)
+SetupColliderSphere(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj)
 {
     auto collider = obj->add_Component<SphereCollider>();
     collider->set_Radius(data.radius);
@@ -207,7 +240,7 @@ SetupColliderSphere(const Map::ColliderData& data, std::shared_ptr<GameObject> o
 }
 
 std::shared_ptr<class Collider> MapObjectFactory::
-SetupColliderCapsule(const Map::ColliderData& data, std::shared_ptr<GameObject> obj)
+SetupColliderCapsule(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj)
 {
     auto collider = obj->add_Component<CapsuleCollider>();
     collider->set_Radius(data.radius);
@@ -220,7 +253,7 @@ SetupColliderCapsule(const Map::ColliderData& data, std::shared_ptr<GameObject> 
 }
 
 std::shared_ptr<class Collider> MapObjectFactory::
-SetupColliderCylinder(const Map::ColliderData& data, std::shared_ptr<GameObject> obj)
+SetupColliderCylinder(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj)
 {
     auto collider = obj->add_Component<CylinderCollider>();
     collider->set_Radius(data.radius);
@@ -234,7 +267,7 @@ SetupColliderCylinder(const Map::ColliderData& data, std::shared_ptr<GameObject>
 
 std::shared_ptr<class Collider> MapObjectFactory::
 SetupColliderConvexHull(
-    const Map::ColliderData& data, 
+    const Map::MO_ColliderData& data, 
     std::shared_ptr<GameObject> obj,
     std::weak_ptr<class ModelData> modelData)
 {
@@ -250,7 +283,7 @@ SetupColliderConvexHull(
 
 std::shared_ptr<class Collider> MapObjectFactory::
 SetupColliderConcave(
-    const Map::ColliderData& data, 
+    const Map::MO_ColliderData& data, 
     std::shared_ptr<GameObject> obj,
     std::weak_ptr<class ModelData> modelData)
 {

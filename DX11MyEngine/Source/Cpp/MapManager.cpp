@@ -3,6 +3,7 @@
 #include "MapObjectFactory.h"
 
 using namespace Map;
+using namespace UtilityData;
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -257,6 +258,54 @@ bool MapManager::LoadMapObjectAssetDataAll(const std::string& _filePath)
 }
 
 //*---------------------------------------------------------------------------------------
+//*【?】物理プリセットの読み込み
+//*
+//* [引数]
+//* _filePath : Jsonのファイルパス
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::
+LoadPhysicsDataPreset(const std::string& _filePath)
+{
+    using json = nlohmann::json;
+    std::ifstream ifs(_filePath);
+    if (!ifs.is_open())
+    {
+        Tool::ErrorMessage(L"物理プリセット定義ファイルを開けませんでした", L"MapManager");
+        assert(false);
+        return false;
+    }
+
+    json j;
+    ifs >> j;
+
+    // すべてのオブジェクトデータを取り出す
+    for (const auto& obj : j.at("physics"))
+    {
+        Map::MO_PhysicsData extractionPhysicsData;
+
+        // プリセットIDを抽出し、既に登録されているか確認
+        extractionPhysicsData.presetID = obj.at("presetID").get<std::string>();
+        
+        // 物理データプリセットの抽出
+        if (!ExtractionPhysicsDataPreset(obj, extractionPhysicsData))
+        {
+            Tool::ErrorMessage(L"物理プリセットの読み込みに失敗しました", L"MapManager");
+            assert(false);
+            return false;
+        }
+
+        // プリセットIDをキーにしてデータを保存
+        m_PhysicsDataPresetMap[extractionPhysicsData.presetID] = extractionPhysicsData;
+    }
+}
+
+
+
+//*---------------------------------------------------------------------------------------
 //*【?】マップオブジェクトデータの抽出
 //*
 //* [引数]
@@ -275,6 +324,9 @@ bool MapManager::ExtractionMapObjectAssetData(const nlohmann::json& _json, Map::
 
     // モデルパス
     _outData.modelPath = _json.at("modelPath").get<std::string>();
+
+    // 物理プリセットID
+    _outData.physicsPresetID = _json.at("physicsPresetID").get<std::string>();
 
     // マップオブジェクトのタイプ
     std::string mapObjectType = _json.at("mapObjectType").get<std::string>();
@@ -302,29 +354,6 @@ bool MapManager::ExtractionMapObjectAssetData(const nlohmann::json& _json, Map::
         _outData.materials.push_back(setupMaterial);
     }
 
-
-    // コライダーデータを取得
-    for (const auto& coll : _json.at("colliders"))
-    {
-        ColliderData collider;
-
-        // コライダーのタイプ
-        std::string colliderTypeStr = coll.at("type").get<std::string>();
-        const auto colliderTypeIt = PhysicsData::g_ColliderTypeMap.find(colliderTypeStr);
-        // 未定義
-        if (colliderTypeIt == PhysicsData::g_ColliderTypeMap.end()) {
-            return false;
-        }
-        collider.type = colliderTypeIt->second;
-
-        collider.height = coll.value("height", 0.0f);
-        collider.radius = coll.value("radius", 0.0f);
-        Tool::Json::LoadVEC3Data(coll, "center", collider.center);
-        Tool::Json::LoadVEC3Data(coll, "size", collider.size);
-
-        // vectorに追加
-        _outData.colliders.push_back(collider);
-    }
     // 掴めるか
     _outData.isGrabbable = _json.at("isGrabbable").get<bool>();
 
@@ -339,6 +368,109 @@ bool MapManager::ExtractionMapObjectAssetData(const nlohmann::json& _json, Map::
     return true;
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】物理プリセットの抽出
+//*
+//* [引数]
+//* _json   : 読み込んだjson
+//*_outData : 出力データ
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::
+ExtractionPhysicsDataPreset(const nlohmann::json& _json, Map::MO_PhysicsData& _outData)
+{
+    // *******************************************
+    // リジッドボディ関連
+    // *******************************************
+    {
+        const nlohmann::json rbJson = _json["rigidBody"];
+        MO_RigidBodyData rigidBodyData;
+        rigidBodyData.mass              = rbJson.value("mass", 0.0f);
+        rigidBodyData.restitution       = rbJson.value("restitution", 0.0f);
+        rigidBodyData.friction          = rbJson.value("friction", 0.0f);
+        rigidBodyData.gravityScale      = rbJson.value("gravityScale", 0.0f);
+        rigidBodyData.linearDamping     = rbJson.value("linearDamping", 0.0f);
+        rigidBodyData.angularDamping    = rbJson.value("angularDamping", 0.0f);
+        Tool::Json::LoadVEC3Data(rbJson, "linearFactor", rigidBodyData.linearFactor);
+        Tool::Json::LoadVEC3Data(rbJson, "angularFactor", rigidBodyData.angularFactor);
+        _outData.rigidBody = rigidBodyData;
+    }
+
+    // *******************************************
+    // コリジョンマスク関連
+    // *******************************************
+    {
+        // 自身の衝突カテゴリ
+        //
+        std::string myCollisionCategoryStr = _json.value("collisionCategory", "");
+        const auto myCollisionCategoryIt = g_CollisionCategoryMap.find(myCollisionCategoryStr);;
+        // 未定義衝突カテゴリ
+        if (myCollisionCategoryIt == g_CollisionCategoryMap.end())
+        {
+            return false;
+        }
+        _outData._myCollisionCategory = (myCollisionCategoryIt->second);
+
+        //
+        // 衝突マスク
+        //
+        _outData._collisionMask = 0;
+        if (_json.contains("collisionMask") &&
+            _json["collisionMask"].is_array())
+        {
+            // 配列を回してOR演算
+            for (const auto& maskJson : _json["collisionMask"])
+            {
+                const std::string maskName = maskJson.get<std::string>();
+                const auto categoryIt = g_CollisionCategoryMap.find(maskName);
+
+                // 未定義衝突カテゴリ
+                if (categoryIt == g_CollisionCategoryMap.end())
+                {
+                    return false;
+                }
+
+                _outData._collisionMask |= UINT_CAST(categoryIt->second);
+            }
+        }
+    }
+
+    // *******************************************
+    // コライダー関連
+    // *******************************************
+    {
+        // コライダーデータを取得
+        for (const auto& coll : _json.at("colliders"))
+        {
+            MO_ColliderData collider;
+
+            // コライダーのタイプ
+            std::string colliderTypeStr = coll.at("type").get<std::string>();
+            const auto colliderTypeIt = PhysicsData::g_ColliderTypeMap.find(colliderTypeStr);
+            // 未定義
+            if (colliderTypeIt == PhysicsData::g_ColliderTypeMap.end()) {
+                return false;
+            }
+            collider.type = colliderTypeIt->second;
+
+            // パラメータ
+            collider.height = coll.value("height", 0.0f);
+            collider.radius = coll.value("radius", 0.0f);
+            Tool::Json::LoadVEC3Data(coll, "center", collider.center);
+            Tool::Json::LoadVEC3Data(coll, "size", collider.size);
+
+            // 材質
+            std::string surfaceStr = coll.value("surfaceType", "DEFAULT");
+            collider.surfaceType = g_SurfaceTypeMap[surfaceStr];
+
+            // vectorに追加
+            _outData.colliders.push_back(collider);
+        }
+    }
+}
 
 
 //*---------------------------------------------------------------------------------------
@@ -396,6 +528,30 @@ bool MapManager::IsRegisteredMapObjectAssetData(const std::string& _assetID)cons
 }
 
 //*---------------------------------------------------------------------------------------
+//*【?】物理プリセットがあるかどうか探す
+//*
+//* [引数]
+//* _assetID   : 物理プリセットで紐付けされているキー
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::IsRegisteredPhysicsDataPreset(const std::string& _presetID)const
+{
+    const auto physicsDataPresetIt = m_PhysicsDataPresetMap.find(_presetID);
+
+    // 登録されている
+    if (physicsDataPresetIt != m_PhysicsDataPresetMap.end())
+    {
+        return true;
+    }
+
+    // されていない
+    return false;
+}
+
+//*---------------------------------------------------------------------------------------
 //*【?】アセットIDからマップオブジェクトの定義データを探す
 //*
 //* [引数]
@@ -410,9 +566,36 @@ FindMapObjectAssetData(const std::string& _assetID)
 {
     if (!IsRegisteredMapObjectAssetData(_assetID))
     {
+        std::string errorMessage = _assetID + " アセットが登録されていません";
+        Tool::ErrorMessage(Tool::StringToWstring(errorMessage), L"MapManager");
         assert(false);
         return {};
     }
 
     return m_MapObjectAssetDataMap[_assetID];
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】アセットIDからマップオブジェクトの定義データを探す
+//*
+//* [引数]
+//* _assetID   : マップオブジェクトに紐付けされているキー
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+Map::MO_PhysicsData MapManager::
+FindPhysicsDataPreset(const std::string& _presetID)
+{
+    // 物理プリセットが登録されているか確かめる
+    if (!IsRegisteredPhysicsDataPreset(_presetID))
+    {
+        std::string errorMessage = _presetID + " 物理プリセットが登録されていません";
+        Tool::ErrorMessage(Tool::StringToWstring(errorMessage), L"MapManager");
+        assert(false);
+        return {};
+    }
+
+    return m_PhysicsDataPresetMap[_presetID];
 }

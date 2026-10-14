@@ -1,5 +1,6 @@
 #pragma once
 #include "MeshFactory.h"
+#include "Component_Collider.h"
 
 namespace Map
 {
@@ -65,20 +66,52 @@ namespace Map
 
     };
 
-    struct ColliderData
+    //************************
+    // [MO] はMapObjectの略
+    //************************
+
+    /* コライダーデータ */
+    struct MO_ColliderData
     {
-        PhysicsData::COLLIDER_TYPE type;
+        PhysicsData::COLLIDER_TYPE type =                   // コライダーの種類
+            PhysicsData::COLLIDER_TYPE::NONE;
+        VECTOR3::VEC3 center = VECTOR3::VEC3(0.0f);         // 中心位置
+        VECTOR3::VEC3 size = VECTOR3::VEC3(0.0f);           // サイズ
+        float radius = 0.0f;                                // 半径
+        float height = 0.0f;                                // 高さ
+        SURFACE_TYPE surfaceType = SURFACE_TYPE::DEFAULT;   // 材質
 
-        VECTOR3::VEC3 center;
-
-        VECTOR3::VEC3 size;
-        float radius = 0.0f;
-        float height = 0.0f;
     };
 
+    /* リジッドボディデータ */
+    struct MO_RigidBodyData
+    {
+        float mass = 0.0f;              // 質量
+        float restitution = 0.0f;       // 反発係数
+        float friction = 0.5f;          // 摩擦係数
+        float gravityScale = 1.0f;      // 重力倍率
+        float linearDamping = 0.0f;     // 移動減衰
+        float angularDamping = 0.0f;    // 回転減衰
+        VECTOR3::VEC3 linearFactor = VECTOR3::VEC3(1.0f);   // 各軸の移動制限
+        VECTOR3::VEC3 angularFactor = VECTOR3::VEC3(1.0f);  // 各軸の回転制限
+    };
+
+    /* 物理データ */
+    struct MO_PhysicsData
+    {
+        std::string presetID = "";
+        // bool enabled = true;
+
+        MO_RigidBodyData rigidBody;
+        std::vector<MO_ColliderData> colliders;
+
+        unsigned int _collisionMask = 0;                    // 衝突判定の対象となるCOLLISION_CATEGORYのビットマスク
+        UtilityData::COLLISION_CATEGORY _myCollisionCategory = 
+            UtilityData::COLLISION_CATEGORY::NONE;              // 自身の衝突カテゴリ
+    };
 
     /* トランスフォームデータ */
-    struct TransformData
+    struct MO_TransformData
     {
         VECTOR3::VEC3 position = VECTOR3::VEC3();
         VECTOR3::VEC3 rotation = VECTOR3::VEC3();
@@ -89,17 +122,7 @@ namespace Map
     struct MapObjectData
     {
         std::string assetID = "";
-        TransformData transform;
-
-
-        //std::string modelPath = "";
-        //
-        //MAP_OBJECT_TYPE mapObjectType   // マップオブジェクトの種類
-        //    = MAP_OBJECT_TYPE::BUILDING;
-
-        //bool isGrabbable = false;       // 掴むことができるか
-        //bool isDestruction = true;      // 破壊できるか
-        //float health = 10.0f;           // 体力
+        MO_TransformData transform;
     };
 
     /* マップのデータ */
@@ -121,12 +144,14 @@ namespace Map
     // マップ内に配置されるオブジェクトの定義
     struct Map_ObjectAssetData
     {
-        std::string assetID;
-        std::string modelPath = "";
+        std::string assetID = "";           // アセットID
+        std::string physicsPresetID = "";   // 物理プリセット
+        std::string modelPath = "";         // モデルパス
 
-        MAP_OBJECT_TYPE objectType;
+        MAP_OBJECT_TYPE objectType = 
+            MAP_OBJECT_TYPE::PROP;
+
         std::vector<SetupMaterialInfo> materials;
-        std::vector<ColliderData> colliders;
 
         bool isGrabbable = false;       // 掴むことができるか
         bool isDestruction = true;      // 破壊できるか

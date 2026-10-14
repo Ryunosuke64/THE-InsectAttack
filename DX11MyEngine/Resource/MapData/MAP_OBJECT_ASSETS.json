@@ -3,6 +3,7 @@
     [
         {
             "assetID" : "Tree_01",
+            "physicsPresetID" : "Tree_01",
             "modelPath" : "Resource/Model/MapObject/Tree/Tree.fbx",
             "mapObjectType" : "PROP",
             "materials" : 
@@ -10,18 +11,15 @@
                 {"slot" : 0, "tag" : "Tree_Lerf"},
                 {"slot" : 1, "tag" : "Tree_Wood"}
             ],
-            "colliders" : 
-            [
-                {"type" : "CYLINDER","height" : 6.0,"radius" : 1.0, "center" : [0.0, 6.0, 0.0], "size" : [0.0, 0.0, 0.0]}
-            ],
             "isGrabbable" : false,
             "isDestruction" : true,
-            "health" : 100.0
+            "health" : 300.0
         },
         {
             "assetID" : "Building_01",
+            "physicsPresetID" : "Building_01",
             "modelPath" : "Resource/Model/Building/02/Building_01.fbx",
-            "mapObjectType" : "BUILDING",
+            "mapObjectType" : "PROP",
             "materials" : 
             [
                 {"slot" : 0, "tag" : "Building01_Top"},
@@ -29,16 +27,13 @@
                 {"slot" : 2, "tag" : "Building01_Base2"},
                 {"slot" : 3, "tag" : "Building01_Base3"}
             ],
-            "colliders" : 
-            [
-                {"type" : "CONCAVE_TRIANGLE","height" : 6.0,"radius" : 0.0, "center" : [0.0, 0.0, 0.0], "size" : [0.0, 0.0, 0.0]}
-            ],
             "isGrabbable" : false,
             "isDestruction" : true,
-            "health" : 100.0
+            "health" : 1000.0
         },
         {
             "assetID" : "BuildingTW_01",
+            "physicsPresetID" : "BuildingTW_01",
             "modelPath" : "Resource/Model/Building/03/Building_Tower_1.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
@@ -50,13 +45,9 @@
                 {"slot" : 4, "tag" : "Building_Tower_1_BaseGround"},
                 {"slot" : 5, "tag" : "Building_Tower_1_Wall"}
             ],
-            "colliders" : 
-            [
-                {"type" : "CONCAVE_TRIANGLE","height" : 6.0,"radius" : 0.0, "center" : [0.0, 0.0, 0.0], "size" : [0.0, 0.0, 0.0]}
-            ],
             "isGrabbable" : false,
             "isDestruction" : true,
-            "health" : 100.0
+            "health" : 1000.0
         }
     ]
 }

@@ -819,6 +819,8 @@ CreateRigidBody(const RigidBodyDesc& desc)
 
     info.m_restitution = desc.restitution;  // ”½”­ŒW”i‘å‚«‚¢‚Ù‚Ç’µ‚Ë‚éj
     info.m_friction = desc.friction;        // –€ŽCi‘å‚«‚¢‚Ù‚ÇŠŠ‚è‚É‚­‚¢j
+    info.m_linearDamping = desc.linearDamping;
+    info.m_angularDamping = desc.angularDamping;
 
     // 
     m_CollisionShapes.push_back(pShape);
@@ -842,7 +844,9 @@ CreateRigidBody(const RigidBodyDesc& desc)
     rigidBody->setGravity(gravity);
     rigidBody->setRestitution(desc.restitution);
     rigidBody->setFriction(desc.friction);
+    rigidBody->setDamping(desc.linearDamping, desc.angularDamping);
     rigidBody->setAngularFactor(btVector3(desc.angularFactor.x, desc.angularFactor.y, desc.angularFactor.z));
+    rigidBody->setLinearFactor(btVector3(desc.linearFactor.x, desc.linearFactor.y, desc.linearFactor.z));
 
     // ************************************************************
     // 
