@@ -25,6 +25,7 @@ public:
 private:
 	std::unique_ptr<class IDestructionBehavior>m_pBehavior;
 	std::weak_ptr<class Health> m_pHealthComp;
+	std::weak_ptr<class MapObject> m_pMapObjectComp;
 	STATE m_State;
 
 public:

@@ -24,5 +24,8 @@ public:
 	void Start(RendererEngine& renderer) override;	// ‰Šú‰»
 	void Update(RendererEngine& renderer) override;	// XV
 	void OnCollisionEnter(const PhysicsData::CollisionInfo& _other)override;
+
+	void set_AssetID(const std::string& _assetID) { m_MyAssetID = _assetID; };
+	std::string get_AssetID()const { return m_MyAssetID; }
 };
 

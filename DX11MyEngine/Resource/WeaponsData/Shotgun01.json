@@ -2,7 +2,7 @@
   "level": 0,
   "name": "SG-A10",
   "bulletMaxNum": 10,
-  "bulletSimultaneousNum": 12,
+  "bulletSimultaneousNum": 70,
   "fireRate": 2.0,
   "reloadTime": 5.0,
   "accuracy": 0.05,

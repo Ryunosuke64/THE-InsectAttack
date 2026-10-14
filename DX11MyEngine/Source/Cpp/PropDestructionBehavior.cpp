@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DestructionBehavior_Header.h"
 #include "Component_RigidBody.h"
+#include "Component_MapObject.h"
 
 //*---------------------------------------------------------------------------------------
 //*【?】開始
@@ -18,13 +19,22 @@ void PropDestructionBehavior::Start(
     const VECTOR3::VEC3& hitPos,
     const VECTOR3::VEC3& hitDir)
 {
+    auto mapObject = 
+        object->get_Component<MapObject>();
     auto rigidBody =
         object->get_Component<RigidBody>();
 
-    if (rigidBody)
+    if (rigidBody && mapObject)
     {
-        rigidBody->SetEnabled(true);    // 物理挙動ON
-        rigidBody->SetMass(1.0f);       // 質量設定
+        // アセットデータの取り出し
+        std::string assetID = mapObject->get_AssetID();
+        const auto assetData = Master::m_pMapManager->FindMapObjectAssetData(assetID);
+        
+        // 物理データの取り出し
+        const auto physicsData = Master::m_pMapManager->FindPhysicsDataPreset(assetData.physicsPresetID);
+
+        rigidBody->SetEnabled(true);                        // 物理挙動ON
+        rigidBody->SetMass(physicsData.rigidBody.mass);     // 質量設定
 
         // 吹っ飛ばす
         rigidBody->AddImpulse(          

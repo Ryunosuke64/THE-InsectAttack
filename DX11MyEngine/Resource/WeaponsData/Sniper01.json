@@ -11,7 +11,7 @@
   "soundID": 0,
   "muzzleFlashEffectTag" : "MuzzleEffect_01",
   "muzzleFlashEffectScale" :  [2.0, 2.0, 2.0],
-  "bulletType": "NORMAL",
+  "bulletType": "AP",
   "bulletParam": 
   {
     "common" :  
@@ -25,7 +25,7 @@
       "collisionSize": 0.0,
       "gravityScale": 0.0,
       "knockbackForce" : 100.0,
-      "bulletType" : "NORMAL",
+      "bulletType" : "AP",
       "collisionCategory" : "PLAYER_BULLET",
       "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
     },
@@ -47,8 +47,8 @@
     {
       "type" : "BILLBOARD",
       "bulletMaterialTag" : "Bullet_04",
-      "trailDrawTime" : 0.78,
-      "trailWidth" : 0.8,
+      "trailDrawTime" : 0.5,
+      "trailWidth" : 1.0,
       "enableFlightSmoke" : true,
       "smokeInterval" : 0.05,              
       "smokeSize" : 0.5,                     

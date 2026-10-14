@@ -5,16 +5,16 @@
             "presetID" : "Building_01",
             "rigidBody" : 
             {
-                "mass"              : 0.0,
-                "restitution"       : 1.0,
+                "mass"              : 10.0,
+                "restitution"       : 0.4,
                 "friction"          : 0.5,
-                "gravityScale"      : 1.0,
+                "gravityScale"      : 2.0,
                 "linearDamping"     : 0.0,
                 "angularDamping"    : 0.0,
                 "linearFactor"      : [1.0,1.0,1.0],
                 "angularFactor"     : [1.0,1.0,1.0]
             },
-            "collisionCategory" : "DESTRUCTION_BUILDING",
+            "collisionCategory" : "PROP",
             "collisionMask" :
             [
                 "PLAYER",
@@ -27,11 +27,11 @@
             "colliders" : 
             [
                 {
-                    "type" : "CONCAVE_TRIANGLE",
+                    "type" : "BOX",
                     "height" : 0.0,
                     "radius" : 0.0, 
-                    "center" : [0.0, 0.0, 0.0], 
-                    "size" : [0.0, 0.0, 0.0],
+                    "center" : [0.0, 55.0, 0.0], 
+                    "size" : [10.0, 10.0, 10.0],
                     "surfaceType" : "CONCRETE"
                 }
             ]
@@ -40,7 +40,7 @@
             "presetID" : "BuildingTW_01",
             "rigidBody" : 
             {
-                "mass"              : 0.0,
+                "mass"              : 100.0,
                 "restitution"       : 1.0,
                 "friction"          : 0.5,
                 "gravityScale"      : 1.0,
@@ -75,7 +75,7 @@
             "presetID" : "Tree_01",
             "rigidBody" : 
             {
-                "mass"              : 0.0,
+                "mass"              : 10.0,
                 "restitution"       : 0.3,
                 "friction"          : 0.5,
                 "gravityScale"      : 1.0,
@@ -98,9 +98,9 @@
             [
                 {
                     "type" : "CYLINDER",
-                    "height" : 6.0,
+                    "height" : 5.0,
                     "radius" : 1.0, 
-                    "center" : [0.0, 6.0, 0.0], 
+                    "center" : [0.0, 5.0, 0.0], 
                     "size" : [0.0, 0.0, 0.0],
                     "surfaceType" : "SOIL"
                 }

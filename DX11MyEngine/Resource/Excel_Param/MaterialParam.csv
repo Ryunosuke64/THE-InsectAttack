@@ -47,5 +47,5 @@ TestBlock,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Materials/260718150419111
 UTDecal_01,4,4,1,1,1,1,1,1,100,1,1,1,1,Resource/Texture/Particle/UTDecal01.png,Resource/Texture/Particle/UTDecal01_n.png,-1,1
 Acid_04,1,1,0,1,1,1,1,1,100,1,1,1,1,Resource/Texture/Particle/UTDecal01.png,-1,-1,1
 Water,1,1,1,0.7,1,1,1,1,100,0,0,0,1,Resource/Texture/Materials/water-map2.png,Resource/Texture/Materials/water-map2.png,-1,1
-Tree_Lerf,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/leaf.png,-1,-1,0
+Tree_Lerf,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/leaf.png,Resource/Texture/DefaultN_Map.png,-1,0
 Tree_Wood,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/Bark09_1K_BaseColor.png,Resource/Model/MapObject/Tree/textures/Bark09_1K_Normal.png,Resource/Model/MapObject/Tree/textures/Bark09_1K_Roughness.png,0

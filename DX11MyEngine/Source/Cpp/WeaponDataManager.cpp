@@ -282,6 +282,7 @@ bool WeaponDataManager::LoadSurfaceHitData(const std::string& _filepath)
     const nlohmann::json laserJson     = j["LASER"];
     const nlohmann::json flameJson     = j["FLAME"];
     const nlohmann::json acidJson      = j["ACID"];
+    const nlohmann::json apJson        = j["AP"];
 
     bool isResult = true;
 
@@ -322,6 +323,13 @@ bool WeaponDataManager::LoadSurfaceHitData(const std::string& _filepath)
     }
     // Ž_
     isResult = ExtractionSurfacesHitData(acidJson,     m_SurfaceHitData[UINT_CAST(BULLET_TYPE::ACID)]);
+    if (isResult == false) 
+    {
+        assert(false);
+        return false;
+    }
+    // AP
+    isResult = ExtractionSurfacesHitData(apJson,     m_SurfaceHitData[UINT_CAST(BULLET_TYPE::AP)]);
     if (isResult == false) 
     {
         assert(false);

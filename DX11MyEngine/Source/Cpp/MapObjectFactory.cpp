@@ -76,6 +76,12 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     transform->set_Pos(pos);
     transform->set_RotateToRad(rot);
     transform->set_Scale(scl);
+    
+    // 
+    // マップオブジェクトコンポーネント追加
+    //
+    auto mapObjectComp = generatedObject->add_Component<MapObject>();
+    mapObjectComp->set_AssetID(assetData.assetID);  // アセットIDの設定
 
     //
     // 体力コンポーネント追加
@@ -192,7 +198,7 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
         MO_RigidBodyData rigidBody = physicsData.rigidBody;
 
         PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = rigidBody.mass;                           // 質量
+        rbDesc.mass = 0.0f;                                     // 質量（マップに配置されるオブジェクトは基本動かないため、最初は質量を0にする。破壊時などは、アセットIDからデータを取り出して設定しなおす）
         rbDesc.restitution = rigidBody.restitution;             // 反発係数
         rbDesc.friction = rigidBody.friction;                   // 摩擦係数
         rbDesc.linearFactor = rigidBody.linearFactor;           // 移動制限

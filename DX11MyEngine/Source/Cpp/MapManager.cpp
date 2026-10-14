@@ -301,6 +301,8 @@ LoadPhysicsDataPreset(const std::string& _filePath)
         // プリセットIDをキーにしてデータを保存
         m_PhysicsDataPresetMap[extractionPhysicsData.presetID] = extractionPhysicsData;
     }
+
+    return true;
 }
 
 
@@ -470,6 +472,8 @@ ExtractionPhysicsDataPreset(const nlohmann::json& _json, Map::MO_PhysicsData& _o
             _outData.colliders.push_back(collider);
         }
     }
+
+    return true;
 }
 
 
@@ -566,8 +570,8 @@ FindMapObjectAssetData(const std::string& _assetID)
 {
     if (!IsRegisteredMapObjectAssetData(_assetID))
     {
-        std::string errorMessage = _assetID + " アセットが登録されていません";
-        Tool::ErrorMessage(Tool::StringToWstring(errorMessage), L"MapManager");
+        std::wstring errorMessage = Tool::StringToWstring(_assetID) + L" アセットが登録されていません";
+        Tool::ErrorMessage(errorMessage, L"MapManager");
         assert(false);
         return {};
     }
@@ -591,8 +595,8 @@ FindPhysicsDataPreset(const std::string& _presetID)
     // 物理プリセットが登録されているか確かめる
     if (!IsRegisteredPhysicsDataPreset(_presetID))
     {
-        std::string errorMessage = _presetID + " 物理プリセットが登録されていません";
-        Tool::ErrorMessage(Tool::StringToWstring(errorMessage), L"MapManager");
+        std::wstring errorMessage = Tool::StringToWstring(_presetID) + L" 物理プリセットが登録されていません";
+        Tool::ErrorMessage(errorMessage, L"MapManager");
         assert(false);
         return {};
     }

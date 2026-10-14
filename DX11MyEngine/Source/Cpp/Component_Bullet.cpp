@@ -468,6 +468,9 @@ bool Bullet::HitCheck(BulletData::BULLET_TYPE _type, CollisionInfo& _outCollisio
         isHit = HitCheck_RaySegment(_outCollisionInfo);
         //isHit = HitCheck_Sphere(_outCollisionInfo);
         break;
+    case BulletData::BULLET_TYPE::AP:
+        isHit = HitCheck_RaySegment(_outCollisionInfo);
+        break;
     case BulletData::BULLET_TYPE::NUM:
         break;
     default:

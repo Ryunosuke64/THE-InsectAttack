@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Component_Destructible.h"
+#include "Component_MapObject.h"
 #include "Component_Health.h"
 #include "Component_RigidBody.h"
 #include "ConstantMapData.h"
@@ -97,6 +98,7 @@ bool Destructible::Setup(std::unique_ptr<IDestructionBehavior> behavior)
 
     auto ownerObj = m_pOwner.lock();
 
+    // 体力コンポーネントの取得
     m_pHealthComp = ownerObj->get_Component<Health>();
     if (m_pHealthComp.expired())
     {
@@ -115,6 +117,14 @@ bool Destructible::Setup(std::unique_ptr<IDestructionBehavior> behavior)
             m_State = STATE::DESTROYSTART;
         }
     );
+
+    // マップオブジェクトコンポーネントの取得
+    m_pMapObjectComp = ownerObj->get_Component<MapObject>();
+    if (m_pMapObjectComp.expired())
+    {
+        assert(false);
+        return false;
+    }
 
     return true;
 }

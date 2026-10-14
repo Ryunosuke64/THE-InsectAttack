@@ -57,6 +57,7 @@ namespace BulletData
         LASER,          // íºê¸èÛÇÃÉåÅ[ÉUÅ[
         FLAME,          // âŒâäíe
         ACID,           // é_íe
+        AP,             // ä—í íe
 
         NUM,
     };
@@ -113,6 +114,7 @@ namespace BulletData
         {"LASER",       BULLET_TYPE::LASER },
         {"FLAME",       BULLET_TYPE::FLAME },
         {"ACID",        BULLET_TYPE::ACID },
+        {"AP",          BULLET_TYPE::AP },
     };
 
     /// <summary>

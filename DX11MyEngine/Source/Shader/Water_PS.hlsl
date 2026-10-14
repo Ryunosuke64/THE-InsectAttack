@@ -43,7 +43,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     // Bは左斜め前方向に
     //=====================================
     uvA += float2(0.04f, 0.06f) * cb_Time;
-    uvB += float2(-0.03f, 0.02f) * cb_Time;
+    uvB += float2(-0.02f, 0.02f) * cb_Time;
     
     float3 normalA = g_tNormalTextureA.Sample(g_sSampler, uvA).rgb;
     float3 normalB = g_tNormalTextureB.Sample(g_sSampler, uvB).rgb;
@@ -55,7 +55,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     // 合成する
     float3 waterNormal = normalize(normalA + normalB);
     
-    float waterStlength = 10.0f;
+    float waterStlength = 60.0f;
     waterNormal.xy *= waterStlength;
     waterNormal = normalize(waterNormal);
     
@@ -79,7 +79,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     float shallowFactor = saturate(depthDiff / ShallowDistance);
     
     float3 DeepColor = float3(0.05f, 0.05f, 0.05f); // 深部カラー（暗い）
-    float3 ShallowColor = float3(1.0, 1.0, 1.0); // 浅瀬カラー（白に近い）
+    float3 ShallowColor = float3(0.8, 0.8, 0.8); // 浅瀬カラー（白に近い）
     
     finalColor =
         lerp(
@@ -90,11 +90,12 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     
     
     // 深度値からワールド座標を求める
-    float4 worldPos = GetConvertPosFromDepthToWorld(sceneDepthRaw, input.UV);
+    float4 worldPos = GetConvertPosFromDepthToWorld(sceneDepthRaw, screenUV);
     worldPos.w = 1.0f;
     
     float specularPower = 100.0f;
-    
+    // 環境光相当の成分
+    finalColor += waterColor * 0.5f;
     //************************************************************************
     //                      ディレクションライト計算
     //************************************************************************
@@ -103,8 +104,9 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
         // ディフューズ
         float3 lightDir = cb_DirLightData[dirIdx].Direction;
         float lighting = saturate(dot(waterNormal, lightDir));
-        finalColor += waterColor * (0.5f + lighting * 0.5f);
-        
+        finalColor += waterColor * lighting * 0.5f;
+        finalColor *= cb_DirLightData[dirIdx].DiffuseColor;
+        finalColor *= cb_DirLightData[dirIdx].DiffuseIntensity;
         
         // 鏡面（スペキュラ）反射
         float3 specularLig = PhongSpecularLightCalc(

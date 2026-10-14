@@ -37,7 +37,7 @@
         "CONCRETE" : ["BulletHit_Flame", 0],
         "METAL"    : ["BulletHit_Flame", 0],
         "SOIL"     : ["BulletHit_Flame", 0],
-        "ANT"      : ["BulletHit_Flame", 0]
+        "ANT"      : ["AntHit_01", 0]
     },
     "ACID" : 
     {
@@ -46,5 +46,13 @@
         "METAL"    : ["BulletHit_Acid", 0],
         "SOIL"     : ["BulletHit_Acid", 0],
         "ANT"      : ["BulletHit_Acid", 0]
+    },
+    "AP" : 
+    {
+        "DEFAULT"  : ["BulletHit_Standard_L", 0],
+        "CONCRETE" : ["BulletHit_Standard_L", 0],
+        "METAL"    : ["BulletHit_Standard_L", 0],
+        "SOIL"     : ["BulletHit_Standard_L", 0],
+        "ANT"      : ["AntHit_01", 0]
     }
 }
