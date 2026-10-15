@@ -305,6 +305,54 @@ LoadPhysicsDataPreset(const std::string& _filePath)
     return true;
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】建物の破片プリセットの読み込み
+//*
+//* [引数]
+//* _filePath : Jsonのファイルパス
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::
+LoadBuildingFragmentData(const std::string& _filePath)
+{
+    using json = nlohmann::json;
+    std::ifstream ifs(_filePath);
+    if (!ifs.is_open())
+    {
+        Tool::ErrorMessage(L"建物の破片プリセット定義ファイルを開けませんでした", L"MapManager");
+        assert(false);
+        return false;
+    }
+
+    json j;
+    ifs >> j;
+
+    // すべてのデータを取り出す
+    for (const auto& obj : j.at("fragmentData"))
+    {
+        Map::BuildingFragmentDataSet extractionFragmentData;
+
+        // アセットIDを抽出し、既に登録されているか確認
+        extractionFragmentData.assetID = obj.at("assetID").get<std::string>();
+        
+        // 物理データプリセットの抽出
+        if (!ExtractionBuildingFragmentData(obj, extractionFragmentData))
+        {
+            Tool::ErrorMessage(L"建物の破片プリセットの読み込みに失敗しました", L"MapManager");
+            assert(false);
+            return false;
+        }
+
+        // プリセットIDをキーにしてデータを保存
+        m_BuildingFragmentDataMap[extractionFragmentData.assetID] = extractionFragmentData;
+    }
+
+    return true;
+}
+
 
 
 //*---------------------------------------------------------------------------------------
@@ -476,6 +524,39 @@ ExtractionPhysicsDataPreset(const nlohmann::json& _json, Map::MO_PhysicsData& _o
     return true;
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】建物の破片データの抽出
+//*
+//* [引数]
+//* _json   : 読み込んだjson
+//*_outData : 出力データ
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::
+ExtractionBuildingFragmentData(const nlohmann::json& _json, Map::BuildingFragmentDataSet& _outData)
+{
+    // *******************************************
+    // 破片データを取得
+    // *******************************************
+    for (const auto& fragment : _json.at("fragments"))
+    {
+        Map::BuildingFragmentData fragmentData;
+        fragmentData.modelPath = fragment.at("modelPath").get<std::string>();
+        fragmentData.physicsPresetID = fragment.at("physicsPresetID").get<std::string>();
+        Tool::Json::LoadVEC3Data(fragment, "position", fragmentData.localTransform.position);
+        Tool::Json::LoadVEC3Data(fragment, "rotation", fragmentData.localTransform.rotation);
+        Tool::Json::LoadVEC3Data(fragment, "scale", fragmentData.localTransform.scale);
+
+        _outData.fragmentDataArray.push_back(fragmentData);
+    }
+
+    return true;
+}
+
+
 
 //*---------------------------------------------------------------------------------------
 //*【?】地面の生成
@@ -505,6 +586,21 @@ bool MapManager::SpawnGround(const std::string& _groundAssetTag)
 bool MapManager::SpawnMapObject(const Map::MapObjectData& _mapObjectData)
 {
     return MapObjectFactory::CreateMapObject(_mapObjectData);
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】建物の破片モデルの生成
+//*
+//* [引数]
+//* _assetID   : 紐付けされた建物のアセットID
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::SpawnBuildingDebris(const std::string& _assetID)
+{
+    return true;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -556,6 +652,30 @@ bool MapManager::IsRegisteredPhysicsDataPreset(const std::string& _presetID)cons
 }
 
 //*---------------------------------------------------------------------------------------
+//*【?】建物破片データがあるかどうか探す
+//*
+//* [引数]
+//* _assetID   : 紐付けされているアセットID
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+bool MapManager::IsRegisteredBuildingFragmentData(const std::string& _assetID)const
+{
+    const auto It = m_BuildingFragmentDataMap.find(_assetID);
+
+    // 登録されている
+    if (It != m_BuildingFragmentDataMap.end())
+    {
+        return true;
+    }
+
+    // されていない
+    return false;
+}
+
+//*---------------------------------------------------------------------------------------
 //*【?】アセットIDからマップオブジェクトの定義データを探す
 //*
 //* [引数]
@@ -580,7 +700,7 @@ FindMapObjectAssetData(const std::string& _assetID)
 }
 
 //*---------------------------------------------------------------------------------------
-//*【?】アセットIDからマップオブジェクトの定義データを探す
+//*【?】プリセットIDから物理プリセット定義データを探す
 //*
 //* [引数]
 //* _assetID   : マップオブジェクトに紐付けされているキー
@@ -602,4 +722,28 @@ FindPhysicsDataPreset(const std::string& _presetID)
     }
 
     return m_PhysicsDataPresetMap[_presetID];
+}
+//*---------------------------------------------------------------------------------------
+//*【?】アセットIDから建物破片の定義データを探す
+//*
+//* [引数]
+//* _assetID   : マップオブジェクトに紐付けされているキー
+//*
+//* [返値]
+//* true : 成功
+//* false : 失敗
+//*----------------------------------------------------------------------------------------
+Map::BuildingFragmentDataSet MapManager::
+FindBuildingFragmentDataSet(const std::string& _assetID)
+{
+    // 登録されているか確かめる
+    if (!IsRegisteredBuildingFragmentData(_assetID))
+    {
+        std::wstring errorMessage = Tool::StringToWstring(_assetID) + L" アセットが登録されていません";
+        Tool::ErrorMessage(errorMessage, L"MapManager");
+        assert(false);
+        return {};
+    }
+
+    return m_BuildingFragmentDataMap[_assetID];
 }

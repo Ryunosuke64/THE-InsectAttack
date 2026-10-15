@@ -11,6 +11,7 @@
 #include "Component_BoxCollider.h"
 #include "Component_CylinderCollider.h"
 #include "Component_Destructible.h"
+#include "Component_TimerDestruction.h"
 #include "DestructionBehavior_Header.h"
 #include "RendererEngine.h"
 #include "ResourceManager.h"
@@ -112,7 +113,7 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
             // 建物
             // ***************************************
         case MAP_OBJECT_TYPE::BUILDING:
-            destructible->Setup(std::make_unique<PropDestructionBehavior>());
+            destructible->Setup(std::make_unique<ReplaceModelDestructionBehavior>());
             break;
 
             // ***************************************
@@ -220,6 +221,183 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     return true;
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】建物の破片モデルの生成
+//* [引数]
+//* _assetID   : 紐付けされた建物のアセットID
+//*
+//* [返値]
+//* 生成できたか 
+//*----------------------------------------------------------------------------------------
+bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const Map::MO_TransformData& _transform)
+{
+    // 破片モデルの定義データを探す
+    auto fragmentData = Master::m_pMapManager->FindBuildingFragmentDataSet(_assetID);
+    auto asssetData = Master::m_pMapManager->FindMapObjectAssetData(_assetID);
+
+    // データ定義配列回す
+    for (const auto& data : fragmentData.fragmentDataArray)
+    {
+        // 物理プリセットを探す
+        MO_PhysicsData physicsData =
+            Master::m_pMapManager->FindPhysicsDataPreset(data.physicsPresetID);
+
+        std::shared_ptr<GameObject>generatedObject;
+
+        auto renderer = Master::m_pDataManager->get_RendererEngine();
+        VEC3 pos = _transform.position;
+        VEC3 rot = _transform.rotation;
+        VEC3 scl = _transform.scale;
+
+        CreateModelInfo model;
+        model.pRenderer = renderer;
+        model.ObjTag = _assetID;
+        model.IsAnim = false;
+        model.MatNum = asssetData.materials.size();
+        model.SetupMaterial = asssetData.materials.data();
+        model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+
+        // LOD
+        model.LODModels[0] = { data.modelPath, 0.0f };
+
+        generatedObject = MeshFactory::CreateModel(model);
+
+        // 静的オブジェクト
+        generatedObject->set_IsStatic(true);
+
+        // ポーズ中は停止
+        generatedObject->set_IsUpdateAllowedDuringPause(false);
+
+        // 
+        // トランスフォーム設定
+        //
+        auto transform = generatedObject->get_Component<MyTransform>();
+        transform->set_Pos(pos);
+        transform->set_RotateToRad(rot);
+        transform->set_Scale(scl);
+
+        //
+        // 時間削除コンポーネントの追加
+        //
+        auto timeDestruction = generatedObject->add_Component<TimerDestruction>();
+        timeDestruction->set_LifeTime(15.0f);
+
+        auto modelResource = generatedObject->get_Component<ModelMeshResource>();
+
+        // ここから追加
+        auto fragmentModelData = modelResource->get_ModelData().lock();
+        if (!fragmentModelData)
+        {
+            return false;
+        }
+
+        // Assimp取り込み後の頂点範囲の中心を、重心の近似として使う
+        const auto& boundsCenter =
+            fragmentModelData->get_LocalBounds().Center;
+
+        const VEC3 fragmentCenter(
+            boundsCenter.x,
+            boundsCenter.y,
+            boundsCenter.z
+        );
+
+
+
+        //
+        // コライダーの装着
+        //
+        for (const auto& colliderData : physicsData.colliders)
+        {
+            auto rb = generatedObject->add_Component<RigidBody>();
+            std::shared_ptr<Collider> collider;
+
+            switch (colliderData.type)
+            {
+            case COLLIDER_TYPE::NONE:
+                continue;
+
+            case COLLIDER_TYPE::BOX:
+                collider = SetupColliderBox(colliderData, generatedObject);
+                break;
+
+            case COLLIDER_TYPE::SPHERE:
+                collider = SetupColliderSphere(colliderData, generatedObject);
+                break;
+
+            case COLLIDER_TYPE::CAPSULE:
+                collider = SetupColliderCapsule(colliderData, generatedObject);
+                break;
+
+            case COLLIDER_TYPE::CYLINDER:
+                collider = SetupColliderCylinder(colliderData, generatedObject);
+                break;
+
+            case COLLIDER_TYPE::CONVEX_HULL:
+                collider = SetupColliderConvexHull(colliderData, generatedObject, modelResource->get_ModelData());
+                break;
+
+            case COLLIDER_TYPE::CONCAVE_TRIANGLE:
+                collider = SetupColliderConcave(colliderData, generatedObject, modelResource->get_ModelData());
+                break;
+
+            default:
+                continue;
+
+            }
+
+            // コライダーの装着が失敗した場合
+            if (!collider)
+            {
+                assert(false);
+                continue;
+            }
+
+            collider->set_CollisionCategory(physicsData._myCollisionCategory);
+
+            // コライダーの中心位置をモデルのローカル座標に合わせる
+            //collider->set_Center(data.localTransform.position);
+
+            //*****************************************************************************************
+            //						衝突マスクの設定
+            //*****************************************************************************************
+            // 
+            // 押し出しあり
+            //
+            collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
+            collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
+
+            //
+            // 判定なし
+            //
+            collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_IGNORE);                // プレイヤー
+            collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // エネミー
+            collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);          // エネミー弾
+            collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                  // アイテム
+            collider->set_CollisionResponse(COLLISION_CATEGORY::PROP, COLLISION_RESPONSE::RESPONSE_IGNORE);                  // 小物
+
+            MO_RigidBodyData rigidBody = physicsData.rigidBody;
+
+            PhysicsData::RigidBodyDesc rbDesc;
+            rbDesc.mass = rigidBody.mass;                           // 質量
+            rbDesc.restitution = rigidBody.restitution;             // 反発係数
+            rbDesc.friction = rigidBody.friction;                   // 摩擦係数
+            rbDesc.linearFactor = rigidBody.linearFactor;           // 移動制限
+            rbDesc.angularFactor = rigidBody.angularFactor;         // 回転制限
+            rbDesc.linearDamping = rigidBody.linearDamping;         // 移動減衰
+            rbDesc.angularDamping = rigidBody.angularDamping;       // 回転減衰
+            rbDesc.gravity = VEC3(0.0f, -9.8f * rigidBody.gravityScale, 0.0f); // 重力
+
+            rbDesc.centerOfMassOffset = fragmentCenter;             // 中心位置オフセット
+            rbDesc.collider = collider;                             // コライダーの設定
+            rbDesc.pos = pos;                                       // 位置
+            rbDesc.owner = generatedObject;                         // オーナーオブジェクトの設定
+
+            rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+        }
+    }
+    return true;
+}
+
 std::shared_ptr<class Collider> MapObjectFactory::
 SetupColliderBox(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj)
 {
@@ -281,7 +459,7 @@ SetupColliderConvexHull(
     collider->SetupModelData(modelData);
     collider->set_IsConvex(true);
     collider->set_Center(data.center);
-    collider->set_IsStatic(true);
+    collider->set_IsStatic(false);
     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
     collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
     return collider;

@@ -45,10 +45,44 @@
             "position" : [-120.0, 5.0, 50.0],
             "rotation" : [0.0,  0.0, 0.0],
             "scale"    : [1.0,  1.0, 1.0]
+        },        {
+            "assetID" : "Building_01",
+            "position" : [-120.0, 5.0, 150.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },        {
+            "assetID" : "Building_01",
+            "position" : [-120.0, 5.0, 250.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },        {
+            "assetID" : "Building_01",
+            "position" : [-50.0, 5.0, 300.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },        {
+            "assetID" : "Building_01",
+            "position" : [-50.0, 5.0, 350.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
         },
         {
             "assetID" : "BuildingTW_01",
             "position" : [120.0, 5.0, 50.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        
+        {
+            "assetID" : "BuildingTW_01",
+            "position" : [160.0, 5.0, 50.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        
+        {
+            "assetID" : "BuildingTW_01",
+            "position" : [200.0, 5.0, 50.0],
             "rotation" : [0.0,  0.0, 0.0],
             "scale"    : [1.0,  1.0, 1.0]
         }

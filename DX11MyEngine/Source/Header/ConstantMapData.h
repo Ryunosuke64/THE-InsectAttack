@@ -157,4 +157,20 @@ namespace Map
         bool isDestruction = true;      // 破壊できるか
         float health = 10.0f;           // 体力
     };
+
+
+    /* 建物の破片データ */
+    struct BuildingFragmentData
+    {
+        std::string modelPath;              // モデルパス
+        std::string physicsPresetID = "";   // 物理プリセット
+        MO_TransformData localTransform;    // ローカル座標
+    };
+
+    /* 建物の破片データをまとめたもの */
+    struct BuildingFragmentDataSet
+    {
+        std::string assetID = "";                               // アセットID（どの建物モデルに対応した破片データか）
+        std::vector<BuildingFragmentData> fragmentDataArray;     // 破片データ
+    };
 };

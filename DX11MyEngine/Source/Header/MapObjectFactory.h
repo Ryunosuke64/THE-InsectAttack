@@ -1,9 +1,9 @@
 #pragma once
-
+#include"ConstantMapData.h"
 
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
-/* --- @:EnemyFactory Class --- */
+/* --- @:MapObjectFactory Class --- */
 //
 // 【?】マップオブジェクトの生成を行う
 //
@@ -11,7 +11,8 @@
 class MapObjectFactory
 {
 public:
-	static bool CreateMapObject(const Map::MapObjectData& data);
+	static bool CreateMapObject(const Map::MapObjectData& _data);
+	static bool CreateBuildingDebris(const std::string& _assetID, const Map::MO_TransformData& _transform);
 
 private:
 	static std::shared_ptr<class Collider> SetupColliderBox(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj);

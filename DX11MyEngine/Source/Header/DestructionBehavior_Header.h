@@ -57,3 +57,33 @@ public:
     
     bool IsFinished() const override;
 };
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:ReplaceModelDestructionBehavior Class --- */
+//
+//  šŒp³FIDestructionBehavior š
+//
+// y?z”j‰óƒ‚ƒfƒ‹‚Ö‚Ì·‚µ‘Ö‚¦
+//      å‚ÉŒš•¨‚Ég—p‚·‚é
+//
+// ***************************************************************************************
+class ReplaceModelDestructionBehavior : public IDestructionBehavior
+{
+private:
+    const float DESTROY_TIME = 20.0f;   // íœ‚Ü‚Å‚ÌŠÔ
+    const float IMPULSE_POWER = 50.0f;  // ‚Á”ò‚Ñ—Í
+    bool m_IsFinished = false;
+    bool m_IsDestructionStart = false;
+    float m_DestroyTimer = 0.0f;
+
+public:
+    void Start(
+        GameObject* object,
+        const VECTOR3::VEC3& hitPos,
+        const VECTOR3::VEC3& hitDir)override;
+    
+    void Update(float deltaTime)override;
+    
+    bool IsFinished() const override;
+};

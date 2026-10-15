@@ -972,6 +972,12 @@
     <ClCompile Include="Source\Cpp\PropDestructionBehavior.cpp">
       <Filter>ソース ファイル\Game\Component\Map\DestructionBehaviour</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\ReplaceModelDestructionBehavior.cpp">
+      <Filter>ソース ファイル\Game\Component\Map\DestructionBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DebrisManager.cpp">
+      <Filter>ソース ファイル\Singleton\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1564,6 +1570,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\DestructionBehavior_Header.h">
       <Filter>ソース ファイル\Game\Component\Map\DestructionBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\DebrisManager.h">
+      <Filter>ソース ファイル\Singleton\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

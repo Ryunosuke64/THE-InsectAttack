@@ -3,30 +3,30 @@ Total count
 PshC4      : 24
 PshV4      : 3
 PSF        : 17
-PshG4      : 2724
-RET        : 2731
-JMP        : 5450
-JS         : 2725
-JP         : 2725
+PshG4      : 1073
+RET        : 1080
+JMP        : 2148
+JS         : 1074
+JP         : 1074
 INCi       : 1
-CMPIi      : 5450
-JMPP       : 2725
-CALLSYS    : 2744
-SUSPEND    : 8187
+CMPIi      : 2148
+JMPP       : 1074
+CALLSYS    : 1093
+SUSPEND    : 3234
 GETREF     : 6
 SetV4      : 5
 ADDSi      : 2
 CpyVtoG4   : 3
 CpyRtoV4   : 3
-CpyGtoV4   : 2725
+CpyGtoV4   : 1074
 WRTV4      : 5
 LDG        : 1
 VAR        : 6
-SUBIi      : 2725
+SUBIi      : 1074
 SetG4      : 5
 SetV1      : 3
 LoadVObjR  : 5
-JLowZ      : 2724
+JLowZ      : 1073
 
 Never executed
 PopPtr    
@@ -211,29 +211,29 @@ PshC4     , GETREF     : 3
 PshV4     , PshC4      : 3
 PSF       , CALLSYS    : 15
 PSF       , ADDSi      : 2
-PshG4     , CALLSYS    : 2724
+PshG4     , CALLSYS    : 1073
 RET       , PSF        : 1
-RET       , CpyGtoV4   : 2725
+RET       , CpyGtoV4   : 1074
 RET       , SetG4      : 4
-JMP       , SUSPEND    : 5450
-JS        , SUBIi      : 2725
-JP        , CMPIi      : 2725
+JMP       , SUSPEND    : 2148
+JS        , SUBIi      : 1074
+JP        , CMPIi      : 1074
 INCi      , SUSPEND    : 1
-CMPIi     , JS         : 2725
-CMPIi     , JP         : 2725
-JMPP      , JMP        : 2725
+CMPIi     , JS         : 1074
+CMPIi     , JP         : 1074
+JMPP      , JMP        : 1074
 CALLSYS   , PSF        : 3
 CALLSYS   , RET        : 1
 CALLSYS   , SUSPEND    : 4
 CALLSYS   , CpyVtoG4   : 3
 CALLSYS   , CpyRtoV4   : 3
 CALLSYS   , VAR        : 6
-CALLSYS   , JLowZ      : 2724
+CALLSYS   , JLowZ      : 1073
 SUSPEND   , PshC4      : 2
 SUSPEND   , PSF        : 2
-SUSPEND   , PshG4      : 2724
-SUSPEND   , RET        : 2725
-SUSPEND   , JMP        : 2725
+SUSPEND   , PshG4      : 1073
+SUSPEND   , RET        : 1074
+SUSPEND   , JMP        : 1074
 SUSPEND   , SetV4      : 5
 SUSPEND   , LDG        : 1
 SUSPEND   , SetV1      : 3
@@ -243,14 +243,14 @@ SetV4     , LoadVObjR  : 5
 ADDSi     , GETREF     : 2
 CpyVtoG4  , SUSPEND    : 3
 CpyRtoV4  , PSF        : 3
-CpyGtoV4  , CMPIi      : 2725
+CpyGtoV4  , CMPIi      : 1074
 WRTV4     , SUSPEND    : 5
 LDG       , INCi       : 1
 VAR       , PshC4      : 4
 VAR       , PSF        : 2
-SUBIi     , JMPP       : 2725
+SUBIi     , JMPP       : 1074
 SetG4     , RET        : 5
 SetV1     , PshV4      : 3
 LoadVObjR , WRTV4      : 5
-JLowZ     , SUSPEND    : 2724
+JLowZ     , SUSPEND    : 1073
 LABEL     , SetG4      : 1

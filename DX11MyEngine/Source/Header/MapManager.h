@@ -30,6 +30,9 @@ private:
     /* 物理プリセット */
     std::unordered_map<std::string, Map::MO_PhysicsData> m_PhysicsDataPresetMap;
 
+    /* 建物の破片データ */
+    std::unordered_map<std::string, Map::BuildingFragmentDataSet> m_BuildingFragmentDataMap;
+
 public:
     MapManager();
     ~MapManager();
@@ -40,8 +43,11 @@ public:
     bool LoadMapObjectAssetData(const std::string& _filePath);       // マップオブジェクトデータの読み込み - 単体
     bool LoadMapObjectAssetDataAll(const std::string& _filePath);    // マップオブジェクトデータの読み込み - すべてのオブジェクト
     bool LoadPhysicsDataPreset(const std::string& _filePath);        // 物理プリセットの読み込み
+    bool LoadBuildingFragmentData(const std::string& _filePath);     // 建物の破片データの読み込み
+
     Map::Map_ObjectAssetData FindMapObjectAssetData(const std::string& _assetID);
     Map::MO_PhysicsData FindPhysicsDataPreset(const std::string& _presetID);
+    Map::BuildingFragmentDataSet FindBuildingFragmentDataSet(const std::string& _presetID);
 
 private:
     // コピー禁止
@@ -56,15 +62,22 @@ private:
     
     // 物理プリセットの抽出
     bool ExtractionPhysicsDataPreset(const nlohmann::json& _json, Map::MO_PhysicsData& _outData);
+        
+    // 建物の破片データの抽出
+    bool ExtractionBuildingFragmentData(const nlohmann::json& _json, Map::BuildingFragmentDataSet& _outData);
 
     // マップオブジェクトアセットが登録されているか確認
     bool IsRegisteredMapObjectAssetData(const std::string& _assetID)const;
     bool IsRegisteredPhysicsDataPreset(const std::string& _presetID)const;
+    bool IsRegisteredBuildingFragmentData(const std::string& _presetID)const;
     
     // 地面の生成
     bool SpawnGround(const std::string& _groundAssetID);
     
     // マップオブジェクトの生成
     bool SpawnMapObject(const Map::MapObjectData& _mapObjectData);
+
+    // 建物の破片モデルの生成
+    bool SpawnBuildingDebris(const std::string& _assetID);
 };
 

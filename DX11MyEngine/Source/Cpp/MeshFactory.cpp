@@ -51,7 +51,7 @@ std::shared_ptr<class GameObject> MeshFactory::CreateModel(const CreateModelInfo
         {
             if (!modeldata->SetupTextureMap(info.SetupMaterial[i].pMaterialData, info.SetupMaterial[i].Index))
             {
-                MessageBoxA(NULL, "マテリアルが設定できませんでした", "Error", MB_OK);
+                //MessageBoxA(NULL, "マテリアルが設定できませんでした", "Error", MB_OK);
             }
         }
 

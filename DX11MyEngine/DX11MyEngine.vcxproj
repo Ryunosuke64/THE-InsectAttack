@@ -201,6 +201,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\Component_CylinderCollider.h" />
     <ClInclude Include="Source\Header\Component_Destructible.h" />
     <ClInclude Include="Source\Header\Component_MapObject.h" />
+    <ClInclude Include="Source\Header\DebrisManager.h" />
     <ClInclude Include="Source\Header\DestructionBehavior_Header.h" />
     <ClInclude Include="Source\Header\MapManager.h" />
     <ClInclude Include="Source\Header\BuildingStateFactory.h" />
@@ -436,6 +437,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Component_CylinderCollider.cpp" />
     <ClCompile Include="Source\Cpp\Component_Destructible.cpp" />
     <ClCompile Include="Source\Cpp\Component_MapObject.cpp" />
+    <ClCompile Include="Source\Cpp\DebrisManager.cpp" />
     <ClCompile Include="Source\Cpp\DestructionBehavior.cpp" />
     <ClCompile Include="Source\Cpp\MapManager.cpp" />
     <ClCompile Include="Source\Cpp\BuildingStateFactory.cpp" />
@@ -556,6 +558,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\PhysicsEngine.cpp" />
     <ClCompile Include="Source\Cpp\PropDestructionBehavior.cpp" />
     <ClCompile Include="Source\Cpp\RenderQueue.cpp" />
+    <ClCompile Include="Source\Cpp\ReplaceModelDestructionBehavior.cpp" />
     <ClCompile Include="Source\Cpp\ScriptManager.cpp" />
     <ClCompile Include="Source\Cpp\TransientPointLightPool.cpp" />
     <ClCompile Include="Source\Cpp\LinearMove_Behaviour.cpp" />

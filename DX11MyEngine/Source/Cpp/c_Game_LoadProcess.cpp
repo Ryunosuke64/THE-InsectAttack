@@ -364,6 +364,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
     Master::m_pMapManager->LoadPhysicsDataPreset("Resource/MapData/MAP_OBJECT_PHYSICS_PRESET.json");
     Master::m_pMapManager->LoadMapObjectAssetDataAll("Resource/MapData/MAP_OBJECT_ASSETS.json");
+    Master::m_pMapManager->LoadBuildingFragmentData("Resource/MapData/BUILDING_FRAGMENT_DATA.json");
     Master::m_pMapManager->CreateMap("Resource/MapData/MAP_MOUNTAINS_A.json");
 
     /* –Ø‚Ì¶¬ */
