@@ -978,6 +978,9 @@
     <ClCompile Include="Source\Cpp\DebrisManager.cpp">
       <Filter>ソース ファイル\Singleton\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_AI_GunWeapon.cpp">
+      <Filter>ソース ファイル\Game\Component\Weapon\Gun</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1573,6 +1576,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\DebrisManager.h">
       <Filter>ソース ファイル\Singleton\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_AI_GunWeapon.h">
+      <Filter>ソース ファイル\Game\Component\Weapon\Gun</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -191,6 +191,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\Header\Component_AI_GunWeapon.h" />
     <ClInclude Include="Source\Header\Ant_StateHeader.h" />
     <ClInclude Include="Source\Header\AS_AudioAPI.h" />
     <ClInclude Include="Source\Header\AS_CoreAPI.h" />
@@ -420,6 +421,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <Text Include="Source\CordingRules\CPP_CordingRule.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </Text>
+    <ClCompile Include="Source\Cpp\Component_AI_GunWeapon.cpp" />
     <ClCompile Include="Source\Cpp\Ant_AT_AttackAcid.cpp" />
     <ClCompile Include="Source\Cpp\Ant_AT_DeadState.cpp" />
     <ClCompile Include="Source\Cpp\Ant_AT_HitStunState.cpp" />

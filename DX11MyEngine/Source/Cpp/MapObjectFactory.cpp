@@ -176,6 +176,10 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
             continue;
         }
 
+        // 材質設定
+        collider->set_SurfaceType(colliderData.surfaceType);
+
+        // カテゴリ設定
         collider->set_CollisionCategory(physicsData._myCollisionCategory);
 
         //*****************************************************************************************
@@ -352,6 +356,10 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
                 continue;
             }
 
+            // 材質設定
+            collider->set_SurfaceType(colliderData.surfaceType);
+
+            // カテゴリ設定
             collider->set_CollisionCategory(physicsData._myCollisionCategory);
 
             // コライダーの中心位置をモデルのローカル座標に合わせる
@@ -370,6 +378,7 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
             // 判定なし
             //
             collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_IGNORE);                // プレイヤー
+            collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);                // プレイヤー
             collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // エネミー
             collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);          // エネミー弾
             collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                  // アイテム
@@ -406,7 +415,6 @@ SetupColliderBox(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> o
     collider->set_Center(data.center);
     collider->set_IsStatic(true);
     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-    collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
 
     return collider;
 }
@@ -419,7 +427,6 @@ SetupColliderSphere(const Map::MO_ColliderData& data, std::shared_ptr<GameObject
     collider->set_Center(data.center);
     collider->set_IsStatic(true);
     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-    collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
     return collider;
 }
 
@@ -432,7 +439,6 @@ SetupColliderCapsule(const Map::MO_ColliderData& data, std::shared_ptr<GameObjec
     collider->set_Center(data.center);
     collider->set_IsStatic(true);
     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-    collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
     return collider;
 }
 
@@ -445,7 +451,6 @@ SetupColliderCylinder(const Map::MO_ColliderData& data, std::shared_ptr<GameObje
     collider->set_Center(data.center);
     collider->set_IsStatic(true);
     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-    collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
     return collider;
 }
 
@@ -461,7 +466,6 @@ SetupColliderConvexHull(
     collider->set_Center(data.center);
     collider->set_IsStatic(false);
     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-    collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
     return collider;
 }
 
@@ -477,6 +481,5 @@ SetupColliderConcave(
     collider->set_Center(data.center);
     collider->set_IsStatic(true);
     collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-    collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
     return collider;
 }
