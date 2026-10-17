@@ -41,11 +41,15 @@ GunWeapon::GunWeapon(std::weak_ptr<GameObject> pOwner, int updateRank)
     m_StateMachine(this),
     m_IsNowZoom(false),
     m_IsStopFire(false),
+    m_IsBurstFire(false),
+    m_IsNowBurstFire(false),
     m_AmmoRemaining(0),
     m_Range(0.0f),
     m_CrntReloadTime(0.0f),
     m_FireInterval(0.0f),
-    m_FireTimer(0.0f)
+    m_FireCooldownTimer(0.0f),
+    m_BurstFireTimer(0.0f),
+    m_BurstFireRemaining(0)
 {
     this->set_Tag("GunWeapon");
 }
@@ -127,7 +131,7 @@ void GunWeapon::LateUpdate(RendererEngine& renderer)
     auto skinnedMesh = player->get_Component<SkinnedMeshAnimator>();
 
     //auto& boneMtx = skinnedMesh->get_BoneLocalWorldMatrix("mixamorig:RightHand");
-    
+
     // 武器の位置を右手の位置に合わせる
     auto& boneMtx = skinnedMesh->get_BoneLocalWorldMatrix("WeaponSocket_Right");
     transform->set_OffsetWorldTransfomationMatrix(boneMtx);
@@ -148,7 +152,7 @@ void GunWeapon::LateUpdate(RendererEngine& renderer)
         XMVECTOR forward = worldMtx.r[2];  // Z
         //forward *= -1;  // プレイヤーが-Z前になってしまっているので
 
-		auto laserLineRenderer = m_pLineRendererComp.lock();
+        auto laserLineRenderer = m_pLineRendererComp.lock();
 
         laserLineRenderer->get_OwnerObj().lock()->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
 
@@ -161,20 +165,20 @@ void GunWeapon::LateUpdate(RendererEngine& renderer)
         laserPoint->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
 
         VEC3 laserDir = laserLineRenderer->get_Dir();
-		VEC3 laserPointPos = VEC3(10000.0f); // 何処にもあたってない場合、とりあえず遠くに置いておく
-        
-		// レイの情報を作る
+        VEC3 laserPointPos = VEC3(10000.0f); // 何処にもあたってない場合、とりあえず遠くに置いておく
+
+        // レイの情報を作る
         CollInData_Ray ray;
-		ray._point = pos;
-		ray._dir = laserDir * m_Range;
+        ray._point = pos;
+        ray._dir = laserDir * m_Range;
 
         unsigned hitMask = UINT_CAST(COLLISION_CATEGORY::ENEMY) | UINT_CAST(COLLISION_CATEGORY::BUILDING) | UINT_CAST(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
         CollisionInfo hitInfo;
-		
+
         // レイキャストして当たった位置にレーザーポインタを置く
         if (Master::m_pCollisionManager->CheckRaycast(ray, hitMask, &hitInfo))
         {
-			laserPointPos = hitInfo.hitPoint; // 少し浮かせる
+            laserPointPos = hitInfo.hitPoint; // 少し浮かせる
         }
 
         laserPoint->get_Transform().lock()->set_Pos(laserPointPos);
@@ -208,8 +212,44 @@ void GunWeapon::LateUpdate(RendererEngine& renderer)
         camera->set_Fov(zoomFov);
     }
 
-    m_FireTimer += deltaTime;
 
+
+    // バースト射撃中でなければ
+    if (m_BurstFireRemaining <= 0)
+    {
+        m_FireCooldownTimer =
+            std::max(0.0f, m_FireCooldownTimer - deltaTime);
+    }
+    else
+    {
+        const auto& gunParam = get_GunWeaponData();
+
+        // 次の発射までの時間を減らす
+        m_BurstFireTimer -= deltaTime;
+
+        if (m_BurstFireRemaining > 0 && 
+            m_BurstFireTimer <= 0.0f)
+        {
+            OnceFire(renderer);
+
+            // バースト残弾減らす
+            m_BurstFireRemaining--;
+
+            if (m_BurstFireRemaining <= 0)
+            {
+                m_FireCooldownTimer = m_FireInterval;
+            }
+            else
+            {
+                m_BurstFireTimer = gunParam->_burstInterval;
+            }
+        }
+    }
+
+    Master::m_pDebugger->BeginDebugWindow("Weapon");
+    Master::m_pDebugger->DG_TextValue("BurstTimer : %.2f / %.2f",m_BurstFireTimer, gunParam->_burstInterval);
+    Master::m_pDebugger->DG_TextValue("BurstCount : %d / %d", m_BurstFireRemaining, gunParam->_burstCount);
+    Master::m_pDebugger->EndDebugWindow();
 
     /* 武器情報 */
     //const auto& baseBulletData = std::visit([](const auto& arg) -> const BulletData::NormalBulletData& {
@@ -222,7 +262,7 @@ void GunWeapon::LateUpdate(RendererEngine& renderer)
     //Master::m_pDebugger->DG_BulletText(Tool::U8ToChar(u8"リロード時間：%.2f"), gunParam->_reloadTime);
     //Master::m_pDebugger->DG_BulletText(Tool::U8ToChar(u8"ズーム倍率：%.2f"), gunParam->_zoomLength);
     //Master::m_pDebugger->EndDebugWindow();
-    
+
     // ステート更新
     m_StateMachine.Update();
 }
@@ -266,14 +306,16 @@ bool GunWeapon::Setup(const WeaponData::BaseWeaponData* _pWeaponData)
         return false;
     }
 
-    auto gunParam = get_GunWeaponData();
+    const auto& gunParam = get_GunWeaponData();
 
     m_AmmoRemaining = gunParam->_bulletMaxNum;
+
+    // バースト射撃かどうか
+    m_IsBurstFire = gunParam->_burstCount != 0 ? true : false;
 
     // 射程距離を取得
     m_Range = 
         gunParam->_bulletData._commonData._lifeTime * gunParam->_bulletData._commonData._speed;
-
 
     // 有効状態に
     get_WeaponFlags().EnableFlag(WEAPON_STATUS::ENABLED);
@@ -282,8 +324,9 @@ bool GunWeapon::Setup(const WeaponData::BaseWeaponData* _pWeaponData)
     // 1秒あたりの発射回数から発射間隔を計算
     m_FireInterval = 1.0f / get_GunWeaponData()->_fireRate;
 
-    // 開始時は直ぐ撃てるよう大きな値を入れる
-    m_FireTimer = 9999.0f;
+    // 開始時は直ぐ撃てるようにする
+    m_FireCooldownTimer = 0.0f;
+    m_BurstFireTimer = 0.0f;
 
     return true;
 }
@@ -314,27 +357,45 @@ void GunWeapon::SwicthReset()
 }
 
 
-//*---------------------------------------------------------------------------------------
-//*【?】弾の発射処理
-//*
-//* [引数]
-//* &renderer : 描画エンジンの参照
-//* [返値]なし
-//*----------------------------------------------------------------------------------------
-void GunWeapon::Fire(RendererEngine& renderer)
+
+void GunWeapon::BurstFire(RendererEngine& renderer)
 {
-    // まだ発射可能時間に達していなければ、返す
-    if (m_FireTimer <= m_FireInterval)return;
-
-    // タイマーリセット
-    m_FireTimer = 0.0f;
-
-	// 武器使用の有無の設定がオフなら発射しない
-    if (!Master::m_pDataManager->get_IsUseWeapon() ||
-        !get_WeaponFlags().GetFlag(WEAPON_STATUS::ENABLED))
+    // バースト実行中
+    if (m_BurstFireRemaining > 0)
     {
         return;
     }
+
+    // クールダウン中
+    if (m_FireCooldownTimer > 0.0f)
+    {
+        return;
+    }
+
+    // 射撃
+    OnceFire(renderer);
+
+ 
+    const auto& gunParam = get_GunWeaponData();
+
+    // 残弾減らす
+    m_BurstFireRemaining = gunParam->_burstCount -1;
+
+    if (m_BurstFireRemaining > 0)
+    {
+        m_BurstFireTimer = std::max(0.01f, gunParam->_burstInterval);
+    }
+    // 1発で終了した場合
+    else
+    {
+        m_FireCooldownTimer = m_FireInterval;
+    }
+}
+
+
+void GunWeapon::OnceFire(RendererEngine& renderer)
+{
+    const auto& gunParam = get_GunWeaponData();
 
     // カメラの取得
     if (Master::m_pDataManager->get_CameraComponent().expired())
@@ -344,8 +405,8 @@ void GunWeapon::Fire(RendererEngine& renderer)
     }
     auto camera = Master::m_pDataManager->get_CameraComponent().lock();
 
-    float c_AngleH =camera->get_Angle_H();
-    float c_AngleV =camera->get_Angle_V();
+    float c_AngleH = camera->get_Angle_H();
+    float c_AngleV = camera->get_Angle_V();
 
     auto transform = m_pOwner.lock()->get_Transform().lock();
     VEC3 pos = transform->get_WorldVEC3ToPos();
@@ -354,8 +415,7 @@ void GunWeapon::Fire(RendererEngine& renderer)
     //				 発射音再生
     // ****************************************************
     Master::m_pSoundManager->Play_RandPitch(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE02), 300);
-        
-    auto gunParam = get_GunWeaponData();
+
 
     // =====================================================================
     // 武器の向きに合わせて発射するやり方
@@ -392,9 +452,9 @@ void GunWeapon::Fire(RendererEngine& renderer)
         //   firePos.y = pos.y + (fw.y * 1.0f);
         //   firePos.z = pos.z + (fw.z * 1.0f);
     }
-    
+
     // =====================================================================
-	// カメラの向きに合わせて発射するやり方
+    // カメラの向きに合わせて発射するやり方
     // =====================================================================
     // 描画と同じカメラの位置・視線方向を取得
     VEC3 cameraPos = camera->get_CameraPos();
@@ -409,8 +469,8 @@ void GunWeapon::Fire(RendererEngine& renderer)
     float targetDistance = 1000.0f;
     XMVECTOR targetPos = XMVectorMultiplyAdd(lookDir, XMVectorReplicate(targetDistance), vCamPos);
 
-	VEC3 firePos;
-	firePos.x = pos.x + (camForward.m128_f32[0]);
+    VEC3 firePos;
+    firePos.x = pos.x + (camForward.m128_f32[0]);
     firePos.y = pos.y + (camForward.m128_f32[1]);
     firePos.z = pos.z + (camForward.m128_f32[2]);
 
@@ -514,7 +574,7 @@ void GunWeapon::Fire(RendererEngine& renderer)
 
             // 再生
             auto handle = Master::m_pEffectManager->PlayEffect(
-            bulletData._commonVisualData._bulletEffectTag, firePos);
+                bulletData._commonVisualData._bulletEffectTag, firePos);
 
             // スケール・回転
             Master::m_pEffectManager->SetScaleEffect(handle, scale);
@@ -526,7 +586,7 @@ void GunWeapon::Fire(RendererEngine& renderer)
 
             // 動的パラメータ
             // レーザーの長さ設定
-            Master::m_pEffectManager->SetDynamicParameter(handle, 0, bulletData._commonData._range);         
+            Master::m_pEffectManager->SetDynamicParameter(handle, 0, bulletData._commonData._range);
         }
     }
 
@@ -542,15 +602,55 @@ void GunWeapon::Fire(RendererEngine& renderer)
     //*****************************************************************************************
     if (gunParam->_muzzleFlashEffectTag.empty() == false)
     {
-		VEC3 muzzleScale = gunParam->_muzzleFlashEffectScale;   // エフェクトの大きさ
+        VEC3 muzzleScale = gunParam->_muzzleFlashEffectScale;   // エフェクトの大きさ
 
         auto handle = Master::m_pEffectManager->PlayEffect(gunParam->_muzzleFlashEffectTag, firePos, 1);
         Master::m_pEffectManager->SetScaleEffect(handle, muzzleScale.x, muzzleScale.y, muzzleScale.z);
         Master::m_pEffectManager->SetRotationEffect(handle, pitch, yaw, 0.0f);
     }
-    
+
     // 弾数減らす
     m_AmmoRemaining--;
+}
+
+
+//*---------------------------------------------------------------------------------------
+//*【?】弾の発射処理
+//*
+//* [引数]
+//* &renderer : 描画エンジンの参照
+//* [返値]なし
+//*----------------------------------------------------------------------------------------
+void GunWeapon::Fire(RendererEngine& renderer)
+{
+    // まだ発射可能時間でない、または残弾が0以下なら、返す
+    if (m_FireCooldownTimer > 0.0f || m_AmmoRemaining <= 0)
+    {
+        return;
+    }
+
+    // 武器使用の有無の設定がオフなら発射しない
+    if (!Master::m_pDataManager->get_IsUseWeapon() ||
+        !get_WeaponFlags().GetFlag(WEAPON_STATUS::ENABLED))
+    {
+        return;
+    }
+
+    const auto& gunParam = get_GunWeaponData();
+
+    if (m_IsBurstFire)
+    {
+        // バースト射撃
+        BurstFire(renderer);
+    }
+    else
+    {
+        // 単発射撃
+        OnceFire(renderer);
+
+        // 次の発射可能時間までのクールダウンタイマー設定
+        m_FireCooldownTimer = m_FireInterval;
+    }
 }
 
 //*---------------------------------------------------------------------------------------

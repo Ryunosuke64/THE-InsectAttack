@@ -21,7 +21,7 @@
       "maxSpeed": 700.0,
       "damage": 250.0,
       "acceleration": 0.0,
-      "penetrationsCount": 6,
+      "penetrationsCount": 100,
       "collisionSize": 0.0,
       "gravityScale": 0.0,
       "knockbackForce" : 100.0,

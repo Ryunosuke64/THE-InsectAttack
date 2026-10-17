@@ -17,13 +17,17 @@ private:
 	std::weak_ptr<class LineRenderer> m_pLineRendererComp;	// レーザー用のライン
 	std::weak_ptr<class PointLight> m_pFlashPointLight;		// 発射時のフラッシュ用
 	//WeaponData::GunWeaponData m_WeaponParameter;
-	float m_Range;	// 射程距離
-	float m_CrntReloadTime; // 現在のリロード時間
-	float m_FireInterval;	// 発射間隔（1秒間あたり）
-	float m_FireTimer;		// 発射タイマー
-	int m_AmmoRemaining;	// 残弾数
-	bool m_IsNowZoom;		// ズーム中かどうか
-	bool m_IsStopFire;		// 発射止める
+	float m_Range;				// 射程距離
+	float m_CrntReloadTime;		// 現在のリロード時間
+	float m_FireInterval;		// 発射間隔（1秒間あたり）
+	float m_FireCooldownTimer;	// 発射タイマー
+	bool m_IsBurstFire;			// バースト射撃か
+	bool m_IsNowBurstFire;		// バースト射撃中か
+	float m_BurstFireTimer;		// バースト射撃タイマー
+	int m_BurstFireRemaining;	// バースト射撃回数
+	int m_AmmoRemaining;		// 残弾数
+	bool m_IsNowZoom;			// ズーム中かどうか
+	bool m_IsStopFire;			// 発射止める
 	StateMachine<GunWeapon>m_StateMachine;
 
 public:
@@ -35,6 +39,8 @@ public:
 	void LateUpdate(RendererEngine& renderer) override;		// 更新処理
 	void Draw(RendererEngine& renderer)override;		// 描画処理
 
+	void BurstFire(RendererEngine& renderer);	// バースト発射
+	void OnceFire(RendererEngine& renderer);	// 単発発射
 	void Fire(RendererEngine& renderer);	// 弾の発射
 	bool Setup(const WeaponData::BaseWeaponData* _pWeaponData)override;
 	void SwicthReset() override;	// 武器切り替え時のリセット

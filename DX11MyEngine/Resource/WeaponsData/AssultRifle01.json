@@ -4,6 +4,8 @@
   "bulletMaxNum": 120,
   "bulletSimultaneousNum": 1,
   "fireRate": 12.0,
+  "burstCount": 3,
+  "burstInterval": 0.06,
   "reloadTime": 1.5,
   "accuracy": 0.03,
   "zoomLength": 1.0,

@@ -85,8 +85,9 @@ bool WeaponDataManager::Init()
     m_AllWeaponsDataMap[3] = std::make_unique<GunWeaponData>(gunData);
 
     // スカウト ************************************************************************************
-    if (LoadGunWeaponData("Resource/WeaponsData/AcidGun01.json", gunData) == false) {
+    //if (LoadGunWeaponData("Resource/WeaponsData/AcidGun01.json", gunData) == false) {
     //if (LoadGunWeaponData("Resource/WeaponsData/LaserRifle01.json", gunData) == false) {
+    if (LoadGunWeaponData("Resource/WeaponsData/LaserRifle02.json", gunData) == false) {
         assert(false);
     }
     m_AllWeaponsDataMap[4] = std::make_unique<GunWeaponData>(gunData);
@@ -137,6 +138,11 @@ bool WeaponDataManager::Init()
         assert(false);
     }
     m_EnemyWeaponsDataMap[5] = std::make_unique<GunWeaponData>(gunData);
+    // 八面体
+    if (LoadGunWeaponData("Resource/EnemysData/OctahedronLaser02_EASY.json", gunData) == false) {     // インポッシブル用
+        assert(false);
+    }
+    m_EnemyWeaponsDataMap[6] = std::make_unique<GunWeaponData>(gunData);
 
 
 
@@ -218,6 +224,8 @@ bool WeaponDataManager::LoadGunWeaponData(const std::string& _filepath, WeaponDa
     _outData._bulletMaxNum          = j.value("bulletMaxNum", 0);
     _outData._bulletSimultaneousNum = j.value("bulletSimultaneousNum", 1);
     _outData._fireRate              = j.value("fireRate", 0.0f);
+    _outData._burstCount            = j.value("burstCount", 0);
+    _outData._burstInterval         = j.value("burstInterval", 0.0f);
     _outData._reloadTime            = j.value("reloadTime", 0.0f);
     _outData._accuracy              = j.value("accuracy", 0.0f);
     _outData._zoomLength            = j.value("zoomLength", 0.0f);

@@ -75,7 +75,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     // 地面と水面との差
     float depthDiff = viewDepth - input.ViewDepth;
     
-    float ShallowDistance = 2.5f;   // 
+    float ShallowDistance = 5.0f;   // 
     float shallowFactor = saturate(depthDiff / ShallowDistance);
     
     float3 DeepColor = float3(0.05f, 0.05f, 0.05f); // 深部カラー（暗い）
@@ -121,7 +121,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     }
     
     float ShallowAlpha = 0.1f;  // 最浅瀬のアルファ
-    float DeepAlpha = 0.9f;    // 最深部のアルファ
+    float DeepAlpha = 0.7f;    // 最深部のアルファ
     
     finalAlpha =
         lerp(

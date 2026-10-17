@@ -47,6 +47,8 @@ namespace WeaponData
         int _bulletMaxNum = 0;                  // 弾数
         int _bulletSimultaneousNum = 1;         // 弾の同時発射数
         float _fireRate = 0.0f;                 // 連射速度
+        int _burstCount = 0;                    // 1バーストで発射する回数
+        float _burstInterval = 0.0f;            // バースト内の射撃間隔
         float _reloadTime = 0.0f;               // リロード時間
         float _accuracy = 0.0f;                 // 精度（ラジアン）
         float _zoomLength = 0.0f;               // ズーム倍率（0.0以外の時に作動）

@@ -23,7 +23,11 @@ void Gun_FireState::OnEnter(GunWeapon* pOwner)
 	pOwner->get_WeaponFlags().EnableFlag(WEAPON_STATUS::FIRE);
 
 	// ”­Ë
-	pOwner->Fire(*m_pRenderer);
+
+	if (pOwner->get_GunWeaponData()->_burstCount > 0)
+	{
+		pOwner->Fire(*m_pRenderer);
+	}
 }
 
 //*---------------------------------------------------------------------------------------
@@ -51,7 +55,7 @@ int Gun_FireState::Update(GunWeapon* pOwner)
     auto player = Master::m_pGameObjectManager->get_ObjectByTag("Player");
     if (player->get_Component<PlayerController>()->get_AnimID() == PlayerData::PLAYER_RANGER_ANIM_ID::RUNING_DIVE_ROLL)return GUN_STATE::GUN_STATE_IDLE;
 
-	const auto& weapon_param = pOwner->get_GunWeaponData();
+	//const auto& weapon_param = pOwner->get_GunWeaponData();
 	int ammoRemaining = pOwner->get_AmmoRemaining();
 
 	// ¶ƒNƒŠƒbƒN‚Å”­Ë‘±‚¯‚é
