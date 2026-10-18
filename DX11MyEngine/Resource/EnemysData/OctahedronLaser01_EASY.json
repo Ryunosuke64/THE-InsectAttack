@@ -1,16 +1,19 @@
 {
   "level": 0,
   "name": "OctahedronBomb",
-  "bulletMaxNum": 1,
+  "bulletMaxNum": 10000,
   "bulletSimultaneousNum": 5,
-  "fireRate": 0.0,
+  "fireRate": 0.1,
+  "burstCount": 8,
+  "burstInterval": 1.0,
   "reloadTime": 0.0,
   "accuracy": 0.3,
   "zoomLength": 0.0,
   "isLaserSight": false,
-  "soundID": 0,
-  "muzzleFlashEffectTag" : "",
-  "muzzleFlashEffectScale" :  [1.0, 1.0, 1.0],
+  "shotSoundRadius": 1000.0,
+  "soundID": "enemy.octahedron.shot_02",
+  "muzzleFlashEffectTag" : "MuzzleEffect_Laser_01",
+  "muzzleFlashEffectScale" :  [10.0, 10.0, 10.0],
   "bulletType": "EXPLOSION",
   "bulletParam": 
   {
@@ -27,7 +30,7 @@
       "knockbackForce" : 20.0,
       "bulletType" : "NORMAL",
       "collisionCategory" : "ENEMY_BULLET",
-      "collisionMask": ["PLAYER", "BUILDING", "DESTRUCTION_BUILDING"]
+      "collisionMask": ["PLAYER", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
     },
     
     "movement" :

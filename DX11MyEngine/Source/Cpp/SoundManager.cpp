@@ -3,6 +3,8 @@
 #include "RendererEngine.h"
 #include "Component_3DCamera.h"
 #include <windows.h>
+#include <cmath>
+#include <limits>
 
 using namespace VECTOR3;
 
@@ -16,7 +18,6 @@ constexpr int BITS_PER_SAMPLE	 = 16;		// サンプルあたりのビット数
 constexpr float DEFAULT_SE_VOL    = 0.5f;	// SEのデフォルトの音量
 constexpr float DEFAULT_BGM_VOL   = 0.3f;	// BGMのデフォルトの音量
 constexpr float DEFAULT_VOICE_VOL = 0.7f;	// ボイスのデフォルトの音量
-
 
 
 // 距離減衰のプリセット（直線的な減衰）
@@ -50,7 +51,7 @@ SoundManager::SoundManager():
 //*----------------------------------------------------------------------------------------
 SoundManager::~SoundManager()
 {
-
+    UninitXA2Sound();
 }
 
 //*---------------------------------------------------------------------------------------
@@ -64,6 +65,7 @@ SoundManager::~SoundManager()
 //*----------------------------------------------------------------------------------------
 bool SoundManager::InitXA2Sound(void)
 {
+    if (m_pXAudio2) return true; // 初期化済みのIDとリソースを維持する。
 	HRESULT hr = S_OK;
 
 	// ############################################################################
@@ -72,18 +74,10 @@ bool SoundManager::InitXA2Sound(void)
 	
 	// ############################################################################
 
-	//COMインターフェースの初期化------------------------------------------
-	//hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	if (FAILED(hr)){
-		MessageBoxA(NULL, "初期化エラー", "SoundManager", MB_OK);
-		return false;
-	}
-
-
 	//XAudio2デバイス作成------------------------------------------
 	hr = XAudio2Create(&m_pXAudio2, XAUDIO2_DEBUG_ENGINE);
 	if (FAILED(hr)) {
-		CoUninitialize();
+		UninitXA2Sound();
 		return false;
 	}
 
@@ -91,7 +85,7 @@ bool SoundManager::InitXA2Sound(void)
 	//マスターボイスの作成------------------------------------------
 	hr = m_pXAudio2->CreateMasteringVoice(&m_pMasteringVoice);
 	if (FAILED(hr)) {
-		CoUninitialize();
+		UninitXA2Sound();
 		return false;
 	}
 
@@ -119,6 +113,7 @@ bool SoundManager::InitXA2Sound(void)
 
 		//ソースボイス作成
 		if (m_pXAudio2->CreateSourceVoice(&sound._pSourceVoice, &wf) != S_OK){
+			UninitXA2Sound();
 			return false;
 		}
 
@@ -149,6 +144,7 @@ bool SoundManager::InitXA2Sound(void)
 
 		//ソースボイス作成
 		if (m_pXAudio2->CreateSourceVoice(&sound._pSourceVoice, &wf) != S_OK) {
+			UninitXA2Sound();
 			return false;
 		}
 		// ボイス
@@ -173,6 +169,7 @@ bool SoundManager::InitXA2Sound(void)
 
 	//ソースボイス作成
 	if (m_pXAudio2->CreateSourceVoice(&m_BGM_SoundSlot._pSourceVoice, &wf) != S_OK) {
+		UninitXA2Sound();
 		return false;
 	}
 
@@ -199,6 +196,7 @@ bool SoundManager::InitXA2Sound(void)
 
 		//ソースボイス作成
 		if (m_pXAudio2->CreateSourceVoice(&sound._pSourceVoice, &wf) != S_OK) {
+			UninitXA2Sound();
 			return false;
 		}
 
@@ -215,7 +213,7 @@ bool SoundManager::InitXA2Sound(void)
 	DWORD dwChannelMask;
 	hr = m_pMasteringVoice->GetChannelMask(&dwChannelMask);
 	if (FAILED(hr)) {
-		CoUninitialize();
+		UninitXA2Sound();
 		return false;
 	}
 
@@ -223,7 +221,7 @@ bool SoundManager::InitXA2Sound(void)
 	// X3Dインスタンスハンドル
 	hr = X3DAudioInitialize(dwChannelMask, X3DAUDIO_SPEED_OF_SOUND, m_X3DInstanceHandle);
 	if (FAILED(hr)) {
-		CoUninitialize();
+		UninitXA2Sound();
 		return false;
 	}
 
@@ -261,51 +259,67 @@ bool SoundManager::InitXA2Sound(void)
 	
 	// ############################################################################
 
-	// システム
-	Load_Wav("Resource/Sound/SE/System/MovingCursor_03.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
-	Load_Wav("Resource/Sound/SE/System/Decision_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION01));
-	Load_Wav("Resource/Sound/SE/System/Decision_02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION02));
-	Load_Wav("Resource/Sound/SE/System/Back_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+    // 組み込み音源の一覧。キーは外部から使う名前なので、登録順と切り離して管理する。
+    struct SoundDefinition
+    {
+        std::string_view key;
+        const char* filename;
+        SOUND_TYPE type;
+        int existingId;
+    };
+    const SoundDefinition definitions[] = {
+        // システム
+        { "ui.cursor", "Resource/Sound/SE/System/MovingCursor_03.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01) },
+        { "ui.decision_01", "Resource/Sound/SE/System/Decision_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION01) },
+        { "ui.decision_02", "Resource/Sound/SE/System/Decision_02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_DECISION02) },
+        { "ui.back", "Resource/Sound/SE/System/Back_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01) },
+        // 武器
+        { "weapon.gun_fire_01", "Resource/Sound/SE/Weapon/GunFire_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE01) },
+        { "weapon.gun_fire_02", "Resource/Sound/SE/Weapon/GunFire_02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE02) },
+        { "weapon.gun_fire_03", "Resource/Sound/SE/Weapon/GunFire_03.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE03) },
+        { "weapon.gun_fire_04", "Resource/Sound/SE/Weapon/GunFire_04.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE04) },
+        { "weapon.gun_fire_laser_01", "Resource/Sound/SE/Weapon/GunFire_Laser_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE_LASER01) },
+        { "weapon.ricochet_01", "Resource/Sound/SE/Weapon/Ricochet_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ROCOCHET01) },
+        { "weapon.ricochet_02", "Resource/Sound/SE/Weapon/Ricochet_02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ROCOCHET02) },
+        { "weapon.explosion_01", "Resource/Sound/SE/Weapon/Explosion01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::EXPLOSION01) },
+        { "weapon.change_01", "Resource/Sound/SE/Weapon/GunChange_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_CHANGE01) },
+        // 建物
+        { "building.destruction", "Resource/Sound/SE/Building/Destruction.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_DESTRUCTION) },
+        { "building.fall", "Resource/Sound/SE/Building/Fall.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_FALL) },
+        // 兵士
+        { "soldier.jump", "Resource/Sound/SE/Ranger/パンチの衣擦れ1.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN) },
+        { "soldier.land", "Resource/Sound/SE/Ranger/ジャンプの着地.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_LAND) },
+        // 敵
+        { "enemy.ant.hit_01", "Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_HIT01) },
+        { "enemy.ant.dead", "Resource/Sound/SE/Enemy/DSGNImpt_Impact High Spark 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_DEAD) },
+        { "enemy.ant.acid_shoot", "Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 06_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_ACID_SHOOT) },
+        { "enemy.octahedron.dead", "Resource/Sound/SE/Enemy/DSGNImpt_Impact Pure Power 02_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_DEAD) },
+        { "enemy.octahedron.shot_01", "Resource/Sound/SE/Enemy/Octh_Fire01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_SHOT01) },
+        { "enemy.octahedron.shot_02", "Resource/Sound/SE/Enemy/Octh_Fire02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_SHOT02) },
+        { "enemy.octahedron.always", "Resource/Sound/SE/Enemy/Octh_Always.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_ALWAYS) },
+        // アイテム
+        { "item.get", "Resource/Sound/SE/Game/ItemGet.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ITEM_GET) },
+        { "item.point_get", "Resource/Sound/SE/Game/PointGet.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::POINT_GET) },
+        // BGM
+        { "bgm.title_01", "Resource/Sound/BGM/Flash_Shadow.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_TITLE_01) },
+        { "bgm.game_01", "Resource/Sound/BGM/MusMus-BGM-170.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_GAME_01) },
+        { "bgm.victory_01", "Resource/Sound/BGM/Victory.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_VICTORY01) },
+        { "bgm.hangeki", "Resource/Sound/BGM/Hangeki.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_HANGEKI) },
+        // ボイス
+        { "voice.shout_01", "Resource/Sound/Voice/Ranger/an000_01.wav", SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_01) },
+        { "voice.shout_02", "Resource/Sound/Voice/Ranger/an000_02.wav", SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_02) },
+        { "voice.shout_03", "Resource/Sound/Voice/Ranger/an000_03.wav", SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_03) },
 
-	// 武器
-	Load_Wav("Resource/Sound/SE/Weapon/GunFire_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE01));
-	Load_Wav("Resource/Sound/SE/Weapon/GunFire_02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE02));
-	Load_Wav("Resource/Sound/SE/Weapon/Ricochet_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ROCOCHET01));
-	Load_Wav("Resource/Sound/SE/Weapon/Ricochet_02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ROCOCHET02));
-	Load_Wav("Resource/Sound/SE/Weapon/Explosion01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::EXPLOSION01));
-	Load_Wav("Resource/Sound/SE/Weapon/GunChange_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_CHANGE01));
-
-	// 建物
-	Load_Wav("Resource/Sound/SE/Building/Destruction.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_DESTRUCTION));
-	Load_Wav("Resource/Sound/SE/Building/Fall.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_FALL));
-
-	// 兵士
-	Load_Wav("Resource/Sound/SE/Ranger/パンチの衣擦れ1.wav",SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN));
-	Load_Wav("Resource/Sound/SE/Ranger/ジャンプの着地.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_LAND));
-
-	// 敵
-	Load_Wav("Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_HIT01));
-	Load_Wav("Resource/Sound/SE/Enemy/DSGNImpt_Impact High Spark 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_DEAD));
-	Load_Wav("Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 06_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_ACID_SHOOT));
-	Load_Wav("Resource/Sound/SE/Enemy/DSGNImpt_Impact Pure Power 02_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_DEAD));
-	Load_Wav("Resource/Sound/SE/Enemy/Octh_Fire01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_SHOT01));
-	Load_Wav("Resource/Sound/SE/Enemy/Octh_Fire02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_SHOT02));
-	
-	// アイテム
-	Load_Wav("Resource/Sound/SE/Game/ItemGet.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ITEM_GET));
-	Load_Wav("Resource/Sound/SE/Game/PointGet.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::POINT_GET));
-
-	
-	// BGM
-	Load_Wav("Resource/Sound/BGM/Flash_Shadow.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_TITLE_01));
-	Load_Wav("Resource/Sound/BGM/MusMus-BGM-170.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_GAME_01));
-	Load_Wav("Resource/Sound/BGM/Victory.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_VICTORY01));
-	Load_Wav("Resource/Sound/BGM/Hangeki.wav", SOUND_TYPE::BGM, SOUND_ID_TO_INT(BGM_ID::BGM_HANGEKI));
-
-	// ボイス
-	Load_Wav("Resource/Sound/Voice/Ranger/an000_01.wav",SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_01));
-	Load_Wav("Resource/Sound/Voice/Ranger/an000_02.wav",SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_02));
-	Load_Wav("Resource/Sound/Voice/Ranger/an000_03.wav",SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_03));
+    };
+    for (const auto& definition : definitions)
+    {
+        if (!Load_Wav(definition.filename, definition.type, definition.existingId)
+            || !IsValid(RegisterSoundName(definition.key, definition.type, definition.existingId)))
+        {
+            UninitXA2Sound();
+            return false;
+        }
+    }
 
 	return true;
 }
@@ -319,29 +333,30 @@ bool SoundManager::InitXA2Sound(void)
 //*----------------------------------------------------------------------------------------
 void SoundManager::UninitXA2Sound(void)
 {
-	// ソースボイス削除
-	for (auto& instance : m_SoundSlotArray) {
-		if (instance._pSourceVoice) {
-			instance._pSourceVoice->DestroyVoice();
-		}
-	}	
-	
-	// マスターボイス
-	if (m_pMasteringVoice != nullptr)
-	{
-		m_pMasteringVoice->DestroyVoice();
-		m_pMasteringVoice = nullptr;
-	}
+    auto destroy = [](SoundInstance& slot)
+    {
+        if (slot._pSourceVoice)
+            slot._pSourceVoice->DestroyVoice();
+        slot = SoundInstance{};
+    };
+    for (auto& slot : m_SoundSlotArray) destroy(slot);
+    for (auto& slot : m_VoiceSoundSlotArray) destroy(slot);
+    for (auto& slot : m_3DSoundSlotArray) destroy(slot);
+    destroy(m_BGM_SoundSlot);
 
-	// XAudio本体
-	if (m_pXAudio2 != nullptr)
-	{
-		m_pXAudio2->Release();
-		m_pXAudio2 = nullptr;
-	}
+    if (m_pMasteringVoice) m_pMasteringVoice->DestroyVoice();
+    m_pMasteringVoice = nullptr;
+    if (m_pXAudio2) m_pXAudio2->Release();
+    m_pXAudio2 = nullptr;
+    delete[] m_DSPSettings.pMatrixCoefficients;
+    m_DSPSettings = {};
 
-
-	CoUninitialize();
+    m_SoundNameToId.clear();
+    m_SoundEntries.clear();
+    m_SE_WaveResourceMap.clear();
+    m_Voice_WaveResourceMap.clear();
+    m_BGM_WaveResourceMap.clear();
+    ++m_SoundGeneration;
 }
 
 
@@ -357,6 +372,7 @@ void SoundManager::UninitXA2Sound(void)
 //*----------------------------------------------------------------------------------------
 bool SoundManager::Update(RendererEngine& renderer)
 {
+    if (!m_pXAudio2) return false;
 	// ############################################################################
 	//							リスナーの更新
 	// ############################################################################
@@ -396,82 +412,7 @@ bool SoundManager::Update(RendererEngine& renderer)
 		m_BGM_SoundSlot._pSourceVoice->SetVolume(m_BGMVolume);
 	}
 
-	// ############################################################################
-    //							3Dサウンドの更新
-	// ############################################################################
-	HRESULT hr = S_OK;
-
-	int updateFlag = 1;
-
-    // 使用されているスロットすべてに対して更新処理を行う
-	for (auto &slot : m_3DSoundSlotArray)
-	{
-        if (slot._isUsed == false)continue; // 使用されていないスロットはスキップ
-
-		XAUDIO2_VOICE_STATE state;
-		slot._pSourceVoice->GetState(&state);
-
-		// 再生が終了していればスロットを解放
-		if (state.BuffersQueued == 0) {
-			slot._isUsed = false;
-			slot._pos = VECTOR3::VEC3(0.0f, 0.0f, 0.0f);
-			slot._isLoop = false;
-			
-			hr = slot._pSourceVoice->Stop(XAUDIO2_PLAY_TAILS, updateFlag);
-			if (FAILED(hr)) return false;
-			hr = slot._pSourceVoice->FlushSourceBuffers();
-			if (FAILED(hr)) return false;
-
-            // 音量を0にしておく
-			hr = slot._pSourceVoice->SetVolume(0.0f, updateFlag);
-			if (FAILED(hr)) {
-				return false;
-			}
-
-            continue;
-		}
-
-		// エミッター
-		X3DAUDIO_EMITTER emitter = {};
-		emitter.ChannelCount = 1;		// 基本的に3Dサウンド用はモノラルなので 1 チャンネル
-		emitter.CurveDistanceScaler = slot._radius;
-		emitter.DopplerScaler = 1.0f;
-		emitter.ChannelRadius = 0.0f;
-		emitter.Position.x = slot._pos.x;
-		emitter.Position.y = slot._pos.y;
-		emitter.Position.z = slot._pos.z;
-		emitter.Velocity.x = slot._velocity.x;
-		emitter.Velocity.y = slot._velocity.y;
-		emitter.Velocity.z = slot._velocity.z;
-		emitter.pVolumeCurve = &LinearCurve;
-
-		// 3Dサウンドにするための計算
-		X3DAudioCalculate(m_X3DInstanceHandle, &m_Listener, &emitter,
-			X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER ,
-			&m_DSPSettings);
-
-        // 計算結果をソースボイスに反映
-		hr = slot._pSourceVoice->SetOutputMatrix(
-			m_pMasteringVoice, 
-			1,
-			m_DeviceDetails.InputChannels, 
-			m_DSPSettings.pMatrixCoefficients, 
-			updateFlag
-		);
-
-		if (FAILED(hr)) {
-			continue;
-		}
-
-		//hr = slot._pSourceVoice->SetFrequencyRatio(m_DSPSettings.DopplerFactor);
-		if (FAILED(hr)) {
-			continue;
-		}
-
-	}
-	m_pXAudio2->CommitChanges(updateFlag);
-
-	return true;
+    return Update3DSounds();
 }
 
 
@@ -493,120 +434,31 @@ bool SoundManager::Update(RendererEngine& renderer)
 //* true:成功
 //* false:失敗
 //*----------------------------------------------------------------------------------------
-bool SoundManager::Load_Wav(const char *_filename, SOUND_TYPE _type, int _id)
+bool SoundManager::Load_Wav(const char* filename, SOUND_TYPE type, int existingId)
 {
-	WaveResource wavRes = {};
+    if (!filename || !*filename || existingId < 0)
+        return false;
 
-	switch (_type)
-	{
-	case SOUND_TYPE::SE:		// SEのロード
-	{
-        SOUND_ID id = static_cast<SOUND_ID>(_id);
+    auto load = [&](auto& resources, auto id, int channels)
+    {
+        auto [it, inserted] = resources.try_emplace(id);
+        if (!inserted)
+            return false;
+        if (!Internal_Load_Wav(filename, it->second, channels) || it->second._size == 0)
+        {
+            resources.erase(it);
+            return false;
+        }
+        return true;
+    };
 
-		auto it = m_SE_WaveResourceMap.find(id);
-		if (it != m_SE_WaveResourceMap.end()) {
-			MessageBoxA(NULL, "既に登録されたIDです", "SoundManager", MB_OK);
-			return false;
-		}
-
-		// wavのロード（チャンネル数 : 1（モノラル））
-		if (!Internal_Load_Wav(_filename, m_SE_WaveResourceMap[id], 1)) {
-			return false;
-		}
-	}
-	break;
-    case SOUND_TYPE::BGM:		// BGMのロード
-	{
-        BGM_ID id = static_cast<BGM_ID>(_id);
-
-		auto it = m_BGM_WaveResourceMap.find(id);
-		if (it != m_BGM_WaveResourceMap.end()) {
-			MessageBoxA(NULL, "既に登録されたIDです", "SoundManager", MB_OK);
-			return false;
-		}
-
-		// wavのロード（チャンネル数 : 2（ステレオ））
-		if (!Internal_Load_Wav(_filename, m_BGM_WaveResourceMap[id], 2)){
-			return false;
-		}
-	}
-	break;
-    case SOUND_TYPE::VOICE:		// ボイスのロード
-	{
-        VOICE_ID id = static_cast<VOICE_ID>(_id);
-
-		auto it = m_Voice_WaveResourceMap.find(id);
-		if (it != m_Voice_WaveResourceMap.end()) {
-			MessageBoxA(NULL, "既に登録されたIDです", "SoundManager", MB_OK);
-			return false;
-		}
-
-		// wavのロード（チャンネル数 : 1（モノラル））
-		if (!Internal_Load_Wav(_filename, m_Voice_WaveResourceMap[id], 1))
-		{
-			return false;
-		}
-	}
-	break;
-	default:
-		break;
-	}
-
-	return true;
-}
-
-
-//*---------------------------------------------------------------------------------------
-//*【?】SEの再生
-//*　　 ピッチをランダムにする（銃声などのずっと同じ音にしたくない場合）
-//*
-//* [引数]
-//* index：再生するサウンドのハンドル
-//* _pitchRange：ピッチをどのくらいの範囲に収めるか（100の場合、±5%揺らぐ）
-//* _loop：ループさせるか
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
-//*----------------------------------------------------------------------------------------
-bool SoundManager::Play_RandPitch(SOUND_TYPE _type, int _id, int _pitchRange, bool _loop)
-{
-	return Internal_SoundPlay_RandPitch(_type, _id, _pitchRange, _loop);
-}
-
-//*---------------------------------------------------------------------------------------
-//*【?】SEの再生
-//*　　 ピッチをランダムにする（銃声などのずっと同じ音にしたくない場合）
-//*
-//* [引数]
-//* index：再生するサウンドのハンドル
-//* _pitchRange：ピッチをどのくらいの範囲に収めるか（100の場合、±5%揺らぐ）
-//* _loop：ループさせるか
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
-//*----------------------------------------------------------------------------------------
-bool SoundManager::Play_RandPitch_3D(SOUND_TYPE _type, int _id, const VECTOR3::VEC3& _pos, float _radius, int _pitchRange, const VECTOR3::VEC3& _vel, bool _loop)
-{
-	return Internal_SoundPlay_RandPitch_3D(_type, _id, _pos, _radius, _pitchRange, _vel, _loop);
-}
-
-
-//*---------------------------------------------------------------------------------------
-//*【?】ボイスの再生（範囲ランダム）
-//*
-//* [引数]
-//* _beginID：ランダム再生に使用する最初のハンドル
-//* _range：_beginIDからのランダム範囲
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
-//*----------------------------------------------------------------------------------------
-bool SoundManager::Play_Rand(SOUND_TYPE _type, int _beginID, int _range, bool _loop)
-{
-    return Internal_SoundPlay_Rand(_type, _beginID, _range, _loop);
+    switch (type)
+    {
+    case SOUND_TYPE::SE: return load(m_SE_WaveResourceMap, static_cast<SOUND_ID>(existingId), 1);
+    case SOUND_TYPE::VOICE: return load(m_Voice_WaveResourceMap, static_cast<VOICE_ID>(existingId), 1);
+    case SOUND_TYPE::BGM: return load(m_BGM_WaveResourceMap, static_cast<BGM_ID>(existingId), 2);
+    default: return false;
+    }
 }
 
 
@@ -621,15 +473,17 @@ bool SoundManager::Play_Rand(SOUND_TYPE _type, int _beginID, int _range, bool _l
 // true:成功
 // false:失敗
 //*----------------------------------------------------------------------------------------
-bool SoundManager::PlayBGM(BGM_ID _id, bool _loop)
+bool SoundManager::Internal_PlayBGM(BGM_ID _id, bool _loop)
 {
 	// 見つからなければそのまま返す
 	auto it = m_BGM_WaveResourceMap.find(_id);
-	if (it == m_BGM_WaveResourceMap.end()) {
+	if (it == m_BGM_WaveResourceMap.end() || !m_BGM_SoundSlot._pSourceVoice) {
 		return false;
 	}
 
-	auto& resource = m_BGM_WaveResourceMap[_id];
+	// BGMは同時に1曲。切り替え前にキューを空にする。
+    if (!StopInstance(m_BGM_SoundSlot)) return false;
+    auto& resource = it->second;
 	HRESULT hr = S_OK;
 
 	// 波形データ
@@ -639,9 +493,6 @@ bool SoundManager::PlayBGM(BGM_ID _id, bool _loop)
 	buff.Flags = XAUDIO2_END_OF_STREAM;
 	buff.LoopCount = _loop ? XAUDIO2_LOOP_INFINITE : 0;	  // ループさせるか
 
-
-	XAUDIO2_VOICE_STATE state;
-	m_BGM_SoundSlot._pSourceVoice->GetState(&state);
 
 	// 音量
 	hr = m_BGM_SoundSlot._pSourceVoice->SetVolume(m_BGMVolume);
@@ -653,46 +504,17 @@ bool SoundManager::PlayBGM(BGM_ID _id, bool _loop)
 
 	// 音を鳴らす
 	hr = m_BGM_SoundSlot._pSourceVoice->Start();
-	if (FAILED(hr)) return false;
+	if (FAILED(hr))
+	{
+		StopInstance(m_BGM_SoundSlot);
+		return false;
+	}
 
-	return true;
-}
-
-
-//*---------------------------------------------------------------------------------------
-//*【?】サウンドの再生
-//*
-//* [引数]
-//* _type：サウンドの種類 (SE、BGM、ボイスなど)
-//* _id：再生するサウンドのID 
-//* _loop：ループするかどうか
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
-//*----------------------------------------------------------------------------------------
-bool SoundManager::Play(SOUND_TYPE _type, int _id, bool _loop)
-{
-	return Internal_SoundPlay(_type, _id);
-}
-
-//*---------------------------------------------------------------------------------------
-//*【?】3Dサウンドの再生
-//*
-//* [引数]
-//* _type：サウンドの種類 (SE、BGM、ボイスなど)
-//* _id  ：再生するサウンドのID 
-//* _pos ：音を鳴らす位置
-//* _loop：ループするかどうか
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
-//*----------------------------------------------------------------------------------------
-bool SoundManager::Play_3D(SOUND_TYPE _type, int _id, const VECTOR3::VEC3 &_pos, float _radius, const VECTOR3::VEC3 &_vel, bool _loop)
-{
-	return Internal_SoundPlay_3D(_type, _id, _pos, _radius, _vel, _loop);
-	//return Internal_SoundPlay_3D(_type, _id, _pos, _vel, _loop);
+    m_BGM_SoundSlot._soundType = SOUND_TYPE::BGM;
+    m_BGM_SoundSlot._soundID = static_cast<int>(_id);
+    m_BGM_SoundSlot._isLoop = _loop;
+    m_BGM_SoundSlot._isUsed = true;
+    return true;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -707,140 +529,9 @@ bool SoundManager::Play_3D(SOUND_TYPE _type, int _id, const VECTOR3::VEC3 &_pos,
 // true:成功
 // false:失敗
 //*---------------------------------------------------------------------------------------
-bool SoundManager::Internal_SoundPlay(SOUND_TYPE _type, int _id, bool _loop)
+bool SoundManager::Internal_SoundPlay(SOUND_TYPE type, int id, bool loop)
 {
-	std::span<SoundInstance> typeSoundSlotArray;
-    WaveResource *typeWaveResource = nullptr;
-
-    // サウンドの種類とIDから、再生に必要なリソースを取得
-	SoundTypeAndIDConvertToResource(_type, _id, typeWaveResource, typeSoundSlotArray);
-
-	HRESULT hr = S_OK;
-
-	// 波形データ
-	XAUDIO2_BUFFER buff = {};
-	buff.pAudioData = typeWaveResource->_waveBuffer;	// 波形データの先頭アドレス
-	buff.AudioBytes = typeWaveResource->_size;			// 波形データのサイズ
-	buff.Flags = XAUDIO2_END_OF_STREAM;
-	buff.LoopCount = _loop ? XAUDIO2_LOOP_INFINITE : 0;	// ループさせるか
-
-	// 再生が終了しているソースボイスを探して
-	for (auto &slot : typeSoundSlotArray) {
-		XAUDIO2_VOICE_STATE state;
-		slot._pSourceVoice->GetState(&state);
-
-		// 待機中のバッファが0個 ＝ 再生が終わっている
-		if (state.BuffersQueued == 0)
-		{
-			hr = slot._pSourceVoice->SetFrequencyRatio(1.0f);	// ピッチは元の音声のまま
-			if (FAILED(hr)) return false;
-
-			// 音量
-			hr = slot._pSourceVoice->SetVolume(m_SEVolume);
-			if (FAILED(hr)) return false;
-
-			// 音声バッファの追加
-			hr = slot._pSourceVoice->SubmitSourceBuffer(&buff);
-			if (FAILED(hr)) return false;
-
-			// 音を鳴らす
-			hr = slot._pSourceVoice->Start();
-			if (FAILED(hr)) return false;
-
-			return true;
-		}
-	}
-
-	return false;
-}
-
-
-//*---------------------------------------------------------------------------------------
-//*【?】サウンドのランダム再生（内部関数）
-//*
-//* [引数]
-//* _type：サウンドの種類 (SE、BGM、ボイスなど)
-//* _beginID：ランダム再生に使用する最初のハンドル
-//* _range：_beginIDからのランダム範囲
-//* _loop：ループするかどうか
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
-//*---------------------------------------------------------------------------------------
-bool SoundManager::Internal_SoundPlay_Rand(SOUND_TYPE _type, int _beginID, int _range, bool _loop)
-{
-	std::span<SoundInstance> typeSoundSlotArray;
-    WaveResource *typeWaveResource = nullptr;
-
-	// ランダム求める
-	int randID = (_beginID + rand() % _range);
-
-    // IDが範囲内かどうかのチェック
-	switch (_type)
-	{
-	case SOUND_TYPE::SE:
-		if (randID >= SOUND_ID_TO_INT(SOUND_ID::NUM))
-		{
-			return false;
-		}
-		break;
-	case SOUND_TYPE::BGM:
-		if (randID >= SOUND_ID_TO_INT(BGM_ID::NUM))
-		{
-			return false;
-		}
-		break;
-	case SOUND_TYPE::VOICE:
-		if (randID >= SOUND_ID_TO_INT(VOICE_ID::NUM))
-		{
-			return false;
-		}
-		break;
-	default:
-		break;
-	}
-
-    // サウンドの種類とIDから、再生に必要なリソースを取得
-	SoundTypeAndIDConvertToResource(_type, randID, typeWaveResource, typeSoundSlotArray);
-
-	HRESULT hr = S_OK;
-
-	// 波形データ
-	XAUDIO2_BUFFER buff = {};
-	buff.pAudioData = typeWaveResource->_waveBuffer;		// 波形データの先頭アドレス
-	buff.AudioBytes = typeWaveResource->_size;				// 波形データのサイズ
-	buff.Flags = XAUDIO2_END_OF_STREAM;
-	buff.LoopCount = _loop ? XAUDIO2_LOOP_INFINITE : 0;	  // ループさせるか
-
-	// 再生が終了しているソースボイスを探して
-	for (auto &slot : typeSoundSlotArray) {
-		XAUDIO2_VOICE_STATE state;
-		slot._pSourceVoice->GetState(&state);
-
-		// 待機中のバッファが0個 ＝ 再生が終わっている
-		if (state.BuffersQueued == 0)
-		{
-			hr = slot._pSourceVoice->SetFrequencyRatio(1.0f);	// ピッチは元の音声のまま
-			if (FAILED(hr)) return false;
-
-			// 音量
-			hr = slot._pSourceVoice->SetVolume(m_SEVolume);
-			if (FAILED(hr)) return false;
-
-			// 音声バッファの追加
-			hr = slot._pSourceVoice->SubmitSourceBuffer(&buff);
-			if (FAILED(hr)) return false;
-
-			// 音を鳴らす
-			hr = slot._pSourceVoice->Start();
-			if (FAILED(hr)) return false;
-
-			return true;
-		}
-	}
-
-	return false;
+    return Internal_SoundPlay_RandPitch(type, id, 0, loop);
 }
 
 
@@ -862,7 +553,8 @@ bool SoundManager::Internal_SoundPlay_RandPitch(SOUND_TYPE _type, int _id, int _
     WaveResource *typeWaveResource = nullptr;
 
 	// サウンドの種類とIDから、再生に必要なリソースを取得
-	SoundTypeAndIDConvertToResource(_type, _id, typeWaveResource, typeSoundSlotArray);
+	if (!SoundTypeAndIDConvertToResource(_type, _id, typeWaveResource, typeSoundSlotArray))
+        return false;
 
 	HRESULT hr = S_OK;
 
@@ -875,6 +567,7 @@ bool SoundManager::Internal_SoundPlay_RandPitch(SOUND_TYPE _type, int _id, int _
 
 	// 再生が終了しているソースボイスを探して
 	for (auto &slot : typeSoundSlotArray) {
+        if (!slot._pSourceVoice) continue;
 		XAUDIO2_VOICE_STATE state;
 		slot._pSourceVoice->GetState(&state);
 
@@ -882,12 +575,13 @@ bool SoundManager::Internal_SoundPlay_RandPitch(SOUND_TYPE _type, int _id, int _
 		if (state.BuffersQueued == 0)
 		{
 			// ピッチをいじる
-			float pitch = 1.0f + ((rand() % _pitchRange - (_pitchRange / 2)) / 1000.0f);
+			float pitch = _pitchRange == 0 ? 1.0f
+            : 1.0f + ((rand() % _pitchRange - (_pitchRange / 2)) / 1000.0f);
 			hr = slot._pSourceVoice->SetFrequencyRatio(pitch);
 			if (FAILED(hr)) return false;
 
 			// 音量
-			hr = slot._pSourceVoice->SetVolume(m_SEVolume);
+			hr = slot._pSourceVoice->SetVolume(get_Volume(_type));
 			if (FAILED(hr)) return false;
 
 			// 音声バッファの追加
@@ -896,47 +590,59 @@ bool SoundManager::Internal_SoundPlay_RandPitch(SOUND_TYPE _type, int _id, int _
 
 			// 音を鳴らす
 			hr = slot._pSourceVoice->Start();
-			if (FAILED(hr)) return false;
+			if (FAILED(hr))
+			{
+				StopInstance(slot);
+				return false;
+			}
 
-			return true;
-		}
-	}
+            // 停止時に「同じ音源だけ」を見つけられるよう、2D再生にも記録する。
+            slot._soundType = _type;
+            slot._soundID = _id;
+            slot._isLoop = _loop;
+            slot._isUsed = true;
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 //*---------------------------------------------------------------------------------------
 //*【?】3Dサウンドの再生（内部関数）
-//*		ピッチを指定の幅でランダムにする 
+//*		ピッチを指定の幅でランダムにする
 //*
 //* [引数]
 //* _type       ：サウンドの種類 (SE、BGM、ボイスなど)
-//* _id         ：再生するサウンドのID 
+//* _id         ：再生するサウンドのID
 //* _pos        ：再生位置
-//* _radius     ：聞こえる範囲 
+//* _radius     ：聞こえる範囲
 //* _pitchRange ：ピッチの幅
 //* _loop       ：ループするかどうか
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
+//*
+//* [返値]
+// 再生に成功した場合はSoundHandle、失敗した場合は無効ハンドル
 //*---------------------------------------------------------------------------------------
-bool SoundManager::Internal_SoundPlay_RandPitch_3D(SOUND_TYPE _type, int _id, const VECTOR3::VEC3& _pos, float _radius, int _pitchRange, const VECTOR3::VEC3& _vel , bool _loop)
+SoundHandle SoundManager::Internal_Start3D(SOUND_TYPE _type, int _id, const VECTOR3::VEC3& _pos, float _radius, int _pitchRange, const VECTOR3::VEC3& _vel , bool _loop)
 {
 	HRESULT hr = S_OK;
 	WaveResource* typeWaveResource = nullptr;
 
 	// 音声データの取得
-	SerchResource(_type, _id, typeWaveResource);
+	if (!SerchResource(_type, _id, typeWaveResource))
+        return {};
 
 	// 再生が終了しているソースボイスを探す
-	for (auto& slot : m_3DSoundSlotArray) {
+	for (std::size_t index = 0; index < m_3DSoundSlotArray.size(); ++index) {
+        auto& slot = m_3DSoundSlotArray[index];
+        if (!slot._pSourceVoice) continue;
 		XAUDIO2_VOICE_STATE state;
 		slot._pSourceVoice->GetState(&state);
 
 		// 使われているスロットは飛ばす
 		if (state.BuffersQueued != 0)continue;
-		if (slot._isUsed == true)continue;
+		// Update前でも、自然終了済みなら同じスロットを再利用できる。
+        if (!StopInstance(slot)) return {};
 
 
 		if (typeWaveResource == nullptr) {
@@ -948,7 +654,7 @@ bool SoundManager::Internal_SoundPlay_RandPitch_3D(SOUND_TYPE _type, int _id, co
 		slot._isLoop = _loop;	 // ループするかどうかをセット
 		slot._soundID = _id;	 // 音のIDをセット
 		slot._soundType = _type; // 音の種類をセット
-		slot._isUsed = true;	 // スロット使用中にする
+		slot._isUsed = false; // 再生開始に成功してから使用中にする
 		slot._volumeDefault = get_Volume(_type);	// 音量のデフォルト値をセット
 		slot._volumeFactor = 1.0f;					// 音量の倍率を初期化
 		slot._radius = _radius;	 // 音の聞こえる範囲
@@ -995,224 +701,40 @@ bool SoundManager::Internal_SoundPlay_RandPitch_3D(SOUND_TYPE _type, int _id, co
 		float volume = slot._volumeDefault * slot._volumeFactor;
 
 		// ピッチをいじる
-		float pitch = 1.0f + ((rand() % _pitchRange - (_pitchRange / 2)) / 1000.0f);
+		float pitch = _pitchRange == 0 ? 1.0f
+            : 1.0f + ((rand() % _pitchRange - (_pitchRange / 2)) / 1000.0f);
 		hr = slot._pSourceVoice->SetFrequencyRatio(pitch);
-		if (FAILED(hr)) return false;
+		if (FAILED(hr)) return {};
 
 		// 音量
 		hr = slot._pSourceVoice->SetVolume(volume);
 		if (FAILED(hr)) {
-			return false;
+			return {};
 		}
 
-		// バッファのクリア
-		slot._pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
-		slot._pSourceVoice->FlushSourceBuffers();
 
 
 		// 音声バッファの追加
 		hr = slot._pSourceVoice->SubmitSourceBuffer(&buff);
 		if (FAILED(hr)) {
-			return false;
+			return {};
 		}
 
 		// 音を鳴らす
 		hr = slot._pSourceVoice->Start();
 		if (FAILED(hr)) {
-			return false;
-		}
+            StopInstance(slot);
+            return {};
+        }
 
-		return true;
+        slot._isUsed = true;
+        auto& generation = m_3DPlaybackGenerations[index];
+        ++generation;
+        if (generation == 0) ++generation; // 0は無効ハンドル用。
+        return { index, generation, m_SoundGeneration };
 	}
 
-	return false;
-}
-
-
-//*---------------------------------------------------------------------------------------
-//*【?】3Dサウンドの再生（内部関数）
-//*
-//* [引数]
-//* _type：サウンドの種類 (SE、BGM、ボイスなど)
-//* _id  ：再生するサウンドのID 
-//* _pos ：ワールド座標
-//* _vel ：移動ベクトル
-//* _loop：ループするかどうか
-//* 
-//* [返値] 
-// true:成功
-// false:失敗
-//*---------------------------------------------------------------------------------------
-bool SoundManager::Internal_SoundPlay_3D(SOUND_TYPE _type, int _id, const VECTOR3::VEC3 &_pos, float _radius, const VECTOR3::VEC3 &_vel, bool _loop)
-{
-    HRESULT hr = S_OK;
-
-	WaveResource *typeWaveResource = nullptr;
-
-	// 音声データの取得
-	SerchResource(_type, _id, typeWaveResource);
-
-	// 再生が終了しているソースボイスを探す
-	for (auto &slot : m_3DSoundSlotArray) {
-		XAUDIO2_VOICE_STATE state;
-		slot._pSourceVoice->GetState(&state);
-
-		// 使われているスロットは飛ばす
-        if (state.BuffersQueued != 0)continue;
-        if (slot._isUsed == true)continue;	
-
-
-		if (typeWaveResource == nullptr) {
-			continue;
-		}
-
-        slot._pos = _pos;		 // 音を鳴らす位置をセット
-        slot._velocity = _vel;	 // 音の移動ベクトルをセット
-		slot._isLoop = _loop;	 // ループするかどうかをセット
-        slot._soundID = _id;	 // 音のIDをセット
-        slot._soundType = _type; // 音の種類をセット
-        slot._isUsed = true;	 // スロット使用中にする
-        slot._volumeDefault = get_Volume(_type);	// 音量のデフォルト値をセット
-        slot._volumeFactor = 1.0f;					// 音量の倍率を初期化
-		slot._radius = _radius;	 // 音の聞こえる範囲
-
-		// エミッター
-		X3DAUDIO_EMITTER emitter = {};
-		emitter.ChannelCount = 1;		// 基本的に3Dサウンド用はモノラルなので 1 チャンネル
-		emitter.CurveDistanceScaler = _radius;
-		emitter.DopplerScaler = 1.0f;
-		emitter.ChannelRadius = 0.0f;
-		emitter.Position.x = slot._pos.x;
-		emitter.Position.y = slot._pos.y;
-		emitter.Position.z = slot._pos.z;
-		emitter.Velocity.x = slot._velocity.x;
-		emitter.Velocity.y = slot._velocity.y;
-		emitter.Velocity.z = slot._velocity.z;
-		emitter.pVolumeCurve = &LinearCurve;
-
-
-		// 3Dサウンドにするための計算
-		X3DAudioCalculate(m_X3DInstanceHandle, &m_Listener, &emitter,
-			X3DAUDIO_CALCULATE_MATRIX,
-			&m_DSPSettings);
-
-		// 計算結果をソースボイスに反映
-		hr = slot._pSourceVoice->SetOutputMatrix(
-			m_pMasteringVoice,
-			1,
-			m_DeviceDetails.InputChannels,
-			m_DSPSettings.pMatrixCoefficients
-		);
-
-		if (FAILED(hr)) {
-			continue;
-		}
-
-		// 波形データ
-		XAUDIO2_BUFFER buff = {};
-		buff.pAudioData = typeWaveResource->_waveBuffer;	// 波形データの先頭アドレス
-		buff.AudioBytes = typeWaveResource->_size;			// 波形データのサイズ
-		buff.Flags = XAUDIO2_END_OF_STREAM;
-		buff.LoopCount = slot._isLoop ? XAUDIO2_LOOP_INFINITE : 0;	// ループさせるか
-
-		float volume = slot._volumeDefault * slot._volumeFactor;
-
-		hr = slot._pSourceVoice->SetFrequencyRatio(1.0f);	// ピッチは元の音声のまま
-		if (FAILED(hr)) return false;
-
-		// 音量
-		hr = slot._pSourceVoice->SetVolume(volume);
-		if (FAILED(hr)) {
-			return false;
-		}
-
-		// バッファのクリア
-		slot._pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
-		slot._pSourceVoice->FlushSourceBuffers();
-
-
-		// 音声バッファの追加
-		hr = slot._pSourceVoice->SubmitSourceBuffer(&buff);
-		if (FAILED(hr)) {
-			return false;
-		}
-
-		// 音を鳴らす
-		hr = slot._pSourceVoice->Start();
-		if (FAILED(hr)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
-
-//*---------------------------------------------------------------------------------------
-//*【?】再生止める（BGM以外）
-//*
-//* [引数]
-//* _type：サウンドの種類
-//* _id：停止するサウンドのID
-//* 
-//* [返値] なし
-//*----------------------------------------------------------------------------------------
-bool SoundManager::Stop(SOUND_TYPE _type, int _id)
-{
-	HRESULT hr = S_OK;
-
-    // BGM以外はIDからリソースを特定して処理する *************************************
-	std::span<SoundInstance> typeSoundSlotArray;
-	WaveResource *typeWaveResource = nullptr;
-
-	// サウンドの種類とIDから、再生に必要なリソースを取得
-	SoundTypeAndIDConvertToResource(_type, _id, typeWaveResource, typeSoundSlotArray);
-
-	// 再生が終了していないソースボイスを探す
-	for (auto &slot : typeSoundSlotArray) {
-		XAUDIO2_VOICE_STATE state;
-		slot._pSourceVoice->GetState(&state);
-
-		if (state.BuffersQueued != 0)
-		{
-			// 再生停止（XAUDIO2_PLAY_TAILSは止めた後、リバーブを掛けれるらしい）
-			hr = slot._pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
-			if (FAILED(hr)) return false;
-
-			// キューにたまっているバッファをクリアする
-			hr = slot._pSourceVoice->FlushSourceBuffers();
-			if (FAILED(hr)) return false;
-		}
-	}
-
-	return true;
-}
-
-//*---------------------------------------------------------------------------------------
-//*【?】再生止める（BGMだけ）
-//*
-//* [引数]
-//* _id：停止するBGMのID
-//* 
-//* [返値] なし
-//*----------------------------------------------------------------------------------------
-bool SoundManager::StopBGM(BGM_ID _id)
-{
-	HRESULT hr = S_OK;
-
-	// BGMは1つしかないので、BGMの停止はID関係なくここで処理してしまう
-	// 再生停止（XAUDIO2_PLAY_TAILSは止めた後、リバーブを掛けれるらしい）
-	hr = m_BGM_SoundSlot._pSourceVoice->Stop(XAUDIO2_PLAY_TAILS);
-	if (FAILED(hr)) return false;
-
-	// キューにたまっているバッファをクリアする
-	hr = m_BGM_SoundSlot._pSourceVoice->FlushSourceBuffers();
-	if (FAILED(hr)) return false;
-
-
-	return true; // BGMは1つしかないので、ここで終わり
+	return {};
 }
 
 
@@ -1356,8 +878,6 @@ bool SoundManager::Internal_Load_Wav(const char* _filename, WaveResource& _out, 
 }
 
 
-
-
 //*---------------------------------------------------------------------------------------
 //*【?】サウンドの種類とIDから、再生に必要なリソースとソースボイスを取得する関数
 //*
@@ -1435,6 +955,7 @@ bool SoundManager::SoundTypeAndIDConvertToResource(SOUND_TYPE _type, int _id, Wa
 //*---------------------------------------------------------------------------------------
 bool SoundManager::SerchResource(SOUND_TYPE _type, int _id, WaveResource *&_outResource)
 {
+    _outResource = nullptr;
 	switch (_type)
 	{
 	case SOUND_TYPE::SE:
@@ -1442,7 +963,6 @@ bool SoundManager::SerchResource(SOUND_TYPE _type, int _id, WaveResource *&_outR
 		auto it = m_SE_WaveResourceMap.find(static_cast<SOUND_ID>(_id));
 		if (it == m_SE_WaveResourceMap.end())
 		{
-			MessageBoxA(NULL, "見つからないIDです", "SoundManager", MB_OK);
 			return false;
 		}
 		_outResource = &it->second;
@@ -1453,7 +973,6 @@ bool SoundManager::SerchResource(SOUND_TYPE _type, int _id, WaveResource *&_outR
 		auto it = m_BGM_WaveResourceMap.find(static_cast<BGM_ID>(_id));
 		if (it == m_BGM_WaveResourceMap.end())
 		{
-			MessageBoxA(NULL, "見つからないIDです", "SoundManager", MB_OK);
 			return false;
 		}
 		_outResource = &it->second;
@@ -1464,15 +983,13 @@ bool SoundManager::SerchResource(SOUND_TYPE _type, int _id, WaveResource *&_outR
 		auto it = m_Voice_WaveResourceMap.find(static_cast<VOICE_ID>(_id));
 		if (it == m_Voice_WaveResourceMap.end())
 		{
-			MessageBoxA(NULL, "見つからないIDです", "SoundManager", MB_OK);
 			return false;
 		}
 		_outResource = &it->second;
 	}
 	break;
 	default:
-		MessageBoxA(NULL, "見つからないIDです", "SoundManager", MB_OK);
-		break;
+        return false;
 	}
 	return true;
 }
@@ -1506,7 +1023,6 @@ void SoundManager::set_Volume(SOUND_TYPE _type, float _vol)
 }
 
 
-
 //*---------------------------------------------------------------------------------------
 //*【?】指定サウンドタイプの音量を取得
 //*
@@ -1532,5 +1048,334 @@ float SoundManager::get_Volume(SOUND_TYPE _type)const
 	default:
 		return 0.0f;
 		break;
+	}
+}
+
+
+// 名前の解決と公開API。実際の再生処理は、既存のボイスプールを利用する。
+const SoundManager::SoundEntry* SoundManager::GetSoundEntry(SoundID id) const
+{
+    if (id.generation != m_SoundGeneration || id.value >= m_SoundEntries.size())
+        return nullptr;
+    return &m_SoundEntries[id.value];
+}
+
+bool SoundManager::IsValid(SoundID id) const
+{
+    return GetSoundEntry(id) != nullptr;
+}
+
+SoundID SoundManager::FindSound(std::string_view key) const
+{
+    const auto it = m_SoundNameToId.find(key);
+    return it != m_SoundNameToId.end() ? it->second : SoundID{};
+}
+
+SoundID SoundManager::FindLegacySound(SOUND_TYPE type, int existingId) const
+{
+    for (std::size_t i = 0; i < m_SoundEntries.size(); ++i)
+    {
+        const auto& entry = m_SoundEntries[i];
+        if (entry.type == type && entry.existingId == existingId)
+            return { i, m_SoundGeneration };
     }
+    return {};
+}
+
+SoundID SoundManager::FindSound(SOUND_ID id) const
+{
+    return FindLegacySound(SOUND_TYPE::SE, static_cast<int>(id));
+}
+
+SoundID SoundManager::FindSound(VOICE_ID id) const
+{
+    return FindLegacySound(SOUND_TYPE::VOICE, static_cast<int>(id));
+}
+
+SoundID SoundManager::FindSound(BGM_ID id) const
+{
+    return FindLegacySound(SOUND_TYPE::BGM, static_cast<int>(id));
+}
+
+SoundID SoundManager::RegisterSoundName(std::string_view key, SOUND_TYPE type, int existingId)
+{
+    if (key.empty() || m_SoundNameToId.find(key) != m_SoundNameToId.end())
+        return {};
+
+    WaveResource* resource = nullptr;
+    if (!SerchResource(type, existingId, resource)
+        || !resource || !resource->_waveBuffer || resource->_size == 0)
+        return {};
+
+    // 同じ音源に別名を付ける場合も、内部IDは共通にする。
+    SoundID id = FindLegacySound(type, existingId);
+    if (!IsValid(id))
+    {
+        id = { m_SoundEntries.size(), m_SoundGeneration };
+        m_SoundEntries.push_back({ type, existingId });
+    }
+    m_SoundNameToId.emplace(std::string(key), id);
+    return id;
+}
+
+SoundID SoundManager::Load_Wav(std::string_view key, const char* filename, SOUND_TYPE type)
+{
+    if (key.empty() || m_SoundNameToId.find(key) != m_SoundNameToId.end())
+        return {};
+
+    // 新規音源の番号は、既存enumが使う範囲より後ろから自動で割り当てる。
+    constexpr int firstDynamicId = static_cast<int>(SOUND_ID::NUM)
+        + static_cast<int>(VOICE_ID::NUM) + static_cast<int>(BGM_ID::NUM);
+    if (m_SoundEntries.size() > static_cast<std::size_t>((std::numeric_limits<int>::max)() - firstDynamicId))
+        return {};
+    const int existingId = firstDynamicId + static_cast<int>(m_SoundEntries.size());
+    if (!Load_Wav(filename, type, existingId))
+        return {};
+    return RegisterSoundName(key, type, existingId);
+}
+
+bool SoundManager::Play(SoundID id, bool loop)
+{
+    const auto* entry = GetSoundEntry(id);
+    if (!entry) return false;
+    if (entry->type == SOUND_TYPE::BGM)
+        return Internal_PlayBGM(static_cast<BGM_ID>(entry->existingId), loop);
+    return Internal_SoundPlay(entry->type, entry->existingId, loop);
+}
+
+bool SoundManager::Play(std::string_view key, bool loop)
+{
+    return Play(FindSound(key), loop);
+}
+
+bool SoundManager::Play_3D(SoundID id, const VECTOR3::VEC3& pos, float radius,
+    const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Internal_Play3D(id, pos, radius, 0, velocity, loop).playbackGeneration != 0;
+}
+
+bool SoundManager::Play_3D(std::string_view key, const VECTOR3::VEC3& pos, float radius,
+    const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Play_3D(FindSound(key), pos, radius, velocity, loop);
+}
+
+bool SoundManager::Play_RandPitch(SoundID id, int pitchRange, bool loop)
+{
+    const auto* entry = GetSoundEntry(id);
+    if (!entry || entry->type == SOUND_TYPE::BGM || pitchRange < 0 || pitchRange > 1998)
+        return false;
+    return Internal_SoundPlay_RandPitch(entry->type, entry->existingId, pitchRange, loop);
+}
+
+bool SoundManager::Play_RandPitch(std::string_view key, int pitchRange, bool loop)
+{
+    return Play_RandPitch(FindSound(key), pitchRange, loop);
+}
+
+bool SoundManager::Play_RandPitch_3D(SoundID id, const VECTOR3::VEC3& pos, float radius,
+    int pitchRange, const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Internal_Play3D(id, pos, radius, pitchRange, velocity, loop).playbackGeneration != 0;
+}
+
+SoundHandle SoundManager::Internal_Play3D(SoundID id, const VECTOR3::VEC3& pos, float radius,
+    int pitchRange, const VECTOR3::VEC3& velocity, bool loop)
+{
+    const auto* entry = GetSoundEntry(id);
+    // 3Dプールはモノラル専用。BGMや不正な座標・半径をX3DAudioへ渡さない。
+    if (!entry || entry->type == SOUND_TYPE::BGM || !IsFiniteVector(pos) || !IsFiniteVector(velocity)
+        || !std::isfinite(radius) || radius <= 0.0f || pitchRange < 0 || pitchRange > 1998)
+        return {};
+    if (!m_pMasteringVoice || !m_DSPSettings.pMatrixCoefficients)
+        return {};
+    return Internal_Start3D(entry->type, entry->existingId, pos, radius, pitchRange, velocity, loop);
+}
+
+bool SoundManager::Play_RandPitch_3D(std::string_view key, const VECTOR3::VEC3& pos, float radius,
+    int pitchRange, const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Play_RandPitch_3D(FindSound(key), pos, radius, pitchRange, velocity, loop);
+}
+
+bool SoundManager::Play_Rand(std::span<const SoundID> candidates, bool loop)
+{
+    if (candidates.empty()) return false;
+    for (SoundID id : candidates)
+        if (!IsValid(id)) return false;
+    return Play(candidates[static_cast<std::size_t>(rand()) % candidates.size()], loop);
+}
+
+bool SoundManager::Play_Rand(std::span<const std::string_view> keys, bool loop)
+{
+    if (keys.empty()) return false;
+    for (std::string_view key : keys)
+        if (!IsValid(FindSound(key))) return false;
+    return Play(keys[static_cast<std::size_t>(rand()) % keys.size()], loop);
+}
+
+bool SoundManager::PlayBGM(SoundID id, bool loop)
+{
+    const auto* entry = GetSoundEntry(id);
+    return entry && entry->type == SOUND_TYPE::BGM && Play(id, loop);
+}
+
+bool SoundManager::PlayBGM(std::string_view key, bool loop)
+{
+    return PlayBGM(FindSound(key), loop);
+}
+
+bool SoundManager::StopInstance(SoundInstance& instance)
+{
+    if (!instance._pSourceVoice) return true;
+    if (FAILED(instance._pSourceVoice->Stop(0))) return false;
+    if (FAILED(instance._pSourceVoice->FlushSourceBuffers())) return false;
+    // ボイス自体は再利用するので残し、それ以外の再生情報を初期化する。
+    auto* voice = instance._pSourceVoice;
+    instance = SoundInstance{};
+    instance._pSourceVoice = voice;
+    return true;
+}
+
+bool SoundManager::Stop(SoundID id)
+{
+    const auto* entry = GetSoundEntry(id);
+    if (!entry) return false;
+
+    bool success = true;
+    auto stopMatching = [&](SoundInstance& slot)
+    {
+        if (slot._isUsed && slot._soundType == entry->type && slot._soundID == entry->existingId)
+            success = StopInstance(slot) && success;
+    };
+    // 同じ音源を複数回鳴らしていた場合、2D・3Dの両方をすべて停止する。
+    for (auto& slot : m_SoundSlotArray) stopMatching(slot);
+    for (auto& slot : m_VoiceSoundSlotArray) stopMatching(slot);
+    for (auto& slot : m_3DSoundSlotArray) stopMatching(slot);
+    stopMatching(m_BGM_SoundSlot);
+    return success;
+}
+
+bool SoundManager::Stop(std::string_view key)
+{
+    return Stop(FindSound(key));
+}
+
+bool SoundManager::StopBGM(SoundID id)
+{
+    const auto* entry = GetSoundEntry(id);
+    return entry && entry->type == SOUND_TYPE::BGM && Stop(id);
+}
+
+bool SoundManager::StopBGM(std::string_view key)
+{
+    return StopBGM(FindSound(key));
+}
+
+bool SoundManager::IsFiniteVector(const VECTOR3::VEC3& value)
+{
+    return std::isfinite(value.x) && std::isfinite(value.y) && std::isfinite(value.z);
+}
+
+SoundHandle SoundManager::Play_3DInstance(SoundID id, const VECTOR3::VEC3& pos, float radius,
+    const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Internal_Play3D(id, pos, radius, 0, velocity, loop);
+}
+
+SoundHandle SoundManager::Play_3DInstance(std::string_view key, const VECTOR3::VEC3& pos, float radius,
+    const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Play_3DInstance(FindSound(key), pos, radius, velocity, loop);
+}
+
+SoundHandle SoundManager::Play_RandPitch_3DInstance(SoundID id, const VECTOR3::VEC3& pos, float radius,
+    int pitchRange, const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Internal_Play3D(id, pos, radius, pitchRange, velocity, loop);
+}
+
+SoundHandle SoundManager::Play_RandPitch_3DInstance(std::string_view key, const VECTOR3::VEC3& pos, float radius,
+    int pitchRange, const VECTOR3::VEC3& velocity, bool loop)
+{
+    return Play_RandPitch_3DInstance(FindSound(key), pos, radius, pitchRange, velocity, loop);
+}
+
+const SoundInstance* SoundManager::GetPlaying3DInstance(SoundHandle handle) const
+{
+    if (handle.managerGeneration != m_SoundGeneration || handle.playbackGeneration == 0
+        || handle.slot >= m_3DSoundSlotArray.size()
+        || handle.playbackGeneration != m_3DPlaybackGenerations[handle.slot])
+        return nullptr;
+
+    const auto& slot = m_3DSoundSlotArray[handle.slot];
+    if (!slot._isUsed || !slot._pSourceVoice) return nullptr;
+
+    // 自然終了から次のUpdateまでの間でも、終了済みの音を操作させない。
+    XAUDIO2_VOICE_STATE state{};
+    slot._pSourceVoice->GetState(&state);
+    return state.BuffersQueued != 0 ? &slot : nullptr;
+}
+
+bool SoundManager::IsPlaying(SoundHandle handle) const
+{
+    return GetPlaying3DInstance(handle) != nullptr;
+}
+
+bool SoundManager::Set3DAttributes(SoundHandle handle, const VECTOR3::VEC3& pos,
+    const VECTOR3::VEC3& velocity)
+{
+    if (!IsFiniteVector(pos) || !IsFiniteVector(velocity) || !GetPlaying3DInstance(handle))
+        return false;
+
+    // コピーするだけなので、毎フレームの名前検索や再生し直しは発生しない。
+    auto& slot = m_3DSoundSlotArray[handle.slot];
+    slot._pos = pos;
+    slot._velocity = velocity;
+    return true;
+}
+
+bool SoundManager::Stop(SoundHandle handle)
+{
+    if (!GetPlaying3DInstance(handle)) return false;
+    return StopInstance(m_3DSoundSlotArray[handle.slot]);
+}
+
+bool SoundManager::Update3DSounds()
+{
+    if (!m_pXAudio2 || !m_pMasteringVoice || !m_DSPSettings.pMatrixCoefficients)
+        return false;
+
+    constexpr unsigned updateFlag = 1;
+    bool success = true;
+    for (auto& slot : m_3DSoundSlotArray)
+    {
+        if (!slot._isUsed || !slot._pSourceVoice) continue;
+
+        XAUDIO2_VOICE_STATE state{};
+        slot._pSourceVoice->GetState(&state);
+        if (state.BuffersQueued == 0)
+        {
+            success = StopInstance(slot) && success;
+            continue;
+        }
+
+        // 呼び出し側から受け取った現在位置で、音の方向と距離による減衰を計算する。
+        X3DAUDIO_EMITTER emitter{};
+        emitter.ChannelCount = 1;
+        emitter.CurveDistanceScaler = slot._radius;
+        emitter.DopplerScaler = 1.0f;
+        emitter.Position = { slot._pos.x, slot._pos.y, slot._pos.z };
+        emitter.Velocity = { slot._velocity.x, slot._velocity.y, slot._velocity.z };
+        emitter.pVolumeCurve = &LinearCurve;
+        // 音程は再生開始時の値を維持する。ドップラーによる音程変更は行わない。
+        X3DAudioCalculate(m_X3DInstanceHandle, &m_Listener, &emitter,
+            X3DAUDIO_CALCULATE_MATRIX, &m_DSPSettings);
+        const HRESULT result = slot._pSourceVoice->SetOutputMatrix(m_pMasteringVoice,
+            1, m_DeviceDetails.InputChannels, m_DSPSettings.pMatrixCoefficients, updateFlag);
+        if (FAILED(result)) success = false;
+    }
+    // 途中に失敗があっても、すでに予約した変更はこのフレームで確定する。
+    if (FAILED(m_pXAudio2->CommitChanges(updateFlag))) success = false;
+    return success;
 }

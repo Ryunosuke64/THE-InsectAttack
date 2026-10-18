@@ -113,7 +113,7 @@ void c_Title_MainMenu::OnEnter(SceneManager* pOwner)
 	// ****************************************************
 	//				タイトルBGMの再生
 	// ****************************************************
-	Master::m_pSoundManager->PlayBGM(BGM_ID::BGM_HANGEKI);
+	Master::m_pSoundManager->PlayBGM("bgm.hangeki");
 
 	m_NextState = c_TITLE_MAIN_MENU;
 	m_IsInit = true;
@@ -193,7 +193,7 @@ int c_Title_MainMenu::Update(SceneManager* pOwner)
 			//	// ****************************************************
 			//	//				カーソルが載った時のSE再生
 			//	// ****************************************************
-			//	Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+			//	Master::m_pSoundManager->Play("ui.cursor");
 			}
 			m_CrntSelectItem = static_cast<TITLEMENU_ITEM>(i);
 			m_MenuItemInfoArray[i]._isHovered = true;	// マウスが乗ってる

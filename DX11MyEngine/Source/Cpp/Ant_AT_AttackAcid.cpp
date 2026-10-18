@@ -87,7 +87,7 @@ int Ant_AT_AttackAcidState::Update(class EnemyController* pOwner)
 			// ****************************************************
 			//				 Ž_”­ŽË‰¹Ä¶
 			// ****************************************************
-			Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_ACID_SHOOT), myPos, SOUND_RADIUS);
+			Master::m_pSoundManager->Play_3D("enemy.ant.acid_shoot", myPos, SOUND_RADIUS);
 
 			auto diffLevel = Master::m_pDataManager->get_DifficultyLevel();
 			int id = 0;

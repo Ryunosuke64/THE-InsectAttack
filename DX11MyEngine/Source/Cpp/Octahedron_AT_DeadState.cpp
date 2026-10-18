@@ -43,7 +43,7 @@ void Octahedron_AT_DeadState::OnEnter(class EnemyController* pOwner)
 	// ****************************************************
 	//				 死亡音再生
 	// ****************************************************
-	Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_OCTAHEDRON_DEAD), pos, SOUND_DEAD_RADIUS);
+	Master::m_pSoundManager->Play_3D("enemy.octahedron.dead", pos, SOUND_DEAD_RADIUS);
 
 	// 死亡エフェクトの作成
 	SpawnDeadEffect(pOwner, 15.0f);
@@ -141,7 +141,7 @@ int Octahedron_AT_DeadState::Update(class EnemyController* pOwner)
 			// ****************************************************
 			//				 爆発音再生
 			// ****************************************************
-			Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::EXPLOSION01), crntPos, SOUND_DEAD_RADIUS);
+			Master::m_pSoundManager->Play_3D("weapon.explosion_01", crntPos, SOUND_DEAD_RADIUS);
 			//auto myTransform = pOwner->get_OwnerObj().lock()->get_Transform().lock();
 			//VEC3 pos = myTransform->get_VEC3ToPos();
 

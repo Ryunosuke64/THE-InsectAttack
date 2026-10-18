@@ -119,7 +119,7 @@ void AssultRifle::Update(RendererEngine& renderer)
         // ****************************************************
         //				 ”­Ë‰¹Ä¶
         // ****************************************************
-        Master::m_pSoundManager->Play_RandPitch(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE02), 300);
+        Master::m_pSoundManager->Play_RandPitch("weapon.gun_fire_02", 300);
 
 
         // e‚ÌŒü‚«“™‚ğQÆ

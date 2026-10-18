@@ -47,7 +47,7 @@ void c_Game_Play::OnEnter(SceneManager* pOwner)
     // ****************************************************
     //				ƒQ[ƒ€BGM‚ÌÄ¶
     // ****************************************************
-    Master::m_pSoundManager->PlayBGM(BGM_ID::BGM_GAME_01);
+    Master::m_pSoundManager->PlayBGM("bgm.game_01");
 
 
     //*****************************************************************************************
@@ -76,7 +76,7 @@ void c_Game_Play::OnExit(SceneManager* pOwner)
     // ****************************************************
     //				ƒQ[ƒ€BGM‚Ì’âŽ~
     // ****************************************************
-    Master::m_pSoundManager->StopBGM(BGM_ID::BGM_GAME_01);
+    Master::m_pSoundManager->StopBGM("bgm.game_01");
 
     // ˜A‘±“ü—Í–hŽ~‚Ì‚½‚ßA1ƒtƒŒ[ƒ€Ž~‚ß‚é
     Master::m_pInputManager->StopInput(1);

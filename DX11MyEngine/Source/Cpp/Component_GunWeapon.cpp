@@ -42,7 +42,6 @@ GunWeapon::GunWeapon(std::weak_ptr<GameObject> pOwner, int updateRank)
     m_IsNowZoom(false),
     m_IsStopFire(false),
     m_IsBurstFire(false),
-    m_IsNowBurstFire(false),
     m_AmmoRemaining(0),
     m_Range(0.0f),
     m_CrntReloadTime(0.0f),
@@ -310,6 +309,9 @@ bool GunWeapon::Setup(const WeaponData::BaseWeaponData* _pWeaponData)
 
     m_AmmoRemaining = gunParam->_bulletMaxNum;
 
+    // 発射音
+    m_FireSoundID = Master::m_pSoundManager->FindSound(gunParam->_soundID);
+
     // バースト射撃かどうか
     m_IsBurstFire = gunParam->_burstCount != 0 ? true : false;
 
@@ -356,8 +358,13 @@ void GunWeapon::SwicthReset()
     }
 }
 
-
-
+//*---------------------------------------------------------------------------------------
+//*【?】バースト射撃
+//*
+//* [引数] 
+//* &renderer : 描画エンジンの参照
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
 void GunWeapon::BurstFire(RendererEngine& renderer)
 {
     // バースト実行中
@@ -392,7 +399,13 @@ void GunWeapon::BurstFire(RendererEngine& renderer)
     }
 }
 
-
+//*---------------------------------------------------------------------------------------
+//*【?】単発射撃
+//*
+//* [引数] 
+//* &renderer : 描画エンジンの参照
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
 void GunWeapon::OnceFire(RendererEngine& renderer)
 {
     const auto& gunParam = get_GunWeaponData();
@@ -414,8 +427,7 @@ void GunWeapon::OnceFire(RendererEngine& renderer)
     // ****************************************************
     //				 発射音再生
     // ****************************************************
-    Master::m_pSoundManager->Play_RandPitch(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_FIRE02), 300);
-
+    Master::m_pSoundManager->Play_RandPitch(m_FireSoundID, 300);
 
     // =====================================================================
     // 武器の向きに合わせて発射するやり方

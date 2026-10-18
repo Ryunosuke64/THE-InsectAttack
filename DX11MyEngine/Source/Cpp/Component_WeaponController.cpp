@@ -252,7 +252,7 @@ void WeaponController::SwitchWeapon(int _index)
 	//*****************************************************************************************
 	//						•Ší‚ÌØ‚è‘Ö‚¦‰¹Ä¶
 	//*****************************************************************************************
-	Master::m_pSoundManager->Play_RandPitch(SOUND_TYPE::SE, INT_CAST(SOUND_ID::GUN_CHANGE01), 200);
+	Master::m_pSoundManager->Play_RandPitch("weapon.change_01", 200);
 
 	// Ø‚è‘Ö‚¦Žž‚ÌƒŠƒZƒbƒg
 	m_WeaponArray[m_CrntWeaponSlotIndex]->SwicthReset(); 

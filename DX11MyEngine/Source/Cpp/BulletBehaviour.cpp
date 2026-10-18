@@ -362,7 +362,7 @@ namespace BulletBehaviour
         if (_hitData._hitEffectTag.empty() == false)
         {
             SURFACE_TYPE hitSurface = collider->get_SurfaceType();
-
+            
             //
             // 弾タイプと衝突したサーフェイスからヒット時に再生するエフェクトを探す
             //
@@ -375,19 +375,22 @@ namespace BulletBehaviour
             VEC3 effectRot = VEC3(pitch, yaw, 0.0f);
             VEC3 effectScale = transform->get_VEC3ToScale();
             effectScale *= EFFECTL_SIZE_FACTOR;     // 大きさの補正
+            // カラー
+            VEC4 effectColor = _hitData._hitEffectColor;
+            Effekseer::Color color = Effekseer::Color(effectColor.x, effectColor.y, effectColor.z, effectColor.w);
 
             // エフェクトパラメータ
             Master::m_pEffectManager->SetScaleEffect(effectHandle, effectScale.x, effectScale.y, effectScale.z);
             Master::m_pEffectManager->SetPositionEffect(effectHandle, hitPoint.x, hitPoint.y, hitPoint.z);
             Master::m_pEffectManager->SetRotationEffect(effectHandle, effectRot.x, effectRot.y, effectRot.z);
+            Master::m_pEffectManager->SetAllColorEffect(effectHandle, color);
         }
 
         //*****************************************************************************************
         //						ヒットサウンド再生
         //*****************************************************************************************
         Master::m_pSoundManager->Play_RandPitch_3D(
-            SOUND_TYPE::SE, 
-            SOUND_ID_TO_INT(SOUND_ID::ROCOCHET01),
+            "weapon.ricochet_01",
             hitPoint, 40, 300);
 
         return result;
@@ -431,7 +434,7 @@ namespace BulletBehaviour
         // ****************************************************
         //				 爆発音再生
         // ****************************************************
-        Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::EXPLOSION01), crntPos, 1500.0f);
+        Master::m_pSoundManager->Play_3D("weapon.explosion_01", crntPos, 1500.0f);
 
 
         VEC3 hitNormal = _collision.hitNormal;    // 衝突相手の法線
@@ -492,6 +495,9 @@ namespace BulletBehaviour
 
         float effectExpSize = expSize * EXP_EFFECT_SIZE_FACTOR;   // 爆発半径（そのままだと大きすぎるので補正）
         VEC3 expRot = Master::m_pRandomManager->GetVEC3Random(0.0f, 3.14f);
+        // カラー
+        VEC4 effectColor = _hitData._hitEffectColor;
+        Effekseer::Color color = Effekseer::Color(effectColor.x, effectColor.y, effectColor.z, effectColor.w);
 
         if (_hitData._isSmoke)
         {
@@ -508,6 +514,8 @@ namespace BulletBehaviour
         Master::m_pEffectManager->SetScaleEffect(exp_handle, effectExpSize, effectExpSize, effectExpSize);
         Master::m_pEffectManager->SetPositionEffect(exp_handle, hitPoint.x, hitPoint.y, hitPoint.z);
         Master::m_pEffectManager->SetRotationEffect(exp_handle, expRot.x, expRot.y, expRot.z);
+        Master::m_pEffectManager->SetAllColorEffect(exp_handle, color);     // カラー補正
+
         // 動的パラメータの設定
         Master::m_pEffectManager->SetDynamicParameter(exp_handle, 1, _hitData._explosionEffectAliveTime); // 生存時間を変更
 

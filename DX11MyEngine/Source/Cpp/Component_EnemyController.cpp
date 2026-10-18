@@ -5,6 +5,7 @@
 #include "Component_DecalRenderer.h"
 #include "Component_MoveLogic.h"
 #include "Component_TimerDestruction.h"
+#include "Component_AI_GunWeapon.h"
 #include "Component_Collider.h"
 #include "Component_BoxCollider.h"
 #include "Component_RigidBody.h"
@@ -89,6 +90,9 @@ void EnemyController::Start(RendererEngine& renderer)
 
 	// HP管理コンポーネントの取得
 	m_pHealthComp = m_pOwner.lock()->get_Component<Health>().get();
+
+	// 銃火器コンポーネント
+	m_pAIGunWeapon = m_pOwner.lock()->get_Component<AI_GunWeapon>().get();
 	
 	// トランスフォームコンポーネントの取得
 	m_pTransformComp = ownerObj->get_Transform().lock().get();
@@ -119,6 +123,9 @@ void EnemyController::Start(RendererEngine& renderer)
 		{
 			// マネージャーから除外する
 			Master::m_pEnemyManager->UnregisterEnemy(m_MyID);
+
+			// 常時音止める
+			Master::m_pSoundManager->Stop(m_AlwaysSoundHandle);
 		}
 	);
 
@@ -180,7 +187,20 @@ void EnemyController::LateUpdate(RendererEngine& renderer)
 	std::string stateName = EnemyData::g_AntStateNames[m_StateMachine.get_CrntStateIndex()];
 
 	//Master::m_pDirectWriteManager->DrawString3D(stateName, strPos, "White_20_STD");
-
+	 
+	// ****************************************************
+	//				 常時音再生
+	// ****************************************************
+	if (Master::m_pSoundManager->IsValid(m_AlwaysSoundID) && m_AlwaysSoundHandle.slot == -1)
+	{
+		m_AlwaysSoundHandle = Master::m_pSoundManager->Play_3DInstance (
+			m_AlwaysSoundID, newPos, 1000.0f, newPos, true);
+	}
+	else
+	{
+		Master::m_pSoundManager->Set3DAttributes(m_AlwaysSoundHandle, newPos);
+	}
+	
 	// 世界の裏側に落下した場合
 	if (newPos.y < -100.0f)
 	{
@@ -318,6 +338,18 @@ float EnemyController::get_DamageAmount()const
 	return 0.0f;
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】常時音の設定
+//*
+//* [引数]
+//*  _soundKey : 鳴らす音のキー
+//* [返値]
+//* ダメージ量 
+//*----------------------------------------------------------------------------------------
+void EnemyController::set_AlwaysSoundID(const std::string& _soundKey)
+{
+	m_AlwaysSoundID = Master::m_pSoundManager->FindSound(_soundKey);
+}
 
 
 //*---------------------------------------------------------------------------------------

@@ -138,7 +138,7 @@ int c_Title_MissionSelect::Update(SceneManager *pOwner)
 		// ****************************************************
 		//				–ß‚éÛ‚ÌSEÄ¶
 		// ****************************************************
-		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+		Master::m_pSoundManager->Play("ui.back");
 
 		return c_TITLE::c_TITLE_MAIN_MENU;
 	}	
@@ -163,7 +163,7 @@ int c_Title_MissionSelect::Update(SceneManager *pOwner)
 			//	// ****************************************************
 			//	//				ƒJ[ƒ\ƒ‹‚ªÚ‚Á‚½Žž‚ÌSEÄ¶
 			//	// ****************************************************
-			//	Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+			//	Master::m_pSoundManager->Play("ui.cursor");
 			//}
 			m_CrntSelectItem = i;
 			break;

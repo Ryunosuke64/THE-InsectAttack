@@ -171,7 +171,7 @@ void ButtonUI::Update(RendererEngine &renderer)
 			// ****************************************************
 			//				ƒJ[ƒ\ƒ‹‚ªÚ‚Á‚½Žž‚ÌSEÄ¶
 			// ****************************************************
-			Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+			Master::m_pSoundManager->Play("ui.cursor");
 		}
 
 	}
@@ -192,7 +192,7 @@ void ButtonUI::Update(RendererEngine &renderer)
 	{
 		if (m_OnClick)
 		{
-			Master::m_pSoundManager->Play(SOUND_TYPE::SE, m_InputSoundID);
+			Master::m_pSoundManager->Play(Master::m_pSoundManager->FindSound(static_cast<SOUND_ID>(m_InputSoundID)));
 			m_OnClick();
 		}
 	}
@@ -262,7 +262,7 @@ void ButtonUI::InvokeClick()
 {
 	if (m_OnClick)
 	{
-		Master::m_pSoundManager->Play(SOUND_TYPE::SE, m_InputSoundID);
+		Master::m_pSoundManager->Play(Master::m_pSoundManager->FindSound(static_cast<SOUND_ID>(m_InputSoundID)));
 		m_OnClick();
 	}
 }

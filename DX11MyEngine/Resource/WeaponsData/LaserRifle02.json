@@ -10,7 +10,8 @@
   "accuracy": 0.07,
   "zoomLength": 1.0,
   "isLaserSight": false,
-  "soundID": 0,
+  "shotSoundRadius": 300.0,
+  "soundID": "weapon.gun_fire_laser_01",
   "muzzleFlashEffectTag" : "",
   "muzzleFlashEffectScale" :  [0.0, 0.0, 0.0],
   "bulletType": "LASER",
@@ -42,6 +43,7 @@
       "type" : "DIRECT",
       "decalMaterialTag" : "",
       "hitEffectTag" : "BulletHit_Laser",
+      "effectColor" : [255, 64, 255, 255],
       "environmentResponse" : "DEACTIVATE"
     },
 
@@ -55,7 +57,7 @@
       "smokeInterval" : 0.0,              
       "smokeSize" : 0.0,                     
       "smokeEffectTag" : "",
-      "effectColor" : [255, 64, 64, 255],
+      "effectColor" : [255, 64, 255, 255],
       "trailColor" : [1.0, 1.0, 1.0],
       "scale" :  [0.5, 0.5, 0.5],
 

@@ -8,7 +8,7 @@
   "accuracy": 0.05,
   "zoomLength": 1.0,
   "isLaserSight": false,
-  "soundID": 0,
+  "soundID": "weapon.gun_fire_02",
   "muzzleFlashEffectTag" : "MuzzleEffect_Flame_01",
   "muzzleFlashEffectScale" : [2.0, 2.0, 2.0],
   "bulletType": "NORMAL",

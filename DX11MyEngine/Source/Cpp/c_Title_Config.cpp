@@ -61,7 +61,7 @@ int c_Title_Config::Update(SceneManager* pOwner)
 		// ****************************************************
 		//				–ß‚éÛ‚ÌSEÄ¶
 		// ****************************************************
-		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+		Master::m_pSoundManager->Play("ui.back");
 
 		return c_TITLE::c_TITLE_MAIN_MENU;
 	}

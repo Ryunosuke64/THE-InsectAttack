@@ -143,6 +143,14 @@ bool WeaponDataManager::Init()
         assert(false);
     }
     m_EnemyWeaponsDataMap[6] = std::make_unique<GunWeaponData>(gunData);
+    if (LoadGunWeaponData("Resource/EnemysData/OctahedronLaser03_EASY.json", gunData) == false) {     // インポッシブル用
+        assert(false);
+    }
+    m_EnemyWeaponsDataMap[7] = std::make_unique<GunWeaponData>(gunData);
+    if (LoadGunWeaponData("Resource/EnemysData/OctahedronLaser04_EASY.json", gunData) == false) {     // インポッシブル用
+        assert(false);
+    }
+    m_EnemyWeaponsDataMap[8] = std::make_unique<GunWeaponData>(gunData);
 
 
 
@@ -230,7 +238,8 @@ bool WeaponDataManager::LoadGunWeaponData(const std::string& _filepath, WeaponDa
     _outData._accuracy              = j.value("accuracy", 0.0f);
     _outData._zoomLength            = j.value("zoomLength", 0.0f);
     _outData._isLaserSight          = j.value("isLaserSight", false);
-    _outData._soundID               = j.value("soundID", -1);
+    _outData._shotSoundRadius       = j.value("shotSoundRadius", 300.0f);
+    _outData._soundID               = j.value("soundID", "");
     _outData._muzzleFlashEffectTag  = j.value("muzzleFlashEffectTag", "");
 
     if (j["muzzleFlashEffectScale"].is_array()) {                                                         // 大きさ
@@ -567,7 +576,8 @@ bool WeaponDataManager::ExtractionHitData(const nlohmann::json& _json, BulletDat
         auto& direct                = _outData._hitData.emplace<DirectHitConfig>();
         direct._decalMaterialTag    = _json.value("decalMaterialTag", "");          // デカールタグ
         direct._hitEffectTag        = _json.value("hitEffectTag", "");              // ヒットエフェクトタグ
-        
+        LoadVEC4Data(_json, "hitEffectColor", direct._hitEffectColor);              // エフェクトカラー
+
         std::string environmentResponseStr = _json.value("environmentResponse", "");   // 衝突応答
         const auto environmentIt = g_EnvironmentResponenseMap.find(environmentResponseStr);
         // 未定義
@@ -585,7 +595,7 @@ bool WeaponDataManager::ExtractionHitData(const nlohmann::json& _json, BulletDat
         explosion._explosionEffectHandleTag = _json.value("explosionEffectTag", "");           // 爆発エフェクトタグ
         explosion._explosionEffectAliveTime = _json.value("explosionEffectAliveTime", 1.0f);   // 爆発エフェクトの生存時間（1.0でそのまま）
         explosion._isSmoke                  = _json.value("isSmoke", false);                   // 煙が出るか
-
+        LoadVEC4Data(_json, "hitEffectColor", explosion._hitEffectColor);                      // エフェクトカラー
         LoadVEC3Data(_json, "expLightColor", explosion._expLightColor);                        // 爆発時のライトカラー
         explosion._expLightDuration         = _json.value("expLightDuration", 0.0f);           // 爆発時のライト持続時間
         explosion._expLightIntensity        = _json.value("expLightIntensity", 0.0f);          // 爆発時のライト強度

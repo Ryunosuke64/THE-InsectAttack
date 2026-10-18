@@ -53,7 +53,8 @@ namespace WeaponData
         float _accuracy = 0.0f;                 // 精度（ラジアン）
         float _zoomLength = 0.0f;               // ズーム倍率（0.0以外の時に作動）
         bool _isLaserSight = true;              // レーザーサイトはあるか
-        int _soundID = -1;                      // 発射音のID
+        float _shotSoundRadius = 0.0f;          // 発射音が聞こえる範囲
+        std::string _soundID = "";              // 発射音のID
 		std::string _muzzleFlashEffectTag;      // マズルフラッシュエフェクトのタグ
 		VECTOR3::VEC3 _muzzleFlashEffectScale = VECTOR3::VEC3(1.0f); // マズルフラッシュエフェクトの大きさ
 

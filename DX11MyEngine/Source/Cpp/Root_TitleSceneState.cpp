@@ -111,7 +111,7 @@ void Root_TitleSceneState::OnExit(SceneManager* pOwner)
 	// ****************************************************
 	//				ƒ^ƒCƒgƒ‹BGM‚Ì’âŽ~
 	// ****************************************************
-	Master::m_pSoundManager->StopBGM(BGM_ID::BGM_HANGEKI);
+	Master::m_pSoundManager->StopBGM("bgm.hangeki");
 
 	Master::m_pDataManager->set_IsTitle(false);
 }

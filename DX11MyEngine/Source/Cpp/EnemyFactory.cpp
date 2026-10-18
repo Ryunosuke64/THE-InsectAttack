@@ -10,6 +10,7 @@
 #include "Component_EnemyController.h"
 #include "Component_Health.h"
 #include "Component_LineRenderer.h"
+#include "Component_PointLight.h"
 #include "Component_WeaponController.h"
 #include "Component_ModelMeshResource.h"
 #include "Component_RigidBody.h"
@@ -17,6 +18,7 @@
 #include "Component_MoveLogic.h"
 #include "Component_Faction.h"
 #include "Component_SkinnedMeshAnimator.h"
+#include "Component_AI_GunWeapon.h"
 
 #include "Component_CapsuleCollider.h"
 #include "Component_SphereCollider.h"
@@ -243,6 +245,8 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     // コントローラー側に怯み耐久を設定する
     enemyController->set_StaggerThreshold(hp * ANT_THRESHOLD_RATE);
 
+    enemyController->set_AlwaysSoundID("");
+
     auto modelResource = generatedObject->get_Component<ModelMeshResource>();
     
     auto rb = generatedObject->add_Component<RigidBody>();
@@ -380,6 +384,17 @@ std::shared_ptr<GameObject> EnemyFactory::CreateOctahedron(const EnemyGeneration
     //
     auto enemyController = generatedObject->add_Component<EnemyController>();
 
+    auto lineRenderer = generatedObject->add_Component<LineRenderer>();
+    auto pointLight = generatedObject->add_Component<PointLight>();
+
+    //
+    // AI用武器コンポーネント追加
+    //
+    auto aiGunWeapon = generatedObject->add_Component<AI_GunWeapon>();
+    aiGunWeapon->Setup(Master::m_pWeaponDataManager->FindEnemysWeaponData(6));
+    aiGunWeapon->set_LocalMuzzleOffset(VEC3(0.0f, -20.0f, 0.0f));
+
+
     //
     // 移動コンポーネントの追加
     //
@@ -401,6 +416,8 @@ std::shared_ptr<GameObject> EnemyFactory::CreateOctahedron(const EnemyGeneration
 
     // コントローラー側に怯み耐久を設定する
     enemyController->set_StaggerThreshold(hp * OCTAHEDRON_THRESHOLD_RATE);
+    enemyController->set_AlwaysSoundID("enemy.octahedron.always");
+
 
     auto modelResource = generatedObject->get_Component<ModelMeshResource>();
 

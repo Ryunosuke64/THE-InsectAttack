@@ -22,7 +22,7 @@ void c_Result_Cleared::OnEnter(SceneManager* pOwner)
 	// ****************************************************
 	//				クリアBGMの再生
 	// ****************************************************
-	Master::m_pSoundManager->PlayBGM(BGM_ID::BGM_VICTORY01, false);
+	Master::m_pSoundManager->PlayBGM("bgm.victory_01", false);
 
 
 	// クリアテキスト用スプライトを作る **********************************************

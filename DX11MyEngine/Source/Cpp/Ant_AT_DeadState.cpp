@@ -181,7 +181,7 @@ void Ant_AT_DeadState::SpawnDeadEffect(class EnemyController* pOwner)
 	// ****************************************************
 	//				 死亡音再生
 	// ****************************************************
-	Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_DEAD), pos, SOUND_DEAD_RADIUS);
+	Master::m_pSoundManager->Play_3D("enemy.ant.dead", pos, SOUND_DEAD_RADIUS);
 
 	// ****************************************************
 	//				アイテム出現

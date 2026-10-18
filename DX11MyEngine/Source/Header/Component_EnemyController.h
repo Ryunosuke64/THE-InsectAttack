@@ -50,6 +50,7 @@ private:
 	class RigidBody* m_pRigidBodyComp;				// 物理コンポーネント
 	class MyTransform* m_pTransformComp;			// トランスフォームコンポーネント
 	const GameObject* m_pTarget;					// 攻撃目標
+	class AI_GunWeapon* m_pAIGunWeapon;				// 銃火器コンポーネント
 
 	StaggerInfo m_StaggerInfo;						// 怯み情報
 
@@ -68,6 +69,8 @@ private:
 	bool m_IsGrounded;				// 接地しているか
 	bool m_IsOnDamage;				// ダメージフラグ
 
+	SoundID m_AlwaysSoundID;		// 常時発しているサウンドのID
+	SoundHandle m_AlwaysSoundHandle;
 	EnemyData::EnemyID m_MyID;					// 自分自身のID
 	EnemyData::EnemyGroupID m_MyGroupID;		// 自分が所属しているグループ（-1なら所属無し）
 
@@ -143,6 +146,10 @@ public:
 	void set_StaggerThreshold(float _val) { m_StaggerInfo._threshold = _val; }	// 怯み耐久
 	bool get_IsStagger() { return m_StaggerInfo.IsStagger(); }		// 怯み状態か
 
+	/* 常時再生される音声の設定 */
+	void set_AlwaysSoundID(const std::string& _soundKey);
+
+
 	/* エネミーIDの設定
 	* ※グループでない場合は、**EnemyGroupID** は-1に設定してね
 	*/
@@ -166,4 +173,5 @@ public:
 	class RigidBody* get_RigidBodyComponent() const { return m_pRigidBodyComp; };
 	class Health* get_HealthComponent() const { return m_pHealthComp; }
 	class MyTransform* get_TransformComponent() const { return m_pTransformComp; }
+	class AI_GunWeapon* get_AIGunWeapon() const { return m_pAIGunWeapon; }
 };

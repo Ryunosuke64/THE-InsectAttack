@@ -221,7 +221,7 @@ namespace BulletData
         BULLET_VISUAL_ARCHETYPE _visualArchetype = BULLET_VISUAL_ARCHETYPE::BILLBOARD; // 弾本体の描画方式
         std::string _bulletMaterialTag;                  // 弾本体に使用するマテリアルのタグ
         std::string _bulletEffectTag;                    // 弾本体をエフェクトで表示する場合
-        VECTOR4::VEC4 _effectColor = VECTOR4::VEC4(1.0f);// エフェクトのカラー
+        VECTOR4::VEC4 _effectColor = VECTOR4::VEC4(255.0f);// エフェクトのカラー
         VECTOR3::VEC3 _scale = VECTOR3::VEC3();          // 弾本体の表示サイズ
 
         float _trailDrawTime = 0.0;                          // 軌跡の表示時間。0なら軌跡を表示しない
@@ -252,8 +252,9 @@ namespace BulletData
     /// </summary>
     struct DirectHitConfig
     {
-        std::string _decalMaterialTag;              // 命中地点へ配置するデカールのマテリアルタグ
-        std::string _hitEffectTag;                  // 命中地点で再生するエフェクトのタグ
+        std::string _decalMaterialTag;                      // 命中地点へ配置するデカールのマテリアルタグ
+        std::string _hitEffectTag;                          // 命中地点で再生するエフェクトのタグ
+        VECTOR4::VEC4 _hitEffectColor = VECTOR4::VEC4(255.0f);// ヒットエフェクトのカラー
 
         ENVIRONMENT_RESPONSE _environmentResponse   // 衝突時の反応
             = ENVIRONMENT_RESPONSE::DEACTIVATE;

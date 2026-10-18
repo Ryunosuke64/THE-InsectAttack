@@ -101,7 +101,7 @@ int c_MissionSelect_DifficultSelect::Update(SceneManager* pOwner)
 		// ****************************************************
 		//				–ß‚éÛ‚ÌSEÄ¶
 		// ****************************************************
-		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_BACK01));
+		Master::m_pSoundManager->Play("ui.back");
 
 
 		return c_TITLE::c_TITLE_MISSION_SELECT;
@@ -120,7 +120,7 @@ int c_MissionSelect_DifficultSelect::Update(SceneManager* pOwner)
 				// ****************************************************
 				//				ƒJ[ƒ\ƒ‹‚ªÚ‚Á‚½Žž‚ÌSEÄ¶
 				// ****************************************************
-				Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SYSTEM_MOVING_CURSOR01));
+				Master::m_pSoundManager->Play("ui.cursor");
 			}
 			m_CrntSelectItem = static_cast<DIFFICULTY_LEVEL>(i);
 			break;

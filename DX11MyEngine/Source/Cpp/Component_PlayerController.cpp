@@ -13,6 +13,14 @@
 #include "CollisionInfo.h"
 #include "ConstantUtilityData.h"
 
+namespace
+{
+    // 掛け声の候補。音源の登録順を変えても、この3種類から選ばれる。
+    constexpr std::array<std::string_view, 3> shoutSounds = {
+        "voice.shout_01", "voice.shout_02", "voice.shout_03"
+    };
+}
+
 using namespace PhysicsData;
 using namespace UtilityData;
 using namespace Input;
@@ -251,8 +259,8 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 			// ****************************************************
 			//				 ローリング開始音/声 再生
 			// ****************************************************
-			Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN));
-			Master::m_pSoundManager->Play_Rand(SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_01), 3);
+			Master::m_pSoundManager->Play("soldier.jump");
+			Master::m_pSoundManager->Play_Rand(shoutSounds);
 			return;
 		}
 	}
@@ -272,8 +280,8 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 			// ****************************************************
 			//				 ローリング開始音/声 再生
 			// ****************************************************
-			Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN));
-			Master::m_pSoundManager->Play_Rand(SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_01), 3);
+			Master::m_pSoundManager->Play("soldier.jump");
+			Master::m_pSoundManager->Play_Rand(shoutSounds);
 
 			return;
 		}
@@ -298,7 +306,7 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 			// ****************************************************
 			//				 ジャンプ - 着地音 再生
 			// ****************************************************
-			Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_LAND));
+			Master::m_pSoundManager->Play("soldier.land");
 			ChangeAnimation(PLAYER_RANGER_ANIM_ID::JUMP_DOWN, 0.1f);
 
 			m_JumpVelocity = 0.0f;
@@ -317,8 +325,8 @@ void PlayerController::LateUpdate(RendererEngine& renderer)
 			// ****************************************************
 			//				 ジャンプ開始音/声 再生
 			// ****************************************************
-			Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN));
-			Master::m_pSoundManager->Play_Rand(SOUND_TYPE::VOICE, SOUND_ID_TO_INT(VOICE_ID::SOLDIER_R_SHOUT_01), 3);
+			Master::m_pSoundManager->Play("soldier.jump");
+			Master::m_pSoundManager->Play_Rand(shoutSounds);
 
 			// ジャンプ開始アニメーション
 			ChangeAnimation(PLAYER_RANGER_ANIM_ID::JUMP_UP, 0.5f);
@@ -577,7 +585,7 @@ void PlayerController::RollingUpdate()
 		// ****************************************************
 		//				 ローリング終了音再生
 		// ****************************************************
-		Master::m_pSoundManager->Play(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_LAND));
+		Master::m_pSoundManager->Play("soldier.land");
 	}
 	
 	//m_pMyTransformComp.lock()->set_Pos(newPos);

@@ -36,34 +36,43 @@ void mission_main()
 {
     switch (wave) {
     case 0:
-    // アリ グループ１
-    groupID1 = SpawnEnemyGroup(
-        ENEMY_TYPE::GIANT_ANT_Normal,
-        VEC3(0.0f,1.0f,0.0f),
-        50.0f,
-        10,
-        200.0f,
+    // // アリ グループ１
+    // groupID1 = SpawnEnemyGroup(
+    //     ENEMY_TYPE::GIANT_ANT_Normal,
+    //     VEC3(0.0f,1.0f,0.0f),
+    //     50.0f,
+    //     10,
+    //     200.0f,
+    //     true
+    // );
+
+    // // アリ グループ2
+    // groupID2 = SpawnEnemyGroup(
+    //     ENEMY_TYPE::GIANT_ANT_Normal,
+    //     VEC3(-100.0f,1.0f,100.0f),
+    //     50.0f,
+    //     1,
+    //     1200.0f,
+    //     true
+    // );
+    
+    // 八面体 
+    enemyID = SpawnEnemy(
+        ENEMY_TYPE::OCTAHEDRON,
+        VEC3(-200.0f,150.0f,0.0f),
+        VEC3(0.0f),
+        600.0f,
         true
     );
 
-    // アリ グループ2
-    groupID2 = SpawnEnemyGroup(
-        ENEMY_TYPE::GIANT_ANT_Normal,
-        VEC3(-100.0f,1.0f,100.0f),
-        50.0f,
-        1,
-        1200.0f,
-        true
-    );
-    
-    // // 八面体 
-    // enemyID = SpawnEnemy(
-    //     ENEMY_TYPE::OCTAHEDRON,
-    //     VEC3(-200.0f,150.0f,0.0f),
-    //     VEC3(0.0f),
-    //     600.0f,
-    //     true
-    // );
+            SpawnEnemyGroup(
+            ENEMY_TYPE::OCTAHEDRON,
+            VEC3(0.0f,150.0,0.0), 
+            100.0f,
+            2,
+            500.0f,
+            true
+        );
     wave++;
         break;
     case 1:

@@ -36,7 +36,7 @@ void Ant_AT_HitStunState::OnEnter(class EnemyController* pOwner)
 	// ****************************************************
 	//				 被弾音再生
 	// ****************************************************
-	Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_HIT01), pos, SOUND_HIT_RADIUS);
+	Master::m_pSoundManager->Play_3D("enemy.ant.hit_01", pos, SOUND_HIT_RADIUS);
 	
 	// ****************************************************
 	//				 ヒットエフェクト
@@ -90,7 +90,7 @@ int Ant_AT_HitStunState::Update(class EnemyController* pOwner)
 		// ****************************************************
 		//				 被弾音再生
 		// ****************************************************
-		Master::m_pSoundManager->Play_3D(SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_HIT01), pos, SOUND_HIT_RADIUS);
+		Master::m_pSoundManager->Play_3D("enemy.ant.hit_01", pos, SOUND_HIT_RADIUS);
 
 		// ****************************************************
 		//				 ヒットエフェクト
