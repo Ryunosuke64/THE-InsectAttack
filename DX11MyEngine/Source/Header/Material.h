@@ -19,7 +19,11 @@ public:
     float m_EnvironmentReflectionStrength;  // 環境反射の強さ
 
     VECTOR3::VEC3 m_EmissiveColor;  // 発光色
-    float m_EmissivePower;          // 自己発光の強さ（ブルーム強度）
+
+    /*
+     * ※ EmissiveColorのみで対応できるため、削除 
+     */
+    //float m_EmissivePower;          // 自己発光の強さ（ブルーム強度）
 
     // テクスチャマップ==============================================
     DIFFUSE_MAP_DATA m_DiffuseMap;     // ディフューズマップ
@@ -37,7 +41,7 @@ public:
         m_SpecularPower(0.0f),
         m_EnvironmentReflectionStrength(0.0f),
         m_BlendMode(BLEND_MODE::NONE),
-        m_EmissivePower(0.0f),
+        //m_EmissivePower(0.0f),
         m_EmissiveColor(VECTOR3::VEC3(0.0f,0.0f,0.0f)),
         m_CullMode(RenderData::CULL_MODE::BACK)
     {

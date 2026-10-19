@@ -107,7 +107,7 @@ struct CB_MATERIAL {
     DirectX::XMFLOAT4 Specular;             // スペキュラ反射光
 
     float SpecularPower;                    // スペキュラの強さ
-    float EmissivePower;                    // 自己発光の強さ（ブルーム強度）
+    float EmissivePower = 1.0f;             // 自己発光の強さ（ブルーム強度）
     DirectX::XMFLOAT2 OffsetUV;             // UVオフセット（エネルギーの流れる感じとかの表現に使えそう ヘクトルみたいな）
 
     DirectX::XMFLOAT3 EmissiveColor;        // 発光カラー

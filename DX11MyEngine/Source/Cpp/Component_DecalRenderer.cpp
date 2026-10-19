@@ -108,7 +108,7 @@ void DecalRenderer::Draw(RendererEngine &renderer)
         m_CBMaterialData.Diffuse = pMatData->m_DiffuseColor;
         m_CBMaterialData.Specular = pMatData->m_SpecularColor;
         m_CBMaterialData.SpecularPower = pMatData->m_SpecularPower;
-        m_CBMaterialData.EmissivePower = pMatData->m_EmissivePower;
+        //m_CBMaterialData.EmissivePower = pMatData->m_EmissivePower;
         m_CBMaterialData.EmissiveColor = pMatData->m_EmissiveColor;
         m_CBMaterialData.EnvironmentReflectionStrength = 0.0f;
         m_CBMaterialData.OffsetUV;

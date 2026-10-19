@@ -296,9 +296,9 @@ bool ResourceManager::ImportCSV_AllMaterialData(const std::string& _path)
             std::getline(ss, toStr, ',');
             data.m_EmissiveColor.z = std::stof(toStr); //z
 
-            /* エミッシブ強度 */
+            /* 環境反射強度 */
             std::getline(ss, toStr, ',');
-            data.m_EmissivePower = std::stof(toStr);
+            data.m_EnvironmentReflectionStrength = std::stof(toStr);
 
             /* ディフューズマップ */
             std::getline(ss, path, ',');

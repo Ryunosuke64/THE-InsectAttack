@@ -98,7 +98,7 @@ void MeshRenderer::Draw(RendererEngine& renderer)
         cbMaterial.Diffuse = pMatData->m_DiffuseColor;
         cbMaterial.Specular = pMatData->m_SpecularColor;
         cbMaterial.SpecularPower = pMatData->m_SpecularPower;
-        cbMaterial.EmissivePower = pMatData->m_EmissivePower;
+        //cbMaterial.EmissivePower = pMatData->m_EmissivePower;
         cbMaterial.EmissiveColor = pMatData->m_EmissiveColor;
         cbMaterial.EnvironmentReflectionStrength = pMatData->m_EnvironmentReflectionStrength;
 

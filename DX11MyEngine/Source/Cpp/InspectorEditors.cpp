@@ -925,7 +925,7 @@ void ModelMeshResourceEditor::OnEditorGUI(RendererEngine &renderer, GameObject &
                 VEC4 specCol        = mat->m_SpecularColor;
                 VEC3 emissiveCol    = mat->m_EmissiveColor;
                 float specPow       = mat->m_SpecularPower;
-                float emissivePow   = mat->m_EmissivePower;
+                //float emissivePow   = mat->m_EmissivePower;
                 float reflectionStrength   = mat->m_EnvironmentReflectionStrength;
 
                 ID3D11ShaderResourceView* diffSRV = nullptr;
@@ -991,12 +991,12 @@ void ModelMeshResourceEditor::OnEditorGUI(RendererEngine &renderer, GameObject &
                         mat->m_EmissiveColor = emissiveCol;
                     }
 
-                    Master::m_pDebugger->DG_BulletText(U8ToChar(u8"エミッシブ強度"));
-                    Master::m_pDebugger->DG_SameLine();
-                    if (Master::m_pDebugger->DG_DragFloat("##EmissivePower" + std::to_string(i), 1, &emissivePow, 0.5f, 0.0f, 255.0f))
-                    {
-                        mat->m_EmissivePower = emissivePow;
-                    }
+                    //Master::m_pDebugger->DG_BulletText(U8ToChar(u8"エミッシブ強度"));
+                    //Master::m_pDebugger->DG_SameLine();
+                    //if (Master::m_pDebugger->DG_DragFloat("##EmissivePower" + std::to_string(i), 1, &emissivePow, 0.5f, 0.0f, 255.0f))
+                    //{
+                    //    mat->m_EmissivePower = emissivePow;
+                    //}
 
                     Master::m_pDebugger->DG_BulletText(U8ToChar(u8"反射強度"));
                     Master::m_pDebugger->DG_SameLine();
@@ -1086,7 +1086,7 @@ void MeshResourceEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
             VEC4 specularColor = material->m_SpecularColor;
             VEC3 emissiveColor = material->m_EmissiveColor;
             float specularPower = material->m_SpecularPower;
-            float emissivePower = material->m_EmissivePower;
+            //float emissivePower = material->m_EmissivePower;
             float reflectionStrength = material->m_EnvironmentReflectionStrength;
 
             ID3D11ShaderResourceView* diffuseSRV = nullptr;
@@ -1141,13 +1141,13 @@ void MeshResourceEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
                 material->m_EmissiveColor = emissiveColor;
             }
 
-            Master::m_pDebugger->DG_BulletText(U8ToChar(u8"エミッシブ強度"));
-            Master::m_pDebugger->DG_SameLine();
-            if (Master::m_pDebugger->DG_DragFloat(
-                "##MeshResourceEmissivePower", 1, &emissivePower, 0.5f, 0.0f, 255.0f))
-            {
-                material->m_EmissivePower = emissivePower;
-            }
+            //Master::m_pDebugger->DG_BulletText(U8ToChar(u8"エミッシブ強度"));
+            //Master::m_pDebugger->DG_SameLine();
+            //if (Master::m_pDebugger->DG_DragFloat(
+            //    "##MeshResourceEmissivePower", 1, &emissivePower, 0.5f, 0.0f, 255.0f))
+            //{
+            //    material->m_EmissivePower = emissivePower;
+            //}
 
             Master::m_pDebugger->DG_BulletText(U8ToChar(u8"反射強度"));
             Master::m_pDebugger->DG_SameLine();
