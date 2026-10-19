@@ -28,7 +28,7 @@
 
 constexpr int NUM_SE_SVPOOL         = 32;  // SV(SourceVoice)のプール数
 constexpr int NUM_VOICE_SVPOOL      = 32;	// ボイス用
-constexpr int NUM_SOUND_3D_SVPOOL   = 64;  // 3D用
+constexpr int NUM_SOUND_3D_SVPOOL   = 128;  // 3D用
 
 
 /// <summary>

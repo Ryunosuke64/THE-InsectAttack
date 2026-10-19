@@ -591,7 +591,7 @@ std::shared_ptr<GameObject> EnemyFactory::CreateDroneTypeA(const EnemyGeneration
     // AI用武器コンポーネント追加
     //
     auto aiGunWeapon = generatedObject->add_Component<AI_GunWeapon>();
-    aiGunWeapon->Setup(Master::m_pWeaponDataManager->FindEnemysWeaponData(7));
+    aiGunWeapon->Setup(Master::m_pWeaponDataManager->FindEnemysWeaponData(8));
     aiGunWeapon->set_LocalMuzzleOffset(VEC3(0.0f, -1.5f, 0.0f));
 
 

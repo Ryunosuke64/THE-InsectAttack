@@ -38,7 +38,29 @@ float3 ACESToneMapping(float3 x)
     return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
 }
 
+float3 HablePartial(float3 x)
+{
+    const float A = 0.15;
+    const float B = 0.50;
+    const float C = 0.10;
+    const float D = 0.20;
+    const float E = 0.02;
+    const float F = 0.30;
 
+    return ((x * (A * x + C * B) + D * E) /
+            (x * (A * x + B) + D * F)) - E / F;
+}
+
+float3 HableToneMapping(float3 color)
+{
+    const float whitePoint = 20.0f;     // 
+    const float exposureBias = 5.0f;    // マッピング前の明るさ調整
+
+    float3 mapped = HablePartial(color * exposureBias);
+    float3 white = HablePartial(whitePoint.xxx);
+
+    return mapped / white;
+}
 
 
 // **************************************************************************
@@ -56,12 +78,13 @@ float4 PSMain(PS_IN input) : SV_TARGET
     
     // トーンマッピング処理
     // TODO : エフェクトの見た目が極端に変わってしまうので、一旦飛ばす
-    //finalColor = ACESToneMapping(hdrColor);
     finalColor = hdrColor;
     
     // 露出
     finalColor *= exp2(cb_ColorGrading.Exposure);
 
+    finalColor = HableToneMapping(finalColor);
+    
     // コントラスト
     finalColor = (finalColor - 0.5f) * cb_ColorGrading.Contrast + 0.5f;
 

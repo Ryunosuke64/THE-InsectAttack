@@ -89,9 +89,9 @@ bool RenderPipeline::Setup(RendererEngine &renderer)
     m_PostEffectParam.Fog.End    = 150.0f;
 
 	// カラーグレーディングの設定
-    m_PostEffectParam.ColorGrading.Exposure = 0.5f;                   // 露出補正（1.0fで補正なし）
-    m_PostEffectParam.ColorGrading.Contrast = 2.5f;                   // コントラスト（1.0fで補正なし）
-    m_PostEffectParam.ColorGrading.Saturation = 0.75f;                // 彩度（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Exposure = 0.0f;                  // 露出補正（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Contrast = 2.3f;                   // コントラスト（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Saturation = 0.9f;                 // 彩度（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.Gamma = 1.0f;                      // ガンマ補正（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.ColorTint = { 1.0f, 1.0f, 1.0f };  // 色味（1.0fで補正なし）
 
@@ -283,7 +283,7 @@ void RenderPipeline::DebugRenderTargetImGui()
             Master::m_pDebugger->DG_BulletText(U8ToChar(u8"色味調整"));
 
             Master::m_pDebugger->DG_BulletText(U8ToChar(u8"露出補正"));
-            Master::m_pDebugger->DG_DragFloat("##Exposure", 1, &m_PostEffectParam.ColorGrading.Exposure, 0.1f, 0.0f, 100.0f);
+            Master::m_pDebugger->DG_DragFloat("##Exposure", 1, &m_PostEffectParam.ColorGrading.Exposure, 0.1f, -10.0f, 100.0f);
             
             Master::m_pDebugger->DG_BulletText(U8ToChar(u8"コントラスト"));
             Master::m_pDebugger->DG_SameLine();

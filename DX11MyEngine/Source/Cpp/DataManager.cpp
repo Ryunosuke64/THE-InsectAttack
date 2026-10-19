@@ -73,7 +73,7 @@ bool DataManager::Init(class RendererEngine* pRenderer)
 
 	// ユーザー設定データの初期化
 	m_UserConfigData._BGMVolume = 0;
-	m_UserConfigData._SEVolume = 0;
+	m_UserConfigData._SEVolume = 20.0f;
 	m_UserConfigData._mouseSensitivity = 40.0f;
 	m_UserConfigData._isInvertY = false;
 	m_UserConfigData._isCameraShake = true;

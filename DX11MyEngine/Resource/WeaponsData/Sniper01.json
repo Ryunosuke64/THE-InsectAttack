@@ -1,10 +1,10 @@
 {
   "level": 0,
-  "name": "スティンガーK41",
-  "bulletMaxNum": 7,
+  "name": "小型レールキャノンMk1",
+  "bulletMaxNum": 1,
   "bulletSimultaneousNum": 1,
   "fireRate": 0.5,
-  "reloadTime": 2.5,
+  "reloadTime": 3.0,
   "accuracy": 0.0,
   "zoomLength": 3.0,
   "isLaserSight": true,
@@ -17,9 +17,9 @@
   {
     "common" :  
     {
-      "aliveFrame" : 60,
-      "speed": 600.0,
-      "maxSpeed": 600.0,
+      "aliveFrame" : 120,
+      "speed": 400.0,
+      "maxSpeed": 400.0,
       "damage": 250.0,
       "acceleration": 0.0,
       "penetrationsCount": 100,
@@ -47,15 +47,15 @@
     "visual" :  
     {
       "type" : "BILLBOARD",
-      "bulletMaterialTag" : "Bullet_04",
-      "trailDrawTime" : 0.5,
-      "trailWidth" : 1.0,
+      "bulletMaterialTag" : "Bullet_01",
+      "trailDrawTime" : 1.5,
+      "trailWidth" : 2.0,
       "enableFlightSmoke" : true,
-      "smokeInterval" : 0.05,              
-      "smokeSize" : 1.5,                     
+      "smokeInterval" : 0.01,              
+      "smokeSize" : 2.0,                     
       "smokeEffectTag" : "Fragment_Smoke_01",
-      "trailColor" : [10.0, 10.0, 10.0],
-      "scale" :  [1.5, 1.5, 1.5],
+      "trailColor" : [10.0, 7.0, 2.0],
+      "scale" :  [2.0, 2.0, 2.0],
 
       "custom" : 
       {

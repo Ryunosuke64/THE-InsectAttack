@@ -123,6 +123,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/Fragment_Ant.efkefc", "Fragment_Ant");
     LoadEffect(u"Resource/Effect/PointItem.efkefc", "PointItem");
     LoadEffect(u"Resource/Effect/PointItemGet.efkefc", "PointItemGet");
+    LoadEffect(u"Resource/Effect/Explosion_01_SmokeSet.efkefc", "Explosion_01_SmokeSet");
 
     return true;
 }

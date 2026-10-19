@@ -1,0 +1,69 @@
+{
+  "level": 0,
+  "name": "小型レールキャノンMk1",
+  "bulletMaxNum": 1,
+  "bulletSimultaneousNum": 1,
+  "fireRate": 0.5,
+  "reloadTime": 3.0,
+  "accuracy": 0.0,
+  "zoomLength": 3.0,
+  "isLaserSight": true,
+  "shotSoundRadius": 300.0,
+  "soundID": "weapon.gun_fire_03",
+  "muzzleFlashEffectTag" : "MuzzleEffect_01",
+  "muzzleFlashEffectScale" :  [2.0, 2.0, 2.0],
+  "bulletType": "AP",
+  "bulletParam": 
+  {
+    "common" :  
+    {
+      "aliveFrame" : 120,
+      "speed": 400.0,
+      "maxSpeed": 400.0,
+      "damage": 250.0,
+      "acceleration": 0.0,
+      "penetrationsCount": 100,
+      "collisionSize": 0.0,
+      "gravityScale": 0.0,
+      "knockbackForce" : 100.0,
+      "bulletType" : "AP",
+      "collisionCategory" : "PLAYER_BULLET",
+      "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
+    },
+    
+    "movement" :
+    {
+      "type" : "LINEAR"
+    },
+    
+    "hit" : 
+    {
+      "type" : "DIRECT",
+      "decalMaterialTag" : "Decal_BulletHole",
+      "hitEffectTag" : "BulletHit_Standard_L",
+      "environmentResponse" : "PENETRATE"
+    },
+
+    "visual" :  
+    {
+      "type" : "BILLBOARD",
+      "bulletMaterialTag" : "Bullet_04",
+      "trailDrawTime" : 1.5,
+      "trailWidth" : 2.0,
+      "enableFlightSmoke" : true,
+      "smokeInterval" : 0.01,              
+      "smokeSize" : 2.0,                     
+      "smokeEffectTag" : "Fragment_Smoke_01",
+      "trailColor" : [10.0, 7.0, 2.0],
+      "scale" :  [2.0, 2.0, 2.0],
+
+      "custom" : 
+      {
+        "type" : "",
+        "startScale" : [0.0,0.0, 0.0],
+        "endScale" : [0.0, 0.0, 0.0],
+        "duration" : 0.0
+      }
+    }
+  }
+}
