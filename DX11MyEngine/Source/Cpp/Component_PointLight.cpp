@@ -63,7 +63,6 @@ void PointLight::Update(RendererEngine &renderer)
 {
     auto pContext = renderer.get_DeviceContext();
 
-
     // フラッシュ処理
     if (m_IsFlash)
     {
@@ -78,6 +77,12 @@ void PointLight::Update(RendererEngine &renderer)
 
         m_Intensity = ease * m_FlashMaxIntensity;
         //m_Range = ease * m_FlashMaxRange;
+    }
+
+    // 消灯中のライトは登録しない
+    if (m_Intensity <= 0.0f || m_Range <= 0.0f)
+    {
+        return;
     }
 
     VEC3 pos = m_pOwnerTransform.lock()->get_WorldVEC3ToPos();;

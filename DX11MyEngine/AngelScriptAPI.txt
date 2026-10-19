@@ -48,6 +48,7 @@ access ffffffff
 enum ENEMY_TYPE int
 enumval ENEMY_TYPE GIANT_ANT_Normal 0
 enumval ENEMY_TYPE OCTAHEDRON 1
+enumval ENEMY_TYPE DRONE_TYPE_A 2
 
 // Types
 objtype "array<T>" 69

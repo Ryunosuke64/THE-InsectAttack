@@ -34,5 +34,12 @@ private:
 	/// <param name="_out">出力先</param>
 	/// <param name="_renderer">描画エンジンの参照</param>
 	static void CreateOctahedronState(StateMachine<class EnemyController>& _out, RendererEngine& _renderer);
+	
+	/// <summary>
+	/// ドローンタイプA作成
+	/// </summary>
+	/// <param name="_out">出力先</param>
+	/// <param name="_renderer">描画エンジンの参照</param>
+	static void CreateDroneTypeAState(StateMachine<class EnemyController>& _out, RendererEngine& _renderer);
 };
 

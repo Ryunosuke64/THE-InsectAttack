@@ -43,7 +43,7 @@
       "type" : "DIRECT",
       "decalMaterialTag" : "",
       "hitEffectTag" : "BulletHit_Laser",
-      "effectColor" : [255, 64, 255, 255],
+      "hitEffectColor" : [255, 64, 255, 255],
       "environmentResponse" : "DEACTIVATE"
     },
 

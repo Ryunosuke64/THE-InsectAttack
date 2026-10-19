@@ -358,6 +358,15 @@
     <Filter Include="ソース ファイル\Game\Component\Map\DestructionBehaviour">
       <UniqueIdentifier>{5cdaf874-1f1a-4ed7-abcc-78ec4b2de680}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Enemy\State_DroneTypeA">
+      <UniqueIdentifier>{bcc2acad-44ed-43f8-959f-3f6ec94032ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active">
+      <UniqueIdentifier>{64e2c336-1e33-45a0-90c2-192aeec3e4f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Patrol">
+      <UniqueIdentifier>{c718c40a-0dfe-4f4a-851e-23a1415e4cc7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Cpp\SHADER.cpp">
@@ -981,6 +990,27 @@
     <ClCompile Include="Source\Cpp\Component_AI_GunWeapon.cpp">
       <Filter>ソース ファイル\Game\Component\Weapon\Gun</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\DroneTypeA_AT_IdleState.cpp">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DroneTypeA_AT_MoveState.cpp">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DroneTypeA_AT_TrackingState.cpp">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DroneTypeA_AT_AttackState.cpp">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DroneTypeA_AT_DeadState.cpp">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DroneTypeA_CommonStateProcess.cpp">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\DroneTypeA_AT_HitStunState.cpp.cpp">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1579,6 +1609,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_AI_GunWeapon.h">
       <Filter>ソース ファイル\Game\Component\Weapon\Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\DroneTypeA_StateHeader.h">
+      <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

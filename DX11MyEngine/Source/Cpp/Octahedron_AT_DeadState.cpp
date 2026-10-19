@@ -52,13 +52,13 @@ void Octahedron_AT_DeadState::OnEnter(class EnemyController* pOwner)
 
 	VECTOR3::VEC3 knockbackDir;   // 爆心地から外（衝突オブジェクト）へ向かうベクトル
 	// 少し上（Y軸）に向かせることで、綺麗な放物線を描いて吹き飛ばせる
-	knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-10.0f, 10.0f);
-	knockbackDir.y += 10.0f;
-	knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-10.0f, 10.0f);
+	knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-15.0f, 15.0f);
+	knockbackDir.y = Master::m_pRandomManager->GetFloatRandom(-15.0f, 15.0f);
+	knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-15.0f, 15.0f);
 
 	// 物理コンポーネントの設定
 	auto rigidBody = pOwner->get_RigidBodyComponent();
-	rigidBody->SetMass(1.0f);
+	rigidBody->SetMass(1000.0f);
 	rigidBody->SetGravity(VEC3(0.0f, -9.8f, 0.0f));
 	rigidBody->SetRestitution(0.5f);
 	rigidBody->AddImpulse(knockbackDir);

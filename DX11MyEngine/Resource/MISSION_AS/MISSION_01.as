@@ -66,11 +66,11 @@ void mission_main()
     );
 
             SpawnEnemyGroup(
-            ENEMY_TYPE::OCTAHEDRON,
-            VEC3(0.0f,150.0,0.0), 
+            ENEMY_TYPE::DRONE_TYPE_A,
+            VEC3(0.0f,50.0,0.0), 
+            20.0f,
+            400,
             100.0f,
-            2,
-            500.0f,
             true
         );
     wave++;

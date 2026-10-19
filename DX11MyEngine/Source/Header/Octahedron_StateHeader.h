@@ -149,6 +149,7 @@ private:
 	float m_PreAttackStunDuration = 0.0f;	// 攻撃前の硬直時間
 	float m_AttackTime = 0.0f;
 	int m_AttckCount = 0;
+	bool m_IsStartFire = false;	// 発射開始したか（開始後のみ、目標位置をセットするため）
 public:
 	void OnEnter(class EnemyController* pOwner) override;
 	void OnExit(class EnemyController* pOwner)override;

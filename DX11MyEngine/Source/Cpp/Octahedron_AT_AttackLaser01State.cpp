@@ -35,6 +35,7 @@ void Octahedron_AT_AttackLaser01State::OnExit(class EnemyController* pOwner)
 	m_AttckCount = 0;
 	m_AttackTime = 0.0f;
 	pOwner->clear_StateTimer();
+	m_IsStartFire = false;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -87,9 +88,12 @@ int Octahedron_AT_AttackLaser01State::Update(class EnemyController* pOwner)
 			m_AttackTime += Master::m_pTimeManager->get_DeltaTime();
 
 			auto gunWeapon = pOwner->get_AIGunWeapon();
-			gunWeapon->set_AimPosition(targetPos);
+			if (!m_IsStartFire)
+			{
+				gunWeapon->set_AimPosition(targetPos);
+			}
 			gunWeapon->Fire(*m_pRenderer);
-
+			m_IsStartFire = true;
 			//=========================================================================================
 			//
 			//						攻撃が終了したら、移動ステートへ

@@ -29,5 +29,6 @@ public:
 private:
     static std::shared_ptr<GameObject> CreateAnt01(const EnemyGenerationData& generationData);
     static std::shared_ptr<GameObject> CreateOctahedron(const EnemyGenerationData& generationData);
+    static std::shared_ptr<GameObject> CreateDroneTypeA(const EnemyGenerationData& generationData);
 };
 

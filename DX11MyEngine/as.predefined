@@ -107,7 +107,8 @@ class StageEnvironmentParam
 enum ENEMY_TYPE
 {
     GIANT_ANT_Normal = 0,
-    OCTAHEDRON = 1
+    OCTAHEDRON = 1,
+    DRONE_TYPE_A = 2
 }
 
 uint scan(const string&in str, ?&out...);

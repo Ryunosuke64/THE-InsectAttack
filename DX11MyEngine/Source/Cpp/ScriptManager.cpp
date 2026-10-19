@@ -553,7 +553,8 @@ void ScriptManager::RegisterGameAPI(asIScriptEngine* engine)
         "ENEMY_TYPE"
     )
         .value(EnemyData::ENEMY_TYPE::GIANT_ANT_Normal, "GIANT_ANT_Normal")
-        .value(EnemyData::ENEMY_TYPE::OCTAHEDRON, "OCTAHEDRON");
+        .value(EnemyData::ENEMY_TYPE::OCTAHEDRON, "OCTAHEDRON")
+        .value(EnemyData::ENEMY_TYPE::DRONE_TYPE_A, "DRONE_TYPE_A");
 }
 
 

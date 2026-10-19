@@ -9,6 +9,7 @@ namespace EnemyData
 	{
 		GIANT_ANT_Normal,	// アリ
 		OCTAHEDRON,			// 八面体
+		DRONE_TYPE_A,		// ドローンタイプA
 
 		NUM,
 	};
@@ -57,6 +58,22 @@ namespace EnemyData
 		OCTAHEDRON_STATE_ACTIVE_ATTACK_LASER01,	// レーザー攻撃
 		OCTAHEDRON_STATE_ACTIVE_HIT_STUN,		// 被弾
 		OCTAHEDRON_STATE_ACTIVE_DEAD,			// 死亡
+	};
+	
+	/// <summary>
+	/// ドローン タイプAのステート
+	/// </summary>
+	enum DRONE_TYPE_A_STATE
+	{
+		// 非アクティブ
+
+		// アクティブ
+		DRONE_TYPE_A_STATE_ACTIVE_MOVE,				// 移動
+		DRONE_TYPE_A_STATE_ACTIVE_TRACKING,			// 追跡移動
+		DRONE_TYPE_A_STATE_ACTIVE_IDLE,				// 待機
+		DRONE_TYPE_A_STATE_ACTIVE_ATTACK,			// 攻撃
+		DRONE_TYPE_A_STATE_ACTIVE_HIT_STUN,			// 被弾
+		DRONE_TYPE_A_STATE_ACTIVE_DEAD,				// 死亡
 	};
 
 	inline const char* g_AntStateNames[] =
