@@ -126,6 +126,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/PointItem.efkefc", "PointItem");
     LoadEffect(u"Resource/Effect/PointItemGet.efkefc", "PointItemGet");
     LoadEffect(u"Resource/Effect/Explosion_01_SmokeSet.efkefc", "Explosion_01_SmokeSet");
+    LoadEffect(u"Resource/Effect/FlameEmitter_01.efkefc", "FlameEmitter_01");
 
     return true;
 }

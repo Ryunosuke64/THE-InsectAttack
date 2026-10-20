@@ -378,6 +378,7 @@ void RenderPipeline::Release()
     m_pDefferdLighting_Sprite.reset();
     m_pLuminance_Sprite.reset();
     m_pBloom_Sprite.reset();
+    m_pLensFlare_Sprite.reset();
     m_pDoF_Sprite.reset();
     m_pFinalSceneToneMappingFilter_Sprite.reset();
 }
@@ -572,9 +573,6 @@ void RenderPipeline::Lighting_PathRender(RendererEngine &renderer)
     //m_pDefferdLighting_Sprite->setToGPU_ExtendUserPS_CBuffer(renderer, 0, &m_ShadowParam);
     m_pDefferdLighting_Sprite->Draw(renderer);
 
-    //auto pContext = renderer.get_DeviceContext();
-    //pContext->CopyResource(m_pSceneCopy_RT->get_RTTexture().Get(), m_pSceneFinal_RT->get_RTTexture().Get());
-
 
     // レンダリングターゲット解除
     renderer.ReleaseRenderTargetSetNull();
@@ -676,19 +674,24 @@ void RenderPipeline::Forward_PathRender(RendererEngine& renderer)
     // 
     // ************************************************************************]
 
+    auto context = renderer.get_DeviceContext();
+    context->CopyResource(m_pSceneCopy_RT->get_RTTexture().Get(), m_pSceneFinal_RT->get_RTTexture().Get());
+
     //深度テスト有効・書き込み無
     renderer.RegisterDepthStencilState(renderer.get_DepthWriteDisabled_DSS(), 0);
-
-    auto context = renderer.get_DeviceContext();
 
     // 読み取り専用深度バッファを設定
     renderer.RegisterRenderTarget(m_pSceneFinal_RT->get_RTV(), m_pDepth_RT->get_ReadOnryDSV());
 
     // 深度バッファの SRV を共通スロットへ
+    // シーンテクスチャのを共通スロットへ
     // スロット 7 に渡す
     auto depthView = m_pDepth_RT->get_DepthSRV_ComPtr();
+    auto sceneView = m_pSceneCopy_RT->get_SRV_ComPtr();
     ID3D11ShaderResourceView* depthSRV = depthView.Get();
+    ID3D11ShaderResourceView* sceneSRV = sceneView.Get();
     context->PSSetShaderResources(7, 1, &depthSRV);
+    context->PSSetShaderResources(8, 1, &sceneSRV);
 
     // 裏面カリング
     renderer.RegisterCullMode(CULL_MODE::BACK);
@@ -766,6 +769,9 @@ void RenderPipeline::Bloom_PathRender(RendererEngine& renderer)
 
     // ブルームスプライト
     m_pBloom_Sprite->Draw(renderer);
+
+    // レンズフレアスプライト
+    //m_pLensFlare_Sprite->Draw(renderer);
 
     // レンダリングターゲット解除
     renderer.ReleaseRenderTargetSetNull();
@@ -946,20 +952,20 @@ bool RenderPipeline::CreateRenderTargets(RendererEngine &renderer)
     );
     if (result == false)return false;
 
- //   // ****************************************************************
-	//// シーンコピー用のレンダーターゲット（フォワードオブジェクト描画前のシーンをコピーしておく用）
- //   // ****************************************************************
- //   m_pSceneCopy_RT = new DX_RenderTarget();
- //   result = m_pSceneCopy_RT->Create(
- //       renderer,
- //       renderer.get_ScreenWidth(),
- //       renderer.get_ScreenHeight(),
- //       1,
- //       1,
- //       DXGI_FORMAT_R32G32B32A32_FLOAT,
- //       DXGI_FORMAT_UNKNOWN
- //   );
- //   if (result == false)return false;
+    // ****************************************************************
+	// シーンコピー用のレンダーターゲット（フォワードオブジェクト描画前のシーンをコピーしておく用）
+    // ****************************************************************
+    m_pSceneCopy_RT = new DX_RenderTarget();
+    result = m_pSceneCopy_RT->Create(
+        renderer,
+        renderer.get_ScreenWidth(),
+        renderer.get_ScreenHeight(),
+        1,
+        1,
+        DXGI_FORMAT_R32G32B32A32_FLOAT,
+        DXGI_FORMAT_UNKNOWN
+    );
+    if (result == false)return false;
 
     return true;
 }
@@ -1242,6 +1248,26 @@ bool RenderPipeline::CreateRenderTargetSprites(RendererEngine &renderer)
 
     // スプライト取得
     m_pBloom_Sprite = MeshFactory::CreateSprite(bloomSprite)->get_Component<SpriteRenderer>();
+
+
+    /*************************************************************************
+    * レンズフレア用スプライト
+    *************************************************************************/
+    CreateSpriteInfo lensFlareSprite;
+    lensFlareSprite.pRenderer = &renderer;
+    lensFlareSprite.IsActive = false;
+    lensFlareSprite.ObjTag = "lensFlareSprite";
+    lensFlareSprite.Width = m_ScreenWidth;
+    lensFlareSprite.Height = m_ScreenHeight;
+    lensFlareSprite.Blend = BLEND_MODE::ADD;
+    lensFlareSprite.pTextureMap[0] = Master::m_pResourceManager->Convert_SRVToTexture(
+        "RT_Luminance"
+    );
+    lensFlareSprite.Type = SPRITE_USAGE_TYPE::RENDER_TARGET;
+    lensFlareSprite.ShaderType = SHADER_TYPE::POST_LENSFLARE_FILTER;
+
+    // スプライト取得
+    m_pLensFlare_Sprite = MeshFactory::CreateSprite(lensFlareSprite)->get_Component<SpriteRenderer>();
 
 
     /*************************************************************************

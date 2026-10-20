@@ -3,30 +3,30 @@ Total count
 PshC4      : 30
 PshV4      : 4
 PSF        : 21
-PshG4      : 84
-RET        : 91
-JMP        : 170
-JS         : 85
-JP         : 85
+PshG4      : 90
+RET        : 97
+JMP        : 182
+JS         : 91
+JP         : 91
 INCi       : 1
-CMPIi      : 170
-JMPP       : 85
-CALLSYS    : 109
-SUSPEND    : 268
+CMPIi      : 182
+JMPP       : 91
+CALLSYS    : 115
+SUSPEND    : 286
 GETREF     : 8
 SetV4      : 5
 ADDSi      : 2
 CpyVtoG4   : 2
 CpyRtoV4   : 2
-CpyGtoV4   : 85
+CpyGtoV4   : 91
 WRTV4      : 5
 LDG        : 1
 VAR        : 8
-SUBIi      : 85
+SUBIi      : 91
 SetG4      : 5
 SetV1      : 4
 LoadVObjR  : 5
-JLowZ      : 84
+JLowZ      : 90
 
 Never executed
 PopPtr    
@@ -211,29 +211,29 @@ PshC4     , GETREF     : 4
 PshV4     , PshC4      : 4
 PSF       , CALLSYS    : 19
 PSF       , ADDSi      : 2
-PshG4     , CALLSYS    : 84
+PshG4     , CALLSYS    : 90
 RET       , PSF        : 1
-RET       , CpyGtoV4   : 85
+RET       , CpyGtoV4   : 91
 RET       , SetG4      : 4
-JMP       , SUSPEND    : 170
-JS        , SUBIi      : 85
-JP        , CMPIi      : 85
+JMP       , SUSPEND    : 182
+JS        , SUBIi      : 91
+JP        , CMPIi      : 91
 INCi      , SUSPEND    : 1
-CMPIi     , JS         : 85
-CMPIi     , JP         : 85
-JMPP      , JMP        : 85
+CMPIi     , JS         : 91
+CMPIi     , JP         : 91
+JMPP      , JMP        : 91
 CALLSYS   , PSF        : 6
 CALLSYS   , RET        : 1
 CALLSYS   , SUSPEND    : 6
 CALLSYS   , CpyVtoG4   : 2
 CALLSYS   , CpyRtoV4   : 2
 CALLSYS   , VAR        : 8
-CALLSYS   , JLowZ      : 84
+CALLSYS   , JLowZ      : 90
 SUSPEND   , PshC4      : 2
 SUSPEND   , PSF        : 2
-SUSPEND   , PshG4      : 84
-SUSPEND   , RET        : 85
-SUSPEND   , JMP        : 85
+SUSPEND   , PshG4      : 90
+SUSPEND   , RET        : 91
+SUSPEND   , JMP        : 91
 SUSPEND   , SetV4      : 5
 SUSPEND   , LDG        : 1
 SUSPEND   , SetV1      : 4
@@ -243,14 +243,14 @@ SetV4     , LoadVObjR  : 5
 ADDSi     , GETREF     : 2
 CpyVtoG4  , SUSPEND    : 2
 CpyRtoV4  , PSF        : 2
-CpyGtoV4  , CMPIi      : 85
+CpyGtoV4  , CMPIi      : 91
 WRTV4     , SUSPEND    : 5
 LDG       , INCi       : 1
 VAR       , PshC4      : 6
 VAR       , PSF        : 2
-SUBIi     , JMPP       : 85
+SUBIi     , JMPP       : 91
 SetG4     , RET        : 5
 SetV1     , PshV4      : 4
 LoadVObjR , WRTV4      : 5
-JLowZ     , SUSPEND    : 84
+JLowZ     , SUSPEND    : 90
 LABEL     , SetG4      : 1

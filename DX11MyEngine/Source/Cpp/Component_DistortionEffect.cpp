@@ -127,7 +127,7 @@ void DistortionEffect::Draw(RendererEngine& renderer)
 	static float time = 0.0f;
 	time += 0.01f;
 
-	m_CBDistortion.Power = 0.3f; // ディストーションの強さ
+	m_CBDistortion.Power = 0.8f; // ディストーションの強さ
 	m_CBDistortion.Time = time;   // 時間を更新（アニメーションさせるためのもの）
 
     // 定数バッファをセット ==========================
@@ -147,8 +147,8 @@ void DistortionEffect::Draw(RendererEngine& renderer)
 	// デバイスにシェーダをセット ===================================================
 	Master::m_pShaderManager->DeviceToSetShader(SHADER_TYPE::POST_DISTORTION);
 
-    //pContext->PSSetShaderResources(0, 1, &sceneSRV);
-    pContext->PSSetShaderResources(1, 1, &noizeSRV);
+    //pContext->PSSetShaderResources(1, 1, &sceneSRV);
+    pContext->PSSetShaderResources(0, 1, &noizeSRV);
 
     // 頂点＆インデックスバッファ設定 ==========================
     UINT stride = sizeof(VERTEX_Static);

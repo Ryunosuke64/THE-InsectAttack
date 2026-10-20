@@ -26,7 +26,7 @@ private:
     
 	std::weak_ptr<class SkyRenderer> m_pSkyRenderer;  // スカイボックス描画用
 
-    //class DX_RenderTarget *m_pSceneCopy_RT;	
+    class DX_RenderTarget *m_pSceneCopy_RT;	
 
     // シャドウマップの解像度
     const float SHADOW_SIZE_X = 4096.0f;    
@@ -54,6 +54,7 @@ private:
     std::shared_ptr<class SpriteRenderer> m_pLuminance_Sprite;
     std::shared_ptr<class SpriteRenderer> m_pBloom_Sprite;
     std::shared_ptr<class SpriteRenderer> m_pDoF_Sprite;
+    std::shared_ptr<class SpriteRenderer> m_pLensFlare_Sprite;
     std::shared_ptr<class SpriteRenderer> m_pFinalSceneToneMappingFilter_Sprite;
 
     // ポストエフェクト情報

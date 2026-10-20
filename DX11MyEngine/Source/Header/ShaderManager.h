@@ -59,6 +59,7 @@ enum class SHADER_TYPE
     POST_SKYBOX,                        // スカイボックス用
     POST_LUMINANCE_FILTER,              // 輝度抽出用
     POST_KAWASE_FILTER,                 // 川瀬式ブルーム（ダウンサンプリングしたガウス適用後のテクスチャをぼかす）
+    POST_LENSFLARE_FILTER,              // レンズフレア
     POST_SHADOWMAP,                     // シャドウマップ
     POST_SHADOWMAP_SKINNED,             // シャドウマップスキニング用
     POST_DEPTH_OF_FILED,                // 被写界深度

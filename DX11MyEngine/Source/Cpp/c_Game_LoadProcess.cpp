@@ -314,6 +314,16 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         //}
 
     }
+    {
+        auto obj = GIGA_Engine::Instantiate3D(std::make_shared<GameObject>(), true);
+        obj->set_Tag("DistortionEffect");
+        obj->set_LayerRank(1000);
+        obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
+        obj->get_Transform().lock()->set_Pos(-45.0f, 5.0f, 100.0f);
+        obj->get_Transform().lock()->set_Scale(5.0f);
+        auto distortion = obj->add_Component<DistortionEffect>();
+        distortion->Setup(*m_pRenderer);
+    }
 
     /* マザーシップの生成 */
     {
@@ -670,10 +680,10 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             obj->set_Tag("Block");
             obj->set_IsUpdateAllowedDuringPause(false);
             obj->set_IsStatic(false);
-            auto light = obj->add_Component<SpotLight>();
-            light->set_SpotLightData(30.0f, 15.0f);
+            auto light = obj->add_Component<PointLight>();
+            //light->set_SpotLightData(30.0f, 15.0f);
             light->set_LightColor(col);
-            light->set_Intensity(5.5f);
+            light->set_Intensity(1.5f);
 
             auto rb = obj->add_Component<RigidBody>();
             auto collider = obj->add_Component<BoxCollider>();

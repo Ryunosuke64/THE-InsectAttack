@@ -10,9 +10,9 @@
 #include "ConstantBuffers_H.hlsli"
 SamplerState g_sSampler : register(s0);
 SamplerState g_sClampSampler : register(s2);
-Texture2D g_tSceneTexture : register(t6); // シーンテクスチャ
-Texture2D g_tNoizeTexture : register(t1); // ノイズテクスチャ
-Texture2D g_tDepathTexture1 : register(t1); // 深度テクスチャ
+Texture2D g_tSceneTexture : register(t8); // シーンテクスチャ
+Texture2D g_tDepathTexture1 : register(t7); // 深度テクスチャ
+Texture2D g_tNoizeTexture : register(t0); // ノイズテクスチャ
 
 /* =========================================================================
 /* - @:入力構造体 - */
@@ -32,15 +32,13 @@ float4 PSMain(PS_IN input) : SV_TARGET
 {
     float4 finalColor = float4(0.0, 0.0, 0.0, 1.0);
     float depth = g_tDepathTexture1.Sample(g_sClampSampler, input.UV).r;
-    float2 screenUV;
-    screenUV.x = input.PosInProj.x;
-    screenUV.y = -input.PosInProj.y;
+    float2 screenUV = input.Pos.xy / float2(cb_WindowWidth, cb_WindowHeight);
     
     // 現在のピクセルの深度値を取得
-    float myDepth = input.PosInProj.z;
+    float myDepth = input.Pos.z;
     
     // ノイズテクスチャを使ってUVを歪ませる
-    float2 noiseUV = input.UV + float2(cb_DistortionPower, cb_DistortionPower) * cb_DistortionTime;
+    float2 noiseUV = input.UV + float2(cb_DistortionPower, cb_DistortionPower) * cb_Time;
     float3 noise = g_tNoizeTexture.Sample(g_sSampler, noiseUV).rgb;
     
     // 0～1のノイズを -1～1 に変換して強度を調整
@@ -52,6 +50,7 @@ float4 PSMain(PS_IN input) : SV_TARGET
     
     // シーンテクスチャを歪ませたUVでサンプリング
     finalColor = g_tSceneTexture.Sample(g_sSampler, distortedUV);
+    //return g_tSceneTexture.Sample(g_sSampler, input.UV);
     
     return finalColor;
 }

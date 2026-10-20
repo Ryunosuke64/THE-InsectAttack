@@ -1733,6 +1733,9 @@
     <FxCompile Include="Source\Shader\Water_VS.hlsl">
       <Filter>HLSL\VS</Filter>
     </FxCompile>
+    <FxCompile Include="Source\Shader\LensFlareFilter_PS.hlsl">
+      <Filter>HLSL\PS\PostEffect</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Source\Lib\DirectXTex\DirectXTexd.lib">

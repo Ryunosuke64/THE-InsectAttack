@@ -65,22 +65,22 @@ void mission_main()
         true
     );
 
-    // 八面体グループ
-    SpawnEnemyGroup(
-        ENEMY_TYPE::OCTAHEDRON,
-        VEC3(0.0f,150.0,0.0), 
-        100.0f,
-        3,
-        3000.0f,
-        true
-    );
+    // // 八面体グループ
+    // SpawnEnemyGroup(
+    //     ENEMY_TYPE::OCTAHEDRON,
+    //     VEC3(0.0f,150.0,0.0), 
+    //     100.0f,
+    //     3,
+    //     3000.0f,
+    //     true
+    // );
 
     // ドローン タイプA
     SpawnEnemyGroup(
         ENEMY_TYPE::DRONE_TYPE_A,
         VEC3(0.0f,50.0,0.0), 
         20.0f,
-        100,
+        1,
         100.0f,
         true
     );

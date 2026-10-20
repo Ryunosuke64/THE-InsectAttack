@@ -42,7 +42,7 @@
             ],
             "isGrabbable" : false,
             "isDestruction" : true,
-            "health" : 100.0
+            "health" : 600.0
         },
         {
             "assetID" : "BuildingTW_01",
@@ -60,7 +60,7 @@
             ],
             "isGrabbable" : false,
             "isDestruction" : true,
-            "health" : 100.0
+            "health" : 600.0
         }
     ]
 }

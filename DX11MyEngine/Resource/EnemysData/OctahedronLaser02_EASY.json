@@ -59,7 +59,7 @@
       "smokeEffectTag" : "",
       "effectColor" : [255, 32, 32, 255],
       "trailColor" : [1.0, 1.0, 1.0],
-      "scale" :  [3.0, 3.0,3.0],
+      "scale" :  [1.0, 1.0,1.0],
 
       "custom" : 
       {

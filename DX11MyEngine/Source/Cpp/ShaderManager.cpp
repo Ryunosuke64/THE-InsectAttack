@@ -211,6 +211,12 @@ bool ShaderManager::Init(std::shared_ptr<RendererEngine> renderer)
             g_Static_Layout,
         },  
         {
+            /* レンズフレアレンズフレア  */
+            SHADER_TYPE::POST_LENSFLARE_FILTER,
+            ARRAYSIZE(g_Static_Layout),
+            g_Static_Layout,
+        },  
+        {
             /* 通常シャドウマップ */
             SHADER_TYPE::POST_SHADOWMAP,
             ARRAYSIZE(g_Simple_Layout),
@@ -594,6 +600,9 @@ bool ShaderManager::VertexShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADE
         case SHADER_TYPE::POST_KAWASE_FILTER:               // 川瀬ブルーム用
             hr = this->CompileShader(HLSL__Sprite_VS_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
             break;
+        case SHADER_TYPE::POST_LENSFLARE_FILTER:            // レンズフレア用
+            hr = this->CompileShader(HLSL__Sprite_VS_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
+            break;
         case SHADER_TYPE::POST_SHADOWMAP:                   // シャドウマップ
             hr = this->CompileShader(HLSL__ShadowMap_PATH.c_str(), "VSMain", "vs_5_0", &pVSBlob);
             break;     
@@ -699,6 +708,9 @@ bool ShaderManager::VertexShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADE
             this->LoadCSOFile(HLSL_CSO__Sprite_VS_PATH.c_str(), &csoByteCode);
             break;      
         case SHADER_TYPE::POST_KAWASE_FILTER:                // 川瀬ブルーム用
+            this->LoadCSOFile(HLSL_CSO__Sprite_VS_PATH.c_str(), &csoByteCode);
+            break;      
+        case SHADER_TYPE::POST_LENSFLARE_FILTER:             // レンズフレア用
             this->LoadCSOFile(HLSL_CSO__Sprite_VS_PATH.c_str(), &csoByteCode);
             break;      
         case SHADER_TYPE::POST_SHADOWMAP:                   // シャドウマップ
@@ -841,6 +853,9 @@ bool ShaderManager::PixelShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADER
         case SHADER_TYPE::POST_KAWASE_FILTER:                // 川瀬ブルーム用
             hr = this->CompileShader(HLSL__KawaseFilter_PS_PATH.c_str(), "PSMain", "ps_5_0", &pPSBlob);
             break;
+        case SHADER_TYPE::POST_LENSFLARE_FILTER:             // ブレンズフレア
+            hr = this->CompileShader(HLSL__LensFlareFilter_PS_PATH.c_str(), "PSMain", "ps_5_0", &pPSBlob);
+            break;
         case SHADER_TYPE::POST_SHADOWMAP:                    // シャドウマップ
             hr = this->CompileShader(HLSL__ShadowMap_PATH.c_str(), "PSMain", "ps_5_0", &pPSBlob);
             break;    
@@ -945,6 +960,9 @@ bool ShaderManager::PixelShaderFactory(SHADER_TYPE type, ShaderInfo* out, SHADER
             break;       
         case SHADER_TYPE::POST_KAWASE_FILTER:
             this->LoadCSOFile(HLSL_CSO__KawaseFilter_PS_PATH.c_str(), &csoByteCode);
+            break;       
+        case SHADER_TYPE::POST_LENSFLARE_FILTER:
+            this->LoadCSOFile(HLSL_CSO__LensFlareFilter_PS_PATH.c_str(), &csoByteCode);
             break;       
         case SHADER_TYPE::POST_SHADOWMAP:
             this->LoadCSOFile(HLSL_CSO__ShadowMap_PATH.c_str(), &csoByteCode);

@@ -163,7 +163,7 @@ void MiniMapRader::UpdateRadarIcons(
         // ミニマップの位置にする
         int targetMapX = static_cast<int>(MINIMAP_X + rotX);
         int targetMapY = static_cast<int>(MINIMAP_Y - rotY);    // 前方の敵をミニマップの上の方に置きたいので、Y反転
-
+        
         // 位置をミニマップの円内に収める
         ClampToMinimap(targetMapX, targetMapY, static_cast<int>(MINIMAP_X), static_cast<int>(MINIMAP_Y), MINIMAP_RADIUS);
 
