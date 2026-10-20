@@ -56,6 +56,10 @@ public:
     void SetRestitution(float restitution);
     void SetFriction(float friction);
     void SetGravity(const VECTOR3::VEC3& gravity);
+    void SetAngularDamping(float ang);
+    void SetLinearDamping(float lin);
+    void SetLinearFactor(const VECTOR3::VEC3& fac);
+
 
     // 現在の物理状態を取得する。未登録時は数値0、ベクトル0、Static、falseを返す。
     bool IsInitialized() const;

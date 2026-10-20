@@ -41,6 +41,24 @@
             "scale"    : [1.0,  1.0, 1.0]
         },
         {
+            "assetID" : "Rock_01",
+            "position" : [-30.0, 0.0, 100.0],
+            "rotation" : [0.0,  0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        {
+            "assetID" : "Rock_01",
+            "position" : [-40.0, 0.0, 110.0],
+            "rotation" : [0.0, 0.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        {
+            "assetID" : "Rock_01",
+            "position" : [-50.0, 0.0, 70.0],
+            "rotation" : [0.0,  1.0, 0.0],
+            "scale"    : [1.0,  1.0, 1.0]
+        },
+        {
             "assetID" : "Building_01",
             "position" : [-120.0, 5.0, 50.0],
             "rotation" : [0.0,  0.0, 0.0],

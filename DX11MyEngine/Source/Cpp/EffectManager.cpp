@@ -87,6 +87,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/Spark.efkefc", "Spark");
     LoadEffect(u"Resource/Effect/Smoke.efkefc", "Smoke");
     LoadEffect(u"Resource/Effect/AntHit_01.efkefc", "AntHit_01");
+    LoadEffect(u"Resource/Effect/MecaHit_01.efkefc", "MecaHit_01");
     LoadEffect(u"Resource/Effect/AntDead_01.efkefc", "AntDead_01");
     LoadEffect(u"Resource/Effect/AntBloodSpatter_01.efkefc", "AntBloodSpatter_01");
     LoadEffect(u"Resource/Effect/Simple_Sprite_BillBoard.efkefc", "DeadExplosion");
@@ -101,6 +102,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/Explosion_Acid_01.efkefc", "Explosion_Acid_01");
     LoadEffect(u"Resource/Effect/Smoke_01.efkefc", "Smoke_01");
     LoadEffect(u"Resource/Effect/Smoke_02.efkefc", "Smoke_02");
+    LoadEffect(u"Resource/Effect/Smoke_03.efkefc", "Smoke_03");
     LoadEffect(u"Resource/Effect/Fragment_Smoke_01.efkefc", "Fragment_Smoke_01");
     LoadEffect(u"Resource/Effect/Fragment_Plasma_01.efkefc", "Fragment_Plasma_01");
     LoadEffect(u"Resource/Effect/Fragment_Acid_01.efkefc", "Fragment_Acid_01");

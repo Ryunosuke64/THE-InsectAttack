@@ -63,6 +63,8 @@ public:
 	void SetFriction(const PhysicsData::PhysicsBodyHandle& handle, float friction);
 	void SetGrivity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& gravity);
 	void SetAngularFactor(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& factor);
+	void SetLinearFactor(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& factor);
+	void SetDamping(const PhysicsData::PhysicsBodyHandle& handle, float lin, float ang);
 
 	// 初期設定のコピーではなく、Bulletが保持する現在値を返す。
 	// 無効なハンドルでは数値0、ベクトル0、Static、falseを返す。

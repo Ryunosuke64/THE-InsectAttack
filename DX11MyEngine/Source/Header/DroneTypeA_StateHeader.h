@@ -143,7 +143,7 @@ class DroneTypeA_AT_AttackState : public IState<class EnemyController>
 {
 private:
 	const float PREATTACK_STUN_TIME_MAX = 3.0f;		// UŒ‚‘O‚Ìd’¼Å‘åŠÔ
-	const float PREATTACK_STUN_TIME_MIN = 1.5f;		// UŒ‚‘O‚Ìd’¼Å¬ŠÔ 
+	const float PREATTACK_STUN_TIME_MIN = 2.5f;		// UŒ‚‘O‚Ìd’¼Å¬ŠÔ 
 	const float SOUND_RADIUS = 1000.0f;				// ”­Ë‰¹‚ª•·‚±‚¦‚é”ÍˆÍ
 	const float MOVE_SPEED = 0.0f;					// ˆÚ“®‘¬“x
 

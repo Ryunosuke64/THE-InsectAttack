@@ -89,12 +89,12 @@ int DroneTypeA_AT_AttackState::Update(class EnemyController* pOwner)
 			gunWeapon->Fire(*m_pRenderer);
 			//=========================================================================================
 			//
-			//						攻撃が終了したら、移動ステートへ
+			//						攻撃が終了したら、待機ステートへ
 			//
 			//=========================================================================================
 			if (gunWeapon->IsBurstFireEnd())
 			{
-				return DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_MOVE;
+				return DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_IDLE;
 			}
 		}
 	}

@@ -3,6 +3,8 @@
 #include "Component_RigidBody.h"
 #include "Component_MapObject.h"
 
+using namespace VECTOR3;
+
 //*---------------------------------------------------------------------------------------
 //*【?】開始
 //*
@@ -24,6 +26,7 @@ void PropDestructionBehavior::Start(
     auto rigidBody =
         object->get_Component<RigidBody>();
 
+
     if (rigidBody && mapObject)
     {
         // アセットデータの取り出し
@@ -38,8 +41,12 @@ void PropDestructionBehavior::Start(
 
         // 吹っ飛ばす
         rigidBody->AddImpulse(          
-            hitDir * IMPULSE_POWER);
+            hitDir * IMPULSE_POWER); 
     }
+
+    int effectHandle = Master::m_pEffectManager->PlayEffect("Smoke_03");
+    Master::m_pEffectManager->SetPositionEffect(effectHandle,hitPos);
+    Master::m_pEffectManager->SetScaleEffect(effectHandle, VEC3(10.0f));
 
     // 破壊開始
     m_IsDestructionStart = true;

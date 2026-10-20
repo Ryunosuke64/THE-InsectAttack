@@ -63,6 +63,11 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     model.LODModels[0] = { assetData.modelPath, 0.0f };
 
     generatedObject = MeshFactory::CreateModel(model);
+    if (!generatedObject)
+    {
+        assert(false);
+        return false;
+    }
 
     // 静的オブジェクト
     generatedObject->set_IsStatic(true);
@@ -237,11 +242,76 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
 {
     // 破片モデルの定義データを探す
     auto fragmentData = Master::m_pMapManager->FindBuildingFragmentDataSet(_assetID);
-    auto asssetData = Master::m_pMapManager->FindMapObjectAssetData(_assetID);
+    auto assetData = Master::m_pMapManager->FindMapObjectAssetData(_assetID);
 
+    auto sourceModel = 
+        Master::m_pResourceManager->LoadModel(assetData.modelPath.c_str());
+
+    if (!sourceModel)
+    {
+        assert(false);
+        return false;
+    }
+
+    const auto* sourceScene = sourceModel->get_Scene();
+    std::unordered_map<std::string, std::shared_ptr<Material>>materialByName;
+    for (const auto& mat : assetData.materials)
+    {
+        // 範囲、有効チェック
+        if (mat.Index < 0 ||
+            mat.Index >= sourceScene->mNumMaterials ||
+            !mat.pMaterialData)
+        {
+            return false;
+        }
+
+        aiString name;
+        // マテリアル名取り出し
+        if (sourceScene->mMaterials[mat.Index]->Get(AI_MATKEY_NAME, name) !=
+            aiReturn_SUCCESS)
+        {
+            return false;
+        }
+
+        if (!materialByName.emplace(name.C_Str(), mat.pMaterialData).second)
+        {
+            return false;
+        }
+    }
+
+    
     // データ定義配列回す
     for (const auto& data : fragmentData.fragmentDataArray)
     {
+        auto fragmentModel =
+            Master::m_pResourceManager->LoadModel(data.modelPath.c_str());
+        
+        if (!fragmentModel) {
+            return false;
+        }
+
+        const auto* fragmentScene = fragmentModel->get_Scene();
+        std::vector<SetupMaterialInfo>fragmentMaterials;
+
+        for (int slot = 0; slot < fragmentScene->mNumMaterials; slot++)
+        {
+            aiString name;
+            if (fragmentScene->mMaterials[slot]->Get(AI_MATKEY_NAME, name) !=
+                aiReturn_SUCCESS)
+            {
+                return false;
+            }
+
+            auto it = materialByName.find(name.C_Str());
+            if (it == materialByName.end())
+            {
+                return false;
+            }
+
+            fragmentMaterials.push_back({ it->second, slot });
+        }
+
+
         // 物理プリセットを探す
         MO_PhysicsData physicsData =
             Master::m_pMapManager->FindPhysicsDataPreset(data.physicsPresetID);
@@ -257,8 +327,8 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
         model.pRenderer = renderer;
         model.ObjTag = _assetID;
         model.IsAnim = false;
-        model.MatNum = asssetData.materials.size();
-        model.SetupMaterial = asssetData.materials.data();
+        model.MatNum = fragmentMaterials.size();
+        model.SetupMaterial = fragmentMaterials.data();
         model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
 
         // LOD

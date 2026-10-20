@@ -41,7 +41,7 @@ void DroneTypeA_AT_HitStunState::OnEnter(class EnemyController* pOwner)
 	// ****************************************************
 	//				 ヒットエフェクト
 	// ****************************************************
-	SpawnHitEffect("AntHit_01", pos, rot, 1.0f);
+	SpawnHitEffect("MecaHit_01", pos, rot, 1.0f);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -90,8 +90,8 @@ int DroneTypeA_AT_HitStunState::Update(class EnemyController* pOwner)
 		// ****************************************************
 		//				 ヒットエフェクト
 		// ****************************************************
-		VEC3 decalRot = VEC3(1.57f, Tool::RandRange(0.0f, 6.14f), 0.0f);
-		SpawnHitEffect("AntHit_01", pos, rot, 1.0f);
+		VEC3 effectRot = VEC3(1.57f, Tool::RandRange(0.0f, 6.14f), 0.0f);
+		SpawnHitEffect("MecaHit_01", pos, effectRot, 1.0f);
 	}
 
 

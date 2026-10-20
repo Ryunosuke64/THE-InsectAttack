@@ -56,13 +56,16 @@ void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 
 	// 少し上（Y軸）に向かせることで、綺麗な放物線を描いて吹き飛ばせる
 	knockbackDir.x = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
-	knockbackDir.y += 50.0f;
+	knockbackDir.y = 5000.0f;
 	knockbackDir.z = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
 
 	// 物理コンポーネントの設定
 	auto rigidBody = pOwner->get_RigidBodyComponent();
-	rigidBody->SetRestitution(0.7f);		// 吹っ飛んだ時に跳ねるように
+	rigidBody->SetRestitution(0.2f);		// 吹っ飛んだ時に跳ねるように
 	rigidBody->AddImpulse(knockbackDir);
+	rigidBody->SetMass(1.0f);
+	rigidBody->SetAngularDamping(0.3f);
+	rigidBody->SetLinearFactor(VEC3(0.3f, 0.3f, 0.3f));
 
 	VEC3 angularImpulse;
 	angularImpulse.x = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
@@ -141,7 +144,7 @@ int Ant_AT_DeadState::Update(class EnemyController* pOwner)
 			XMStoreFloat4(&ConvertToXMF, newRotQ);
 
 			// 回転設定
-			rigidBody->SetRotation(VEC4(ConvertToXMF.x, ConvertToXMF.y, ConvertToXMF.z, ConvertToXMF.w));
+			//rigidBody->SetRotation(VEC4(ConvertToXMF.x, ConvertToXMF.y, ConvertToXMF.z, ConvertToXMF.w));
 
 			//myTransform->set_RotationQuaternion(crntRotQ);
 

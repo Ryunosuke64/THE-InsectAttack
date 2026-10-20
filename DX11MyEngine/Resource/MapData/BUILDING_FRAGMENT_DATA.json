@@ -60,20 +60,6 @@
                     "position" : [-8.47344, 0.0, 61.8113],
                     "rotation" : [0.0, 0.0, 0.0],
                     "scale" : [1.0, 1.0, 1.0]
-                },
-                {
-                    "modelPath" : "Resource/Model/Building/02/Building_01_F_09.fbx",
-                    "physicsPresetID" : "Building_01_F",
-                    "position" : [-0.966241, 0.0, 63.0842],
-                    "rotation" : [0.0, 0.0, 0.0],
-                    "scale" : [1.0, 1.0, 1.0]
-                },
-                {
-                    "modelPath" : "Resource/Model/Building/02/Building_01_F_10.fbx",
-                    "physicsPresetID" : "Building_01_F",
-                    "position" : [-8.26655, 0.0, 64.8122],
-                    "rotation" : [0.0, 0.0, 0.0],
-                    "scale" : [1.0, 1.0, 1.0]
                 }
             ]
         },

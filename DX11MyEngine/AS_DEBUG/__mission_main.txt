@@ -16,22 +16,22 @@ Variables:
 
 
 - 37,5 -
-    0  14 *    CpyGtoV4 v1, 0x1f0be5d1750          (i:2133497550672, f:1.05409e-311)
+    0  14 *    CpyGtoV4 v1, 0x15ba67f9de0          (i:1493147033056, f:7.37713e-312)
     3  14 *    CMPIi    v1, 2
-    5  14 *    JP       +180              (d:187)
+    5  14 *    JP       +208              (d:215)
     7  14 *    CMPIi    v1, 0
-    9  14 *    JS       +176              (d:187)
+    9  14 *    JS       +204              (d:215)
    11  14 *    SUBIi    v2, v1, 0
    14  14 *    JMPP     v2
    15  14 *    JMP      +4              (d:21)
-   17  14 *    JMP      +76              (d:95)
-   19  14 *    JMP      +122              (d:143)
+   17  14 *    JMP      +104              (d:123)
+   19  14 *    JMP      +150              (d:171)
 - 60,5 -
             2:
    21  14 *    SUSPEND
    22  14 *    SetV1    v10, 0x1
    24  14 *    PshV4    v10
-   25  15 *    PshC4    0x44160000          (i:1142292480, f:600)
+   25  15 *    PshC4    0x43fa0000          (i:1140457472, f:500)
    27  16 *    PshC4    0x0          (i:0, f:0)
    29  17 *    PSF      v5
    30  19 *    CALLSYS  1, 142           (VEC3::VEC3(float))
@@ -55,122 +55,142 @@ Variables:
    53  14 *    PSF      v8
    54  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v8, 0
-   56  14 *    CpyVtoG4 v1, 0x1f0be5d1b70          (i:2133497551728, f:1.05409e-311)
-- 68,13 -
+   56  14 *    CpyVtoG4 v1, 0x15ba67fbc20          (i:1493147040800, f:7.37713e-312)
+- 69,5 -
    59  14 *    SUSPEND
    60  14 *    SetV1    v1, 0x1
    62  14 *    PshV4    v1
-   63  15 *    PshC4    0x43fa0000          (i:1140457472, f:500)
-   65  16 *    PshC4    0x1e          (i:30, f:4.2039e-44)
-   67  17 *    PshC4    0x40a00000          (i:1084227584, f:5)
+   63  15 *    PshC4    0x453b8000          (i:1161527296, f:3000)
+   65  16 *    PshC4    0x3          (i:3, f:4.2039e-45)
+   67  17 *    PshC4    0x42c80000          (i:1120403456, f:100)
    69  18 *    PshC4    0x0          (i:0, f:0)
-   71  19 *    PshC4    0x41a00000          (i:1101004800, f:20)
+   71  19 *    PshC4    0x43160000          (i:1125515264, f:150)
    73  20 *    PshC4    0x0          (i:0, f:0)
    75  21 *    PSF      v5
    76  23 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
                ObjInfo  v5, 1
    78  18 *    VAR      v5
-   79  20 *    PshC4    0x2          (i:2, f:2.8026e-45)
+   79  20 *    PshC4    0x1          (i:1, f:1.4013e-45)
    81  21 *    GETREF   1
    82  21 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
    84  14 *    PSF      v5
    85  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
-- 76,5 -
+- 79,5 -
                ObjInfo  v5, 0
    87  14 *    SUSPEND
-   88  14 *    LDG      0x1f0be5d1750          (i:2133497550672, f:1.05409e-311)
-   91  14 *    INCi
-- 77,9 -
-   92  14 *    SUSPEND
+   88  14 *    SetV1    v14, 0x1
+   90  14 *    PshV4    v14
+   91  15 *    PshC4    0x42c80000          (i:1120403456, f:100)
+   93  16 *    PshC4    0x64          (i:100, f:1.4013e-43)
+   95  17 *    PshC4    0x41a00000          (i:1101004800, f:20)
+   97  18 *    PshC4    0x0          (i:0, f:0)
+   99  19 *    PshC4    0x42480000          (i:1112014848, f:50)
+  101  20 *    PshC4    0x0          (i:0, f:0)
+  103  21 *    PSF      v8
+  104  23 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
+               ObjInfo  v8, 1
+  106  18 *    VAR      v8
+  107  20 *    PshC4    0x2          (i:2, f:2.8026e-45)
+  109  21 *    GETREF   1
+  110  21 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
+  112  14 *    PSF      v8
+  113  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
+- 87,5 -
+               ObjInfo  v8, 0
+  115  14 *    SUSPEND
+  116  14 *    LDG      0x15ba67f9de0          (i:1493147033056, f:7.37713e-312)
+  119  14 *    INCi
+- 88,9 -
+  120  14 *    SUSPEND
             {
             }
-   93  14 *    JMP      +93              (d:188)
-- 79,5 -
+  121  14 *    JMP      +93              (d:216)
+- 90,5 -
             3:
-   95  14 *    SUSPEND
-   96  14 *    PshG4    0x1f0be5d1b70          (i:2133497551728, f:1.05409e-311)
-   99  15 *    CALLSYS  1, 151           (bool IsEnemyDead(uint))
-  101  14 *    JLowZ    +37              (d:140)
-- 82,9 -
+  123  14 *    SUSPEND
+  124  14 *    PshG4    0x15ba67fbc20          (i:1493147040800, f:7.37713e-312)
+  127  15 *    CALLSYS  1, 151           (bool IsEnemyDead(uint))
+  129  14 *    JLowZ    +37              (d:168)
+- 93,9 -
             {
-  103  14 *    SUSPEND
-  104  14 *    SetV1    v14, 0x1
-  106  14 *    PshV4    v14
-  107  15 *    PshC4    0x428c0000          (i:1116471296, f:70)
-  109  16 *    PshC4    0x1f4          (i:500, f:7.00649e-43)
-  111  17 *    PshC4    0x43160000          (i:1125515264, f:150)
-  113  18 *    PshC4    0x0          (i:0, f:0)
-  115  19 *    PshC4    0x0          (i:0, f:0)
-  117  20 *    PshC4    0x0          (i:0, f:0)
-  119  21 *    PSF      v8
-  120  23 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
-               ObjInfo  v8, 1
-  122  18 *    VAR      v8
-  123  20 *    PshC4    0x0          (i:0, f:0)
-  125  21 *    GETREF   1
-  126  21 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
-  128  14 *    CpyRtoV4 v2
-  129  14 *    PSF      v8
-  130  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
-               ObjInfo  v8, 0
-  132  14 *    CpyVtoG4 v2, 0x1f0be5d1800          (i:2133497550848, f:1.05409e-311)
-- 90,9 -
-  135  14 *    SUSPEND
-  136  14 *    LDG      0x1f0be5d1750          (i:2133497550672, f:1.05409e-311)
-  139  14 *    INCi
-- 92,9 -
+  131  14 *    SUSPEND
+  132  14 *    SetV1    v13, 0x1
+  134  14 *    PshV4    v13
+  135  15 *    PshC4    0x428c0000          (i:1116471296, f:70)
+  137  16 *    PshC4    0x1f4          (i:500, f:7.00649e-43)
+  139  17 *    PshC4    0x43160000          (i:1125515264, f:150)
+  141  18 *    PshC4    0x0          (i:0, f:0)
+  143  19 *    PshC4    0x0          (i:0, f:0)
+  145  20 *    PshC4    0x0          (i:0, f:0)
+  147  21 *    PSF      v5
+  148  23 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
+               ObjInfo  v5, 1
+  150  18 *    VAR      v5
+  151  20 *    PshC4    0x0          (i:0, f:0)
+  153  21 *    GETREF   1
+  154  21 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
+  156  14 *    CpyRtoV4 v9
+  157  14 *    PSF      v5
+  158  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
+               ObjInfo  v5, 0
+  160  14 *    CpyVtoG4 v9, 0x15ba67f9ff0          (i:1493147033584, f:7.37713e-312)
+- 101,9 -
+  163  14 *    SUSPEND
+  164  14 *    LDG      0x15ba67f9de0          (i:1493147033056, f:7.37713e-312)
+  167  14 *    INCi
+- 103,9 -
             }
             7:
-  140  14 *    SUSPEND
+  168  14 *    SUSPEND
             {
             }
-  141  14 *    JMP      +45              (d:188)
-- 94,5 -
+  169  14 *    JMP      +45              (d:216)
+- 105,5 -
             4:
-  143  14 *    SUSPEND
-  144  14 *    CALLSYS  0, 154           (int GetAliveEnemyCount())
-  146  14 *    CpyRtoV4 v2
-  147  14 *    CMPIi    v2, 10
-  149  14 *    JNS      +33              (d:184)
-- 96,9 -
-            {
-  151  14 *    SUSPEND
-  152  14 *    SetV1    v13, 0x1
-  154  14 *    PshV4    v13
-  155  15 *    PshC4    0x43fa0000          (i:1140457472, f:500)
-  157  16 *    PshC4    0x3          (i:3, f:4.2039e-45)
-  159  17 *    PshC4    0x42c80000          (i:1120403456, f:100)
-  161  18 *    PshC4    0x0          (i:0, f:0)
-  163  19 *    PshC4    0x43160000          (i:1125515264, f:150)
-  165  20 *    PshC4    0x0          (i:0, f:0)
-  167  21 *    PSF      v5
-  168  23 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
-               ObjInfo  v5, 1
-  170  18 *    VAR      v5
-  171  20 *    PshC4    0x1          (i:1, f:1.4013e-45)
-  173  21 *    GETREF   1
-  174  21 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
-  176  14 *    PSF      v5
-  177  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
-- 105,9 -
-               ObjInfo  v5, 0
-  179  14 *    SUSPEND
-  180  14 *    LDG      0x1f0be5d1750          (i:2133497550672, f:1.05409e-311)
-  183  14 *    INCi
+  171  14 *    SUSPEND
+  172  14 *    CALLSYS  0, 154           (int GetAliveEnemyCount())
+  174  14 *    CpyRtoV4 v9
+  175  14 *    CMPIi    v9, 10
+  177  14 *    JNS      +33              (d:212)
 - 107,9 -
+            {
+  179  14 *    SUSPEND
+  180  14 *    SetV1    v11, 0x1
+  182  14 *    PshV4    v11
+  183  15 *    PshC4    0x43fa0000          (i:1140457472, f:500)
+  185  16 *    PshC4    0x3          (i:3, f:4.2039e-45)
+  187  17 *    PshC4    0x42c80000          (i:1120403456, f:100)
+  189  18 *    PshC4    0x0          (i:0, f:0)
+  191  19 *    PshC4    0x43160000          (i:1125515264, f:150)
+  193  20 *    PshC4    0x0          (i:0, f:0)
+  195  21 *    PSF      v8
+  196  23 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
+               ObjInfo  v8, 1
+  198  18 *    VAR      v8
+  199  20 *    PshC4    0x1          (i:1, f:1.4013e-45)
+  201  21 *    GETREF   1
+  202  21 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
+  204  14 *    PSF      v8
+  205  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
+- 116,9 -
+               ObjInfo  v8, 0
+  207  14 *    SUSPEND
+  208  14 *    LDG      0x15ba67f9de0          (i:1493147033056, f:7.37713e-312)
+  211  14 *    INCi
+- 118,9 -
             }
             8:
-  184  14 *    SUSPEND
+  212  14 *    SUSPEND
             {
             }
-  185  14 *    JMP      +1              (d:188)
-- 109,9 -
+  213  14 *    JMP      +1              (d:216)
+- 120,9 -
             5:
-  187  14 *    SUSPEND
-- 111,2 -
+  215  14 *    SUSPEND
+- 122,2 -
             {
             }
             1:
-  188  14 *    SUSPEND
+  216  14 *    SUSPEND
             0:
-  189  14 *    RET      0
+  217  14 *    RET      0

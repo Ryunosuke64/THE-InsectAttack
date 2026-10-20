@@ -2178,6 +2178,43 @@ void PhysicsEngine::SetAngularFactor(const PhysicsBodyHandle& handle, const VEC3
     body->setAngularVelocity(velocity);
     WakeForParameterChange(*body);
 }
+// 軸ごとの移動制限と、インスペクター等で参照する現在の物理状態。
+void PhysicsEngine::SetLinearFactor(const PhysicsBodyHandle& handle, const VEC3& factor)
+{
+    if (!IsValidRigidBody(handle) || !IsFiniteVector(factor) ||
+        factor.x < 0.0f || factor.x > 1.0f ||
+        factor.y < 0.0f || factor.y > 1.0f ||
+        factor.z < 0.0f || factor.z > 1.0f)
+    {
+        return;
+    }
+
+    auto* body = m_RigidBodies[handle.index].rigidBody;
+    body->setLinearFactor(btVector3(factor.x, factor.y, factor.z));
+
+    // 既に回転中でも、係数0にした軸はその場で止める。
+    btVector3 velocity = body->getAngularVelocity();
+    if (factor.x == 0.0f) velocity.setX(0.0f);
+    if (factor.y == 0.0f) velocity.setY(0.0f);
+    if (factor.z == 0.0f) velocity.setZ(0.0f);
+    body->setLinearVelocity(velocity);
+    WakeForParameterChange(*body);
+}
+
+// 減衰の設定
+void PhysicsEngine::SetDamping(const PhysicsData::PhysicsBodyHandle& handle, float lin, float ang)
+{
+    if (!IsValidRigidBody(handle) || 
+        !std::isfinite(ang) || ang < 0.0f || 
+        !std::isfinite(lin) || lin < 0.0f)
+    {
+        return;
+    }
+    auto body = m_RigidBodies[handle.index].rigidBody;
+
+    body->setDamping(btScalar(lin),btScalar(ang));
+    WakeForParameterChange(*body);
+}
 
 float PhysicsEngine::GetMass(const PhysicsBodyHandle& handle) const
 {

@@ -291,6 +291,7 @@ void RigidBody::SetMass(float mass)
     }
 
     m_pEngine->SetMass(m_Handle, mass);
+    m_Desc.mass = mass;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -304,6 +305,7 @@ void RigidBody::SetRestitution(float restitution)
     }
 
     m_pEngine->SetRestitution(m_Handle, restitution);
+    m_Desc.restitution = restitution;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -317,6 +319,7 @@ void RigidBody::SetFriction(float friction)
     }
 
     m_pEngine->SetFriction(m_Handle, friction);
+    m_Desc.friction = friction;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -330,8 +333,46 @@ void RigidBody::SetGravity(const VECTOR3::VEC3& gravity)
     }
 
     m_pEngine->SetGrivity(m_Handle, gravity);
+    m_Desc.gravity = gravity;
+}
+//*---------------------------------------------------------------------------------------
+//*y?z‰ñ“]Œ¸Š‚ÌÝ’è
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetAngularDamping(float ang)
+{
+    if (!IsInitialized())
+    {
+        return;
+    }
+    m_pEngine->SetDamping(m_Handle, m_Desc.linearDamping, ang);
+
+    m_Desc.angularDamping = ang;
+}
+//*---------------------------------------------------------------------------------------
+//*y?zˆÚ“®Œ¸Š‚ÌÝ’è
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetLinearDamping(float lin)
+{
+    if (!IsInitialized())
+    {
+        return;
+    }
+    m_pEngine->SetDamping(m_Handle, lin, m_Desc.angularDamping);
+    m_Desc.linearDamping = lin;
 }
 
+//*---------------------------------------------------------------------------------------
+//*y?zˆÚ“®§ŒÀ‚ÌÝ’è
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetLinearFactor(const VECTOR3::VEC3& fac)
+{
+    if (!IsInitialized())
+    {
+        return;
+    }
+    m_pEngine->SetLinearFactor(m_Handle, fac);
+    m_Desc.linearFactor = fac;
+}
 
 //*---------------------------------------------------------------------------------------
 //*y?zŽg—p‚·‚é‚©‚Ç‚¤‚©ƒtƒ‰ƒO‚ÌÝ’è
@@ -413,4 +454,5 @@ void RigidBody::SetAngularFactor(const VECTOR3::VEC3& factor)
     }
 
     m_pEngine->SetAngularFactor(m_Handle, factor);
+    m_Desc.angularFactor = factor;
 }

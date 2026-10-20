@@ -136,6 +136,41 @@
                     "surfaceType" : "SOIL"
                 }
             ]
+        },
+                {
+            "presetID" : "Rock_01",
+            "rigidBody" : 
+            {
+                "mass"              : 20.0,
+                "restitution"       : 0.3,
+                "friction"          : 0.5,
+                "gravityScale"      : 1.0,
+                "linearDamping"     : 0.3,
+                "angularDamping"    : 0.0,
+                "linearFactor"      : [1.0,1.0,1.0],
+                "angularFactor"     : [1.0,1.0,1.0]
+            },
+            "collisionCategory" : "PROP",
+            "collisionMask" :
+            [
+                "PLAYER",
+                "PLAYER_BULLET",
+                "ENEMY",
+                "ENEMY_BULLET",
+                "DESTRUCTION_BUILDING",
+                "ITEM"
+            ],
+            "colliders" : 
+            [
+                {
+                    "type" : "CONVEX_HULL",
+                    "height" : 0.0,
+                    "radius" : 0.0, 
+                    "center" : [0.0, 0.0, 0.0], 
+                    "size" : [0.0, 0.0, 0.0],
+                    "surfaceType" : "CONCRETE"
+                }
+            ]
         }
     ]
 }

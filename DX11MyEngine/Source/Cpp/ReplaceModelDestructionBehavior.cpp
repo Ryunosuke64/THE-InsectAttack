@@ -47,7 +47,10 @@ void ReplaceModelDestructionBehavior::Start(
         transformData.position = transform->get_VEC3ToPos();
         transformData.rotation = transform->get_VEC3ToRotateToRad();
         transformData.scale = transform->get_VEC3ToScale();
-        MapObjectFactory::CreateBuildingDebris(assetID, transformData);
+        if (!MapObjectFactory::CreateBuildingDebris(assetID, transformData))
+        {
+            assert(false);
+        }
     }
 
     // ”j‰óŠJŽn

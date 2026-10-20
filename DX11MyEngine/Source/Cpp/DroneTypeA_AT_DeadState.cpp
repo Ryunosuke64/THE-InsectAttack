@@ -178,6 +178,9 @@ void DroneTypeA_AT_DeadState::SpawnDeadEffect(class EnemyController* pOwner, flo
 	Master::m_pEffectManager->SetScaleEffect(handle, deadEffectScale, deadEffectScale, deadEffectScale);
 	Master::m_pEffectManager->SetPositionEffect(handle, pos.x, pos.y, pos.z);
 
+	int hit_handle = Master::m_pEffectManager->PlayEffect("MecaHit_01");
+	Master::m_pEffectManager->SetScaleEffect(hit_handle, 2.0f);
+	Master::m_pEffectManager->SetPositionEffect(hit_handle, pos.x, pos.y + 2.0f, pos.z);	// 位置が足元になってしまってるので、少し上に補正
 
 	//*****************************************************************************************
 	//						爆発時にパッと光らせる
