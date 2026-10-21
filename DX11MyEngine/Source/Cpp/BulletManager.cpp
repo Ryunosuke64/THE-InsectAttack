@@ -26,8 +26,8 @@ using namespace UtilityData;
 // 
 //////////////////////////////////////////////////////////////////////////////////////////
 // ビルボード弾 =====================================================================
-constexpr int NUM_DEFAULT__BILLBOARD_BULLET    = 100;
-constexpr int NUM_MAX__BILLBOARD_BULLET        = 300;
+constexpr int NUM_DEFAULT__BILLBOARD_BULLET    = 128;
+constexpr int NUM_MAX__BILLBOARD_BULLET        = 512;
 
 // 爆発弾 =====================================================================
 constexpr int NUM_DEFAULT__MODEL_BULLET = 100;

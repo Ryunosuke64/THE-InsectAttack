@@ -325,52 +325,52 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         distortion->Setup(*m_pRenderer);
     }
 
-    /* マザーシップの生成 */
-    {
-        // マテリアル取得
-        auto matPtr1 = Master::m_pResourceManager->FindMaterial("MotherShip");
+  //  /* マザーシップの生成 */
+  //  {
+  //      // マテリアル取得
+  //      auto matPtr1 = Master::m_pResourceManager->FindMaterial("MotherShip");
 
-        SetupMaterialInfo matInfo[1];
-        matInfo[0].Index = 0;
-        matInfo[0].pMaterialData = matPtr1;
+  //      SetupMaterialInfo matInfo[1];
+  //      matInfo[0].Index = 0;
+  //      matInfo[0].pMaterialData = matPtr1;
 
-        CreateModelInfo model;
-        model.pRenderer = m_pRenderer;
-        model.LODModels[0] = { "Resource/Model/Enemy/MotherShip/MotherShip2.fbx", 0.0f };
-        model.ObjTag = "MotherShip";
-        model.IsAnim = false;
-        model.MatNum = 1;
-        model.IsActive = true;
-        model.SetupMaterial = matInfo;
-        model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC;
-        VEC3 pos = VEC3(0.0f, 400.0f, 0.0f);
+  //      CreateModelInfo model;
+  //      model.pRenderer = m_pRenderer;
+  //      model.LODModels[0] = { "Resource/Model/Enemy/MotherShip/MotherShip2.fbx", 0.0f };
+  //      model.ObjTag = "MotherShip";
+  //      model.IsAnim = false;
+  //      model.MatNum = 1;
+  //      model.IsActive = true;
+  //      model.SetupMaterial = matInfo;
+  //      model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC;
+  //      VEC3 pos = VEC3(0.0f, 400.0f, 0.0f);
 
-        auto obj = MeshFactory::CreateModel(model);
-		obj->set_IsStatic(false);
-        obj->get_Component<MyTransform>()->set_Scale(1.0f, 1.0f, 1.0f);
-        obj->get_Component<MyTransform>()->set_Pos(pos);
-        obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+  //      auto obj = MeshFactory::CreateModel(model);
+		//obj->set_IsStatic(false);
+  //      obj->get_Component<MyTransform>()->set_Scale(1.0f, 1.0f, 1.0f);
+  //      obj->get_Component<MyTransform>()->set_Pos(pos);
+  //      obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
 
-        auto modelResource = obj->get_Component<ModelMeshResource>();
+  //      auto modelResource = obj->get_Component<ModelMeshResource>();
 
-        auto rb = obj->add_Component<RigidBody>();
-        auto collider = obj->add_Component<MeshCollider>();
-        collider->SetupModelData(modelResource->get_ModelData());
-        collider->set_IsStatic(false);
-        collider->set_IsConvex(false);
-        collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
-        collider->set_SurfaceType(SURFACE_TYPE::METAL);
+  //      auto rb = obj->add_Component<RigidBody>();
+  //      auto collider = obj->add_Component<MeshCollider>();
+  //      collider->SetupModelData(modelResource->get_ModelData());
+  //      collider->set_IsStatic(false);
+  //      collider->set_IsConvex(false);
+  //      collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
+  //      collider->set_SurfaceType(SURFACE_TYPE::METAL);
 
-        PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 1000.0f;
-        rbDesc.pos = pos;
-        rbDesc.restitution = 0.1f;
-        rbDesc.owner = obj;         // オーナーオブジェクトの設定
-        rbDesc.collider = collider; // コライダーの設定
-        rbDesc.gravity = VEC3(0.0f, 0.0f, 0.0f);
+  //      PhysicsData::RigidBodyDesc rbDesc;
+  //      rbDesc.mass = 1000.0f;
+  //      rbDesc.pos = pos;
+  //      rbDesc.restitution = 0.1f;
+  //      rbDesc.owner = obj;         // オーナーオブジェクトの設定
+  //      rbDesc.collider = collider; // コライダーの設定
+  //      rbDesc.gravity = VEC3(0.0f, 0.0f, 0.0f);
 
-        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-    }
+  //      rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+  //  }
 
     Master::m_pMapManager->LoadPhysicsDataPreset("Resource/MapData/MAP_OBJECT_PHYSICS_PRESET.json");
     Master::m_pMapManager->LoadMapObjectAssetDataAll("Resource/MapData/MAP_OBJECT_ASSETS.json");

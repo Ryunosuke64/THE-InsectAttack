@@ -54,8 +54,8 @@ class DroneTypeA_AT_MoveState : public IState<class EnemyController>
 {
 private:
 	const float MOVE_TIME_MIN = 1.0f;				// 移動の最小時間
-	const float MOVE_TIME_MAX = 5.0f;				// 移動の最大時間
-	const float MOVE_RANGE = 600.0f;				// 移動範囲
+	const float MOVE_TIME_MAX = 3.0f;				// 移動の最大時間
+	const float MOVE_RANGE = 300.0f;				// 移動範囲
 	const float DIR_RAND_MAX = Tool::G_PI_4_F;		// 移動の方向 ランダム最大 
 	const float DIR_RAND_MIN = -Tool::G_PI_4_F;		// 移動の方向 ランダム最小 
 	const float MOVE_SPEED = 60.0f;					// 移動速度
@@ -83,7 +83,7 @@ public:
 class DroneTypeA_AT_TrackingState : public IState<class EnemyController>
 {
 private:
-	const float TRACKING_TIME_MAX = 10.0f;			// 追跡の最大時間
+	const float TRACKING_TIME_MAX = 6.0f;			// 追跡の最大時間
 	const float TRACKING_TIME_MIN = 3.0f;			// 追跡の最小時間
 	const float ATTACK_POSSIBLE_RANGE_MAX = 300.0f;	// 攻撃可能最大距離
 	const float ATTACK_POSSIBLE_RANGE_MIN = 5.0f;	// 攻撃可能最小距離

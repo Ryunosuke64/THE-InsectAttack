@@ -70,7 +70,7 @@ int DroneTypeA_AT_AttackState::Update(class EnemyController* pOwner)
 		MoveParam movePram;
 		movePram._moveSpeed = pOwner->get_MoveSpeed();
 		movePram._maxSpeed = pOwner->get_MoveSpeed();
-		movePram._turnSpeed = 0.1f;
+		movePram._turnSpeed = 0.5f;
 		movePram._targetPos = targetPos;
 		movePram._isPhysicsMove = true;
 		auto move = pOwner->get_MoveLogicComponent();

@@ -69,6 +69,8 @@ private:
 	bool m_IsGrounded;				// 接地しているか
 	bool m_IsOnDamage;				// ダメージフラグ
 
+	int m_WeaponID;					// 使用する武器ID
+
 	SoundID m_AlwaysSoundID;		// 常時発しているサウンドのID
 	SoundHandle m_AlwaysSoundHandle;
 	EnemyData::EnemyID m_MyID;					// 自分自身のID
@@ -149,6 +151,9 @@ public:
 	/* 常時再生される音声の設定 */
 	void set_AlwaysSoundID(const std::string& _soundKey);
 
+	/* 武器ID */
+	void set_WeaponID(int _id) { m_WeaponID = _id; }
+	int get_WeaponID()const { return m_WeaponID; }
 
 	/* エネミーIDの設定
 	* ※グループでない場合は、**EnemyGroupID** は-1に設定してね

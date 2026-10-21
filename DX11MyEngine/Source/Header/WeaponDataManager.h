@@ -3,7 +3,13 @@
 #include "ConstantBulletData.h"
 #include "ConstantUtilityData.h"
 
+/// <summary>
+/// •ŠíID
+/// </summary>
+struct WeaponID
+{
 
+};
 
 // ---------------------------------------------------------------------------------------
 /* --- @:WeaponDataManager Class --- */

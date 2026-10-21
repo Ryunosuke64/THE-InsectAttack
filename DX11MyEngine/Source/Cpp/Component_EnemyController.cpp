@@ -52,7 +52,8 @@ EnemyController::EnemyController(std::weak_ptr<GameObject> pOwner, int updateRan
 	m_AnimSpeed(1.25f),
 	m_MyGroupID(-1),
 	m_MyID(-1),
-	m_StaggerInfo()
+	m_StaggerInfo(),
+	m_WeaponID(-1)
 {
     this->set_Tag("EnemyController");
 }

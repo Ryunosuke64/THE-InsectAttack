@@ -389,9 +389,9 @@ namespace BulletBehaviour
         //*****************************************************************************************
         //						ヒットサウンド再生
         //*****************************************************************************************
-        Master::m_pSoundManager->Play_RandPitch_3D(
-            "weapon.ricochet_01",
-            hitPoint, 40, 300);
+        //Master::m_pSoundManager->Play_RandPitch_3D(
+        //    "weapon.ricochet_01",
+        //    hitPoint, 40, 300);
 
         return result;
     }

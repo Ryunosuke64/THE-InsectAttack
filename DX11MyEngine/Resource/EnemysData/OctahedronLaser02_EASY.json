@@ -10,18 +10,18 @@
   "accuracy": 0.001,
   "zoomLength": 1.0,
   "isLaserSight": true,
-  "shotSoundRadius": 1000.0,
+  "shotSoundRadius": 10.0,
   "soundID": "enemy.octahedron.shot_02",
   "muzzleFlashEffectTag" : "MuzzleEffect_Laser_01",
-  "muzzleFlashEffectScale" :  [10.0, 10.0, 10.0],
+  "muzzleFlashEffectScale" :  [15.0, 15.0, 15.0],
   "bulletType": "LASER",
   "bulletParam": 
   {
     "common" :  
     {
       "aliveFrame" : 40,
-      "speed": 1000.0,
-      "maxSpeed": 1000.0,
+      "speed": 500.0,
+      "maxSpeed": 500.0,
       "damage": 3.0,
       "acceleration": 0.0,
       "penetrationsCount": 0,

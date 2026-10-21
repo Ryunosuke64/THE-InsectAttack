@@ -121,7 +121,7 @@ void DamageTextManager::Draw()
 		Master::m_pDirectWriteManager->DrawString(
 			damageTextStr,
 			textPos,
-			"White_20_STD",
+			"White_15_STD",
 			D2D1_DRAW_TEXT_OPTIONS_NONE,
 			false
 		);
