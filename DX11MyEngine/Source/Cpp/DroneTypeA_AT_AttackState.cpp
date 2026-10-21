@@ -48,7 +48,7 @@ int DroneTypeA_AT_AttackState::Update(class EnemyController* pOwner)
 	auto target = pOwner->get_Target();	// 目標オブジェクト
 	if (target == nullptr || pOwner->get_OwnerObj().expired())
 	{
-		MessageBoxA(NULL, "ターゲットがいません", "Ant_PT_MoveState", MB_OK);
+		MessageBoxA(NULL, "ターゲットがいません", "DroneTypeA_AT_AttackState", MB_OK);
 		assert(false);
 	}
 	else

@@ -178,8 +178,9 @@ void DroneTypeA_AT_DeadState::SpawnDeadEffect(class EnemyController* pOwner, flo
 	Master::m_pEffectManager->SetScaleEffect(handle, deadEffectScale, deadEffectScale, deadEffectScale);
 	Master::m_pEffectManager->SetPositionEffect(handle, pos.x, pos.y, pos.z);
 
+	// ヒットエフェクトの破片も再生する
 	int hit_handle = Master::m_pEffectManager->PlayEffect("MecaHit_01");
-	Master::m_pEffectManager->SetScaleEffect(hit_handle, 2.0f);
+	Master::m_pEffectManager->SetScaleEffect(hit_handle, 2.5f);
 	Master::m_pEffectManager->SetPositionEffect(hit_handle, pos.x, pos.y + 2.0f, pos.z);	// 位置が足元になってしまってるので、少し上に補正
 
 	//*****************************************************************************************
@@ -187,7 +188,7 @@ void DroneTypeA_AT_DeadState::SpawnDeadEffect(class EnemyController* pOwner, flo
 	//*****************************************************************************************
 	TransientPointLightDesc desc;
 	desc._color = VEC3(0.8f, 0.4f, 0.1f);
-	desc._startRange = _effectSize * 50.0f;
+	desc._startRange = _effectSize * 80.0f;
 	desc._endRange = 0.0f;
 	desc._startIntensity = 8.0f;
 	desc._endIntensity = 0.0f;

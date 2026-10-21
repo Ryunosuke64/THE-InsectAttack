@@ -61,6 +61,19 @@
             "isGrabbable" : false,
             "isDestruction" : true,
             "health" : 600.0
+        },
+        {
+            "assetID" : "Robot",
+            "physicsPresetID" : "BuildingTW_01",
+            "modelPath" : "Resource/Model/Robo/Robot.fbx",
+            "mapObjectType" : "BUILDING",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Rock_01"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 100.0
         }
     ]
 }
