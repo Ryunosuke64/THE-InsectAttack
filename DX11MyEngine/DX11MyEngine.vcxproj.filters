@@ -367,6 +367,12 @@
     <Filter Include="ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Patrol">
       <UniqueIdentifier>{c718c40a-0dfe-4f4a-851e-23a1415e4cc7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Vehicle">
+      <UniqueIdentifier>{6034a1b4-24a3-4530-a685-c2d2008bce8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Vehicle\State_Durga">
+      <UniqueIdentifier>{f600cfc9-08ed-42d8-bc54-2318864ac6fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Cpp\SHADER.cpp">
@@ -1011,6 +1017,12 @@
     <ClCompile Include="Source\Cpp\DroneTypeA_AT_HitStunState.cpp.cpp">
       <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_Vehicle.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_Idle.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1612,6 +1624,15 @@
     </ClInclude>
     <ClInclude Include="Source\Header\DroneTypeA_StateHeader.h">
       <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_Vehicle.h">
+      <Filter>ソース ファイル\Game\Component\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\V_Durga_StateHeader.h">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\ConstantVehicleData.h">
+      <Filter>ソース ファイル\Constant</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

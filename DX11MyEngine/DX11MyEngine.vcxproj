@@ -202,6 +202,8 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\Component_CylinderCollider.h" />
     <ClInclude Include="Source\Header\Component_Destructible.h" />
     <ClInclude Include="Source\Header\Component_MapObject.h" />
+    <ClInclude Include="Source\Header\Component_Vehicle.h" />
+    <ClInclude Include="Source\Header\ConstantVehicleData.h" />
     <ClInclude Include="Source\Header\DebrisManager.h" />
     <ClInclude Include="Source\Header\DestructionBehavior_Header.h" />
     <ClInclude Include="Source\Header\DroneTypeA_StateHeader.h" />
@@ -390,6 +392,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\VertexBuffer.h" />
     <ClInclude Include="Source\Header\VertexShader.h" />
     <ClInclude Include="Source\Header\Component_WeaponController.h" />
+    <ClInclude Include="Source\Header\V_Durga_StateHeader.h" />
     <ClInclude Include="Source\Header\WeaponDataManager.h" />
     <ClInclude Include="Source\Header\WeaponStateFactory.h" />
     <ClInclude Include="Source\Header\Window.h" />
@@ -440,6 +443,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Component_CylinderCollider.cpp" />
     <ClCompile Include="Source\Cpp\Component_Destructible.cpp" />
     <ClCompile Include="Source\Cpp\Component_MapObject.cpp" />
+    <ClCompile Include="Source\Cpp\Component_Vehicle.cpp" />
     <ClCompile Include="Source\Cpp\DebrisManager.cpp" />
     <ClCompile Include="Source\Cpp\DestructionBehavior.cpp" />
     <ClCompile Include="Source\Cpp\DroneTypeA_AT_AttackState.cpp" />
@@ -742,6 +746,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\VertexBuffer.cpp" />
     <ClCompile Include="Source\Cpp\VertexShader.cpp" />
     <ClCompile Include="Source\Cpp\Component_WeaponController.cpp" />
+    <ClCompile Include="Source\Cpp\V_Durga_Idle.cpp" />
     <ClCompile Include="Source\Cpp\WeaponDataManager.cpp" />
     <ClCompile Include="Source\Cpp\WeaponStateFactory.cpp" />
     <ClCompile Include="Source\Cpp\WinMain.cpp">
