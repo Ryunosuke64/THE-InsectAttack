@@ -428,3 +428,10 @@ public:
     bool Init(RendererEngine &renderer) override;
     void OnEditorGUI(RendererEngine &renderer, class GameObject &pObj) override;
 };
+
+class DistortionEffectEditor : public EditorBase
+{
+public:
+    bool Init(RendererEngine& renderer) override;
+    void OnEditorGUI(RendererEngine& renderer, class GameObject& pObj) override;
+};

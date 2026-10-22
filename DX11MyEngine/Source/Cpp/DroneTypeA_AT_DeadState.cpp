@@ -106,10 +106,18 @@ int DroneTypeA_AT_DeadState::Update(class EnemyController* pOwner)
 			commonRes != OCTAHEDRON_STATE::OCTAHEDRON_STATE_ACTIVE_HIT_STUN) {
 			return commonRes;
 		}
-
-		float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 		auto myTransform = pOwner->get_TransformComponent();
 		VEC3 crntPos = myTransform->get_VEC3ToPos();					// 現在の座標
+		//
+		// ステート名
+		//
+		auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_DEAD);
+		Master::m_pDirectWriteManager->DrawString3D(stateName.data(), crntPos, "White_20_STD");
+
+
+
+
+		float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 		VEC3 crntRot = myTransform->get_VEC3ToLocal_RotateToRad();		// 現在のオイラー
 		XMVECTOR crntRotQ = myTransform->get_RotationQuaternion();		// 現在のクオータニオン
 		float timer = pOwner->get_StateTimer();

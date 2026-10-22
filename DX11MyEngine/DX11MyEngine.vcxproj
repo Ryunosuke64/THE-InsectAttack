@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Lib/Bullet/include/bullet;Source/Shader;Source/Lib/Imgui;Source/Lib/Imgui/backends;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source/Lib/magic_enum/include;Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Lib/Bullet/include/bullet;Source/Shader;Source/Lib/Imgui;Source/Lib/Imgui/backends;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -167,7 +167,7 @@ LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Lib/Bullet/include/bullet;Source/Lib/Imgui/backends;Source/Lib/Imgui;Source/Shader;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source/Lib/magic_enum/include;Source/Lib/angelscript/asbind20/include;Source/Lib/angelscript/add_on;../angelscript/sdk/angelscript/include;Source/Header;Source/Lib/DirectXTex;Source/Lib/Bullet/include/bullet;Source/Lib/Imgui/backends;Source/Lib/Imgui;Source/Shader;%(AdditionalIncludeDirectories);Source/Lib/Effekseer/Include/Effekseer;Source/Lib/Effekseer/Include/EffekseerRendererDX11;Source\Lib\nlohmann;Source\Lib</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>

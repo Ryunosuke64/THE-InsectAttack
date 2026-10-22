@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Component_EnemyController.h"
 #include "DroneTypeA_StateHeader.h"
+#include "Component_RigidBody.h"
+#include "Component_MoveLogic.h"
 #include "GameObject.h"
 
 using namespace VECTOR3;
@@ -17,11 +19,10 @@ using namespace EnemyData;
 void DroneTypeA_AT_IdleState::OnEnter(class EnemyController* pOwner)
 {
 	// 移動ベクトルは0
-	pOwner->set_MoveVelocity(VEC3());
+	pOwner->set_MoveSpeed(0.0f);
 	pOwner->set_IsAnim(false);
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
 	m_IdleDuration = Master::m_pRandomManager->GetFloatRandom(IDLE_MIN_TIME, IDLE_MAX_TIME);
-
 }
 
 //*---------------------------------------------------------------------------------------
@@ -57,6 +58,13 @@ int DroneTypeA_AT_IdleState::Update(class EnemyController* pOwner)
 		{
 			return commonRes;
 		}
+		auto myTransform = pOwner->get_TransformComponent();
+		VEC3 crntPos = myTransform->get_VEC3ToPos();					// 現在の座標
+		//
+		// ステート名
+		//
+		auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_IDLE);
+		Master::m_pDirectWriteManager->DrawString3D(stateName.data(), crntPos, "White_20_STD");
 
 		//=========================================================================================
 		//

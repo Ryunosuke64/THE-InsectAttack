@@ -17,6 +17,7 @@
 #include "Component_SphereCollider.h"
 #include "Component_TrailRenderer.h"
 #include "Component_LineRenderer.h"
+#include "Component_DistortionEffect.h"
 #include "Component_Physics.h"
 #include "Component_RigidBody.h"
 #include <limits>
@@ -1605,3 +1606,42 @@ void LineRendererEditor::OnEditorGUI(RendererEngine &renderer, GameObject &pObj)
     pComp->set_Emissive(emissive);
 }
 
+
+bool DistortionEffectEditor::Init(RendererEngine& renderer)
+{
+    return true;
+}
+
+void DistortionEffectEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
+{
+    auto pComp = pObj.get_Component<DistortionEffect>();
+    if (pComp == nullptr)
+    {
+        return;
+    }
+
+    if (Master::m_pDebugger->DG_TreeNode(U8ToChar(u8"ディストーション")))
+    {
+        float noiseSpeed = pComp->get_DistortionPower();
+        VEC2 distortionScale = pComp->get_DistortionScale();
+
+        Master::m_pDebugger->DG_Separator();
+        Master::m_pDebugger->DG_BulletText(U8ToChar(u8"ノイズ移動速度"));
+        Master::m_pDebugger->DG_SameLine();
+        if (Master::m_pDebugger->DG_DragFloat(
+            "##DistortionNoiseSpeed", 1, &noiseSpeed, 0.01f, -100.0f, 100.0f))
+        {
+            pComp->set_DistortionPower(noiseSpeed);
+        }
+
+        Master::m_pDebugger->DG_BulletText(U8ToChar(u8"歪みの強さ (XY)"));
+        Master::m_pDebugger->DG_SameLine();
+        if (Master::m_pDebugger->DG_DragVec2(
+            "##DistortionScale", &distortionScale, 0.01f, -100.0f, 100.0f))
+        {
+            pComp->set_DistortionScale(distortionScale);
+        }
+
+        Master::m_pDebugger->DG_TreePop();
+    }
+}

@@ -123,6 +123,7 @@ void MoveLogic::PhysicsMovement(const ResultMove& _param, const MyTransform& _tr
     velocity.z = _param._moveVelocity.z;
     rigidBody->SetLinearVelocity(velocity);
 
+
     DirectX::XMFLOAT4 rotation;
     DirectX::XMStoreFloat4(
         &rotation,
@@ -174,7 +175,6 @@ void MoveLogic::NormalMovement(const ResultMove& _param,  MyTransform& _transfor
 }
 
 
-
 //*---------------------------------------------------------------------------------------
 //*【?】パラメータのリセット
 //*
@@ -187,6 +187,7 @@ void MoveLogic::ParamReset()
     m_AccelerationSpeed = 0.0f;
     m_CrntMoveVelocity = VEC3();
     m_MoveParam = MoveParam();
+
 }
 
 

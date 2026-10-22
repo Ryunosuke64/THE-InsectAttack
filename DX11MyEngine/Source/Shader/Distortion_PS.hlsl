@@ -44,7 +44,7 @@ float4 PSMain(PS_IN input) : SV_TARGET
     // 0～1のノイズを -1～1 に変換して強度を調整
     float2 distortion = (noise.xy * 2.0f - 1.0f) * 0.01;
     
-    float2 distortedUV = screenUV + (distortion * cb_DistortionPower);
+    float2 distortedUV = screenUV + (distortion * cb_Distortion_UVScale);
     
     //float sceneDepth = SceneDepth.Sample(PointSampler, distortedUV).r; // 歪ませたUVでシーンの深度値を取得
     

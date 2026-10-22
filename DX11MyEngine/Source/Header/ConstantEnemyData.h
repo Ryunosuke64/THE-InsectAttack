@@ -59,7 +59,7 @@ namespace EnemyData
 		OCTAHEDRON_STATE_ACTIVE_HIT_STUN,		// 被弾
 		OCTAHEDRON_STATE_ACTIVE_DEAD,			// 死亡
 	};
-	
+
 	/// <summary>
 	/// ドローン タイプAのステート
 	/// </summary>

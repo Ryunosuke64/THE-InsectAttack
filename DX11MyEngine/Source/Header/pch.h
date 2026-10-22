@@ -75,6 +75,9 @@
 // json読み込み用
 #include <nlohmann/json.hpp>
 
+// Enum用の便利なやつ
+#include <magic_enum/magic_enum.hpp>
+
 // 標準ヘッダ
 #include <unordered_map>    // 連想配列用
 #include <typeindex>		// 型をキーに出来るようにするもの

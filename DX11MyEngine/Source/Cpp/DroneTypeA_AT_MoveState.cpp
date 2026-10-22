@@ -19,7 +19,8 @@ using namespace EnemyData;
 //*----------------------------------------------------------------------------------------
 void DroneTypeA_AT_MoveState::OnEnter(class EnemyController* pOwner)
 {
-	pOwner->set_MoveSpeed(MOVE_SPEED * Master::m_pDataManager->get_EnemyDifficultyFactor()._moveSpeedRate);
+	pOwner->set_MoveSpeed(
+		MOVE_SPEED * Master::m_pDataManager->get_EnemyDifficultyFactor()._moveSpeedRate);
 
 	// 直線移動
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::LINEAR);
@@ -55,7 +56,16 @@ int DroneTypeA_AT_MoveState::Update(class EnemyController* pOwner)
 	if (commonRes != -1)
 	{
 		return commonRes;
-	}
+	}	
+	
+	auto myTransform = pOwner->get_TransformComponent();
+	VEC3 myPos = myTransform->get_VEC3ToPos();	// 自分の位置
+
+	//
+	// ステート名
+	//
+	auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_MOVE);
+	Master::m_pDirectWriteManager->DrawString3D(stateName.data(), myPos, "White_20_STD");
 
 	//=========================================================================================
 	//
@@ -80,8 +90,7 @@ int DroneTypeA_AT_MoveState::Update(class EnemyController* pOwner)
 	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 
 	// オーナーオブジェクト
-	auto myTransform = pOwner->get_TransformComponent();
-	VEC3 myPos = myTransform->get_VEC3ToPos();	// 自分の位置
+
 	VEC3 startPos = pOwner->get_StartPos();
 
 	// 高さが低い場合は、上方向に移動する
@@ -94,7 +103,7 @@ int DroneTypeA_AT_MoveState::Update(class EnemyController* pOwner)
 	// 方向を変えて、移動させる
 	MoveParam movePram;
 	movePram._moveSpeed = pOwner->get_MoveSpeed();
-	movePram._turnSpeed = 0.3f;	// 急に振り向くと変なので、少し優しめに
+	movePram._turnSpeed = 0.1f;	// 急に振り向くと変なので、少し優しめに
 	movePram._moveDirection = m_MoveDir;
 	movePram._maxSpeed = pOwner->get_MoveSpeed();
 	movePram._isPhysicsMove = true;

@@ -16,7 +16,9 @@ using namespace VECTOR2;
 //* updateRank : 更新レイヤー
 //*----------------------------------------------------------------------------------------
 DistortionEffect::DistortionEffect(std::weak_ptr<GameObject> pOwner, int updateRank)
-   :IComponent(pOwner, updateRank)
+   :IComponent(pOwner, updateRank),
+    m_DistortionPower(0.8f),
+    m_DistortionScale(VEC2(1.0f,1.0f))
 {
     this->set_Tag("DistortionEffect");
 }
@@ -127,8 +129,9 @@ void DistortionEffect::Draw(RendererEngine& renderer)
 	static float time = 0.0f;
 	time += 0.01f;
 
-	m_CBDistortion.Power = 0.8f; // ディストーションの強さ
-	m_CBDistortion.Time = time;   // 時間を更新（アニメーションさせるためのもの）
+	m_CBDistortion.Power = m_DistortionPower;       // ディストーションの強さ
+    m_CBDistortion.UVScale = m_DistortionScale;
+	m_CBDistortion.Time = time;                     // 時間を更新（アニメーションさせるためのもの）
 
     // 定数バッファをセット ==========================
     Master::m_pShaderManager->BindConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM, (void*)&cbTransform, sizeof(CB_TRANSFORM));

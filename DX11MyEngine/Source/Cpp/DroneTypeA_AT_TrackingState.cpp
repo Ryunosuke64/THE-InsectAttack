@@ -65,6 +65,14 @@ int DroneTypeA_AT_TrackingState::Update(class EnemyController* pOwner)
 		{
 			return commonRes;
 		}
+		auto myTransform = pOwner->get_TransformComponent();
+		VEC3 myPos = myTransform->get_VEC3ToPos();			// 自分の位置
+
+		//
+		// ステート名
+		//
+		auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_TRACKING);
+		Master::m_pDirectWriteManager->DrawString3D(stateName.data(), myPos, "White_20_STD");
 
 		//=========================================================================================
 		//
@@ -89,11 +97,9 @@ int DroneTypeA_AT_TrackingState::Update(class EnemyController* pOwner)
 		}
 
 		auto targetTransform = targetObj->get_Transform().lock();
-		auto myTransform = pOwner->get_TransformComponent();
 
 		/* 追いかけ移動を行う */
 		VEC3 targetPos = targetTransform->get_VEC3ToPos();	// 目標位置
-		VEC3 myPos = myTransform->get_VEC3ToPos();			// 自分の位置
 		VEC3 targetDir = (targetPos - myPos).Normalize();	// 目標方向
 
 		// 高さが低い場合は、水平に追従する
@@ -106,7 +112,7 @@ int DroneTypeA_AT_TrackingState::Update(class EnemyController* pOwner)
 		MoveParam movePram;
 		movePram._moveSpeed = pOwner->get_MoveSpeed();
 		movePram._maxSpeed = pOwner->get_MoveSpeed();
-		movePram._turnSpeed = 0.1f;
+		movePram._turnSpeed = 0.5f;
 		movePram._targetPos = targetPos;
 		movePram._isPhysicsMove = true;
 		auto move = pOwner->get_MoveLogicComponent();

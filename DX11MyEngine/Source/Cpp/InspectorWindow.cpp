@@ -48,6 +48,7 @@ bool InspectorWindow::Init(RendererEngine &renderer)
     m_EditorMap["SphereCollider"]       = std::make_unique<SphereColliderEditor>();
     m_EditorMap["TrailRenderer"]        = std::make_unique<TrailRendererEditor>();
     m_EditorMap["LineRenderer"]         = std::make_unique<LineRendererEditor>();
+    m_EditorMap["DistortionEffect"]     = std::make_unique<DistortionEffectEditor>();
     m_EditorMap["ModelMeshRenderer"]    = std::make_unique<ModelMeshRendererEditor>();
 
     return true;
