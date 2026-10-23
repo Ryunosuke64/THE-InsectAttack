@@ -1,0 +1,71 @@
+{
+  "level": 0,
+  "name": "ART-26",
+  "bulletMaxNum": 120,
+  "bulletSimultaneousNum": 1,
+  "fireRate": 4.0,
+  "burstCount": 3,
+  "burstInterval": 0.06,
+  "reloadTime": 1.5,
+  "accuracy": 0.03,
+  "zoomLength": 1.0,
+  "isLaserSight": true,
+  "shotSoundRadius": 300.0,
+  "soundID": "weapon.gun_fire_04",
+  "muzzleFlashEffectTag" : "MuzzleEffect_01",
+  "muzzleFlashEffectScale" :  [0.6, 0.6, 0.6],
+  "bulletType": "NORMAL",
+  "bulletParam": 
+  {
+    "common" :  
+    {
+      "aliveFrame" : 52,
+      "speed": 228.0,
+      "maxSpeed": 228.0,
+      "damage": 35.0,
+      "acceleration": 0.0,
+      "penetrationsCount": 0,
+      "collisionSize": 0.0,
+      "gravityScale": 0.0,
+      "knockbackForce" : 8.0,
+      "bulletType" : "NORMAL",
+      "collisionCategory" : "PLAYER_BULLET",
+      "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
+    },
+    
+    "movement" :
+    {
+      "type" : "LINEAR"
+    },
+    
+    "hit" : 
+    {
+      "type" : "DIRECT",
+      "decalMaterialTag" : "Decal_BulletHole",
+      "hitEffectTag" : "BulletHit_Standard",
+      "environmentResponse" : "DEACTIVATE"
+    },
+
+    "visual" :  
+    {
+      "type" : "BILLBOARD",
+      "bulletMaterialTag" : "Bullet_01",
+      "trailDrawTime" : 0.01,
+      "trailWidth" : 0.1,
+      "enableFlightSmoke" : false,
+      "smokeInterval" : 0.0,              
+      "smokeSize" : 0.0,                     
+      "smokeEffectTag" : "",
+      "trailColor" : [3.5, 3.5, 3.5],
+      "scale" :  [0.05, 0.05, 0.05],
+
+      "custom" : 
+      {
+        "type" : "",
+        "startScale" : [0.0,0.0, 0.0],
+        "endScale" : [0.0, 0.0, 0.0],
+        "duration" : 0.0
+      }
+    }
+  }
+}

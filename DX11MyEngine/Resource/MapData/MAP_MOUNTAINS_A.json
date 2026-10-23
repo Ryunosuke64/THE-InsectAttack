@@ -103,7 +103,7 @@
             "scale"    : [1.0,  1.0, 1.0]
         },
         {
-            "assetID" : "Robot",
+            "assetID" : "Building_02",
             "position" : [100.0, 0.0, 50.0],
             "rotation" : [0.0,  0.0, 0.0],
             "scale"    : [1.0,  1.0, 1.0]

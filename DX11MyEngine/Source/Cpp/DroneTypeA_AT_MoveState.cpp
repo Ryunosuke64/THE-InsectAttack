@@ -10,6 +10,7 @@ using namespace VECTOR3;
 using namespace VECTOR2;
 using namespace UtilityData;
 using namespace EnemyData;
+using namespace PhysicsData;
 
 //*---------------------------------------------------------------------------------------
 //* @:DroneTypeA_AT_MoveState Class 
@@ -27,6 +28,15 @@ void DroneTypeA_AT_MoveState::OnEnter(class EnemyController* pOwner)
 
 	// 移動時間
 	m_MoveDuration = Master::m_pRandomManager->GetFloatRandom(MOVE_TIME_MIN, MOVE_TIME_MAX);
+
+	// イージングをかける
+	auto move = pOwner->get_MoveLogicComponent();
+	move->set_LinearVelocityControl(true);
+	move->StartSpeedEasing(
+		0.0f,
+		1.0f,
+		m_MoveDuration,
+		Tool::Easing::EASE_TYPE::IN_SIN);
 
 	// 移動方向
 	m_MoveDir = Master::m_pRandomManager->GetVEC3Random(DIR_RAND_MIN, DIR_RAND_MAX);
@@ -56,7 +66,7 @@ int DroneTypeA_AT_MoveState::Update(class EnemyController* pOwner)
 	if (commonRes != -1)
 	{
 		return commonRes;
-	}	
+	}
 	
 	auto myTransform = pOwner->get_TransformComponent();
 	VEC3 myPos = myTransform->get_VEC3ToPos();	// 自分の位置
@@ -96,16 +106,45 @@ int DroneTypeA_AT_MoveState::Update(class EnemyController* pOwner)
 	// 高さが低い場合は、上方向に移動する
 	if (myPos.y < 10.0f)
 	{
-		m_MoveDir.y = 0.5f;
+		m_MoveDir.y = 0.2f;
+	}
+
+
+	/* 下方に壁があれば、反射させる */
+	// 下方トレース
+	VEC3 myDownward = VEC3(0.0f, -1.0f, 0.0f);
+	unsigned int collisionMask = UINT_CAST(COLLISION_CATEGORY::BUILDING) | UINT_CAST(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
+	CollisionInfo hitInfo;
+	CollInData_Ray downTraceRay;
+	downTraceRay._point = myPos;
+	downTraceRay._dir = myDownward * 5.0f;
+	unsigned int group = UINT_CAST(COLLISION_CATEGORY::ENEMY);
+
+	if (Master::m_pPhysicsEngine->Raycast(downTraceRay, group, collisionMask, &hitInfo))
+	{
+		VEC3 hitNorm = hitInfo.hitNormal;	// 衝突した面の法線
+
+		if (hitNorm.LengthSq() > 0.0001f)
+		{
+			hitNorm = hitNorm.Normalize();
+
+			// m_MoveDir が壁に向かっている時のみ反射させる
+			if (VEC3::Dot(m_MoveDir, hitNorm) < 0.0f) 
+			{
+				m_MoveDir = VEC3::Reflect(m_MoveDir, hitNorm);	// 反射
+				m_MoveDir = m_MoveDir.Normalize();
+			}
+		}
 	}
 
 	/* 親の移動コンポーネントを使い、移動処理を行う */
 	// 方向を変えて、移動させる
 	MoveParam movePram;
 	movePram._moveSpeed = pOwner->get_MoveSpeed();
+	movePram._maxSpeed = pOwner->get_MoveSpeed();
 	movePram._turnSpeed = 0.1f;	// 急に振り向くと変なので、少し優しめに
 	movePram._moveDirection = m_MoveDir;
-	movePram._maxSpeed = pOwner->get_MoveSpeed();
+	movePram._movementMode = MoveParam::MOVEMENT_MODE::FLY;
 	movePram._isPhysicsMove = true;
 	auto move = pOwner->get_MoveLogicComponent();
 	move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す

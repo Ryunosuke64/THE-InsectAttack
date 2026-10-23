@@ -60,6 +60,7 @@ void DroneTypeA_AT_DeadState::OnEnter(class EnemyController* pOwner)
 	auto rigidBody = pOwner->get_RigidBodyComponent();
 	rigidBody->SetGravity(VEC3(0.0f, -9.8f, 0.0f));
 	rigidBody->SetRestitution(0.5f);
+	rigidBody->SetLinearDamping(0.0f);
 	rigidBody->AddImpulse(knockbackDir);
 
 	VEC3 angularImpulse;

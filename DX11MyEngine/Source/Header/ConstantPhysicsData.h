@@ -127,15 +127,15 @@ namespace PhysicsData
 		std::vector<VERTEX::CollisionVertex> vertexPositions;
 	};
 
-	// GImpactメッシュ
-	struct GImpactShapeDesc
+	// BVH三角形フルメッシュ
+	struct BvhTriangleShapeDesc
 	{
 		std::vector<VERTEX::CollisionVertex> vertexPositions;
 		std::vector<uint32_t>indices;
 	};
 
-	// BVH三角形フルメッシュ
-	struct BvhTriangleShapeDesc
+	// GImpactメッシュ
+	struct GImpactShapeDesc
 	{
 		std::vector<VERTEX::CollisionVertex> vertexPositions;
 		std::vector<uint32_t>indices;
@@ -160,6 +160,17 @@ namespace PhysicsData
 		BvhTriangleShapeDesc,
 		GImpactShapeDesc
 	>;
+
+	/// <summary>
+	/// ボーンの衝突判定用データ
+	/// </summary>
+	struct BoneColliderData
+	{
+		int boneIndex = -1;
+
+		PhysicsShapeDesc shape;
+		btTransform localOffset;
+	};
 
 
 	enum class BodyType

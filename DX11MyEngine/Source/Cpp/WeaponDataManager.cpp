@@ -651,6 +651,7 @@ bool WeaponDataManager::ExtractionVisualData(const nlohmann::json& _json, Bullet
     _outData._commonVisualData._smokeInterval     = _json.value("smokeInterval", 0.05f);      // 飛行煙の間隔
     _outData._commonVisualData._smokeSize         = _json.value("smokeSize", 0.0f);           // 飛行煙のサイズ
     _outData._commonVisualData._smokeEffectTag    = _json.value("smokeEffectTag", "");        // 煙エフェクトのタグ
+    LoadVEC4Data(_json, "smokeColor", _outData._commonVisualData._smokeColor);                // トレイルカラー
     LoadVEC4Data(_json, "effectColor", _outData._commonVisualData._effectColor);              // エフェクトカラー
     LoadVEC3Data(_json, "trailColor", _outData._commonVisualData._trailColor);                // トレイルカラー
     LoadVEC3Data(_json, "scale", _outData._commonVisualData._scale);                          // 弾の大きさ

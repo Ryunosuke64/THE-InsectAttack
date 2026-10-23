@@ -6,6 +6,7 @@
 #include "Component_BoxCollider.h"
 #include "Component_DecalRenderer.h"
 #include "Component_TimerDestruction.h"
+#include "Component_MoveLogic.h"
 #include "RendererEngine.h"
 #include "MeshFactory.h"
 
@@ -32,6 +33,11 @@ void DroneTypeA_AT_HitStunState::OnEnter(class EnemyController* pOwner)
 	// ˆÚ“®ƒxƒNƒgƒ‹‚Í0
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
 
+
+	auto move = pOwner->get_MoveLogicComponent();
+	move->set_LinearVelocityControl(false);
+	move->ClearSpeedEasing();
+	
 	// ****************************************************
 	//				 ”í’e‰¹Ä¶
 	// ****************************************************

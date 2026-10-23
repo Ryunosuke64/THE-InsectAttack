@@ -21,8 +21,15 @@ void DroneTypeA_AT_IdleState::OnEnter(class EnemyController* pOwner)
 	// 移動ベクトルは0
 	pOwner->set_MoveSpeed(0.0f);
 	pOwner->set_IsAnim(false);
-	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
+	//pOwner->get_RigidBodyComponent()->ResetPhysics();
 	m_IdleDuration = Master::m_pRandomManager->GetFloatRandom(IDLE_MIN_TIME, IDLE_MAX_TIME);
+
+	// 速度制御をなくす
+	auto move = pOwner->get_MoveLogicComponent();
+	move->set_LinearVelocityControl(false);
+	move->ClearSpeedEasing();
+	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
+
 }
 
 //*---------------------------------------------------------------------------------------
@@ -65,6 +72,17 @@ int DroneTypeA_AT_IdleState::Update(class EnemyController* pOwner)
 		//
 		auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_IDLE);
 		Master::m_pDirectWriteManager->DrawString3D(stateName.data(), crntPos, "White_20_STD");
+
+		MoveParam movePram;
+		movePram._moveSpeed = pOwner->get_MoveSpeed();
+		movePram._maxSpeed = pOwner->get_MoveSpeed();
+		movePram._turnSpeed = 0.1f;	// 急に振り向くと変なので、少し優しめに
+		movePram._moveDirection = myTransform->get_Forward();
+		movePram._movementMode = MoveParam::MOVEMENT_MODE::FLY;
+		movePram._isPhysicsMove = true;
+		auto move = pOwner->get_MoveLogicComponent();
+		move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す
+
 
 		//=========================================================================================
 		//

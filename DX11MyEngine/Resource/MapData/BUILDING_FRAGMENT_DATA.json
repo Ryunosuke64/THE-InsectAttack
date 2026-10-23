@@ -64,6 +64,75 @@
             ]
         },
         {
+            "assetID" : "Building_02",
+            "fragments" : 
+            [
+                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_01.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_02.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_03.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_04.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_05.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_06.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_07.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_08.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                },
+                                {
+                    "modelPath" : "Resource/Model/Building/04/Building_04_F_09.fbx",
+                    "physicsPresetID" : "Building_01_F",
+                    "position" : [0.0, 0.0, 0.0],
+                    "rotation" : [0.0, 0.0, 0.0],
+                    "scale" : [1.0, 1.0, 1.0]
+                }
+            ]
+        },
+        {
             "assetID" : "BuildingTW_01",
             "fragments" : 
             [

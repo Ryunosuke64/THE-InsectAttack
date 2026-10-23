@@ -31,7 +31,7 @@ void mission_setup()
         VEC3(0.0f,50.0,0.0), 
         20.0f,
         1,
-        100.0f,
+        10000.0f,
         true
     );
 }
@@ -48,31 +48,31 @@ void mission_main()
         //
         //************************************************************************
     case 0:
-    // 八面体 
-    enemyID = SpawnEnemy(
-        ENEMY_TYPE::OCTAHEDRON,
-        VEC3(-200.0f,150.0f,0.0f),
-        VEC3(0.0f),
-        3000.0f,
-        true
-    );
+    // // 八面体 
+    // enemyID = SpawnEnemy(
+    //     ENEMY_TYPE::OCTAHEDRON,
+    //     VEC3(-200.0f,150.0f,0.0f),
+    //     VEC3(0.0f),
+    //     3000.0f,
+    //     true
+    // );
 
-    // 八面体グループ
-    SpawnEnemyGroup(
-        ENEMY_TYPE::OCTAHEDRON,
-        VEC3(0.0f,150.0,0.0), 
-        100.0f,
-        3,
-        3000.0f,
-        true
-    );
+    // // 八面体グループ
+    // SpawnEnemyGroup(
+    //     ENEMY_TYPE::OCTAHEDRON,
+    //     VEC3(0.0f,150.0,0.0), 
+    //     100.0f,
+    //     3,
+    //     3000.0f,
+    //     true
+    // );
 
     // ドローン タイプA
     SpawnEnemyGroup(
         ENEMY_TYPE::DRONE_TYPE_A,
-        VEC3(0.0f,50.0,0.0), 
-        20.0f,
-        3,
+        VEC3(0.0f,250.0,0.0), 
+        50.0f,
+        2,
         100.0f,
         true
     );

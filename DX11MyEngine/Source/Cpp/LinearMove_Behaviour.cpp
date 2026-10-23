@@ -47,6 +47,7 @@ ResultMove LinearMove_Behaviour::MoveCalculate(float _deltaTime, const MoveParam
 	XMVECTOR newRotQ = XMQuaternionSlerp(crntRotQ, targetRotQ, _param._turnSpeed);
 
 	float speed = _param._moveSpeed + _param._acceleration;
+
 	if (speed >= _param._maxSpeed)
 	{
 		speed = _param._maxSpeed;

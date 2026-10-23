@@ -24,6 +24,14 @@ private:
 	float m_AccelerationSpeed;
     MoveParam m_MoveParam;                      // 移動パラメータ
     bool m_IsGrounded;                          // 接地しているか
+    bool m_ControlLinearVelocity = true;        // 速度を制御するか
+
+    bool m_IsSpeedEaseEnable;       // イージングを使用するか
+    float m_SpeedEaseDuration;      // イージング時間
+    float m_SpeedEaseElapsed;       // 経過時間
+    float m_SpeedEaseFrom;          // 
+    float m_SpeedEaseTo;            // 
+    Tool::Easing::EASE_TYPE m_SpeedEaseType;
 
 public:
     MoveLogic(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
@@ -32,10 +40,19 @@ public:
     void Start(RendererEngine &renderer) override;		// 初期化
     void Update(RendererEngine &renderer) override;		// 更新
 	void set_MoveParam(const MoveParam& _param) { m_MoveParam = _param; }	// 移動パラメータの設定
-
+    void set_LinearVelocityControl(bool enabled) { m_ControlLinearVelocity = enabled; }
     void PhysicsMovement(const ResultMove& _param, const MyTransform& _transform, float deltaTime);
     void NormalMovement(const ResultMove& _param,  MyTransform& _transform, float deltaTime);
 
+    // イージングを開始する
+    void StartSpeedEasing(
+        float _fromRate,
+        float _toRate,
+        float _duration,
+        Tool::Easing::EASE_TYPE _type);
+
+    // イージングのクリア
+    void ClearSpeedEasing();
 
     /// <summary>
     /// パラメータのリセット
@@ -56,5 +73,8 @@ public:
 
 private:
     void Calculate(const struct MoveParam& _param);		    // 移動処理
+
+    // イージング処理の更新
+    float UpdateSpeedEasing(float _deltaTime);
 };
 

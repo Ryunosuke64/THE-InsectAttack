@@ -1023,6 +1023,9 @@
     <ClCompile Include="Source\Cpp\V_Durga_Idle.cpp">
       <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_BoneCollider.cpp">
+      <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1633,6 +1636,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\ConstantVehicleData.h">
       <Filter>ソース ファイル\Constant</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_BoneCollider.h">
+      <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

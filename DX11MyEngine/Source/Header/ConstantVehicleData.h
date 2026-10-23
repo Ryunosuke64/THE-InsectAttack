@@ -16,6 +16,6 @@ namespace VehicleData
 		DURGA_V_STATE_THROW,	// “Š‚°‚é
 		DURGA_V_STATE_DOWN,		// “|‚ê‚é
 		DURGA_V_STATE_GETUP,	// —§‚¿ã‚ª‚é
-		DURGA_V_STATE_DEATH,	// Ž€
+		DURGA_V_STATE_DEAD,		// Ž€
 	};
 };

@@ -1,0 +1,74 @@
+{
+  "level": 0,
+  "name": "グレネードランチャーHK1",
+  "bulletMaxNum": 1,
+  "bulletSimultaneousNum": 30,
+  "fireRate": 2.0,  
+  "reloadTime": 2.2,
+  "accuracy": 0.1,
+  "zoomLength": 1.0,
+  "isLaserSight": false,
+  "shotSoundRadius": 300.0,
+  "soundID": "weapon.gun_fire_02",
+  "muzzleFlashEffectTag" : "MuzzleEffect_Rocket_01",
+  "muzzleFlashEffectScale" : [2.0, 2.0, 2.0],
+  "bulletType": "EXPLOSION",
+  "bulletParam": 
+  {
+    "common" :  
+    {
+      "aliveFrame" : 900,
+      "speed": 80.0,
+      "maxSpeed": 1000.0,
+      "damage": 100.0,
+      "acceleration": 0.0,
+      "penetrationsCount": 0,
+      "collisionSize": 0.0,
+      "gravityScale": 10.0,
+      "knockbackForce" : 24.0,
+      "bulletType" : "NORMAL",
+      "collisionCategory" : "PLAYER_BULLET",
+      "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
+    },
+    
+    "movement" :
+    {
+      "type" : "LINEAR"
+    },
+    
+    "hit" : 
+    {
+      "type" : "EXPLOSION",
+      "decalMaterialTag" : "Decal_BulletHole",
+      "hitEffectTag" : "BulletHit_Flame",
+      "explosionRadius" : 13.0,
+      "explosionEffectTag" : "Explosion_01",
+      "explosionEffectAliveTime" : 0.5,
+      "isSmoke" : true,
+
+      "expLightColor" : [0.8, 0.4, 0.1],
+      "expLightIntensity" : 8.0,
+      "expLightDuration" : 3.0
+    },
+
+    "visual" :  
+    {
+      "type" : "MODEL",
+      "bulletMaterialTag" : "Bullet_01",
+      "trailDrawTime" : 0.0,
+      "trailWidth" : 0.0,
+      "enableFlightSmoke" : true,
+      "smokeInterval" : 0.001,
+      "smokeSize" : 0.7,                     
+      "smokeEffectTag" : "Fragment_Smoke_01",
+      "trailColor" : [0.0, 0.0, 0.0],
+      "smokeColor" : [255, 32, 255, 255],
+      "scale" : [1.0,1.0, 1.0],
+
+      "custom" :
+      {
+
+      }
+    }
+  }
+}

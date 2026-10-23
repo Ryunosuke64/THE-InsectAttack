@@ -21,7 +21,18 @@ using namespace DirectX;
 //*----------------------------------------------------------------------------------------
 void DroneTypeA_AT_AttackState::OnEnter(class EnemyController* pOwner)
 {
-	pOwner->set_MoveSpeed(MOVE_SPEED * Master::m_pDataManager->get_EnemyDifficultyFactor()._moveSpeedRate);
+	//pOwner->set_MoveSpeed(MOVE_SPEED * Master::m_pDataManager->get_EnemyDifficultyFactor()._moveSpeedRate);
+	//
+	// UŒ‚‘O‚Ìd’¼ŽžŠÔ
+	m_PreAttackStunDuration = Master::m_pRandomManager->GetFloatRandom(PREATTACK_STUN_TIME_MIN, PREATTACK_STUN_TIME_MAX);
+
+	auto move = pOwner->get_MoveLogicComponent();
+
+	move->set_LinearVelocityControl(false);
+	move->ClearSpeedEasing();
+
+	pOwner->set_MoveLogicState(
+		UtilityData::MOVE_BEHAVIOUR_TYPE::HOMING);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -33,7 +44,7 @@ void DroneTypeA_AT_AttackState::OnEnter(class EnemyController* pOwner)
 void DroneTypeA_AT_AttackState::OnExit(class EnemyController* pOwner)
 {
 	m_AttckCount = 0;
-	m_AttackTime = 0.0f;
+	m_PreAttackStunDuration = 0.0f;
 	pOwner->clear_StateTimer();
 }
 
@@ -72,23 +83,17 @@ int DroneTypeA_AT_AttackState::Update(class EnemyController* pOwner)
 		auto targetTransform = target->get_Transform().lock();
 		VEC3 targetPos = targetTransform->get_VEC3ToPos();	// –Ú•WˆÊ’u
 
-
-
 		// ˆÚ“®‚Í‚³‚¹‚¸‚ÉA–Ú•W‚Ö‚Ì•ûŒü‚¾‚¯Œü‚©‚¹‚é
-		MoveParam movePram;
-		movePram._moveSpeed = pOwner->get_MoveSpeed();
-		movePram._maxSpeed = pOwner->get_MoveSpeed();
-		movePram._turnSpeed = 0.5f;
-		movePram._targetPos = targetPos;
-		movePram._isPhysicsMove = true;
-		auto move = pOwner->get_MoveLogicComponent();
-		move->set_MoveParam(movePram);	// ˆÚ“®ƒƒWƒbƒN‚Éƒpƒ‰ƒ[ƒ^‚ð“n‚·
+		MoveParam param;
+		param._targetPos = targetPos;
+		param._turnSpeed = 0.1f;
+		param._isPhysicsMove = true;
+		param._movementMode = MoveParam::MOVEMENT_MODE::FLY;
+		pOwner->get_MoveLogicComponent()->set_MoveParam(param);
 
 		/* d’¼ŽžŠÔ‚ðI‚¦‚½‚çAUŒ‚ */
 		if (pOwner->get_StateTimer() > m_PreAttackStunDuration)
 		{
-			m_AttackTime += Master::m_pTimeManager->get_DeltaTime();
-
 			//
 			// Œp‘±“I‚É‘_‚¢‘±‚¯‚é
 			//

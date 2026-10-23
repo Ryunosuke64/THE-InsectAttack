@@ -225,12 +225,13 @@ namespace BulletData
         VECTOR3::VEC3 _scale = VECTOR3::VEC3();          // 弾本体の表示サイズ
 
         float _trailDrawTime = 0.0;                          // 軌跡の表示時間。0なら軌跡を表示しない
-        float _trailWidth = 0;                           // 軌跡の幅
-        VECTOR3::VEC3 _trailColor = VECTOR3::VEC3(1.0f); // 軌跡の色
-        float _smokeInterval = 0.05f;                    // 飛行中の煙を生成する時間間隔
-        float _smokeSize = 0.0f;                         // 煙のサイズ
-        std::string _smokeEffectTag;                     // 飛行中に生成する煙エフェクトのタグ
-        bool _enableFlightSmoke = false;                 // 飛行中の煙を有効にするか
+        float _trailWidth = 0;                             // 軌跡の幅
+        VECTOR3::VEC3 _trailColor = VECTOR3::VEC3(1.0f);   // 軌跡の色
+        VECTOR4::VEC4 _smokeColor = VECTOR4::VEC4(255.0f); // 煙の色
+        float _smokeInterval = 0.05f;                      // 飛行中の煙を生成する時間間隔
+        float _smokeSize = 0.0f;                           // 煙のサイズ
+        std::string _smokeEffectTag;                       // 飛行中に生成する煙エフェクトのタグ
+        bool _enableFlightSmoke = false;                   // 飛行中の煙を有効にするか
     };
 
     /// <summary>

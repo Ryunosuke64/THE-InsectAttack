@@ -262,6 +262,7 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
             mat.Index >= sourceScene->mNumMaterials ||
             !mat.pMaterialData)
         {
+            assert(false);
             return false;
         }
 
@@ -270,11 +271,13 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
         if (sourceScene->mMaterials[mat.Index]->Get(AI_MATKEY_NAME, name) !=
             aiReturn_SUCCESS)
         {
+            assert(false);
             return false;
         }
 
         if (!materialByName.emplace(name.C_Str(), mat.pMaterialData).second)
         {
+            assert(false);
             return false;
         }
     }
@@ -287,6 +290,7 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
             Master::m_pResourceManager->LoadModel(data.modelPath.c_str());
         
         if (!fragmentModel) {
+            assert(false);
             return false;
         }
 
@@ -299,12 +303,14 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
             if (fragmentScene->mMaterials[slot]->Get(AI_MATKEY_NAME, name) !=
                 aiReturn_SUCCESS)
             {
+                assert(false);
                 return false;
             }
 
             auto it = materialByName.find(name.C_Str());
             if (it == materialByName.end())
             {
+                assert(false);
                 return false;
             }
 
@@ -362,6 +368,7 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
         auto fragmentModelData = modelResource->get_ModelData().lock();
         if (!fragmentModelData)
         {
+            assert(false);
             return false;
         }
 

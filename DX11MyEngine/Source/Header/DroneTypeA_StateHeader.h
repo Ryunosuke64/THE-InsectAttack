@@ -29,7 +29,7 @@ class DroneTypeA_AT_IdleState : public IState<class EnemyController>
 private:
 	const float SEARCH_RANGE = 40.0f;				// 索敵範囲
 	const float SEARCH_FIELD_OF_VIEW_DEG = 70.0f;	// 視界
-	const float IDLE_MIN_TIME = 0.5f;				// 待機の最小時間
+	const float IDLE_MIN_TIME = 1.5f;				// 待機の最小時間
 	const float IDLE_MAX_TIME = 5.0f;				// 待機の最大時間
 	float m_IdleDuration = 0.0f;	// 待機状態の時間
 
@@ -53,12 +53,12 @@ public:
 class DroneTypeA_AT_MoveState : public IState<class EnemyController>
 {
 private:
-	const float MOVE_TIME_MIN = 1.0f;				// 移動の最小時間
-	const float MOVE_TIME_MAX = 3.0f;				// 移動の最大時間
+	const float MOVE_TIME_MIN = 2.0f;				// 移動の最小時間
+	const float MOVE_TIME_MAX = 5.0f;				// 移動の最大時間
 	const float MOVE_RANGE = 300.0f;				// 移動範囲
 	const float DIR_RAND_MAX = Tool::G_PI_4_F;		// 移動の方向 ランダム最大 
 	const float DIR_RAND_MIN = -Tool::G_PI_4_F;		// 移動の方向 ランダム最小 
-	const float MOVE_SPEED = 60.0f;					// 移動速度
+	const float MOVE_SPEED = 100.0f;					// 移動速度
 
 	float m_MoveDuration = 0.0f;	// 移動時間
 	VECTOR3::VEC3 m_MoveDir;		// 移動方向
@@ -85,9 +85,9 @@ class DroneTypeA_AT_TrackingState : public IState<class EnemyController>
 private:
 	const float TRACKING_TIME_MAX = 6.0f;			// 追跡の最大時間
 	const float TRACKING_TIME_MIN = 3.0f;			// 追跡の最小時間
-	const float ATTACK_POSSIBLE_RANGE_MAX = 300.0f;	// 攻撃可能最大距離
+	const float ATTACK_POSSIBLE_RANGE_MAX = 150.0f;	// 攻撃可能最大距離
 	const float ATTACK_POSSIBLE_RANGE_MIN = 5.0f;	// 攻撃可能最小距離
-	const float MOVE_SPEED = 60.0f;					// 移動速度
+	const float MOVE_SPEED = 60.0f;				// 移動速度
 
 	float m_AttackPossibleRange = 0.0f; // 攻撃可能距離
 	float m_TrackingDuration = 0.0f;	// 追従時間
@@ -145,10 +145,9 @@ private:
 	const float PREATTACK_STUN_TIME_MAX = 3.0f;		// 攻撃前の硬直最大時間
 	const float PREATTACK_STUN_TIME_MIN = 2.5f;		// 攻撃前の硬直最小時間 
 	const float SOUND_RADIUS = 1000.0f;				// 発射音が聞こえる範囲
-	const float MOVE_SPEED = 0.0f;					// 移動速度
+	const float MOVE_SPEED = 10.0f;					// 移動速度（目標への方向だけ向かせたいため、移動はゼロ）
 
 	float m_PreAttackStunDuration = 0.0f;	// 攻撃前の硬直時間
-	float m_AttackTime = 0.0f;
 	int m_AttckCount = 0;
 public:
 	void OnEnter(class EnemyController* pOwner) override;

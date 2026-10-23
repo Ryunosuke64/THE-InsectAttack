@@ -109,6 +109,7 @@ int Octahedron_AT_TrackingState::Update(class EnemyController* pOwner)
 		movePram._turnSpeed = 0.1f;
 		movePram._targetPos = targetPos;
 		movePram._isPhysicsMove = true;
+		movePram._movementMode = MoveParam::MOVEMENT_MODE::FLY;
 		auto move = pOwner->get_MoveLogicComponent();
 		move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す
 

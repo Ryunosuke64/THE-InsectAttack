@@ -19,6 +19,8 @@ struct MoveParam
     float _gravity;                 // 重力
     bool _isAcceleration;           // 加速度があるか
     bool _isPhysicsMove;            // 物理移動をするか（RigidBodyで移動する場合）
+    enum class MOVEMENT_MODE{ GROUND, FLY };    // 移動の種類
+    MOVEMENT_MODE _movementMode = MOVEMENT_MODE::GROUND;
 
     MoveParam() : 
         _moveDirection(VECTOR3::VEC3()),

@@ -215,9 +215,11 @@ void Bullet::LateUpdate(RendererEngine& renderer)
         {
             int smoke_handle = Master::m_pEffectManager->PlayEffect(m_pDefinition->_commonVisualData._smokeEffectTag);   // ‰Œ
             float smokeSize = m_pDefinition->_commonVisualData._smokeSize;
+            VECTOR4::VEC4 smokeColor = m_pDefinition->_commonVisualData._smokeColor;
             // ”š”­‰Œ
             Master::m_pEffectManager->SetScaleEffect(smoke_handle, smokeSize, smokeSize, smokeSize);
             Master::m_pEffectManager->SetPositionEffect(smoke_handle, newPos.x, newPos.y, newPos.z);
+            Master::m_pEffectManager->SetAllColorEffect(smoke_handle, Effekseer::Color(smokeColor.x, smokeColor.y, smokeColor.z, smokeColor.w));
 
             m_Runtime._smokeTime = 0.0f;
         }

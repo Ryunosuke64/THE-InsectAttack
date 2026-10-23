@@ -118,7 +118,7 @@ uint32_t EnemyFactory::SpawnEnemyGroup(const EnemyData::EnemyGroupSpawnData& spa
     {
         // ランダムな位置を求める
         generationData.position = 
-            spawnData.position + Tool::RandRange(
+            spawnData.position + Master::m_pRandomManager->GetVEC3Random(
                 -spawnData.spawnRadius, spawnData.spawnRadius
         );
         generationData.rotation = spawnData.rotation;
@@ -595,10 +595,12 @@ std::shared_ptr<GameObject> EnemyFactory::CreateDroneTypeA(const EnemyGeneration
     collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // アイテム
 
     PhysicsData::RigidBodyDesc rbDesc;
-    rbDesc.mass = 5.0f;
+    rbDesc.mass = 1.0f;
     rbDesc.pos = pos;
-    rbDesc.restitution = 0.5f;
+    rbDesc.restitution = 0.1f;
     rbDesc.friction = 1.0f;
+    rbDesc.linearDamping = 0.5f;
+    rbDesc.angularDamping = 0.2f;
     rbDesc.owner = generatedObject;     // オーナーオブジェクトの設定
     rbDesc.collider = collider;         // コライダーの設定
     rbDesc.gravity = VEC3(0.0f, 0.0f, 0.0f);

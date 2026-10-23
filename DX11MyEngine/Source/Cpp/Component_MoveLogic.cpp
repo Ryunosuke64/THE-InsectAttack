@@ -21,7 +21,13 @@ MoveLogic::MoveLogic(std::weak_ptr<GameObject> pOwner, int updateRank)
     m_pMoveBehaviour(nullptr),
     m_GravityVelocity(0.0f),
     m_AccelerationSpeed(0.0f),
-    m_CrntMoveVelocity(VEC3())
+    m_CrntMoveVelocity(VEC3()),
+    m_IsGrounded(false),
+    m_IsSpeedEaseEnable(false),
+    m_SpeedEaseDuration(0.0f),
+    m_SpeedEaseElapsed(0.0f),
+    m_SpeedEaseFrom(1.0f),
+    m_SpeedEaseTo(1.0f)
 {
     this->set_Tag("MoveLogic");
 }
@@ -87,6 +93,10 @@ void MoveLogic::Calculate(const MoveParam& _param)
             // 移動計算を呼び出す
             res = m_pMoveBehaviour->MoveCalculate(deltaTime, effectiveParam, *pTransform);
 
+            // イージングの適用
+            res._moveVelocity =
+                res._moveVelocity * UpdateSpeedEasing(deltaTime);
+
             //****************************************************
             // 物理移動をするか（RIgidBodyで移動させるか）
             if (_param._isPhysicsMove)
@@ -117,12 +127,39 @@ void MoveLogic::PhysicsMovement(const ResultMove& _param, const MyTransform& _tr
     {
         return;
     }
-    // 地上の敵：Y方向の速度は重力・落下用に維持する
-    auto velocity = rigidBody->GetLinearVelocity();
-    velocity.x = _param._moveVelocity.x;
-    velocity.z = _param._moveVelocity.z;
-    rigidBody->SetLinearVelocity(velocity);
 
+    // 速度の制御があるなら
+    if (m_ControlLinearVelocity)
+    {
+        // 地上の敵：Y方向の速度は重力・落下用に維持する
+        auto velocity = rigidBody->GetLinearVelocity();
+        velocity.x = _param._moveVelocity.x;
+        velocity.z = _param._moveVelocity.z;
+
+        // 
+        // 移動モードによって、制限をかける
+        // 
+        switch (m_MoveParam._movementMode)
+        {
+
+            //
+            // 地上モードなら、Y方向は物理エンジンに任せる
+            //
+        case MoveParam::MOVEMENT_MODE::GROUND:
+            break;
+
+            //
+            // 飛行モードなら、Y方向にも速度を入れる
+            //
+        case MoveParam::MOVEMENT_MODE::FLY:
+            velocity.y = _param._moveVelocity.y;
+            break;
+        default:
+            break;
+        }
+
+        rigidBody->SetLinearVelocity(velocity);
+    }
 
     DirectX::XMFLOAT4 rotation;
     DirectX::XMStoreFloat4(
@@ -174,6 +211,78 @@ void MoveLogic::NormalMovement(const ResultMove& _param,  MyTransform& _transfor
     _transform.set_RotationQuaternion(_param._RotQ);
 }
 
+//*---------------------------------------------------------------------------------------
+//*【?】イージングを開始する
+//*
+//* [引数] 
+//* _fromRate :  
+//* _toRate   :  
+//* _duration :  
+//* _type     :
+//*  
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void MoveLogic::StartSpeedEasing(
+    float _fromRate,
+    float _toRate,
+    float _duration,
+    Tool::Easing::EASE_TYPE _type)
+{
+    m_IsSpeedEaseEnable = true;
+    m_SpeedEaseElapsed = 0.0f;
+    m_SpeedEaseDuration = std::max(_duration, 0.0f);
+    m_SpeedEaseFrom = _fromRate;
+    m_SpeedEaseTo = _toRate;
+    m_SpeedEaseType = _type;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】イージングのクリア
+//*
+//* [引数] なし
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void MoveLogic::ClearSpeedEasing()
+{
+    m_SpeedEaseElapsed = 0.0f;
+    m_IsSpeedEaseEnable = false;
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】イージング処理の更新
+//*
+//* [引数] 
+//* _deltaTime : デルタタイム 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+float MoveLogic::UpdateSpeedEasing(float _deltaTime)
+{
+    if (!m_IsSpeedEaseEnable)
+    {
+        // 通常速度
+        return 1.0f;
+    }
+
+    if (m_SpeedEaseDuration <= 0.0f)
+    {
+        return m_SpeedEaseTo;
+    }
+
+    m_SpeedEaseElapsed = std::clamp(
+        m_SpeedEaseElapsed + _deltaTime,
+        0.0f,
+        m_SpeedEaseDuration
+    );
+
+    float t = m_SpeedEaseElapsed / m_SpeedEaseDuration;
+    float rate = t;
+
+    // イージング適用
+    rate = Tool::Easing::ApplyEasing(m_SpeedEaseType, t);
+
+    return m_SpeedEaseFrom
+        + (m_SpeedEaseTo - m_SpeedEaseFrom) * rate;
+}
 
 //*---------------------------------------------------------------------------------------
 //*【?】パラメータのリセット
@@ -187,7 +296,8 @@ void MoveLogic::ParamReset()
     m_AccelerationSpeed = 0.0f;
     m_CrntMoveVelocity = VEC3();
     m_MoveParam = MoveParam();
-
+    m_ControlLinearVelocity = true;
+    ClearSpeedEasing();
 }
 
 

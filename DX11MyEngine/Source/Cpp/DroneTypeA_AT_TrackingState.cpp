@@ -8,6 +8,7 @@ using namespace VECTOR3;
 using namespace VECTOR2;
 using namespace UtilityData;
 using namespace EnemyData;
+using namespace PhysicsData;
 
 //*---------------------------------------------------------------------------------------
 //* @:DroneTypeA_AT_TrackingState Class 
@@ -26,6 +27,16 @@ void DroneTypeA_AT_TrackingState::OnEnter(class EnemyController* pOwner)
 
 	// 攻撃可能距離
 	m_AttackPossibleRange = Master::m_pRandomManager->GetFloatRandom(ATTACK_POSSIBLE_RANGE_MIN, ATTACK_POSSIBLE_RANGE_MAX);
+
+
+	// イージングをかける
+	auto move = pOwner->get_MoveLogicComponent();
+	move->set_LinearVelocityControl(true);
+	move->StartSpeedEasing(
+		0.0f,
+		1.0f,
+		m_TrackingDuration,
+		Tool::Easing::EASE_TYPE::IN_SIN);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -101,19 +112,15 @@ int DroneTypeA_AT_TrackingState::Update(class EnemyController* pOwner)
 		/* 追いかけ移動を行う */
 		VEC3 targetPos = targetTransform->get_VEC3ToPos();	// 目標位置
 		VEC3 targetDir = (targetPos - myPos).Normalize();	// 目標方向
-
-		// 高さが低い場合は、水平に追従する
-		if (myPos.y < 10.0f)
-		{
-			targetDir.y = 0.0f;
-		}
+		targetPos.y += 20.0f;	// 直接ターゲットの位置にすると、突進していってしまうため、少し上に
 
 		// 親の移動コンポーネントを使い、移動処理を行う
 		MoveParam movePram;
 		movePram._moveSpeed = pOwner->get_MoveSpeed();
 		movePram._maxSpeed = pOwner->get_MoveSpeed();
-		movePram._turnSpeed = 0.5f;
+		movePram._turnSpeed = 0.1f;
 		movePram._targetPos = targetPos;
+		movePram._movementMode = MoveParam::MOVEMENT_MODE::FLY;
 		movePram._isPhysicsMove = true;
 		auto move = pOwner->get_MoveLogicComponent();
 		move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す

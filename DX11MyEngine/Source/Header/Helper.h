@@ -40,6 +40,28 @@ namespace Tool
     //-----------------------------------------
     namespace Easing
     {
+        /// <summary>
+        /// イージングの種類
+        /// </summary>
+        enum class EASE_TYPE
+        {
+            IN_QUAD,
+            IN_CUBIC,
+            IN_QUART,
+            IN_QUINT,
+            IN_SIN,      
+            
+            OUT_QUAD,
+            OUT_CUBIC,
+            OUT_QUART,
+            OUT_QUINT,
+            OUT_SIN,
+
+            OUT_BACK,
+
+            OUT_BOUNCE
+        };
+
         // --------------------------------------
         //                  加速 
         // --------------------------------------
@@ -74,10 +96,6 @@ namespace Tool
         //                  減速
         // --------------------------------------
 
-        inline float EaseOutSin(float _t){
-            return sinf((_t * DirectX::XM_PI) / 2.0f);
-        }
-
         // ヒュッ...シュタッって感じ
         // 2乗
         inline float EaseOutQuad(float _t) {
@@ -101,6 +119,10 @@ namespace Tool
         inline float EaseOutQuint(float _t) {
             float invT = 1.0f - _t;
             return 1.0f - (invT * invT * invT * invT * invT);
+        }
+
+        inline float EaseOutSin(float _t){
+            return sinf((_t * DirectX::XM_PI) / 2.0f);
         }
 
 
@@ -135,6 +157,60 @@ namespace Tool
             else {
                 return n1 * (t -= 2.625f / d1) * t + 0.984375f;
             }
+        }
+
+        /// <summary>
+        /// 指定されたタイプのイージング処理を行う
+        /// </summary>
+        /// <param name="_type"></param>
+        /// <param name="_t"></param>
+        /// <returns></returns>
+        inline float ApplyEasing(EASE_TYPE _type, float _t)
+        {
+            float rate = 0.0f;
+            switch (_type)
+            {
+            case EASE_TYPE::IN_QUAD:
+                 rate = EaseInQuad(_t);
+                break;
+            case EASE_TYPE::IN_CUBIC:
+                rate = EaseInCubic(_t);
+                break;
+            case EASE_TYPE::IN_QUART:
+                rate = EaseInQuart(_t);
+                break;
+            case EASE_TYPE::IN_QUINT:
+                rate = EaseInQuint(_t);
+                break;
+            case EASE_TYPE::IN_SIN:
+                rate = EaseInSine(_t);
+                break;
+            case EASE_TYPE::OUT_QUAD:
+                rate = EaseOutQuad(_t);
+                break;
+            case EASE_TYPE::OUT_CUBIC:
+                rate = EaseOutCubic(_t);
+                break;
+            case EASE_TYPE::OUT_QUART:
+                rate = EaseOutQuart(_t);
+                break;
+            case EASE_TYPE::OUT_QUINT:
+                rate = EaseOutQuint(_t);
+                break;
+            case EASE_TYPE::OUT_SIN:
+                rate = EaseOutSin(_t);
+                break;
+            case EASE_TYPE::OUT_BACK:
+                rate = EaseOutBack(_t);
+                break;
+            case EASE_TYPE::OUT_BOUNCE:
+                rate = EaseOutBounce(_t);
+                break;
+            default:
+                break;
+            }
+
+            return rate;
         }
     }
 

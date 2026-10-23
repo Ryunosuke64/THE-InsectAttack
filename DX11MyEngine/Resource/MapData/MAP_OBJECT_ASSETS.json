@@ -45,6 +45,19 @@
             "health" : 600.0
         },
         {
+            "assetID" : "Building_02",
+            "physicsPresetID" : "Building_01",
+            "modelPath" : "Resource/Model/Building/04/Building_04.fbx",
+            "mapObjectType" : "BUILDING",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Building01_Base1"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 600.0
+        },
+        {
             "assetID" : "BuildingTW_01",
             "physicsPresetID" : "BuildingTW_01",
             "modelPath" : "Resource/Model/Building/03/Building_Tower_1.fbx",

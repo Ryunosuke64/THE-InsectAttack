@@ -70,6 +70,7 @@
       "smokeSize" : 1.3,                     
       "smokeEffectTag" : "Fragment_Smoke_01",
       "trailColor" : [1.0, 1.0, 5.5],
+      "smokeColor" : [255, 255, 255, 128],
       "scale" : [3.0,3.0, 3.0],
 
       "custom" :
