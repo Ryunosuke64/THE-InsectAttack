@@ -42,7 +42,7 @@ private:
 	std::shared_ptr<class Texture> m_pTex;
 	bool m_IsPosRand;				// 位置にランダム性を持たせるか
 	VECTOR3::VEC3 m_PosRandVec;		// 位置のランダム値（最小 最大）
-
+	SHADER_TYPE m_ShaderType;		// 使用するシェーダ―
 
 public:
 	TrailRenderer(std::weak_ptr<GameObject> pOwner, int updateRank = 100);
@@ -64,6 +64,8 @@ public:
 
 	void set_Color(const VECTOR4::VEC4& _col) { m_Color = _col; }			//カラー設定
 	VECTOR4::VEC4 get_Color()const { return m_Color; }						//カラー取得
+
+	void set_ShaderType(SHADER_TYPE _type) { m_ShaderType = _type; }		// 使用するシェーダの設定
 
 	void set_PosRandVec(const VECTOR3::VEC3 &_v) { m_PosRandVec = _v; m_IsPosRand = true; }		// ランダム性を持たせる場合の、ランダム位置座標の最大、最小の設定
 	VECTOR3::VEC3 get_PosRandVec()const { return m_PosRandVec; }								// ランダム性を持たせる場合の、ランダム位置座標の最大、最小の取得

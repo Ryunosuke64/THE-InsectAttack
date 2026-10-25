@@ -73,8 +73,14 @@ public:
     // ヒットテーブルの検索
     const BulletData::SurfaceHitTable& FindSurfaceHitTable(BulletData::BULLET_TYPE bulletType);
 
-    // エフェクトタグの検索
+    // 材質ごとのヒットデータの検索
+    const BulletData::SurfaceHitData& FindSurfaceHitData(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType);
+
+    // 材質ごとのヒットエフェクトタグの検索
     const std::string& FindSurfaceHitEffectTag(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType);
+
+    // 材質ごとのヒットサウンドIDの検索
+    const std::string& FindSurfaceHitSoundID(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType);
 
 private:
     // コピー禁止

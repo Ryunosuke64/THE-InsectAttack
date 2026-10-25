@@ -54,7 +54,7 @@ float3 HablePartial(float3 x)
 float3 HableToneMapping(float3 color)
 {
     const float whitePoint = 20.0f;     // 
-    const float exposureBias = 5.0f;    // マッピング前の明るさ調整
+    const float exposureBias = 4.0f;    // マッピング前の明るさ調整
 
     float3 mapped = HablePartial(color * exposureBias);
     float3 white = HablePartial(whitePoint.xxx);

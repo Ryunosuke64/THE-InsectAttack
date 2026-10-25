@@ -72,7 +72,7 @@ void mission_main()
         ENEMY_TYPE::DRONE_TYPE_A,
         VEC3(0.0f,250.0,0.0), 
         50.0f,
-        2,
+        20,
         100.0f,
         true
     );

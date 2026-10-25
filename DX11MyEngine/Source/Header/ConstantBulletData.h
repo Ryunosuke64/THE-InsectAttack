@@ -144,7 +144,7 @@ namespace BulletData
     struct SurfaceHitData
     {
         std::string effectName;
-        SOUND_ID soundID = SOUND_ID::ROCOCHET02;
+        std::string soundID;
     };
 
     //

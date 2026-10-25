@@ -357,17 +357,22 @@ namespace BulletBehaviour
         }
 
         //*****************************************************************************************
+        //						材質ごとのヒットデータを取り出してくる
+        //*****************************************************************************************
+        SURFACE_TYPE hitSurface = collider->get_SurfaceType();
+
+         const SurfaceHitData surfaceHitData = Master::m_pWeaponDataManager->
+             FindSurfaceHitData(_common._bulletType, hitSurface);
+
+        //*****************************************************************************************
         //						ヒットエフェクトの再生
         //*****************************************************************************************
-        if (_hitData._hitEffectTag.empty() == false)
+        if (surfaceHitData.effectName.empty() == false)
         {
-            SURFACE_TYPE hitSurface = collider->get_SurfaceType();
-            
             //
             // 弾タイプと衝突したサーフェイスからヒット時に再生するエフェクトを探す
             //
-            const std::string hitEffectTag = 
-                Master::m_pWeaponDataManager->FindSurfaceHitEffectTag(_common._bulletType, hitSurface);
+            const std::string hitEffectTag = surfaceHitData.effectName;
 
             // 再生
             int effectHandle = Master::m_pEffectManager->PlayEffect(hitEffectTag);
@@ -389,9 +394,12 @@ namespace BulletBehaviour
         //*****************************************************************************************
         //						ヒットサウンド再生
         //*****************************************************************************************
-        //Master::m_pSoundManager->Play_RandPitch_3D(
-        //    "weapon.ricochet_01",
-        //    hitPoint, 40, 300);
+        if (surfaceHitData.soundID.empty() == false)
+        {
+            Master::m_pSoundManager->Play_RandPitch_3D(
+                surfaceHitData.soundID,
+                hitPoint, 40, 300);
+        }
 
         return result;
     }

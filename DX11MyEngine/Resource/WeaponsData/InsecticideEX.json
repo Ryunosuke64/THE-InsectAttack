@@ -1,0 +1,71 @@
+{
+  "level": 0,
+  "name": "殺虫スプレーＥＸＧ",
+  "bulletMaxNum": 20,
+  "bulletSimultaneousNum": 5,
+  "fireRate": 1.0,  
+  "burstCount": 5,
+  "burstInterval": 0.05,
+  "reloadTime": 2.5,
+  "accuracy": 0.3,
+  "zoomLength": 1.0,
+  "isLaserSight": false,
+  "shotSoundRadius": 300.0,
+  "soundID": "weapon.gun_fire_02",
+  "muzzleFlashEffectTag" : "",
+  "muzzleFlashEffectScale" : [0.5, 0.5, 0.5],
+  "bulletType": "FLAME",
+  "bulletParam": 
+  {
+    "common" :  
+    {
+      "aliveFrame" : 500,
+      "speed": 40.0,
+      "maxSpeed": 20.0,
+      "damage": 8.0,
+      "acceleration": 0.0,
+      "penetrationsCount": 0,
+      "collisionSize": 0.0,
+      "gravityScale": 0.0,
+      "knockbackForce" : 1.0,
+      "bulletType" : "FLAME",
+      "collisionCategory" : "PLAYER_BULLET",
+      "collisionMask": ["ENEMY", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
+    },
+    
+    "movement" :
+    {
+      "type" : "LINEAR"
+    },
+    
+    "hit" : 
+    {
+      "type" : "DIRECT",
+      "decalMaterialTag" : "",
+      "hitEffectTag" : "",
+      "environmentResponse" : "SLIDE"
+    },
+
+    "visual" :  
+    {
+      "type" : "BILLBOARD",
+      "bulletMaterialTag" : "Fog_01",
+      "trailDrawTime" : 0,
+      "trailWidth" : 0.0,
+      "enableFlightSmoke" : false,
+      "smokeInterval" : 0.0,              
+      "smokeSize" : 0.0,                     
+      "smokeEffectTag" : "",
+      "trailColor" : [10.0, 1.0, 3.0],
+      "scale" : [0.1,0.1, 0.1],
+
+      "custom" : 
+      {
+        "type" : "ScaleLerp",
+        "startScale" : [0.0,0.0, 0.0],
+        "endScale" : [30.0, 30.0, 30.0],
+        "duration" : 10.0
+      }
+    }
+  }
+}

@@ -4,6 +4,10 @@
   const C = window.MapDataCore, D = C.definitions;
   const $ = id => document.getElementById(id);
   const state = { docs: {}, kind: "physics", selected: { physics: 0, assets: 0, fragments: 0 }, past: [], future: [], busy: false };
+  // Presentation preferences are separate from document data and edit history.
+  const folds = new Map();
+  let renderedSelection = "";
+  let visibleIssueKey = "";
   const json = value => JSON.stringify(value);
   const documents = () => Object.fromEntries(Object.entries(state.docs).map(([k, doc]) => [k, doc.data]));
   const currentDoc = () => state.docs[state.kind];
@@ -28,17 +32,19 @@
   }
   function undo() { if (state.busy || !state.past.length) return; state.future.push(snapshot()); restore(state.past.pop()); }
   function redo() { if (state.busy || !state.future.length) return; state.past.push(snapshot()); restore(state.future.pop()); }
-  function notify(message, error = false) { $("notice").hidden = false; $("notice").textContent = message; $("notice").className = error ? "error" : ""; }
+  function notify(message, error = false) { $("notice").parentElement.hidden = false; $("notice").hidden = false; $("notice").textContent = message; $("notice").className = error ? "error" : ""; }
   function node(tag, className, text) { const e = document.createElement(tag); if (className) e.className = className; if (text !== undefined) e.textContent = text; return e; }
   function button(text, action, className = "") { const b = node("button", className, text); b.type = "button"; b.addEventListener("click", action); return b; }
   async function operation(action) {
     if (state.busy) return;
     state.busy = true;
     document.querySelector(".workspace").inert = true;
+    document.querySelector(".app-header").inert = true;
     $("open-files").disabled = true; $("open-folder").disabled = true;
     try { await action(); } catch (error) { if (error.name !== "AbortError") notify(error.message || String(error), true); }
     finally {
       state.busy = false; document.querySelector(".workspace").inert = false;
+      document.querySelector(".app-header").inert = false;
       $("open-files").disabled = false; $("open-folder").disabled = !window.showDirectoryPicker;
       refresh();
     }
@@ -50,11 +56,10 @@
     for (const [kind, def] of Object.entries(D)) {
       const b = button("", () => { state.kind = kind; $("search").value = ""; render(); }, `tab${state.kind === kind ? " active" : ""}`);
       b.setAttribute("aria-current", state.kind === kind ? "page" : "false");
-      b.append(node("span", "tab-icon", def.icon));
       const text = node("span", "tab-text", def.label);
       text.append(node("small", "", state.docs[kind] ? `${C.rows(kind, state.docs[kind].data).length} 件 · 読み込み済み` : "未読み込み"));
       b.append(text);
-      if (state.docs[kind] && dirty(state.docs[kind])) { const dot = node("span", "tab-dot", "●"); dot.title = "元ファイルに未保存"; b.append(dot); }
+      if (state.docs[kind] && dirty(state.docs[kind])) { const dot = node("span", "tab-dot", "未保存"); dot.title = "元ファイルに未保存"; b.append(dot); }
       $("tabs").append(b);
     }
     $("list-title").textContent = D[state.kind].label;
@@ -66,7 +71,7 @@
       if (!id.toLowerCase().includes(q)) return;
       const b = button("", () => { state.selected[state.kind] = index; render(); }, `entry${index === state.selected[state.kind] ? " active" : ""}`);
       b.append(node("strong", "", id));
-      b.append(node("small", "", state.kind === "physics" ? `${entry.colliders.length} collider · ${entry.collisionCategory || "未設定"}` : state.kind === "assets" ? `${entry.mapObjectType || "未設定"} · ${entry.physicsPresetID || "プリセット未設定"}` : `${entry.fragments.length} fragments`));
+      b.append(node("small", "", state.kind === "physics" ? `判定 ${entry.colliders.length} 個 · ${entry.collisionCategory || "未設定"}` : state.kind === "assets" ? `${entry.mapObjectType || "未設定"} · ${entry.physicsPresetID || "プリセット未設定"}` : `破片 ${entry.fragments.length} 個`));
       $("entry-list").append(b);
     });
     if (!$("entry-list").childElementCount) $("entry-list").append(node("p", "list-empty", !currentDoc() ? "JSONファイルを開くと、ここに一覧が表示されます。" : q ? "一致するデータがありません。" : "データがありません。新規作成から追加できます。"));
@@ -84,14 +89,24 @@
     const issues = C.validate(documents()), errors = issues.filter(i => i.level === "error");
     const warnings = issues.length - errors.length;
     const loaded = Object.keys(state.docs).length;
-    $("validation-summary").textContent = !loaded ? "読み込み待ち" : errors.length ? `${errors.length} 件のエラー · ${warnings} 件の注意` : warnings ? `エラーなし · ${warnings} 件の注意` : "✓ データの整合性に問題はありません";
+    $("validation-summary").textContent = !loaded ? "読み込み待ち" : errors.length ? `${errors.length} 件のエラー · ${warnings} 件の注意` : warnings ? `エラーなし · ${warnings} 件の注意` : "データの整合性に問題はありません";
     $("validation-summary").className = `validation-summary${errors.length ? " has-errors" : ""}`;
+    const issueKey = json(issues);
+    if (issues.length && issueKey !== visibleIssueKey) $("validation-panel").open = true;
+    if (!issues.length) $("validation-panel").open = false;
+    visibleIssueKey = issueKey;
     $("validation-list").replaceChildren();
     issues.forEach(issue => {
       const b = button("", () => {
         state.kind = issue.kind; state.selected[issue.kind] = issue.index; $("search").value = ""; render();
         const input = Array.from($("editor-form").querySelectorAll("[data-path]")).find(e => e.dataset.path === issue.path);
-        if (input) { input.focus(); input.scrollIntoView({ block: "center", behavior: "smooth" }); }
+        if (input) {
+          // Reveal folded groups before moving focus to the invalid field.
+          for (let parent = input.parentElement; parent && parent !== $("editor-form"); parent = parent.parentElement) {
+            if (parent.tagName === "DETAILS") parent.open = true;
+          }
+          input.focus(); input.scrollIntoView({ block: "center", behavior: "instant" });
+        }
       }, `issue ${issue.level}`);
       b.append(node("small", "", `${D[issue.kind].label} / ${idLabel(issue.kind, C.rows(issue.kind, state.docs[issue.kind].data)[issue.index])}`));
       b.append(node("strong", "", issue.path), node("div", "", issue.message));
@@ -102,21 +117,30 @@
     $("save").textContent = doc?.handle ? "元ファイルへ保存" : "保存先を選んで保存";
     if (!window.showSaveFilePicker && !doc?.handle) { $("save").disabled = true; $("save").title = "このブラウザではJSONを書き出すをご利用ください。"; }
     $("save-summary").textContent = !doc ? "ファイルを開いて編集を始めましょう" : errors.length ? "エラーを修正してから保存してください" : dirty(doc) ? "編集した内容を保存できます" : "読み込み済みのデータを編集できます";
-    $("save-hint").textContent = errors.length ? "読み込み済みの全タブを検証しています。右側の項目から移動できます。" : "ダウンロード書き出しでは元ファイルは更新されません。";
+    $("save-hint").textContent = errors.length ? "検証結果から対象の項目へ移動できます。" : "ダウンロード書き出しでは元ファイルは更新されません。";
   }
 
+  function group(className, key) {
+    const box = node("details", className);
+    const foldKey = `${state.kind}:${state.selected[state.kind]}:${key}`;
+    box.open = folds.get(foldKey) ?? true;
+    box.addEventListener("toggle", () => { if (box.isConnected) folds.set(foldKey, box.open); });
+    return box;
+  }
+  function groupButton(text, action, className = "") {
+    return button(text, e => { e.preventDefault(); action(); }, className);
+  }
   function section(title, number, parent = $("editor-form"), addAction) {
-    const box = node("section", "form-section");
-    const head = node("div", "section-head"), h = node("h3");
-    h.append(node("span", "section-number", number), document.createTextNode(title));
-    head.append(h); if (addAction) head.append(button("＋ 追加", addAction));
+    const box = group("form-section", `section:${number}`);
+    const head = node("summary", "section-head"), h = node("h3", "", title);
+    head.append(h); if (addAction) head.append(groupButton("追加", addAction));
     const body = node("div", "section-body"); box.append(head, body); parent.append(box); return body;
   }
   function subCard(parent, title, remove, duplicate) {
-    const box = node("div", "sub-card"), head = node("div", "section-head"); head.append(node("h3", "", title));
+    const box = group("sub-card", title), head = node("summary", "section-head"); head.append(node("h3", "", title));
     const actions = node("div", "entry-actions");
-    if (duplicate) actions.append(button("複製", duplicate));
-    actions.append(button("削除", remove, "danger-quiet")); head.append(actions);
+    if (duplicate) actions.append(groupButton("複製", duplicate));
+    actions.append(groupButton("削除", remove, "danger-quiet")); head.append(actions);
     const body = node("div", "section-body"); box.append(head, body); parent.append(box); return body;
   }
   function field(parent, object, key, label, options = {}) {
@@ -144,6 +168,7 @@
     }
     input.dataset.path = options.path || key;
     input.setAttribute("aria-label", options.aria || label);
+    input.title = options.help ? `${label} (${key})\n${options.help}` : `${label} (${key})`;
     input.addEventListener("change", () => {
       const value = options.number ? input.value === "" || !Number.isFinite(input.valueAsNumber) ? null : input.valueAsNumber : input.value;
       mutate(() => { if (options.update) options.update(value); else object[key] = value; }, !!options.redraw);
@@ -210,7 +235,7 @@
     body = section("当たり判定の形状", "04", $("editor-form"), () => mutate(() => entry.colliders.push(C.collider())));
     if (!entry.colliders.length) body.append(node("p", "empty-inline", "Colliderはありません。判定を付ける場合は追加してください。"));
     entry.colliders.forEach((c, i) => {
-      const p = `colliders[${i}]`, b = subCard(body, `COLLIDER ${String(i + 1).padStart(2, "0")}`, () => mutate(() => entry.colliders.splice(i, 1)));
+      const p = `colliders[${i}]`, b = subCard(body, `当たり判定 ${i + 1}`, () => mutate(() => entry.colliders.splice(i, 1)));
       field(b, c, "type", "形状", { path: `${p}.type`, choices: C.colliderTypes, redraw: true });
       field(b, c, "surfaceType", "表面の材質", { path: `${p}.surfaceType`, choices: C.surfaces });
       vector(b, c, "center", "中心位置", `${p}.center`);
@@ -236,7 +261,7 @@
     const tags = [...new Set(C.rows("assets", state.docs.assets.data).flatMap(e => e.materials.map(m => m.tag)).filter(v => typeof v === "string"))];
     if (!entry.materials.length) body.append(node("p", "empty-inline", "マテリアルの指定はありません。"));
     entry.materials.forEach((m, i) => {
-      const b = subCard(body, `MATERIAL ${String(i + 1).padStart(2, "0")}`, () => mutate(() => entry.materials.splice(i, 1)));
+      const b = subCard(body, `マテリアル ${i + 1}`, () => mutate(() => entry.materials.splice(i, 1)));
       field(b, m, "slot", "スロット番号", { number: true, min: 0, step: 1, path: `materials[${i}].slot` });
       field(b, m, "tag", "マテリアルタグ", { suggestions: tags, path: `materials[${i}].tag`, help: "候補は読み込んだ定義から取得。ゲーム側の登録名と一致させてください。" });
     });
@@ -247,7 +272,7 @@
     body.append(node("p", "field-note wide", "回転はJSONと同じラジアンで入力します。位置・回転・拡縮がゲームで使われるかは、破片生成処理の実装に依存します。"));
     if (!entry.fragments.length) body.append(node("p", "empty-inline", "破片はありません。追加ボタンで作成できます。"));
     entry.fragments.forEach((f, i) => {
-      const p = `fragments[${i}]`, b = subCard(body, `FRAGMENT ${String(i + 1).padStart(2, "0")}`, () => mutate(() => entry.fragments.splice(i, 1)), () => mutate(() => entry.fragments.splice(i + 1, 0, C.clone(f))));
+      const p = `fragments[${i}]`, b = subCard(body, `破片 ${i + 1}`, () => mutate(() => entry.fragments.splice(i, 1)), () => mutate(() => entry.fragments.splice(i + 1, 0, C.clone(f))));
       field(b, f, "modelPath", "破片モデルのパス", { wide: true, path: `${p}.modelPath`, placeholder: "Resource/Model/…/fragment.fbx" });
       referenceField(b, f, "physicsPresetID", "物理プリセット", "physics", { wide: true, path: `${p}.physicsPresetID` });
       vector(b, f, "position", "ローカル位置", `${p}.position`);
@@ -256,16 +281,28 @@
     });
   }
   function render() {
+    const scroll = document.querySelector(".form-scroll");
+    const selection = `${state.kind}:${state.selected[state.kind]}`;
+    const scrollTop = selection === renderedSelection ? scroll.scrollTop : 0;
+    renderedSelection = selection;
     const e = currentEntry();
     $("welcome").hidden = !!currentDoc(); $("editor-content").hidden = !currentDoc();
     $("editor-form").replaceChildren();
     $("duplicate-entry").disabled = !e; $("delete-entry").disabled = !e;
-    $("entry-type").textContent = D[state.kind].english;
+    $("entry-type").textContent = D[state.kind].label;
     $("entry-title").textContent = e ? idLabel(state.kind, e) : "新しい定義を追加";
     if (e) ({ physics: renderPhysics, assets: renderAssets, fragments: renderFragments })[state.kind](e);
     else if (currentDoc()) $("editor-form").append(node("p", "empty-inline", "左の「新規作成」から定義を追加できます。"));
     refresh();
+    scroll.scrollTop = scrollTop;
   }
+
+  $("toggle-help").addEventListener("click", () => {
+    const enabled = document.body.classList.toggle("show-help");
+    $("toggle-help").setAttribute("aria-pressed", String(enabled));
+  });
+  $("dismiss-notice").addEventListener("click", () => { $("notice").parentElement.hidden = true; $("notice").hidden = true; });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelector(".help-menu").open = false; });
 
   // A batch is parsed completely before any live document is replaced.
   async function importRecords(records) {

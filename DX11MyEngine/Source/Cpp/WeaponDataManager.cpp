@@ -386,9 +386,8 @@ ExtractionSurfacesHitData(const nlohmann::json& _json, SurfaceHitTable& _outData
                 //_outData[i].effectName = "BulletHit_Standard";
             }
 
-            // サウンドもここに追加予定
-            _outData[i].soundID = static_cast<SOUND_ID>(_json[g_SurfaceNames[i]][1].get<int>());
-
+            // サウンドID
+            _outData[i].soundID = _json[g_SurfaceNames[i]][1].get<std::string>();
         }
     }
 
@@ -697,6 +696,42 @@ FindSurfaceHitTable(BulletData::BULLET_TYPE bulletType)
     return m_SurfaceHitData[index];
 }
 
+
+//*---------------------------------------------------------------------------------------
+//*【?】材質ごとのヒットデータを探す
+//*
+//* [引数] 
+//* bulletType  : 弾タイプ
+//* 
+//* [返値]
+//* ヒットでータ 
+//*----------------------------------------------------------------------------------------
+const BulletData::SurfaceHitData& WeaponDataManager::
+FindSurfaceHitData(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType)
+{
+    size_t indexBullet = static_cast<size_t>(bulletType);
+    size_t indexSurface = static_cast<size_t>(surfaceType);
+
+    // 範囲チェック 対象の弾があるか
+    if (indexBullet >= m_SurfaceHitData.size())
+    {
+        assert(false);
+        return {};
+    }
+
+    const SurfaceHitTable& surfaceHitTable = m_SurfaceHitData[indexBullet];
+
+    // 範囲チェック 対象のサーフェイスがあるか
+    if (indexSurface >= surfaceHitTable.size())
+    {
+        assert(false);
+        return {};
+    }
+
+    return surfaceHitTable[indexSurface];
+}
+
+
 //*---------------------------------------------------------------------------------------
 //*【?】対象の弾タイプ、サーフェイスタイプのエフェクトタグを探す
 //*
@@ -710,24 +745,25 @@ FindSurfaceHitTable(BulletData::BULLET_TYPE bulletType)
 const std::string& WeaponDataManager::
 FindSurfaceHitEffectTag(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType)
 {
-    size_t indexBullet = static_cast<size_t>(bulletType);
-    size_t indexSurface = static_cast<size_t>(surfaceType);
+    const SurfaceHitData hitData = FindSurfaceHitData(bulletType, surfaceType);
 
-    // 範囲チェック 対象の弾があるか
-    if (indexBullet >= m_SurfaceHitData.size())
-    {
-        assert(false);
-        return {};
-    }
+    return hitData.effectName;
+}
 
-    const SurfaceHitTable& surfaceHitTable = m_SurfaceHitData[indexBullet];
-    
-    // 範囲チェック 対象のサーフェイスがあるか
-    if (indexSurface >= surfaceHitTable.size())
-    {
-        assert(false);
-        return {};
-    }
+//*---------------------------------------------------------------------------------------
+//*【?】対象の弾タイプ、サーフェイスタイプのサウンドIDを探す
+//*
+//* [引数] 
+//* bulletType  : 弾タイプ
+//* surfaceType : サーフェイスタイプ
+//* 
+//* [返値]
+//* サウンドID 
+//*----------------------------------------------------------------------------------------
+const std::string& WeaponDataManager::
+FindSurfaceHitSoundID(BulletData::BULLET_TYPE bulletType, SURFACE_TYPE surfaceType)
+{
+    const SurfaceHitData hitData = FindSurfaceHitData(bulletType, surfaceType);
 
-    return surfaceHitTable[indexSurface].effectName;
+    return hitData.soundID;
 }

@@ -23,10 +23,13 @@ TrailRenderer::TrailRenderer(std::weak_ptr<GameObject> pOwner, int updateRank)
 	m_IsPosRand(false),
 	m_PosRandVec(VEC3()),
 	m_EmissivePower(1.0f),
-	m_Color(VEC4(1.0f, 1.0f, 1.0f,1.0f))
+	m_Color(VEC4(1.0f, 1.0f, 1.0f,1.0f)),
+	m_ShaderType(SHADER_TYPE::DEFERRED_STD_TRAIL)
 {
 	this->set_Tag("TrailRenderer");
 
+	// 煙ver
+	//m_pTex = Master::m_pResourceManager->LoadWIC_Texture(L"Resource/Texture/Particle/smoke01.png");
 
 	m_pTex = Master::m_pResourceManager->LoadWIC_Texture(L"Resource/Texture/Particle/Gradient/gradient-horizontal-mirror.png");
 }
@@ -62,6 +65,11 @@ void TrailRenderer::Start(RendererEngine &renderer)
 	{
 		MessageBoxA(NULL,"セットアップができませんでした","TrailRenderer Error",MB_OK);
 		return;
+	}
+	if (m_pTex == nullptr)
+	{
+		Tool::ErrorMessage(L"テクスチャが読み込まれていません", L"TrailRenderer");
+		assert(false);
 	}
 	//m_pTex = Master::m_pResourceManager->LoadWIC_Texture(L"Resource/Texture/rust_coarse_01_arm_1k.jpg");
 }
@@ -109,6 +117,14 @@ void TrailRenderer::LateUpdate(RendererEngine &renderer)
 
 		// 追加
 		m_TrailInfoList.push_back(trail);
+	}
+
+	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
+
+	// 寿命を更新
+	for (int i = 0; i < m_TrailInfoList.size(); i++)
+	{
+		m_TrailInfoList[i]._time -= deltaTime;
 	}
 
 	// 存在時間を過ぎたら消していく
@@ -163,16 +179,21 @@ void TrailRenderer::Draw(RendererEngine &renderer)
 	pContext->IASetVertexBuffers(0, 1, m_pVertesBuffer.GetAddressOf(), &stride, &offset); // 頂点バッファをセット
 
 	// シェーダの設定
-	Master::m_pShaderManager->DeviceToSetShader(SHADER_TYPE::DEFERRED_STD_TRAIL);
+	Master::m_pShaderManager->DeviceToSetShader(m_ShaderType);
 
 	// 三角形ストリップ指定
 	pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	
-	//Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::ALPHA);
+	// フォワード描画の際は、アルファブレンドにする
+	if (m_ShaderType == SHADER_TYPE::FORWARD_UNLIT_TRAIL)
+	{
+		Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::ALPHA);
+	}
 
 	// 描画（頂点数は一つの座標につき左右で2つあるので2倍）
 	pContext->Draw(static_cast<UINT>(m_TrailInfoList.size() * 2), 0);
-	//Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::NONE);
+	
+	Master::m_pBlendManager->DeviceToSetBlendState(BLEND_MODE::NONE);
 }
 
 
@@ -205,11 +226,14 @@ void TrailRenderer::VertexUpdate(RendererEngine& renderer)
 	{
 		VEC3 tail = m_TrailInfoList[i]._pos;// 末尾（今作るのはこれ）
 
-		m_TrailInfoList[i]._time -= deltaTime;
+		//m_TrailInfoList[i]._time -= deltaTime;
 
 		// 時間の比率を求める
-		float w_t = m_TrailInfoList[i]._time / m_DrawTime;
-
+		float w_t = std::clamp(
+			m_TrailInfoList[i]._time / m_DrawTime,
+			0.0f,
+			1.0f
+		);
 		VEC3 headDir;
 
 		// 先頭位置への方向を求める
@@ -245,6 +269,10 @@ void TrailRenderer::VertexUpdate(RendererEngine& renderer)
 		// カラー
 		r_V.color.AllOne();
 		l_V.color.AllOne();
+
+		// アルファ
+		r_V.color.w = w_t;
+		l_V.color.w = w_t;
 
 		r_V.uv = VEC2(1.0f, (float)i / (float)(m_TrailInfoList.size() - 1));
 		l_V.uv = VEC2(0.0f, (float)i / (float)(m_TrailInfoList.size() - 1));
@@ -318,6 +346,13 @@ void TrailRenderer::ConstantBufferUpdate(RendererEngine& renderer)
 
 	//// 定数バッファへ送信
 	//pContext->PSSetConstantBuffers(4,1, &m_pCBMaterialDataSet->pBuff);
+
+	if (m_pTex == nullptr)
+	{
+		Tool::ErrorMessage(L"テクスチャが読み込まれていません", L"TrailRenderer");
+		assert(false);
+		return ;
+	}
 
 	ID3D11ShaderResourceView* tex = nullptr;
 	tex = m_pTex->get_SRV();
@@ -418,6 +453,7 @@ bool TrailRenderer::CreateConstantBuffer(RendererEngine &renderer)
 	if (FAILED(hr))
 	{
 		delete m_pCBMaterialDataSet;
+		m_pCBMaterialDataSet = nullptr;
 		return false;
 	}
 

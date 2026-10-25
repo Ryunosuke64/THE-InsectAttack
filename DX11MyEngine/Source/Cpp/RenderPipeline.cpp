@@ -89,7 +89,7 @@ bool RenderPipeline::Setup(RendererEngine &renderer)
     m_PostEffectParam.Fog.End    = 150.0f;
 
 	// カラーグレーディングの設定
-    m_PostEffectParam.ColorGrading.Exposure = 0.0f;                  // 露出補正（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Exposure = 0.5f;                   // 露出補正（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.Contrast = 2.3f;                   // コントラスト（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.Saturation = 0.9f;                 // 彩度（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.Gamma = 1.0f;                      // ガンマ補正（1.0fで補正なし）

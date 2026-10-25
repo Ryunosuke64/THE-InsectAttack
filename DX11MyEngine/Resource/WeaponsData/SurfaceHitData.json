@@ -1,58 +1,58 @@
 {
     "NORMAL" : 
     {
-        "DEFAULT"  : ["BulletHit_Standard",0],
-        "CONCRETE" : ["BulletHit_Standard", 0],
-        "METAL"    : ["BulletHit_Metal", 0],
-        "SOIL"     : ["BulletHit_Soil", 0],
-        "ANT"      : ["AntHit_01", 0]
+        "DEFAULT"  : ["BulletHit_Standard", "weapon.ricochet_01"],
+        "CONCRETE" : ["BulletHit_Standard", "weapon.ricochet_01"],
+        "METAL"    : ["BulletHit_Metal", "weapon.ricochet_01"],
+        "SOIL"     : ["BulletHit_Soil", "weapon.ricochet_01"],
+        "ANT"      : ["AntHit_01", "weapon.ricochet_01"]
     },
     "EXPLOSION" : 
     {
-        "DEFAULT"  : ["", 0],
-        "CONCRETE" : ["", 0],
-        "METAL"    : ["", 0],
-        "SOIL"     : ["", 0],
-        "ANT"      : ["", 0]
+        "DEFAULT"  : ["",  ""],
+        "CONCRETE" : ["",  ""],
+        "METAL"    : ["",  ""],
+        "SOIL"     : ["",  ""],
+        "ANT"      : ["",  ""]
     },
     "HORMING" : 
     {
-        "DEFAULT"  : ["", 0],
-        "CONCRETE" : ["", 0],
-        "METAL"    : ["", 0],
-        "SOIL"     : ["", 0],
-        "ANT"      : ["", 0]
+        "DEFAULT"  : ["",  ""],
+        "CONCRETE" : ["",  ""],
+        "METAL"    : ["",  ""],
+        "SOIL"     : ["",  ""],
+        "ANT"      : ["",  ""]
     },
     "LASER" : 
     {
-        "DEFAULT"  : ["BulletHit_Laser", 0],
-        "CONCRETE" : ["BulletHit_Laser", 0],
-        "METAL"    : ["BulletHit_Laser", 0],
-        "SOIL"     : ["BulletHit_Laser", 0],
-        "ANT"      : ["BulletHit_Laser", 0]
+        "DEFAULT"  : ["BulletHit_Laser", ""],
+        "CONCRETE" : ["BulletHit_Laser", ""],
+        "METAL"    : ["BulletHit_Laser", ""],
+        "SOIL"     : ["BulletHit_Laser", ""],
+        "ANT"      : ["BulletHit_Laser", ""]
     },
     "FLAME" : 
     {
-        "DEFAULT"  : ["BulletHit_Flame", 0],
-        "CONCRETE" : ["BulletHit_Flame", 0],
-        "METAL"    : ["BulletHit_Flame", 0],
-        "SOIL"     : ["BulletHit_Flame", 0],
-        "ANT"      : ["AntHit_01", 0]
+        "DEFAULT"  : ["",  ""],
+        "CONCRETE" : ["",  ""],
+        "METAL"    : ["",  ""],
+        "SOIL"     : ["",  ""],
+        "ANT"      : ["AntHit_01",  ""]
     },
     "ACID" : 
     {
-        "DEFAULT"  : ["BulletHit_Acid", 0],
-        "CONCRETE" : ["BulletHit_Acid", 0],
-        "METAL"    : ["BulletHit_Acid", 0],
-        "SOIL"     : ["BulletHit_Acid", 0],
-        "ANT"      : ["BulletHit_Acid", 0]
+        "DEFAULT"  : ["BulletHit_Acid",  ""],
+        "CONCRETE" : ["BulletHit_Acid",  ""],
+        "METAL"    : ["BulletHit_Acid",  ""],
+        "SOIL"     : ["BulletHit_Acid",  ""],
+        "ANT"      : ["BulletHit_Acid",  ""]
     },
     "AP" : 
     {
-        "DEFAULT"  : ["BulletHit_Standard_L", 0],
-        "CONCRETE" : ["BulletHit_Standard_L", 0],
-        "METAL"    : ["BulletHit_Standard_L", 0],
-        "SOIL"     : ["BulletHit_Standard_L", 0],
-        "ANT"      : ["AntHit_01", 0]
+        "DEFAULT"  : ["BulletHit_Standard_L", "weapon.ricochet_01"],
+        "CONCRETE" : ["BulletHit_Standard_L", "weapon.ricochet_01"],
+        "METAL"    : ["BulletHit_Standard_L", "weapon.ricochet_01"],
+        "SOIL"     : ["BulletHit_Standard_L", "weapon.ricochet_01"],
+        "ANT"      : ["AntHit_01", "weapon.ricochet_01"]
     }
 }

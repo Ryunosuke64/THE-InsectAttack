@@ -3,48 +3,93 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Map Data Studio — マップ定義エディタ</title>
+  <title>マップ定義エディタ</title>
   <link rel="stylesheet" href="MapDataEditor.css">
   <script defer src="MapDataEditor.core.js"></script>
   <script defer src="MapDataEditor.js"></script>
 </head>
 <body>
   <header class="app-header">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">M<span>↗</span></span><div><p class="eyebrow">MAP DATA STUDIO</p><h1>マップ定義エディタ</h1></div></div>
-    <div class="header-actions"><span class="local-badge"><i></i> ローカル編集</span><button id="open-folder">フォルダーを開く</button><button id="open-files" class="primary">JSONを開く <span aria-hidden="true">↗</span></button></div>
+    <h1>マップ定義エディタ</h1>
+    <div class="toolbar-group" aria-label="ファイル操作">
+      <button id="open-files">JSONを開く</button>
+      <button id="open-folder">フォルダーを開く</button>
+    </div>
+    <div class="toolbar-group history" aria-label="編集履歴">
+      <button id="undo" title="元に戻す (Ctrl+Z)" disabled>元に戻す</button>
+      <button id="redo" title="やり直す (Ctrl+Shift+Z)" disabled>やり直す</button>
+    </div>
+    <div class="toolbar-group save-actions" aria-label="現在のファイルを保存">
+      <button id="download" disabled>JSONを書き出す</button>
+      <button id="save" class="primary" disabled>元ファイルへ保存</button>
+    </div>
+    <details class="help-menu">
+      <summary>使い方</summary>
+      <div class="help-content">
+        <h2>基本操作</h2>
+        <ol>
+          <li>3つのJSONをまとめて開きます。</li>
+          <li>左のデータ一覧から対象を選び、右のフォームで編集します。</li>
+          <li>ファイルごとに保存し、ゲーム側で読み込み直します。</li>
+        </ol>
+        <p>「JSONを書き出す」はダウンロードのみで、元ファイルは更新しません。IDの連動変更後は、未保存の各ファイルを保存してください。</p>
+        <p>「項目説明」をONにすると、入力値の説明とJSONのキー名を表示します。見出しをクリックするとグループを折りたためます。</p>
+        <p>データは端末内で処理します。外部への送信・自動上書きはしません。</p>
+        <a href="MapDataEditor.README.md" target="_blank" rel="noopener">詳しい使い方・対応範囲</a>
+      </div>
+    </details>
     <input id="file-input" type="file" accept=".json,application/json" multiple hidden>
   </header>
-  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <div class="notification" hidden>
+    <div id="notice" role="status" aria-live="polite" hidden></div>
+    <button id="dismiss-notice" aria-label="通知を閉じる">閉じる</button>
+  </div>
   <main class="workspace">
     <aside class="sidebar" aria-label="データ一覧">
-      <p class="eyebrow section-label">LIBRARY / 定義データ</p>
+      <h2 class="pane-title">定義ファイル</h2>
       <nav id="tabs" aria-label="編集するファイル"></nav>
-      <div class="list-heading"><h2 id="list-title">物理プリセット</h2><span id="item-count" class="count">0</span></div>
-      <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="IDで検索…" aria-label="定義データを検索"></label>
+      <div class="list-heading">
+        <h2 id="list-title">物理プリセット</h2>
+        <span id="item-count" class="count">0</span>
+        <button id="add-entry" disabled>新規作成</button>
+      </div>
+      <div class="search"><input id="search" type="search" placeholder="IDで検索" aria-label="定義データを検索"></div>
       <div id="entry-list" class="entry-list"></div>
-      <button id="add-entry" class="add-entry" disabled>＋ 新規作成</button>
-      <div class="sidebar-footer"><strong>データは端末内で処理</strong><p>外部への送信・自動上書きはしません。</p><a href="MapDataEditor.README.md" target="_blank" rel="noopener">使い方・対応範囲 ↗</a></div>
     </aside>
     <section class="editor-pane" aria-label="編集フォーム">
-      <div class="document-bar"><div><span id="file-name">MAP_OBJECT_PHYSICS_PRESET.json</span><span id="document-status" class="status-chip">未読み込み</span></div><div class="history"><button id="undo" title="元に戻す (Ctrl+Z)" disabled>↶ 戻す</button><button id="redo" title="やり直す (Ctrl+Shift+Z)" disabled>↷</button></div></div>
+      <div class="document-bar">
+        <span id="file-name">MAP_OBJECT_PHYSICS_PRESET.json</span>
+        <span id="document-status" class="status-chip" role="status">未読み込み</span>
+      </div>
       <div id="welcome" class="welcome">
-        <div class="welcome-art" aria-hidden="true"><span>{</span><div><i></i><i></i><i></i></div><span>}</span></div>
-        <p class="eyebrow">YOUR DATA, CLEARLY.</p><h2>JSONを、わかりやすく。</h2><p>物理・オブジェクト・建物の破片を<br>日本語のフォームで編集できます。</p>
-        <button id="welcome-open" class="primary">3つのJSONを選択</button><button id="load-nearby" class="text-button">このページと同じフォルダーから読み込む</button>
-        <div class="drop-hint">ここにJSONファイルをドロップしても開けます</div>
-        <p class="welcome-note">最初に3ファイルを一緒に開くと、参照先の選択・確認ができます。</p>
+        <h2>編集するJSONを開いてください</h2>
+        <p>物理プリセット・オブジェクト定義・建物の破片を編集します。</p>
+        <div class="welcome-actions">
+          <button id="welcome-open" class="primary">3つのJSONを選択</button>
+          <button id="load-nearby">同じフォルダーから読み込む</button>
+        </div>
+        <p>JSONファイルをこの画面へドロップしても開けます。</p>
       </div>
       <div id="editor-content" hidden>
-        <div class="editor-heading"><div><p id="entry-type" class="eyebrow"></p><h2 id="entry-title"></h2></div><div class="entry-actions"><button id="duplicate-entry">複製</button><button id="delete-entry" class="danger-quiet">削除</button></div></div>
-        <form id="editor-form" novalidate autocomplete="off"></form>
+        <div class="editor-heading">
+          <div class="selection-title"><span id="entry-type"></span><h2 id="entry-title"></h2></div>
+          <div class="entry-actions">
+            <button id="toggle-help" aria-pressed="false">項目説明</button>
+            <button id="duplicate-entry">複製</button>
+            <button id="delete-entry" class="danger-quiet">削除</button>
+          </div>
+        </div>
+        <div class="form-scroll"><form id="editor-form" novalidate autocomplete="off"></form></div>
       </div>
-      <footer class="save-bar"><div><strong id="save-summary">ファイルを開いて編集を始めましょう</strong><small id="save-hint">既存のJSON形式を維持して保存します。</small></div><div class="save-actions"><button id="download" disabled>JSONを書き出す</button><button id="save" class="primary" disabled>元ファイルへ保存</button></div></footer>
+      <details id="validation-panel" class="validation-panel">
+        <summary><strong>検証結果</strong><span id="validation-summary" class="validation-summary" aria-live="polite">読み込み待ち</span><span class="disclosure-hint">一覧を開く</span></summary>
+        <div id="validation-list"></div>
+      </details>
+      <footer class="status-bar">
+        <span id="save-summary">ファイルを開いて編集を始めましょう</span>
+        <span id="save-hint">既存のJSON形式を維持して保存します。</span>
+      </footer>
     </section>
-    <aside class="insights" aria-label="検証結果">
-      <p class="eyebrow">DATA CHECK</p><h2>データの確認</h2><div id="validation-summary" class="validation-summary">読み込み待ち</div><div id="validation-list"></div>
-      <div class="tip-card"><span class="tip-label">WORKFLOW</span><h3>3ファイルをつないで編集</h3><ol><li>JSONをまとめて開く</li><li>一覧から編集対象を選ぶ</li><li>確認結果を見て保存する</li></ol><p>保存はタブごとに行います。関連IDを変更したときは、変更マークのある全タブを保存してください。</p></div>
-      <div class="tip-card muted"><h3>ゲームでの反映</h3><p>保存後、ゲーム側でデータを読み直してください。モデル表示や物理挙動の確認はゲーム側で行います。</p></div>
-    </aside>
   </main>
   <noscript>このツールを使うにはJavaScriptを有効にしてください。</noscript>
 </body>

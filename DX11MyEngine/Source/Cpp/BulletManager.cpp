@@ -29,9 +29,9 @@ using namespace UtilityData;
 constexpr int NUM_DEFAULT__BILLBOARD_BULLET    = 128;
 constexpr int NUM_MAX__BILLBOARD_BULLET        = 512;
 
-// 爆発弾 =====================================================================
-constexpr int NUM_DEFAULT__MODEL_BULLET = 100;
-constexpr int NUM_MAX__MODEL_BULLET     = 300;
+// モデル弾 =====================================================================
+constexpr int NUM_DEFAULT__MODEL_BULLET = 128;
+constexpr int NUM_MAX__MODEL_BULLET     = 512;
 
 // エフェクト弾 =====================================================================
 constexpr int NUM_DEFAULT__EFFECT_BULLET   = 100;
@@ -147,6 +147,8 @@ bool BulletManager::Init(RendererEngine &renderer)
             trail->set_DrawTime(2);
             trail->set_EmissivePower(1.0f);
             trail->set_Color(VECTOR4::VEC4(1.0f, 1.0f, 0.5f, 1.0f));
+            trail->set_ShaderType(SHADER_TYPE::FORWARD_UNLIT_TRAIL); // シェーダはでフォワード用に
+            //trail->set_PosRandVec(VEC3(0.5f));
 
             // 初期化
             bulletComp->Start(renderer);
@@ -236,6 +238,7 @@ bool BulletManager::Init(RendererEngine &renderer)
             trail->set_DrawTime(2);
             trail->set_EmissivePower(1.0f);
             trail->set_Color(VECTOR4::VEC4(1.0f, 1.0f, 0.5f, 1.0f));
+            trail->set_ShaderType(SHADER_TYPE::DEFERRED_STD_TRAIL); // シェーダはでデファード用に
             //trail->set_PosRandVec(VEC3(0.5f));
 
             auto physics = obj->add_Component<Physics>();
@@ -320,6 +323,7 @@ bool BulletManager::Init(RendererEngine &renderer)
             trail->set_DrawTime(2);
             trail->set_EmissivePower(1.0f);
             trail->set_Color(VECTOR4::VEC4(1.0f, 1.0f, 0.5f, 1.0f));
+            trail->set_ShaderType(SHADER_TYPE::FORWARD_UNLIT_TRAIL);
             //trail->set_PosRandVec(VEC3(0.5f));
 
             auto physics = obj->add_Component<Physics>();

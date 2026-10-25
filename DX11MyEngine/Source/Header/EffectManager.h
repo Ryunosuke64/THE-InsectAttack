@@ -3,7 +3,7 @@
 #include <Effekseer.h>
 #include <EffekseerRendererDX11.h>
 
-#define EFFECT_MAX 256
+#define EFFECT_MAX 512
 #define PERTICLE_BUFFER 12000
 
 // ***************************************************************************************
