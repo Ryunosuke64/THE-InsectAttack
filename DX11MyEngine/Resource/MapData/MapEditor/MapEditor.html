@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>マップエディタ — 配置試作</title>
+  <link rel="stylesheet" href="MapEditor.css">
+  <script defer src="vendor/three-tools.js"></script>
+  <script defer src="MapEditor.js"></script>
+</head>
+<body>
+  <header class="toolbar">
+    <h1>マップエディタ <span>配置試作</span></h1>
+    <button id="open-files" class="primary" disabled>FBXを開く</button>
+    <input id="file-input" type="file" accept=".fbx,.png,.jpg,.jpeg,.webp,.bmp" multiple hidden>
+    <button id="frame-all" disabled>全体を表示</button>
+    <span class="mode">操作：移動</span>
+    <details class="help">
+      <summary>使い方</summary>
+      <div class="help-content">
+        <p>FBXを開き、モデルを左クリックで選択します。色付きの矢印・平面をドラッグすると移動できます。</p>
+        <p>右ドラッグ：視点の回転<br>中ドラッグ：視点の平行移動<br>ホイール：ズーム<br>F：選択モデルを表示</p>
+        <p>外部テクスチャはFBXと一緒に選択してください（PNG / JPEG / WebP / BMP）。未指定の画像は省略して表示します。</p>
+        <p>試作版のため保存・JSON出力・回転・拡縮・物理シミュレーションは未対応です。ページを閉じると配置は失われます。</p>
+      </div>
+    </details>
+  </header>
+  <div id="notice" role="status" aria-live="polite">3D表示を準備しています…</div>
+  <main class="workspace">
+    <aside class="object-pane" aria-label="読み込んだモデル">
+      <div class="pane-heading"><h2>モデル一覧</h2><span id="model-count">0 件</span></div>
+      <div id="object-list"><p class="empty-list">FBXを開くと、ここにモデルが表示されます。</p></div>
+    </aside>
+    <section id="viewport" tabindex="0" aria-label="3Dビュー。左クリックでモデル選択、右ドラッグで視点回転、中ドラッグで平行移動、ホイールでズーム">
+      <div class="view-label">透視図 <span>Y 上方向</span></div>
+      <div id="empty-view"><h2>FBXを開いて配置を試す</h2><p>ファイルをここにドロップすることもできます。</p></div>
+      <div class="view-guide">左クリック：選択　／　矢印：移動　／　右ドラッグ：視点　／　ホイール：ズーム</div>
+    </section>
+    <aside class="inspector" aria-label="選択モデルの編集">
+      <div class="pane-heading"><h2>選択モデル</h2></div>
+      <p id="no-selection">モデルを選択してください。</p>
+      <div id="selection" hidden>
+        <h3 id="selected-name"></h3>
+        <p id="model-info"></p>
+        <h4>位置（ワールド）</h4>
+        <div class="position-fields">
+          <label><span class="axis-x">X</span><input id="position-x" type="number" step="any" aria-label="位置 X"></label>
+          <label><span class="axis-y">Y</span><input id="position-y" type="number" step="any" aria-label="位置 Y"></label>
+          <label><span class="axis-z">Z</span><input id="position-z" type="number" step="any" aria-label="位置 Z"></label>
+        </div>
+        <p class="hint">矢印のドラッグ、または数値入力で移動します。</p>
+        <button id="frame-selected" class="wide">選択モデルを表示 <kbd>F</kbd></button>
+        <button id="remove-selected" class="wide danger">選択モデルを削除</button>
+      </div>
+      <p class="prototype-note">配置はこの画面内だけに保持されます。保存機能は未実装です。</p>
+    </aside>
+  </main>
+  <footer><span id="scene-status">未読み込み</span><span id="grid-status">グリッド：10 単位</span></footer>
+  <noscript>このツールを使うにはJavaScriptを有効にしてください。</noscript>
+</body>
+</html>

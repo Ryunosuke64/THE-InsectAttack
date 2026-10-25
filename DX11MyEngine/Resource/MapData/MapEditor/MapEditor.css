@@ -1,0 +1,69 @@
+:root { color-scheme: light; font: 14px "Segoe UI", "Yu Gothic UI", "Meiryo", sans-serif; color: #292929; background: #f1f1f1; --border: #c8c8c8; --accent: #285f8f; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+h1, h2, h3, h4, p { margin: 0; }
+button, input { font: inherit; color: inherit; }
+button { border: 1px solid #adadad; border-radius: 3px; padding: 5px 10px; min-height: 30px; background: #fafafa; cursor: pointer; white-space: nowrap; }
+button:hover:not(:disabled) { background: #e4e9ed; }
+button:disabled { color: #777; cursor: default; background: #eee; border-color: #ccc; }
+button.primary:not(:disabled) { color: white; background: var(--accent); border-color: var(--accent); }
+button:focus-visible, summary:focus-visible, input:focus-visible, #viewport:focus-visible { outline: 2px solid #286da8; outline-offset: -2px; }
+.toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--border); background: #ededed; z-index: 5; }
+h1 { font-size: 15px; margin-right: 12px; }
+h1 span { font-size: 12px; font-weight: 400; color: #555; margin-left: 6px; }
+.mode { padding-left: 12px; border-left: 1px solid var(--border); font-size: 13px; }
+.help { position: relative; margin-left: auto; }
+.help > summary { cursor: pointer; padding: 6px; }
+.help-content { position: absolute; right: 0; top: 35px; width: min(380px, calc(100vw - 24px)); border: 1px solid #999; background: white; padding: 14px; box-shadow: 0 3px 8px #0002; line-height: 1.7; }
+.help-content p + p { margin-top: 10px; }
+#notice { padding: 6px 10px; min-height: 32px; max-height: 100px; overflow: auto; border-bottom: 1px solid var(--border); background: #f6f6f6; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; flex-shrink: 0; }
+#notice.warning { background: #fff5dc; color: #704500; }
+#notice.error { background: #fff0ee; color: #982b24; }
+.workspace { display: grid; grid-template-columns: 220px minmax(0, 1fr) 240px; flex: 1; min-height: 0; }
+.object-pane, .inspector { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #f6f6f6; }
+.object-pane { border-right: 1px solid var(--border); }
+.inspector { border-left: 1px solid var(--border); overflow-y: auto; }
+.pane-heading { display: flex; align-items: center; gap: 8px; padding: 9px 10px; background: #e8e8e8; border-bottom: 1px solid var(--border); }
+.pane-heading h2 { font-size: 13px; }
+#model-count { margin-left: auto; font-size: 12px; color: #505050; }
+#object-list { flex: 1; overflow: auto; min-height: 0; background: white; }
+.empty-list, #no-selection { padding: 14px 10px; color: #555; line-height: 1.7; }
+.object-item { display: block; width: 100%; border: 0; border-bottom: 1px solid #e4e4e4; border-radius: 0; padding: 9px 10px; text-align: left; background: white; white-space: normal; overflow-wrap: anywhere; }
+.object-item[aria-pressed="true"] { background: #e5eff8; box-shadow: inset 3px 0 var(--accent); }
+.object-item strong { display: block; font-size: 14px; font-weight: 600; }
+.object-item small { display: block; font-size: 12px; color: #555; margin-top: 3px; }
+#viewport { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #e4e7ea; touch-action: none; }
+#viewport canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.view-label, .view-guide { position: absolute; z-index: 1; pointer-events: none; font-size: 12px; color: #3b434a; background: #f6f7f8df; padding: 5px 8px; }
+.view-label { top: 8px; left: 8px; border: 1px solid #bec4ca; }
+.view-label span { margin-left: 12px; }
+.view-guide { bottom: 8px; left: 8px; right: 8px; width: fit-content; max-width: calc(100% - 16px); line-height: 1.5; }
+#empty-view { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; padding: 20px; text-align: center; }
+#empty-view h2 { font-size: 18px; margin-bottom: 8px; font-weight: 600; }
+#empty-view p { color: #495057; line-height: 1.6; background: #e4e7eacc; }
+body.dragging #viewport::after { content: "FBX・テクスチャをドロップ"; position: absolute; inset: 8px; display: grid; place-items: center; background: #edf3f9ee; border: 2px dashed var(--accent); color: #174b77; pointer-events: none; z-index: 2; }
+#selection { padding: 12px 10px; }
+#selected-name { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+#model-info { color: #555; font-size: 12px; margin: 5px 0 18px; }
+h4 { font-size: 13px; padding-bottom: 7px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.position-fields label { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 8px; margin-bottom: 7px; }
+.position-fields label > span { font-weight: 700; text-align: center; }
+.axis-x { color: #a52e27; } .axis-y { color: #28722e; } .axis-z { color: #245d9b; }
+.position-fields input { width: 100%; min-width: 0; height: 30px; padding: 4px 6px; border: 1px solid #a6a6a6; border-radius: 2px; background: white; }
+.hint { color: #555; font-size: 13px; line-height: 1.6; margin: 10px 0 16px; }
+.wide { width: 100%; margin-bottom: 8px; text-align: left; }
+kbd { float: right; font: inherit; color: #555; }
+.danger { color: #982b24; }
+.prototype-note { margin-top: auto; padding: 12px 10px; border-top: 1px solid var(--border); font-size: 12px; line-height: 1.7; color: #555; }
+footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; padding: 5px 10px; border-top: 1px solid var(--border); background: #ededed; font-size: 12px; flex-shrink: 0; }
+@media (max-width: 1000px) { .workspace { grid-template-columns: 180px minmax(0, 1fr) 200px; } .view-guide { display: none; } }
+@media (max-width: 700px) {
+  body { height: auto; min-height: 100dvh; overflow: auto; }
+  .toolbar h1 { width: 100%; } .mode { display: none; }
+  .workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 52vh auto; }
+  #viewport { grid-column: 1 / -1; grid-row: 1; min-height: 280px; }
+  .object-pane, .inspector { border-top: 1px solid var(--border); max-height: 440px; }
+  .object-pane { border-right: 0; } #object-list { max-height: 300px; }
+  .view-label { font-size: 12px; } #empty-view h2 { font-size: 16px; }
+}
