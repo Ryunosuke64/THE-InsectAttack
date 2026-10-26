@@ -63,6 +63,8 @@ bool VehicleFactory::SpawnVehicle(const VehicleData::VehicleSpawnData& spawnData
     default:
         break;
     };
+
+    return true;
 }
 
 

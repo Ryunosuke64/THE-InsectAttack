@@ -44,7 +44,7 @@
         {
             "assetID" : "Building_01",
             "physicsPresetID" : "Building_01",
-            "modelPath" : "Resource/Model/MapObject/Building/02/Building_01.fbx",
+            "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -58,9 +58,9 @@
             "health" : 600.0
         },
         {
-            "assetID" : "Building_02",
+            "assetID" : "Building_03",
             "physicsPresetID" : "Building_01",
-            "modelPath" : "Resource/Model/MapObject/Building/04/Building_04.fbx",
+            "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -71,9 +71,9 @@
             "health" : 600.0
         },
         {
-            "assetID" : "BuildingTW_01",
-            "physicsPresetID" : "BuildingTW_01",
-            "modelPath" : "Resource/Model/MapObject/Building/03/Building_Tower_1.fbx",
+            "assetID" : "Tower_01",
+            "physicsPresetID" : "Tower_01",
+            "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
             [

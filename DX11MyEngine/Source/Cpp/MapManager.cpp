@@ -571,6 +571,7 @@ ExtractionBuildingFragmentData(const nlohmann::json& _json, Map::BuildingFragmen
 bool MapManager::SpawnGround(const std::string& _groundAssetTag)
 {
     return true;
+    //return MapObjectFactory::CreateMapObject(_groundAssetTag);
 }
 
 //*---------------------------------------------------------------------------------------

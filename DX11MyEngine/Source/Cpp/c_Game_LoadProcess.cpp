@@ -283,7 +283,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         /* 地面の生成 */
         {
             // マテリアル取得
-            auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
+            auto matPtr = Master::m_pResourceManager->FindMaterial("GroundCity_01");
             //auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
 
             SetupMaterialInfo matInfo[1];
@@ -293,7 +293,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             model.pRenderer = m_pRenderer;
             model.ObjTag = "Ground";
             model.IsAnim = false;
-            model.LODModels[0] = { "Resource/Model/MapObject/Building/Ground/Ground01.fbx", 0.0f };
+            model.LODModels[0] = { "Resource/Model/MapObject/Building/Ground/CityGround_01_b.fbx", 0.0f };
             model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
             model.MatNum = 1;
             model.SetupMaterial = matInfo;
