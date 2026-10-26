@@ -1,0 +1,105 @@
+{
+    "objects" : 
+    [
+        {
+            "assetID" : "Tree_01",
+            "physicsPresetID" : "Tree_01",
+            "modelPath" : "Resource/Model/MapObject/Tree/Tree_01.fbx",
+            "mapObjectType" : "PROP",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Tree_Lerf"},
+                {"slot" : 1, "tag" : "Tree_Wood"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 50.0
+        },   
+        {
+            "assetID" : "Glass_01",
+            "physicsPresetID" : "",
+            "modelPath" : "Resource/Model/MapObject/Glass/Glass_01.fbx",
+            "mapObjectType" : "PROP",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Grass"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : false,
+            "health" : 0.0
+        },           
+        {
+            "assetID" : "Rock_01",
+            "physicsPresetID" : "Rock_01",
+            "modelPath" : "Resource/Model/MapObject/Rock/Rock_01.fbx",
+            "mapObjectType" : "PROP",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Rock_01"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 100.0
+        },
+        {
+            "assetID" : "Building_01",
+            "physicsPresetID" : "Building_01",
+            "modelPath" : "Resource/Model/Building/02/Building_01.fbx",
+            "mapObjectType" : "BUILDING",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Building01_Top"},
+                {"slot" : 1, "tag" : "Building01_Base1"},
+                {"slot" : 2, "tag" : "Building01_Base2"},
+                {"slot" : 3, "tag" : "Building01_Base3"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 600.0
+        },
+        {
+            "assetID" : "Building_02",
+            "physicsPresetID" : "Building_01",
+            "modelPath" : "Resource/Model/Building/04/Building_04.fbx",
+            "mapObjectType" : "BUILDING",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Building01_Base1"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 600.0
+        },
+        {
+            "assetID" : "BuildingTW_01",
+            "physicsPresetID" : "BuildingTW_01",
+            "modelPath" : "Resource/Model/Building/03/Building_Tower_1.fbx",
+            "mapObjectType" : "BUILDING",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Building_Tower_1_SupportPillar"},
+                {"slot" : 1, "tag" : "Building_Tower_1_TopPillar"},
+                {"slot" : 2, "tag" : "Building_Tower_1_TopToroid"},
+                {"slot" : 3, "tag" : "Building_Tower_1_Top"},
+                {"slot" : 4, "tag" : "Building_Tower_1_BaseGround"},
+                {"slot" : 5, "tag" : "Building_Tower_1_Wall"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 600.0
+        },
+        {
+            "assetID" : "Robot",
+            "physicsPresetID" : "BuildingTW_01",
+            "modelPath" : "Resource/Model/Robo/Robot.fbx",
+            "mapObjectType" : "BUILDING",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Rock_01"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : true,
+            "health" : 1000.0
+        }
+    ]
+}

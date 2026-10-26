@@ -389,6 +389,8 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\UIManager.h" />
     <ClInclude Include="Source\Header\Unit.h" />
     <ClInclude Include="Source\Header\VEC.h" />
+    <ClInclude Include="Source\Header\VehicleFactory.h" />
+    <ClInclude Include="Source\Header\VehicleStateFactory.h" />
     <ClInclude Include="Source\Header\VERTEX.h" />
     <ClInclude Include="Source\Header\VertexBuffer.h" />
     <ClInclude Include="Source\Header\VertexShader.h" />
@@ -745,6 +747,8 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\TweenManager.cpp" />
     <ClCompile Include="Source\Cpp\UIManager.cpp" />
     <ClCompile Include="Source\Cpp\Unit.cpp" />
+    <ClCompile Include="Source\Cpp\VehicleFactory.cpp" />
+    <ClCompile Include="Source\Cpp\VehicleStateFactory.cpp" />
     <ClCompile Include="Source\Cpp\VertexBuffer.cpp" />
     <ClCompile Include="Source\Cpp\VertexShader.cpp" />
     <ClCompile Include="Source\Cpp\Component_WeaponController.cpp" />

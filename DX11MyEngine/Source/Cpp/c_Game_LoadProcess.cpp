@@ -43,6 +43,7 @@
 #include "Component_MeshCollider.h"
 #include "Component_CapsuleCollider.h"
 #include "Component_CylinderCollider.h"
+#include "VehicleFactory.h"
 #include "EnemyFactory.h"
 
 using namespace UtilityData;
@@ -139,181 +140,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         //}
     }
 
-    /* 建物 モデルの生成 */
-    {
-        //{
-        //    // マテリアル取得
-        //    auto matPtr1 = Master::m_pResourceManager->FindMaterial("Building01_Top");
-        //    auto matPtr2 = Master::m_pResourceManager->FindMaterial("Building01_Base1");
-        //    auto matPtr3 = Master::m_pResourceManager->FindMaterial("Building01_Base2");
-        //    auto matPtr4 = Master::m_pResourceManager->FindMaterial("Building01_Base3");
-
-        //    SetupMaterialInfo matInfo[6];
-        //    matInfo[0].Index = 0;
-        //    matInfo[0].pMaterialData = matPtr1;
-
-        //    matInfo[1].Index = 1;
-        //    matInfo[1].pMaterialData = matPtr2;
-
-        //    matInfo[2].Index = 2;
-        //    matInfo[2].pMaterialData = matPtr3;
-
-        //    matInfo[3].Index = 3;
-        //    matInfo[3].pMaterialData = matPtr4;
-
-        //    //matInfo[4].Index = 4;
-        //    //matInfo[4].pMaterialData = matPtr5;
-
-        //    //matInfo[5].Index = 5;
-        //    //matInfo[5].pMaterialData = matPtr6;
-
-
-        //    CreateModelInfo model;
-        //    model.pRenderer = m_pRenderer;
-        //    //model.Path = "Resource/Model/Building/03/Building_Tower_1.fbx";
-        //    model.LODModels[0] = { "Resource/Model/Building/02/Building_01.fbx", 0.0f };
-        //    model.ObjTag = "Building";
-        //    model.IsAnim = false;
-        //    model.MatNum = 4;
-        //    model.SetupMaterial = matInfo;
-        //    model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-
-        //    // 建物を5x5のグリッドで配置
-        //    for (int x = -2; x < 3; x++)
-        //    {
-        //        for (int y = -2; y < 3; y++)
-        //        {
-        //            VEC3 pos = VEC3(50.0f * x, 0.0f, 70.0f * y);
-        //            VEC3 scale = VEC3(1.0f);
-        //            auto obj = MeshFactory::CreateModel(model);
-        //            obj->get_Component<MyTransform>()->set_Scale(scale);
-        //            obj->get_Component<MyTransform>()->set_Pos(50.0f * x, 0.0f, 70.0f * y);
-        //            obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
-
-        //            // ポーズ中は停止
-        //            obj->set_IsUpdateAllowedDuringPause(false);
-
-        //            // 建物制御コンポーネント追加
-        //            obj->add_Component<BuildingController>();
-
-        //            // 体力コンポーネントの追加
-        //            auto health = obj->add_Component<Health>();
-        //            health->set_MaxHP(600.0f);
-        //            health->set_CrntHP(600.0f);
-
-
-        //            auto modelResource = obj->get_Component<ModelMeshResource>();
-
-        //            auto rb = obj->add_Component<RigidBody>();
-        //            auto collider = obj->add_Component<MeshCollider>();
-        //            collider->SetupModelData(modelResource->get_ModelData());
-        //            collider->set_IsStatic(true);
-        //            collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-        //            collider->set_IsConvex(false);
-        //            collider->set_SurfaceType(SURFACE_TYPE::CONCRETE);
-
-        //            PhysicsData::RigidBodyDesc rbDesc;
-        //            rbDesc.mass = 0.0f;
-        //            rbDesc.pos = pos;
-        //            rbDesc.restitution = 1.0f;
-        //            rbDesc.owner = obj;         // オーナーオブジェクトの設定
-        //            rbDesc.collider = collider; // コライダーの設定
-
-        //            rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-
-
-
-        //            //// コライダーの追加
-        //            //auto collider = obj->add_Component<BoxCollider>();
-        //            //collider->set_Size(VEC3(20.0f * scale.x, 30.0f * scale.y, 10.0f * scale.z));
-        //            //collider->set_Center(VEC3(0.0f, 30.0f * scale.y, 0.0f));
-        //            //collider->set_IsStatic(true);
-        //            //// 衝突カテゴリ
-        //            //collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
-
-
-        //            //// コライダーの登録
-        //            //Master::m_pCollisionManager->RegisterCollider(obj->get_Component<BoxCollider>());
-        //        }
-        //    }
-        //}
-
-        //// タワー
-        //{
-        //    auto matPtr1 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_SupportPillar");
-        //    auto matPtr2 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_TopPillar");
-        //    auto matPtr3 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_TopToroid");
-        //    auto matPtr4 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_Top");
-        //    auto matPtr5 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_BaseGround");
-        //    auto matPtr6 = Master::m_pResourceManager->FindMaterial("Building_Tower_1_Wall");
-
-        //    SetupMaterialInfo matInfo[6];
-        //    matInfo[0].Index = 0;
-        //    matInfo[0].pMaterialData = matPtr1;
-
-        //    matInfo[1].Index = 1;
-        //    matInfo[1].pMaterialData = matPtr2;
-
-        //    matInfo[2].Index = 2;
-        //    matInfo[2].pMaterialData = matPtr3;
-
-        //    matInfo[3].Index = 3;
-        //    matInfo[3].pMaterialData = matPtr4;
-
-        //    matInfo[4].Index = 4;
-        //    matInfo[4].pMaterialData = matPtr5;
-
-        //    matInfo[5].Index = 5;
-        //    matInfo[5].pMaterialData = matPtr6;            
-        //    CreateModelInfo model;
-        //    model.pRenderer = m_pRenderer;
-        //    model.ObjTag = "Building";
-        //    model.IsAnim = false;
-        //    model.LODModels[0] = { "Resource/Model/Building/03/Building_Tower_1.fbx", 0.0f };
-        //    model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-        //    model.MatNum = 6;
-        //    model.SetupMaterial = matInfo;
-
-        //    VEC3 pos = VEC3(-200.0f, 0.0f, 150.0f);
-        //    VEC3 scale = VEC3(1.0f);
-        //    auto obj = MeshFactory::CreateModel(model);
-        //    obj->get_Component<MyTransform>()->set_Scale(scale);
-        //    obj->get_Component<MyTransform>()->set_Pos(pos);
-        //    obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
-
-        //    // ポーズ中は停止
-        //    obj->set_IsUpdateAllowedDuringPause(false);
-
-        //    // 建物制御コンポーネント追加
-        //    obj->add_Component<BuildingController>();
-
-        //    // 体力コンポーネントの追加
-        //    auto health = obj->add_Component<Health>();
-        //    health->set_MaxHP(1600.0f);
-        //    health->set_CrntHP(1600.0f);
-
-        //    auto modelResource = obj->get_Component<ModelMeshResource>();
-
-        //    auto rb = obj->add_Component<RigidBody>();
-        //    auto collider = obj->add_Component<MeshCollider>();
-        //    //collider->set_Size(VEC3(20.0f * scale.x, 50.0f * scale.y, 10.0f * scale.z));
-        //    //collider->set_Center(VEC3(0.0f, 50.0f * scale.y, 0.0f));
-        //    collider->SetupModelData(modelResource->get_ModelData());
-        //    collider->set_IsStatic(true);
-        //    collider->set_CollisionCategory(COLLISION_CATEGORY::DESTRUCTION_BUILDING);// 衝突カテゴリ
-        //    collider->set_SurfaceType(SURFACE_TYPE::METAL);
-
-        //    PhysicsData::RigidBodyDesc rbDesc;
-        //    rbDesc.mass = 0.0f;
-        //    rbDesc.pos = pos;
-        //    rbDesc.restitution = 1.0f;
-        //    rbDesc.owner = obj;         // オーナーオブジェクトの設定
-        //    rbDesc.collider = collider; // コライダーの設定
-
-        //    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-        //}
-
-    }
     {
         auto obj = GIGA_Engine::Instantiate3D(std::make_shared<GameObject>(), true);
         obj->set_Tag("DistortionEffect");
@@ -376,62 +202,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     Master::m_pMapManager->LoadMapObjectAssetDataAll("Resource/MapData/MAP_OBJECT_ASSETS.json");
     Master::m_pMapManager->LoadBuildingFragmentData("Resource/MapData/BUILDING_FRAGMENT_DATA.json");
     Master::m_pMapManager->CreateMap("Resource/MapData/MAP_MOUNTAINS_A.json");
-
-    /* 木の生成 */
-    {
-        // マテリアル取得
-        auto matPtr1 = Master::m_pResourceManager->FindMaterial("Tree_Lerf");
-        auto matPtr2 = Master::m_pResourceManager->FindMaterial("Tree_Wood");
-        matPtr1->m_CullMode = RenderData::CULL_MODE::NONE;  // 葉は両面描画
-
-        SetupMaterialInfo matInfo[2];
-        matInfo[0].Index = 0;
-        matInfo[0].pMaterialData = matPtr1;
-        matInfo[1].Index = 1;
-        matInfo[1].pMaterialData = matPtr2;
-
-        CreateModelInfo model;
-        model.pRenderer = m_pRenderer;
-        model.LODModels[0] = { "Resource/Model/MapObject/Tree/Tree.fbx", 0.0f };
-        model.ObjTag = "Tree";
-        model.IsAnim = false;
-        model.MatNum = 2;
-        model.IsActive = true;
-        model.SetupMaterial = matInfo;
-        model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-        model.IsTransparent = false;
-        VEC3 pos = VEC3(-130.0f, 3.0f, 100.0f);
-        auto obj = MeshFactory::CreateModel(model);
-		obj->set_IsStatic(false);
-        obj->get_Component<MyTransform>()->set_Scale(1.0f, 1.0f, 1.0f);
-        obj->get_Component<MyTransform>()->set_Pos(pos);
-        obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
-
-        auto modelResource = obj->get_Component<ModelMeshResource>();
-
-        auto rb = obj->add_Component<RigidBody>();
-        auto collider = obj->add_Component<CylinderCollider>();
-        collider->set_Radius(1.0f);
-        collider->set_Height(6.0f);
-        collider->set_Center(VEC3(0.0f, 6.0f, 0.0f));
-        collider->set_IsStatic(false);
-        //collider->SetupModelData(modelResource->get_ModelData());
-        //collider->set_IsConvex(true);
-        collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
-        collider->set_SurfaceType(SURFACE_TYPE::SOIL);
-
-        PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 1.0f;
-        rbDesc.centerOfMassOffset = collider->get_Center();
-        rbDesc.pos = pos;
-        rbDesc.restitution = 0.5f;
-        rbDesc.friction = 0.5f;
-        rbDesc.owner = obj;         // オーナーオブジェクトの設定
-        rbDesc.collider = collider; // コライダーの設定
-
-        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-    }
-
 
     //
     //リジッドボディテスト
@@ -523,7 +293,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             model.pRenderer = m_pRenderer;
             model.ObjTag = "Ground";
             model.IsAnim = false;
-            model.LODModels[0] = { "Resource/Model/Building/Ground/Ground01.fbx", 0.0f };
+            model.LODModels[0] = { "Resource/Model/MapObject/Building/Ground/Ground01.fbx", 0.0f };
             model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
             model.MatNum = 1;
             model.SetupMaterial = matInfo;

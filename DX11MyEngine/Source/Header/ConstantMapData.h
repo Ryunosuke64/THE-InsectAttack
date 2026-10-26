@@ -10,6 +10,7 @@ namespace Map
         BUILDING,           // 建物
         EXPLOSION_BUILDING, // 爆発する建物
         PROP,               // 岩・車・柵など
+        DECORATION,         // 草・花などの装飾物
     };
 
 
@@ -19,6 +20,7 @@ namespace Map
         {"BUILDING",           MAP_OBJECT_TYPE::BUILDING},
         {"EXPLOSION_BUILDING", MAP_OBJECT_TYPE::EXPLOSION_BUILDING },
         {"PROP",               MAP_OBJECT_TYPE::PROP},
+        {"DECORATION",         MAP_OBJECT_TYPE::DECORATION},
     };
 
     ///* マップの保存する情報*/

@@ -31,7 +31,7 @@ void mission_setup()
         VEC3(0.0f,50.0,0.0), 
         20.0f,
         1,
-        10000.0f,
+        100.0f,
         true
     );
 }
@@ -72,7 +72,7 @@ void mission_main()
         ENEMY_TYPE::DRONE_TYPE_A,
         VEC3(0.0f,250.0,0.0), 
         50.0f,
-        20,
+        1,
         100.0f,
         true
     );

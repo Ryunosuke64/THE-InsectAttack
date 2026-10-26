@@ -15,6 +15,8 @@ public:
 	static bool CreateBuildingDebris(const std::string& _assetID, const Map::MO_TransformData& _transform);
 
 private:
+	static bool AddPhysics(const Map::MO_PhysicsData& data, std::shared_ptr<GameObject> outObj);	// •¨—ˆ—‚ğ’Ç‰Á‚·‚é
+
 	static std::shared_ptr<class Collider> SetupColliderBox(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj);
 	static std::shared_ptr<class Collider> SetupColliderSphere(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj);
 	static std::shared_ptr<class Collider> SetupColliderCapsule(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj);

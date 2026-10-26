@@ -7,6 +7,7 @@ using namespace VECTOR3;
 using namespace VECTOR2;
 using namespace UtilityData;
 using namespace EnemyData;
+using namespace VehicleData;
 
 //*---------------------------------------------------------------------------------------
 //* @:V_Durga_IdleState Class 
@@ -36,5 +37,5 @@ void V_Durga_IdleState::OnExit(class Vehicle* pOwner)
 //*----------------------------------------------------------------------------------------
 int V_Durga_IdleState::Update(class Vehicle* pOwner)
 {
-	return ANT_STATE::ANT_STATE_PATROL_IDLE;
+	return DURGA_V_STATE::DURGA_V_STATE_IDLE;
 }

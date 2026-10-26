@@ -6,6 +6,14 @@
 namespace VehicleData
 {
 	/// <summary>
+	/// ビークルの種類
+	/// </summary>
+	enum class VEHICLE_TYPE
+	{
+		DURGA,
+	};
+
+	/// <summary>
 	/// ドルガのステート
 	/// </summary>
 	enum DURGA_V_STATE
@@ -17,5 +25,14 @@ namespace VehicleData
 		DURGA_V_STATE_DOWN,		// 倒れる
 		DURGA_V_STATE_GETUP,	// 立ち上がる
 		DURGA_V_STATE_DEAD,		// 死
+	};
+
+	// ビークル出現時のセットアップデータ
+	struct VehicleSpawnData
+	{
+		VEHICLE_TYPE type;			// 種類
+		VECTOR3::VEC3 position;     // 位置
+		VECTOR3::VEC3 rotation;     // 回転
+		float hp = 0.0f;			// HP
 	};
 };

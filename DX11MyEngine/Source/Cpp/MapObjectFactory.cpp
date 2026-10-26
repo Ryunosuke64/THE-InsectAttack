@@ -40,10 +40,6 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     // マップオブジェクトの定義データを探す
     auto assetData = Master::m_pMapManager->FindMapObjectAssetData(data.assetID);
 
-    // 物理プリセットを探す
-    MO_PhysicsData physicsData = 
-        Master::m_pMapManager->FindPhysicsDataPreset(assetData.physicsPresetID);
-
     std::shared_ptr<GameObject>generatedObject;
 
     auto renderer = Master::m_pDataManager->get_RendererEngine();
@@ -51,13 +47,51 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     VEC3 rot = data.transform.rotation;
     VEC3 scl = data.transform.scale;
 
+    // マテリアルサイズチェック
+    if (assetData.materials.size() <= 0)
+    {
+        Tool::ErrorMessage(L"マテリアルを最低一つ設定してください",L"MapObjectFactory");
+        assert(false);
+        return false;
+    }
+
+    // マテリアルぬるぽチェック
+    if (assetData.materials.at(0).pMaterialData == nullptr)
+    {
+        Tool::ErrorMessage(L"マテリアルがぬ　る　ぽ", L"MapObjectFactory");
+        assert(false);
+        return false;
+    }
+
+    // マテリアルのブレンドモードによって、モデルの作成方法を変える
+    // ※一旦、マテリアル配列の０番目で決定する
+    const auto& material = assetData.materials[0].pMaterialData;
+    BLEND_MODE blend = material->m_BlendMode;
+    bool isNormal = material->m_NormalMap.Texture.expired() ? false : true ;    // ノーマルマップが設定されているか
+    bool isTransparent = false;
+    SHADER_TYPE shderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+
+    // ノーマルが無い
+    if (!isNormal)
+    {
+        shderType = SHADER_TYPE::DEFERRED_STD_STATIC;
+    }
+    // アルファであれば、フォワードにする
+    if (blend == BLEND_MODE::ALPHA)
+    {
+        shderType = SHADER_TYPE::FORWARD_UNLIT_STATIC;
+        isTransparent = true;
+    }
+
+
     CreateModelInfo model;
     model.pRenderer = renderer;
     model.ObjTag = data.assetID;
     model.IsAnim = false;
     model.MatNum = assetData.materials.size();
+    model.IsTransparent = isTransparent;
     model.SetupMaterial = assetData.materials.data();
-    model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+    model.ShaderType = shderType;
 
     // LOD
     model.LODModels[0] = { assetData.modelPath, 0.0f };
@@ -65,6 +99,7 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     generatedObject = MeshFactory::CreateModel(model);
     if (!generatedObject)
     {
+        Tool::ErrorMessage(L"モデルの作成に失敗しました", L"MapObjectFactory");
         assert(false);
         return false;
     }
@@ -91,11 +126,15 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
 
     //
     // 体力コンポーネント追加
+    // 体力が0.0以上の場合
     //
-    auto health = generatedObject->add_Component<Health>();
-    float hp = assetData.health;
-    health->set_MaxHP(hp);
-    health->set_CrntHP(hp);
+    if (assetData.health > 0.0f)
+    {
+        auto health = generatedObject->add_Component<Health>();
+        float hp = assetData.health;
+        health->set_MaxHP(hp);
+        health->set_CrntHP(hp);
+    }
 
     // 
     // 破壊コンポーネント追加
@@ -112,6 +151,12 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
             // ***************************************
         case MAP_OBJECT_TYPE::PROP:
             destructible->Setup(std::make_unique<PropDestructionBehavior>());
+            break; 
+            
+            // ***************************************
+            // 装飾品系
+            // ***************************************
+        case MAP_OBJECT_TYPE::DECORATION:
             break;
 
             // ***************************************
@@ -132,99 +177,21 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
 
     auto modelResource = generatedObject->get_Component<ModelMeshResource>();
 
-    //
-    // コライダーの装着
-    //
-    for (const auto& colliderData : physicsData.colliders)
+
+    // 物理プリセットIDがある場合のみ、物理処理を追加する
+    if (!assetData.physicsPresetID.empty())
     {
-        auto rb = generatedObject->add_Component<RigidBody>();
-        std::shared_ptr<Collider> collider;
+        // 物理プリセットを探す
+        MO_PhysicsData physicsData =
+            Master::m_pMapManager->FindPhysicsDataPreset(assetData.physicsPresetID);
 
-        switch (colliderData.type)
+        // 物理処理を追加する
+        if (!AddPhysics(physicsData, generatedObject))
         {
-        case COLLIDER_TYPE::NONE:
-            continue;
-
-        case COLLIDER_TYPE::BOX:
-            collider = SetupColliderBox(colliderData, generatedObject);
-            break;
-
-        case COLLIDER_TYPE::SPHERE:
-            collider = SetupColliderSphere(colliderData, generatedObject);
-            break;
-
-        case COLLIDER_TYPE::CAPSULE:
-            collider = SetupColliderCapsule(colliderData, generatedObject);
-            break;
-
-        case COLLIDER_TYPE::CYLINDER:
-            collider = SetupColliderCylinder(colliderData, generatedObject);
-            break;
-
-        case COLLIDER_TYPE::CONVEX_HULL:
-            collider = SetupColliderConvexHull(colliderData, generatedObject, modelResource->get_ModelData());
-            break;
-
-        case COLLIDER_TYPE::CONCAVE_TRIANGLE:
-            collider = SetupColliderConcave(colliderData, generatedObject, modelResource->get_ModelData());
-            break;
-
-        default:
-            continue;
-
-        }
-
-        // コライダーの装着が失敗した場合
-        if (!collider)
-        {
+            Tool::ErrorMessage(L"物理処理を追加に失敗しました", L"MapObjectFactory");
             assert(false);
-            continue;
+            return false;
         }
-
-        // 材質設定
-        collider->set_SurfaceType(colliderData.surfaceType);
-
-        // カテゴリ設定
-        collider->set_CollisionCategory(physicsData._myCollisionCategory);
-
-        //*****************************************************************************************
-        //						衝突マスクの設定
-        //*****************************************************************************************
-        // 
-        // 押し出しあり
-        //
-        collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
-        collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
-        collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_BLOCK);                // プレイヤー
-        collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_BLOCK);                 // エネミー
-        collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_BLOCK);          // エネミー弾
-        collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_BLOCK);                  // アイテム
-        collider->set_CollisionResponse(COLLISION_CATEGORY::PROP, COLLISION_RESPONSE::RESPONSE_BLOCK);                  // 小物
-
-        //
-        // 判定なし
-        //
-
-        MO_RigidBodyData rigidBody = physicsData.rigidBody;
-
-        PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 0.0f;                                     // 質量（マップに配置されるオブジェクトは基本動かないため、最初は質量を0にする。破壊時などは、アセットIDからデータを取り出して設定しなおす）
-        rbDesc.restitution = rigidBody.restitution;             // 反発係数
-        rbDesc.friction = rigidBody.friction;                   // 摩擦係数
-        rbDesc.linearFactor = rigidBody.linearFactor;           // 移動制限
-        rbDesc.angularFactor = rigidBody.angularFactor;         // 回転制限
-        rbDesc.linearDamping = rigidBody.linearDamping;         // 移動減衰
-        rbDesc.angularDamping = rigidBody.angularDamping;       // 回転減衰
-        rbDesc.gravity = VEC3(0.0f, -9.8f * rigidBody.gravityScale , 0.0f); // 重力
-
-        rbDesc.centerOfMassOffset = collider->get_Center();     // 中心位置オフセット
-        rbDesc.collider = collider;                             // コライダーの設定
-        rbDesc.pos = pos;                                       // 位置
-        rbDesc.owner = generatedObject;                         // オーナーオブジェクトの設定
-
-             
-
-        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
     }
 
     return true;
@@ -382,8 +349,6 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
             boundsCenter.z
         );
 
-
-
         //
         // コライダーの装着
         //
@@ -483,6 +448,124 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
     }
     return true;
 }
+
+//*---------------------------------------------------------------------------------------
+//*【?】物理処理を追加する
+//* [引数]
+//* data     : 物理データ
+//* outObj   : 物理処理を追加するオブジェクトの共有ポインタ
+//*
+//* [返値]
+//* 成功したか
+//*----------------------------------------------------------------------------------------
+bool MapObjectFactory::
+AddPhysics(const Map::MO_PhysicsData& data, std::shared_ptr<GameObject> outObj)
+{
+    auto modelResource = outObj->get_Component<ModelMeshResource>();
+    if (!modelResource)
+    {
+        assert(false);
+        return false;
+    }
+
+    //
+    // コライダーの装着
+    //
+    for (const auto& colliderData : data.colliders)
+    {
+        auto rb = outObj->add_Component<RigidBody>();
+        std::shared_ptr<Collider> collider;
+
+        switch (colliderData.type)
+        {
+        case COLLIDER_TYPE::NONE:
+            continue;
+
+        case COLLIDER_TYPE::BOX:
+            collider = SetupColliderBox(colliderData, outObj);
+            break;
+
+        case COLLIDER_TYPE::SPHERE:
+            collider = SetupColliderSphere(colliderData, outObj);
+            break;
+
+        case COLLIDER_TYPE::CAPSULE:
+            collider = SetupColliderCapsule(colliderData, outObj);
+            break;
+
+        case COLLIDER_TYPE::CYLINDER:
+            collider = SetupColliderCylinder(colliderData, outObj);
+            break;
+
+        case COLLIDER_TYPE::CONVEX_HULL:
+            collider = SetupColliderConvexHull(colliderData, outObj, modelResource->get_ModelData());
+            break;
+
+        case COLLIDER_TYPE::CONCAVE_TRIANGLE:
+            collider = SetupColliderConcave(colliderData, outObj, modelResource->get_ModelData());
+            break;
+
+        default:
+            continue;
+
+        }
+
+        // コライダーの装着が失敗した場合
+        if (!collider)
+        {
+            assert(false);
+            continue;
+        }
+
+        // 材質設定
+        collider->set_SurfaceType(colliderData.surfaceType);
+
+        // カテゴリ設定
+        collider->set_CollisionCategory(data._myCollisionCategory);
+
+        //*****************************************************************************************
+        //						衝突マスクの設定
+        //*****************************************************************************************
+        // 
+        // 押し出しあり
+        //
+        collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
+        collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
+        collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_BLOCK);                // プレイヤー
+        collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_BLOCK);                 // エネミー
+        collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_BLOCK);          // エネミー弾
+        collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_BLOCK);                  // アイテム
+        collider->set_CollisionResponse(COLLISION_CATEGORY::PROP, COLLISION_RESPONSE::RESPONSE_BLOCK);                  // 小物
+
+        //
+        // 判定なし
+        //
+
+        MO_RigidBodyData rigidBody = data.rigidBody;
+
+        auto transform = outObj->get_Component<MyTransform>();
+        VEC3 pos = transform->get_VEC3ToPos();
+
+        PhysicsData::RigidBodyDesc rbDesc;
+        rbDesc.mass = 0.0f;                                     // 質量（マップに配置されるオブジェクトは基本動かないため、最初は質量を0にする。破壊時などは、アセットIDからデータを取り出して設定しなおす）
+        rbDesc.restitution = rigidBody.restitution;             // 反発係数
+        rbDesc.friction = rigidBody.friction;                   // 摩擦係数
+        rbDesc.linearFactor = rigidBody.linearFactor;           // 移動制限
+        rbDesc.angularFactor = rigidBody.angularFactor;         // 回転制限
+        rbDesc.linearDamping = rigidBody.linearDamping;         // 移動減衰
+        rbDesc.angularDamping = rigidBody.angularDamping;       // 回転減衰
+        rbDesc.gravity = VEC3(0.0f, -9.8f * rigidBody.gravityScale, 0.0f); // 重力
+
+        rbDesc.centerOfMassOffset = collider->get_Center();     // 中心位置オフセット
+        rbDesc.collider = collider;                             // コライダーの設定
+        rbDesc.pos = pos;                                       // 位置
+        rbDesc.owner = outObj;                         // オーナーオブジェクトの設定
+
+        // リジッドボディのセットアップ
+        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+    }
+}
+
 
 std::shared_ptr<class Collider> MapObjectFactory::
 SetupColliderBox(const Map::MO_ColliderData& data, std::shared_ptr<GameObject> obj)

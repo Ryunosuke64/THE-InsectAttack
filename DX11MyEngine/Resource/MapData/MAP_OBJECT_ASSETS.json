@@ -4,7 +4,7 @@
         {
             "assetID" : "Tree_01",
             "physicsPresetID" : "Tree_01",
-            "modelPath" : "Resource/Model/MapObject/Tree/Tree.fbx",
+            "modelPath" : "Resource/Model/MapObject/Tree/Tree_01.fbx",
             "mapObjectType" : "PROP",
             "materials" : 
             [
@@ -14,8 +14,21 @@
             "isGrabbable" : false,
             "isDestruction" : true,
             "health" : 50.0
-        },       
-         {
+        },   
+        {
+            "assetID" : "Glass_01",
+            "physicsPresetID" : "",
+            "modelPath" : "Resource/Model/MapObject/Glass/Glass_01.fbx",
+            "mapObjectType" : "PROP",
+            "materials" : 
+            [
+                {"slot" : 0, "tag" : "Grass"}
+            ],
+            "isGrabbable" : false,
+            "isDestruction" : false,
+            "health" : 10000.0
+        },           
+        {
             "assetID" : "Rock_01",
             "physicsPresetID" : "Rock_01",
             "modelPath" : "Resource/Model/MapObject/Rock/Rock_01.fbx",
@@ -31,7 +44,7 @@
         {
             "assetID" : "Building_01",
             "physicsPresetID" : "Building_01",
-            "modelPath" : "Resource/Model/Building/02/Building_01.fbx",
+            "modelPath" : "Resource/Model/MapObject/Building/02/Building_01.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -47,7 +60,7 @@
         {
             "assetID" : "Building_02",
             "physicsPresetID" : "Building_01",
-            "modelPath" : "Resource/Model/Building/04/Building_04.fbx",
+            "modelPath" : "Resource/Model/MapObject/Building/04/Building_04.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -60,7 +73,7 @@
         {
             "assetID" : "BuildingTW_01",
             "physicsPresetID" : "BuildingTW_01",
-            "modelPath" : "Resource/Model/Building/03/Building_Tower_1.fbx",
+            "modelPath" : "Resource/Model/MapObject/Building/03/Building_Tower_1.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -76,13 +89,13 @@
             "health" : 600.0
         },
         {
-            "assetID" : "Robot",
+            "assetID" : "Durga",
             "physicsPresetID" : "BuildingTW_01",
-            "modelPath" : "Resource/Model/Robo/Robot.fbx",
+            "modelPath" : "Resource/Model/Vehicle/Durga/Durga.fbx",
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
-                {"slot" : 0, "tag" : "Rock_01"}
+                {"slot" : 0, "tag" : "Durga"}
             ],
             "isGrabbable" : false,
             "isDestruction" : true,

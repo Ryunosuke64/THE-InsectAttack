@@ -321,6 +321,14 @@ bool ResourceManager::ImportCSV_AllMaterialData(const std::string& _path)
             /* ブレンドモード */
             std::getline(ss, toStr, ',');
             data.m_BlendMode = static_cast<BLEND_MODE>(std::stoi(toStr));
+            
+            /* カリングモード */
+            std::getline(ss, toStr, ',');
+            auto cullMode = magic_enum::enum_cast<RenderData::CULL_MODE>(toStr);
+            if (cullMode.has_value())
+            {
+                data.m_CullMode = cullMode.value();
+            }
 
             // 登録
             m_pMaterialMap[tag] = std::make_shared<Material>(data);

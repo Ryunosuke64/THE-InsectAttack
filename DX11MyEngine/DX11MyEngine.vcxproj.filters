@@ -1026,6 +1026,12 @@
     <ClCompile Include="Source\Cpp\Component_BoneCollider.cpp">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\VehicleFactory.cpp">
+      <Filter>ソース ファイル\Game\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\VehicleStateFactory.cpp">
+      <Filter>ソース ファイル\Game\StateFactory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1639,6 +1645,12 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_BoneCollider.h">
       <Filter>ソース ファイル\Engine\BaseComponent\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\VehicleFactory.h">
+      <Filter>ソース ファイル\Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\VehicleStateFactory.h">
+      <Filter>ソース ファイル\Game\StateFactory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
