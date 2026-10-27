@@ -103,7 +103,7 @@ PS_OUT PSMain(PS_IN input)
     float3 decalWorldNormal = normalize(mul(normTex.xyz, (float3x3) cb_Transform));
     decalWorldNormal = decalWorldNormal * 0.5f + 0.5f; // 0Å`1ñﬂÇ∑
     
-    albedColor.rgb = albedTex.rgb * cb_DecalColor;
+    albedColor.rgb = albedTex.rgb * cb_DecalColor * cb_DiffuseColor.rgb;
     albedColor.a = albedTex.a;
     normalColor.rgb = decalWorldNormal.rgb;
     normalColor.a = normTex.a;

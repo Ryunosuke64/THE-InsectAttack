@@ -31,3 +31,23 @@ public:
 	void OnExit(class Vehicle* pOwner)override;
 	int Update(class Vehicle* pOwner)override;
 };
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:V_Durga_MoveState Class --- */
+//
+//  ★継承：IState ★
+//
+// 【?】移動ステート
+//		
+// ***************************************************************************************
+class V_Durga_MoveState : public IState<class Vehicle>
+{
+private:
+
+
+public:
+	void OnEnter(class Vehicle* pOwner) override;
+	void OnExit(class Vehicle* pOwner)override;
+	int Update(class Vehicle* pOwner)override;
+};

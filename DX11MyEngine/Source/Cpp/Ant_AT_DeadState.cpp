@@ -32,8 +32,9 @@ void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 	// 移動ベクトルは0
 	pOwner->set_MoveVelocity(VEC3());
 
-	// アニメーションの停止
-	pOwner->set_IsAnim(false);
+	// 死亡アニメーション
+	pOwner->set_IsAnim(true);
+	pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::DEAD));
 
 	// 死亡エフェクトの作成
 	SpawnDeadEffect(pOwner);
@@ -194,7 +195,7 @@ void Ant_AT_DeadState::SpawnDeadEffect(class EnemyController* pOwner)
 	Master::m_pItemManager->SpawnItemRand(DROP_ITEM_MIN, DROP_ITEM_MAX, spawnItemPos, 0.0f);
 	Master::m_pItemManager->SpawnPointItem(spawnItemPos, 100);	// ポイントアイテムをスポーン
 
-	pOwner->set_IsAnim(false);	// アニメーションを停止
+	//pOwner->set_IsAnim(false);	// アニメーションを停止
 
 	// 死亡エフェクト
 	int handle = Master::m_pEffectManager->PlayEffect("AntDead_01");

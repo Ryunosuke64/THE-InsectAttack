@@ -42,7 +42,6 @@ EnemyController::EnemyController(std::weak_ptr<GameObject> pOwner, int updateRan
 	m_IsAnim(false),
 	m_IsGrounded(false),
 	m_IsOnDamage(false),
-	m_CrntAnimID(-1),
 	m_MoveSpeed(0.0f),
 	m_MoveVelocity(VECTOR3::VEC3()),
 	m_StateTimer(0),
@@ -271,19 +270,11 @@ void EnemyController::ChangeState(const int _state)
 void EnemyController::ChangeAnimation(const int _newId)
 {
 	// 同じまたは停止中なら返す
-	if (_newId == m_CrntAnimID || m_IsAnim == false)
+	if (m_IsAnim == false)
 	{
 		return;
 	}
-
-	// ひとつ前のアニメーションIDセット
-	m_pAnimatorComp->set_PrevAnimIndex(static_cast<int>(m_CrntAnimID));
-
-	m_CrntAnimID = _newId;
-
-	// 現在のアニメーションIDセット
-	m_pAnimatorComp->set_AnimIndex(static_cast<int>(_newId));
-	m_pAnimatorComp->set_AnimTime(0.0f);
+	m_pAnimatorComp->ChangeAnim(_newId);
 }
 
 //*---------------------------------------------------------------------------------------

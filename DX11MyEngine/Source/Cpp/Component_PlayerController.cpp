@@ -668,7 +668,7 @@ void PlayerController::Reset()
 //*----------------------------------------------------------------------------------------
 void PlayerController::ChangeAnimation(PlayerData::PLAYER_RANGER_ANIM_ID id, float _blendTime)
 {
-	// 同じアニメーションなら返す（ここで弾くのは今まで通りでOK）
+	// 同じアニメーションなら返す
 	if (id == m_CrntAnimID)
 	{
 		return;
@@ -854,8 +854,8 @@ ApplySlopeSlide(VECTOR3::VEC3& velocity, const VECTOR3::VEC3& groundNormal)
 
 	constexpr float START_ANGLE = 30.0f;
 	constexpr float FULL_ANGLE = 45.0f;
-	constexpr float SLIDE_POWER = 3.5f;
-	constexpr float MAX_SLIDE_SPEED = 7.0f;
+	constexpr float SLIDE_POWER = 1.5f;
+	constexpr float MAX_SLIDE_SPEED = 1.6f;
 
 	VEC3 normal = groundNormal.Normalize();
 

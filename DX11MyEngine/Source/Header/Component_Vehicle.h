@@ -37,9 +37,9 @@ private:
 	CONTROLL_MODE m_ControllMode;			// 操作方法
 	float m_StateTimer;						// ステート時間
 	float m_AnimSpeed;						// アニメーション速度
-	int m_CrntAnimID;						// 現在のアニメーション番号
-	bool m_IsAnim;							// アニメーション中かどうか
-
+	bool m_IsPlayAnim;						// アニメーションさせるかどうか
+	float m_MoveSpeed;						// 移動速度
+	int m_WeaponID;							// 使用する武器ID
 
 	class Health* m_pHealthComp;					// 体力管理コンポーネント
 	class SkinnedMeshAnimator* m_pAnimatorComp;		// アニメータコンポーネント
@@ -68,18 +68,34 @@ public:
 	/// <summary>アニメーションの変更 </summary>
 	void ChangeAnimation(const int _newId);
 
+	/* アニメーションの再生させるかどうか */
+	bool get_IsPlayAnim() const { return m_IsPlayAnim; }
+	void set_IsPlayAnim(bool _flag) { m_IsPlayAnim = _flag; }
+
 	/* アニメーション速度 */
 	void set_AnimSpeed(float _time) { m_AnimSpeed = _time; }
 	float get_AnimSpeed()const { return m_AnimSpeed; }
 
-	/* アニメーションID */
-	void set_AnimID(const int _id) { m_CrntAnimID = _id; }
-	int get_AnimID()const { return m_CrntAnimID; }
-	
 	/* 死亡フラグ */
 	bool get_IsDead()const;
 
 	/* 移動ロジックの切り替え */
 	void set_MoveLogicState(UtilityData::MOVE_BEHAVIOUR_TYPE _moveType);
-};
 
+	/* 移動速度 */
+	float get_MoveSpeed() const { return m_MoveSpeed; }
+	void set_MoveSpeed(float _spd) { m_MoveSpeed = _spd; }
+
+	/* 武器ID */
+	void set_WeaponID(int _id) { m_WeaponID = _id; }
+	int get_WeaponID()const { return m_WeaponID; }
+	// =========================================================================================
+	//	各コンポーネントの取得
+	// =========================================================================================
+	class MoveLogic* get_MoveLogicComponent() const { return m_pMoveLogicComp; };
+	class SkinnedMeshAnimator* get_AnimatorComponent() const { return m_pAnimatorComp; };
+	class RigidBody* get_RigidBodyComponent() const { return m_pRigidBodyComp; };
+	class Health* get_HealthComponent() const { return m_pHealthComp; }
+	class MyTransform* get_TransformComponent() const { return m_pTransformComp; }
+	class AI_GunWeapon* get_AIGunWeapon() const { return m_pAIGunWeapon; }
+};

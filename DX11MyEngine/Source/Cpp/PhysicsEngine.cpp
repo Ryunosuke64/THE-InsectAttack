@@ -793,6 +793,13 @@ CreateRigidBody(const RigidBodyDesc& desc)
         return resultHandle;
     }
 
+    pShape->setLocalScaling(
+        btVector3(
+            desc.localScaling.x, 
+            desc.localScaling.y, 
+            desc.localScaling.z)
+    );
+
     // トランスフォーム設定
     btTransform transform;
     transform.setIdentity();
@@ -1187,6 +1194,8 @@ btCapsuleShape* PhysicsEngine::CreateShapeCapsule(float radius, float height, Ph
         assert(false && "Invalid capsule axis");
         break;
     }
+
+    return nullptr;
 }
 
 //*-----------------------------------------------------------------------------------------

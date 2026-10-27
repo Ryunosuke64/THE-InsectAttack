@@ -21,7 +21,7 @@ Building_Tower_1_Wall,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/MapObject/
 Building_Tower_1_BaseGround,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex02.jpg,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex02_normal.png,-1,0,BACK
 MotherShip,1,1,1,1,1,1,1,1,150,0.2,0.2,0.2,0,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
 Ground,1,1,1,1,1,1,1,1,0,0,0,0,0,Resource/Texture/Materials/aerial_grass_rock_diff_4k.png,Resource/Texture/Materials/aerial_grass_rock_nor_dx_4k.png,-1,0,BACK
-GroundCity_01,1,1,1,1,1,1,1,1,0,0,0,0,0,Resource/Model/MapObject/Building/Ground/Textures/T_CityGround_Atlas.png,Resource/Texture/DefaultN_Map.png,-1,0,BACK
+GroundCity_01,1,1,1,1,1,1,1,1,0,0,0,0,0,Resource/Model/MapObject/Building/Ground/Textures/Asphalt023S_2K-PNG_Color.png,Resource/Model/MapObject/Building/Ground/Textures/Asphalt023S_2K-PNG_NormalGL.png,-1,0,BACK
 Billboard,1,1,1,1,1,1,1,1,50,0,0,0,0,Resource/Texture/Billboard.png,-1,-1,1,BACK
 Recovery_Billboard,1,1,1,1,1,1,1,1,50,5,0,0,0,Resource/Texture/Item/Recovery.png,-1,-1,1,BACK
 RecoveryPlus_Billboard,1,1,1,1,1,1,1,1,50,5,0,0,0,Resource/Texture/Item/RecoveryPlus.png,-1,-1,1,BACK

@@ -19,10 +19,13 @@ void Ant_PT_IdleState::OnEnter(class EnemyController* pOwner)
 	// 移動ベクトルは0
 	pOwner->set_MoveVelocity(VEC3());
 
-	pOwner->set_IsAnim(false);
+	pOwner->set_IsAnim(true);
+	pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::IDLE));
+	// アニメーション速度
+	pOwner->set_AnimSpeed(ANIM_SPEED);
+
 
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
-
 	m_IdleDuration = Master::m_pRandomManager->GetFloatRandom(IDLE_MIN_TIME, IDLE_MAX_TIME);
 }
 

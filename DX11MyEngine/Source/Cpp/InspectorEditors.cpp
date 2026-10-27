@@ -21,6 +21,7 @@
 #include "Component_Physics.h"
 #include "Component_RigidBody.h"
 #include <limits>
+#include <cmath>
 
 using namespace VECTOR2;
 using namespace VECTOR3;
@@ -767,56 +768,169 @@ bool SkinnedMeshAnimatorEditor::Init(RendererEngine &renderer)
 
 void SkinnedMeshAnimatorEditor::OnEditorGUI(RendererEngine &renderer, GameObject &pObj)
 {
-    // コンポーネントの取得
     auto pComp = pObj.get_Component<SkinnedMeshAnimator>();
-
-    if (pComp == nullptr)
+    if (!pComp)
     {
         return;
     }
 
-    float animTime = pComp->get_AnimProcTime();
-    int animIdx = pComp->getAnimIndex();
-    int prebAnimIdx = pComp->get_PrevAnimIndex();
-    bool isAnim = pComp->get_IsAnim();
-    std::vector<AnimationData *>animDataList = pComp->get_AnimationDataList();
-
-    // beginはInspectorWindowで行っている
-
-    // ノード
-    if (Master::m_pDebugger->DG_TreeNode(U8ToChar(u8"スキニングアニメーター")))
+    auto& debugger = *Master::m_pDebugger;
+    ImGui::PushID(pComp.get());
+    if (debugger.DG_TreeNode(U8ToChar(u8"スキニングアニメーター")))
     {
-        Master::m_pDebugger->DG_Separator();    // 区切り線
-        Master::m_pDebugger->DG_BulletText(U8ToChar(u8"アニメーション時間：%f"), animTime);
-        Master::m_pDebugger->DG_RadioButton(U8ToChar(u8"再生中か"), isAnim);
-
-        if (Master::m_pDebugger->DG_TreeNode(U8ToChar(u8"アニメーション情報")))
-        {
-            for (auto &anim : animDataList)
+        debugger.DG_Separator();
+        bool refreshPose = false;
+        const auto animDataList = pComp->get_AnimationDataList();
+        const auto isValidIndex = [&](int index) {
+            return index >= 0 && static_cast<size_t>(index) < animDataList.size() &&
+                animDataList[index] != nullptr;
+        };
+        const auto animLabel = [&](int index) -> std::string {
+            if (!isValidIndex(index))
             {
-                anim->Duration;
-                anim->Name;
-                anim->TicksPerSecond;
-
-                if (Master::m_pDebugger->DG_TreeNode(anim->Name))
-                {
-                    Master::m_pDebugger->DG_BulletText(U8ToChar(u8"総時間：%f"), anim->Duration);
-                    Master::m_pDebugger->DG_BulletText(U8ToChar(u8"ティックパーセカンド：%f"), anim->TicksPerSecond);
-                    Master::m_pDebugger->DG_TreePop();
-                }
+                return U8ToChar(u8"未選択");
             }
-            Master::m_pDebugger->DG_TreePop();
+            const auto& name = animDataList[index]->Name;
+            return std::to_string(index) + ": " + (name.empty() ? U8ToChar(u8"名前なし") : name);
+        };
+
+        bool isAnim = pComp->get_IsAnim();
+        if (debugger.DG_CheckBox(U8ToChar(u8"アニメーション有効"), &isAnim))
+        {
+            pComp->set_IsAnim(isAnim);
+            refreshPose = true;
         }
-        Master::m_pDebugger->DG_TreePop();
+        bool isLODEnabled = pComp->get_IsAnimationLODEnabled();
+        if (debugger.DG_CheckBox(U8ToChar(u8"アニメーションLOD"), &isLODEnabled))
+        {
+            pComp->set_IsAnimationLODEnabled(isLODEnabled);
+            refreshPose = true;
+        }
+        debugger.DG_TextValue(U8ToChar(u8"アニメーション数: %d"), static_cast<int>(animDataList.size()));
+        debugger.DG_DragFloat(U8ToChar(u8"切り替えブレンド時間 (秒)"), 1,
+            &m_BlendDuration, 0.01f, 0.0f, 5.0f);
+        m_BlendDuration = std::isfinite(m_BlendDuration) ? std::clamp(m_BlendDuration, 0.0f, 5.0f) : 0.0f;
+
+        int animIdx = pComp->getAnimIndex();
+        ImGui::BeginDisabled(animDataList.empty());
+        if (ImGui::BeginCombo(U8ToChar(u8"アニメーション"), animLabel(animIdx).c_str()))
+        {
+            for (int i = 0; i < static_cast<int>(animDataList.size()); ++i)
+            {
+                if (!isValidIndex(i))
+                {
+                    continue;
+                }
+                ImGui::PushID(i);
+                const bool selected = i == animIdx;
+                if (ImGui::Selectable((animLabel(i) + "###Clip").c_str(), selected))
+                {
+                    pComp->ChangeAnim(i, m_BlendDuration);
+                    animIdx = pComp->getAnimIndex();
+                    refreshPose = true;
+                }
+                if (selected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+                ImGui::PopID();
+            }
+            ImGui::EndCombo();
+        }
+        ImGui::EndDisabled();
+
+        const bool hasCurrentAnim = isValidIndex(animIdx);
+        const float duration = pComp->get_AnimDurationSeconds(animIdx);
+        ImGui::BeginDisabled(!hasCurrentAnim);
+        bool paused = pComp->get_IsPlaybackPaused();
+        if (debugger.DG_CheckBox(U8ToChar(u8"一時停止（ポーズ保持）"), &paused))
+        {
+            pComp->set_IsPlaybackPaused(paused);
+            refreshPose = true;
+        }
+        if (debugger.DG_Button(U8ToChar(u8"先頭に戻す")))
+        {
+            pComp->SeekAnim(0.0f);
+            refreshPose = true;
+        }
+        debugger.DG_SameLine();
+        if (debugger.DG_Button(U8ToChar(u8"先頭から再生")))
+        {
+            pComp->SeekAnim(0.0f);
+            pComp->set_IsAnim(true);
+            pComp->set_IsPlaybackPaused(false);
+            refreshPose = true;
+        }
+        float speed = pComp->get_PlaybackSpeed();
+        if (debugger.DG_DragFloat(U8ToChar(u8"再生速度"), 1, &speed, 0.01f, 0.0f, 10.0f))
+        {
+            pComp->set_PlaybackSpeed(speed);
+        }
+        const float animTime = pComp->get_AnimProcTime();
+        float position = duration > 0.0f ? std::fmod(animTime, duration) : 0.0f;
+        ImGui::BeginDisabled(duration <= 0.0f);
+        if (debugger.DG_SliderFloat(U8ToChar(u8"ループ内の再生位置 (秒)"), 1, &position, 0.0f, duration))
+        {
+            pComp->SeekAnim(position);
+            position = pComp->get_AnimProcTime();
+            refreshPose = true;
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("%s", U8ToChar(u8"末尾は先頭にループします。一時停止中もポーズを確認できます。"));
+        }
+        ImGui::EndDisabled();
+        ImGui::EndDisabled();
+
+        if (hasCurrentAnim)
+        {
+            debugger.DG_TextValue(U8ToChar(u8"再生位置: %.3f / %.3f 秒"), position, duration);
+            debugger.DG_TextValue(U8ToChar(u8"累積再生時間: %.3f 秒"), pComp->get_AnimProcTime());
+            debugger.DG_TextValue(U8ToChar(u8"直前のアニメーション: %s"),
+                animLabel(pComp->get_PrevAnimIndex()).c_str());
+            debugger.DG_TextValue(U8ToChar(u8"ブレンド中: %s"), pComp->get_IsBlending() ? "Yes" : "No");
+            debugger.DG_Text(U8ToChar(u8"再生はオブジェクトのコントローラーに従います。"));
+        }
+        else
+        {
+            debugger.DG_Text(U8ToChar(u8"再生するアニメーションを選択してください。"));
+        }
+        if (animDataList.empty())
+        {
+            debugger.DG_Text(U8ToChar(u8"アニメーションが未読込、またはモデルに含まれていません。"));
+        }
+
+        if (debugger.DG_TreeNode(U8ToChar(u8"アニメーション情報")))
+        {
+            for (int i = 0; i < static_cast<int>(animDataList.size()); ++i)
+            {
+                if (!isValidIndex(i))
+                {
+                    continue;
+                }
+                ImGui::PushID(i);
+                if (ImGui::TreeNode("ClipInfo", "%s", animLabel(i).c_str()))
+                {
+                    const auto* anim = animDataList[i];
+                    debugger.DG_TextValue(U8ToChar(u8"長さ: %.3f 秒"), pComp->get_AnimDurationSeconds(i));
+                    debugger.DG_TextValue(U8ToChar(u8"総ティック数: %.3f"), anim->Duration);
+                    debugger.DG_TextValue(U8ToChar(u8"ティック/秒: %.3f"),
+                        anim->TicksPerSecond != 0.0 ? anim->TicksPerSecond : 25.0);
+                    debugger.DG_TextValue(U8ToChar(u8"チャンネル数: %d"), static_cast<int>(anim->Channels.size()));
+                    debugger.DG_TreePop();
+                }
+                ImGui::PopID();
+            }
+            debugger.DG_TreePop();
+        }
+        if (refreshPose)
+        {
+            pComp->RefreshPose(renderer);
+        }
+        debugger.DG_TreePop();
     }
-
-    /*
-    * 補正
-    */
-
-    // 反映
+    ImGui::PopID();
 }
-
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
 /* --- @:ModelMeshRendererEditor Class --- */

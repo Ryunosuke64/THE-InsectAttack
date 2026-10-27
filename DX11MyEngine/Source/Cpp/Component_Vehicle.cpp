@@ -31,13 +31,15 @@ Vehicle::Vehicle(std::weak_ptr<GameObject> pOwner, int updateRank)
 	m_ControllMode(CONTROLL_MODE::BOARDING),
 	m_StateTimer(0.0f),
 	m_AnimSpeed(0.0f),
-	m_CrntAnimID(-1),
-	m_IsAnim(false),
+	m_MoveSpeed(0.0f),
+	m_WeaponID(-1),
+	m_IsPlayAnim(false),
 	m_pHealthComp(nullptr),
 	m_pAnimatorComp(nullptr),
 	m_pMoveLogicComp(nullptr),
 	m_pRigidBodyComp(nullptr),
 	m_pTransformComp(nullptr),
+	m_pTarget(nullptr),
 	m_pAIGunWeapon(nullptr)
 {
 	this->set_Tag("Vehicle");
@@ -119,7 +121,7 @@ void Vehicle::LateUpdate(RendererEngine& renderer)
 
 	if (m_pAnimatorComp != nullptr)
 	{
-		m_pAnimatorComp->set_IsAnim(m_IsAnim);
+		//m_pAnimatorComp->set_IsAnim(m_IsPlayAnim);
 		m_pAnimatorComp->PlayAnim(deltaTime * m_AnimSpeed);
 	}
 }
@@ -148,21 +150,12 @@ void Vehicle::ChangeState(const int _state)
 void Vehicle::ChangeAnimation(const int _newId)
 {
 	// 同じまたは停止中なら返す
-	if (_newId == m_CrntAnimID || m_IsAnim == false)
+	if (m_IsPlayAnim == false)
 	{
 		return;
 	}
-
-	// ひとつ前のアニメーションIDセット
-	m_pAnimatorComp->set_PrevAnimIndex(static_cast<int>(m_CrntAnimID));
-
-	m_CrntAnimID = _newId;
-
-	// 現在のアニメーションIDセット
-	m_pAnimatorComp->set_AnimIndex(static_cast<int>(_newId));
-	m_pAnimatorComp->set_AnimTime(0.0f);
+	m_pAnimatorComp->ChangeAnim(_newId);
 }
-
 
 //*---------------------------------------------------------------------------------------
 //*【?】死亡フラグの取得

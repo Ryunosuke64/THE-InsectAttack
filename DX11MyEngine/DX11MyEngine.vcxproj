@@ -753,6 +753,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\VertexShader.cpp" />
     <ClCompile Include="Source\Cpp\Component_WeaponController.cpp" />
     <ClCompile Include="Source\Cpp\V_Durga_Idle.cpp" />
+    <ClCompile Include="Source\Cpp\V_Durga_Move.cpp" />
     <ClCompile Include="Source\Cpp\WeaponDataManager.cpp" />
     <ClCompile Include="Source\Cpp\WeaponStateFactory.cpp" />
     <ClCompile Include="Source\Cpp\WinMain.cpp">

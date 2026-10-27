@@ -29,6 +29,7 @@ private:
 	const float SEARCH_FIELD_OF_VIEW_DEG = 70.0f;	// 視界
 	const float IDLE_MIN_TIME = 0.5f;				// 待機の最小時間
 	const float IDLE_MAX_TIME = 7.5f;				// 待機の最大時間
+	const float ANIM_SPEED = 1.0f;					// アニメーション速度
 	float m_IdleDuration = 0.0f;	// 待機状態の時間
 
 public:
@@ -92,7 +93,7 @@ private:
 	const float ATTACK_POSSIBLE_RANGE_MAX = 100.0f;	// 攻撃可能最大距離
 	const float ATTACK_POSSIBLE_RANGE_MIN = 5.0f;	// 攻撃可能最小距離
 	const float MOVE_SPEED = 12.0f;
-	const float ANIM_SPEED = 1.6f;			// アニメーション速度
+	const float ANIM_SPEED = 2.0f;			// アニメーション速度
 
 	float m_AttackPossibleRange;// 攻撃可能距離
 	float m_TrackingDuration;	// 追従時間
@@ -125,7 +126,7 @@ private:
 	const float DIR_RAND_MAX = Tool::G_PI_4_F;		// 移動の方向 ランダム最大 
 	const float DIR_RAND_MIN = -Tool::G_PI_4_F;		// 移動の方向 ランダム最小 
 	const float MOVE_SPEED = 15.0f;
-	const float ANIM_SPEED = 1.5f;					// アニメーション速度
+	const float ANIM_SPEED = 2.0f;					// アニメーション速度
 
 	float m_MoveDuration = 0.0f;	// 移動時間
 	VECTOR3::VEC3 m_MoveDir;		// 移動方向
@@ -154,9 +155,10 @@ private:
 	const float PREATTACK_STUN_TIME_MAX = 2.0f;		// 攻撃前の硬直最大時間
 	const float PREATTACK_STUN_TIME_MIN = 0.5f;		// 攻撃前の硬直最小時間 
 	const float SOUND_RADIUS = 600.0f;				// 発射音が聞こえる範囲
+	const float ANIM_SPEED = 1.0f;					// アニメーション速度
 
 	float m_PreAttackStunDuration = 0.0f;	// 攻撃前の硬直時間
-
+	bool m_IsAttackEnd = false;	// 攻撃が終了したか
 public:
 	void OnEnter(class EnemyController *pOwner) override;
 	void OnExit(class EnemyController *pOwner)override;
@@ -178,6 +180,7 @@ class Ant_AT_HitStunState : public IState<class EnemyController>
 private:
 	const float SOUND_HIT_RADIUS = 300.0f;				// 被弾音が聞こえる範囲
 	const float STUN_DURATION = 1.0f;
+	const float ANIM_SPEED = 1.0f;					// アニメーション速度
 	float m_StunTimer = 0.0f;
 
 public:

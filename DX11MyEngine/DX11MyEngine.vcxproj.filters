@@ -256,9 +256,6 @@
     <Filter Include="ソース ファイル\Engine\Graphics\Frustum">
       <UniqueIdentifier>{1c611a1b-33f7-4178-a2c7-dc576bb73001}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\StateFactory">
-      <UniqueIdentifier>{1a9eeeef-f0da-47f3-a365-29d517591dff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\Tool\Utils">
       <UniqueIdentifier>{e6765cc9-2aa2-4e2f-8722-4fd8ebeaeadc}</UniqueIdentifier>
     </Filter>
@@ -372,6 +369,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\Component\Vehicle\State_Durga">
       <UniqueIdentifier>{f600cfc9-08ed-42d8-bc54-2318864ac6fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\StateFactory">
+      <UniqueIdentifier>{1a9eeeef-f0da-47f3-a365-29d517591dff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1031,6 +1031,9 @@
     </ClCompile>
     <ClCompile Include="Source\Cpp\VehicleStateFactory.cpp">
       <Filter>ソース ファイル\Game\StateFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_Move.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

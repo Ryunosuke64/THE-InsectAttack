@@ -3,6 +3,7 @@
 #include "Component_ModelMeshResource.h"
 #include "RendererEngine.h"
 #include "Component_3DCamera.h"
+#include <cmath>
 
 using namespace DirectX;
 using namespace VERTEX;
@@ -18,6 +19,7 @@ SkinnedMeshAnimator::SkinnedMeshAnimator(std::weak_ptr<GameObject> pOwner, int u
 m_AnimationTime(0.0),
 m_CurrentAnimIndex(-1),
 m_IsAnimationFlag(false),
+m_IsAnimationLODEnabled(true),
 m_AnimProcTime(0.0),
 m_AnimationLODFrameCounter(0),
 m_ShadowAnimProcTime(0.0)/*,
@@ -145,7 +147,8 @@ void SkinnedMeshAnimator::Draw(RendererEngine &renderer)
 //*----------------------------------------------------------------------------------------
 void SkinnedMeshAnimator::PlayAnim(float _time)
 {
-    if (m_IsAnimationFlag) {
+    if (m_IsAnimationFlag && !m_IsPlaybackPaused && std::isfinite(_time) && _time >= 0.0f) {
+        _time *= m_PlaybackSpeed;
         m_AnimProcTime += _time;
 
         if (m_IsBlending) {
@@ -159,6 +162,8 @@ void SkinnedMeshAnimator::PlayAnim(float _time)
         }
     }
 }
+
+
 
 //*---------------------------------------------------------------------------------------
 //* @:MeshRenderer Class 
@@ -182,6 +187,16 @@ void SkinnedMeshAnimator::set_MeshResource(std::weak_ptr<class ModelMeshResource
 //*----------------------------------------------------------------------------------------
 void SkinnedMeshAnimator::BoneTransformsUpdate(RendererEngine &renderer, float timeInSeconds, int animIdx)
 {
+    if (m_NodeList.empty())
+    {
+        return;
+    }
+    if (animIdx < 0 || static_cast<size_t>(animIdx) >= m_Animations.size() ||
+        !m_Animations[animIdx])
+    {
+        animIdx = -1;
+    }
+
     float tickPerSecond = 0.0f;
     float timeInTicks = 0.0f;
     float animTimeTicks = 0.0f;
@@ -214,7 +229,10 @@ void SkinnedMeshAnimator::BoneTransformsUpdate(RendererEngine &renderer, float t
 
         // アニメーションの現在の再生時間を剰余演算で求める
         /* 現在の再生時間 ＝ ティック単位時間 ％ アニメーションの持続時間 */
-        animTimeTicks = static_cast<float>(fmod(timeInTicks, m_Animations[animIdx]->Duration));
+        if (m_Animations[animIdx]->Duration > 0.0)
+        {
+            animTimeTicks = static_cast<float>(fmod(timeInTicks, m_Animations[animIdx]->Duration));
+        }
     }
 
     VEC3 cameraPos = Master::m_pDataManager->get_CameraPos();
@@ -229,25 +247,33 @@ void SkinnedMeshAnimator::BoneTransformsUpdate(RendererEngine &renderer, float t
     const float ANIMATION_LOD_DISTANCESQ_MIDDLE = ANIMATION_LOD_DISTANCE_MIDDLE * ANIMATION_LOD_DISTANCE_MIDDLE;
     const float ANIMATION_LOD_DISTANCESQ_LONG = ANIMATION_LOD_DISTANCE_LONG * ANIMATION_LOD_DISTANCE_LONG;
     m_AnimationLODFrameCounter++;
-    //
-    // 遠距離
-    //
-    if (distanceFormCameraSq > ANIMATION_LOD_DISTANCESQ_LONG)
+    if (m_IsAnimationLODEnabled)
     {
-        animationLODFrame = 16;
+        //
+        // 遠距離
+        //
+        if (distanceFormCameraSq > ANIMATION_LOD_DISTANCESQ_LONG)
+        {
+            animationLODFrame = 16;
+        }
+        //
+        // 中距離
+        //
+        else if (distanceFormCameraSq > ANIMATION_LOD_DISTANCESQ_MIDDLE)
+        {
+            animationLODFrame = 8;
+        }
+        //
+        // 近距離
+        //
+        else if (distanceFormCameraSq > ANIMATION_LOD_DISTANCESQ_NEAR)
+        {
+            animationLODFrame = 0;
+        }
     }
-    //
-    // 中距離
-    //
-    else if (distanceFormCameraSq > ANIMATION_LOD_DISTANCESQ_MIDDLE)
+    else
     {
-        animationLODFrame = 8;
-    }
-    //
-    // 近距離
-    //
-    else if (distanceFormCameraSq > ANIMATION_LOD_DISTANCESQ_NEAR)
-    {
+        // アニメーションLODなし
         animationLODFrame = 0;
     }
 
@@ -278,10 +304,10 @@ void SkinnedMeshAnimator::TransformBone(float animTimeTicks, UINT nodeIdx, const
     localTransformMtx = m_NodeList[nodeIdx]->Transformation; // 初期姿勢で初期化
     std::string nodeName = m_NodeList[nodeIdx]->Name;
 
-    if (m_IsAnimationFlag && !m_Animations.empty())
+    if (m_IsAnimationFlag && animIdx >= 0)
     {
         // === 1. 現在のアニメーションの SRT を計算 ===
-        const AnimationData* pAnimCrnt = m_Animations[m_CurrentAnimIndex];
+        const AnimationData* pAnimCrnt = m_Animations[animIdx];
         const NodeAnimChannel* pNodeCrnt = FindNodeAnim(pAnimCrnt, nodeName);
 
         XMVECTOR S_crnt, R_crnt, T_crnt;
@@ -292,10 +318,13 @@ void SkinnedMeshAnimator::TransformBone(float animTimeTicks, UINT nodeIdx, const
             R_crnt = CalcInterpolatedRotationQuat(animTimeTicks, pNodeCrnt);
             T_crnt = CalcInterpolatedPositionVec(animTimeTicks, pNodeCrnt);
             hasCrntAnim = true;
+            localTransformMtx = XMMatrixScalingFromVector(S_crnt) * XMMatrixRotationQuaternion(R_crnt) * XMMatrixTranslationFromVector(T_crnt);
         }
 
         // === 2. ブレンド処理 ===
-        if (m_IsBlending && m_PrevAnimIndex != -1)
+        if (m_IsBlending && m_BlendDuration > 0.0f && m_PrevAnimIndex >= 0 &&
+            static_cast<size_t>(m_PrevAnimIndex) < m_Animations.size() &&
+            m_Animations[m_PrevAnimIndex] && m_Animations[m_PrevAnimIndex]->Duration > 0.0)
         {
             const AnimationData* pAnimPrev = m_Animations[m_PrevAnimIndex];
             const NodeAnimChannel* pNodePrev = FindNodeAnim(pAnimPrev, nodeName);
@@ -321,11 +350,7 @@ void SkinnedMeshAnimator::TransformBone(float animTimeTicks, UINT nodeIdx, const
                 localTransformMtx = XMMatrixScalingFromVector(S_blend) * XMMatrixRotationQuaternion(R_blend) * XMMatrixTranslationFromVector(T_blend);
             }
         }
-        else if (hasCrntAnim)
-        {
-            // === 3. 単体アニメーション (ブレンド非中) ===
-            localTransformMtx = XMMatrixScalingFromVector(S_crnt) * XMMatrixRotationQuaternion(R_crnt) * XMMatrixTranslationFromVector(T_crnt);
-        }
+
     }
 
 
@@ -644,26 +669,80 @@ DirectX::XMVECTOR SkinnedMeshAnimator::CalcInterpolatedPositionVec(float animTim
 
 void SkinnedMeshAnimator::CrossFadeAnim(int newAnimIndex, float blendDurationInSeconds)
 {
-    if (m_CurrentAnimIndex == newAnimIndex) return; // 同じなら何もしない
+    if (newAnimIndex < 0 || static_cast<size_t>(newAnimIndex) >= m_Animations.size() ||
+        !m_Animations[newAnimIndex] || m_CurrentAnimIndex == newAnimIndex)
+    {
+        return;
+    }
 
-    // 現在の状態を「前のアニメーション」として退避
     m_PrevAnimIndex = m_CurrentAnimIndex;
     m_PrevAnimProcTime = m_AnimProcTime;
-
-    // 新しいアニメーションをセット
     m_CurrentAnimIndex = newAnimIndex;
-    m_AnimProcTime = 0.0f; // 新しいアニメは0からスタート
+    m_AnimationTime = 0.0;
+    m_AnimProcTime = 0.0f;
+    m_ShadowAnimProcTime = 0.0f;
+    m_BlendTime = 0.0f;
+    m_BlendDuration = std::isfinite(blendDurationInSeconds) ?
+        std::max(0.0f, blendDurationInSeconds) : 0.0f;
+    m_IsBlending = m_BlendDuration > 0.0f && m_PrevAnimIndex >= 0 &&
+        static_cast<size_t>(m_PrevAnimIndex) < m_Animations.size() &&
+        m_Animations[m_PrevAnimIndex] && m_Animations[m_PrevAnimIndex]->Duration > 0.0;
+}
+//*---------------------------------------------------------------------------------------
+//*【?】アニメーションの切り替え
+//*
+//* [引数] 
+//* newAnimIndex : アニメーションインデックス 
+//* blendDurationInSeconds : ブレンド時間（ブレンドさせる場合）
+//* 
+//* [返値] なし 
+//*----------------------------------------------------------------------------------------
+void SkinnedMeshAnimator::ChangeAnim(int newAnimIndex, float blendDurationInSeconds)
+{
+    // Selection is also allowed while animation evaluation is disabled.
+    CrossFadeAnim(newAnimIndex, blendDurationInSeconds);
+}
 
-    // ブレンド設定を有効化
-    if (m_PrevAnimIndex != -1) {
-        m_IsBlending = true;
-        m_BlendTime = 0.0f;
-        m_BlendDuration = blendDurationInSeconds;
+void SkinnedMeshAnimator::set_PlaybackSpeed(float speed)
+{
+    if (std::isfinite(speed))
+    {
+        m_PlaybackSpeed = std::clamp(speed, 0.0f, 10.0f);
     }
 }
 
+float SkinnedMeshAnimator::get_AnimDurationSeconds(int animIndex)const
+{
+    if (animIndex < 0 || static_cast<size_t>(animIndex) >= m_Animations.size())
+    {
+        return 0.0f;
+    }
 
+    const auto* anim = m_Animations[animIndex];
+    if (!anim || anim->Duration <= 0.0)
+    {
+        return 0.0f;
+    }
 
+    const double ticksPerSecond = anim->TicksPerSecond != 0.0 ? anim->TicksPerSecond : 25.0;
+    return static_cast<float>(anim->Duration / ticksPerSecond);
+}
+
+void SkinnedMeshAnimator::SeekAnim(float timeInSeconds)
+{
+    if (!std::isfinite(timeInSeconds))
+    {
+        return;
+    }
+
+    const float duration = get_AnimDurationSeconds(m_CurrentAnimIndex);
+    m_AnimProcTime = duration > 0.0f ? std::fmod(std::max(0.0f, timeInSeconds), duration) : 0.0f;
+    m_ShadowAnimProcTime = m_AnimProcTime;
+    m_AnimationTime = 0.0;
+    m_PrevAnimProcTime = 0.0f;
+    m_IsBlending = false;
+    m_BlendTime = 0.0f;
+}
 //*---------------------------------------------------------------------------------------
 //*【?】ノード名からボーンのワールド変換行列を取得する
 //*
@@ -690,8 +769,41 @@ XMMATRIX& SkinnedMeshAnimator::get_BoneLocalWorldMatrix(const std::string& _node
 //*----------------------------------------------------------------------------------------
 void SkinnedMeshAnimator::RefreshPose(RendererEngine& renderer)
 {
+    m_AnimationLODFrameCounter = 16;
     BoneTransformsUpdate(
         renderer,
         m_AnimProcTime,
         m_CurrentAnimIndex);
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】アニメーションが終了しているか
+//*
+//* [引数]
+//* [返値]
+//* 終了しているか 
+//*----------------------------------------------------------------------------------------
+bool SkinnedMeshAnimator::get_IsCrntAnimationHasFinished()const
+{
+    // 未選択・範囲外なら終了扱いにしない
+    if (m_CurrentAnimIndex < 0 ||
+        static_cast<size_t>(m_CurrentAnimIndex) >= m_Animations.size())
+    {
+        return false;
+    }
+
+    const auto* anim = m_Animations[m_CurrentAnimIndex];
+    if (!anim || anim->Duration <= 0.0)
+    {
+        return false;
+    }
+
+    // BoneTransformsUpdate と同じ変換ルールを使う
+    const double ticksPerSecond =
+        anim->TicksPerSecond != 0.0 ? anim->TicksPerSecond : 25.0;
+
+    const double elapsedTicks =
+        static_cast<double>(m_AnimProcTime) * ticksPerSecond;
+
+    return elapsedTicks >= anim->Duration;
 }

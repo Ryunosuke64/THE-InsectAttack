@@ -12,7 +12,7 @@ void mission_setup()
 {
     StageEnvironmentParam environmentParam;
     environmentParam.dirLightColor     = VEC3(1.0f);              // ライトカラー
-    environmentParam.dirLightIntensity = 1.5f;                    // ライトの強さ
+    environmentParam.dirLightIntensity = 2.5f;                    // ライトの強さ
     environmentParam.fogColor          = VEC3(0.6f, 0.0f, 0.0f);  // フォグカラー
     // environmentParam.fogStart       = 50.0f;                   // フォグ開始距離
     // environmentParam.fogEnd         = 150.0f;                  // フォグ最大距離
@@ -68,13 +68,23 @@ void mission_main()
     // );
 
     // ドローン タイプA
-    SpawnEnemyGroup(
-        ENEMY_TYPE::DRONE_TYPE_A,
-        VEC3(0.0f,250.0,0.0), 
-        50.0f,
-        1,
-        100.0f,
-        true
+    // SpawnEnemyGroup(
+    //     ENEMY_TYPE::DRONE_TYPE_A,
+    //     VEC3(0.0f,250.0,0.0), 
+    //     50.0f,
+    //     1,
+    //     100.0f,
+    //     true
+    // );
+
+    // アリ グループ
+    groupID3 = SpawnEnemyGroup(
+        ENEMY_TYPE::GIANT_ANT_Normal,
+        VEC3(0.0f,30.0f, 0.0f),
+        30.0f,
+        10,
+        3000.0f,
+        false
     );
     wave++;
         break;

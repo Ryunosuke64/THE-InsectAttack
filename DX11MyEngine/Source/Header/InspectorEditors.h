@@ -248,6 +248,7 @@ public:
 class SkinnedMeshAnimatorEditor : public EditorBase
 {
 private:
+    float m_BlendDuration = 0.2f;
 
 public:
     SkinnedMeshAnimatorEditor()

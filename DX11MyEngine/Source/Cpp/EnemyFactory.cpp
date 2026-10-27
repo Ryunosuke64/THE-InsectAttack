@@ -32,7 +32,7 @@ using namespace VECTOR4;
 using namespace UtilityData;
 using namespace EnemyData;
 
-constexpr float ANT_THRESHOLD_RATE = 0.05f;             // 最大HPの5%
+constexpr float ANT_THRESHOLD_RATE = 0.03f;             // 最大HPの3%
 constexpr float OCTAHEDRON_THRESHOLD_RATE = 0.30f;      // 最大HPの30%
 constexpr float DRONE_TYPE_A_THRESHOLD_RATE = 0.05f;    // 最大HPの5%
 
@@ -222,8 +222,8 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
 
     // LOD
     model.LODModels[0] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD0.fbx", 0.0f };
-    model.LODModels[1] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD1.fbx", 100.0f};
-    model.LODModels[2] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD2.fbx", 150.0f};
+    //model.LODModels[1] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD1.fbx", 100.0f};
+    //model.LODModels[2] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD2.fbx", 150.0f};
 
     generatedObject = MeshFactory::CreateModel(model);
 
@@ -235,7 +235,7 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
 
     // アニメーター
     generatedObject->get_Component<SkinnedMeshAnimator>()->set_IsAnim(true);
-    generatedObject->get_Component<SkinnedMeshAnimator>()->set_AnimIndex(0);
+    generatedObject->get_Component<SkinnedMeshAnimator>()->set_AnimIndex(INT_CAST(ANT01_ANIM_ID::IDLE));
 
     // 
     // トランスフォーム設定

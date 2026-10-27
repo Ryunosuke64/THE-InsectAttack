@@ -2,6 +2,7 @@
 #include "Component_EnemyController.h"
 #include "Ant_StateHeader.h"
 #include "Component_MoveLogic.h"
+#include "Component_SkinnedMeshAnimator.h"
 #include "ConstantWeaponData.h"
 #include "GameObject.h"
 
@@ -23,12 +24,16 @@ void Ant_AT_AttackAcidState::OnEnter(class EnemyController* pOwner)
 	// 移動ベクトルは0
 	pOwner->set_MoveVelocity(VEC3());
 
+	// 攻撃アニメーション
 	pOwner->set_IsAnim(true);
+	// アニメーション速度
+	pOwner->set_AnimSpeed(ANIM_SPEED);
 
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::HOMING);
 
 	// 攻撃前の硬直時間
 	m_PreAttackStunDuration = Master::m_pRandomManager->GetFloatRandom(PREATTACK_STUN_TIME_MIN, PREATTACK_STUN_TIME_MAX);
+	m_IsAttackEnd = false;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -64,6 +69,24 @@ int Ant_AT_AttackAcidState::Update(class EnemyController* pOwner)
 			return commonRes;
 		}
 
+		// アニメーターコンポーネント取得
+		auto animator = pOwner->get_AnimatorComponent();
+		if (animator == nullptr)
+		{
+			assert(false);
+			return ANT_STATE::ANT_STATE_PATROL_IDLE;
+		}
+
+		//=========================================================================================
+		//
+		//				攻撃アニメーションが終了していれば、移動ステートへ
+		//
+		//=========================================================================================
+		if (animator->get_IsCrntAnimationHasFinished() && m_IsAttackEnd)
+		{
+			return ANT_STATE::ANT_STATE_ACTIVE_MOVE;
+		}
+
 		auto targetTransform = target->get_Transform().lock();
 		VEC3 targetPos = targetTransform->get_VEC3ToPos();	// 目標位置
 		auto myTransform = pOwner->get_TransformComponent();
@@ -81,8 +104,14 @@ int Ant_AT_AttackAcidState::Update(class EnemyController* pOwner)
 		move->set_MoveParam(movePram);	// 移動ロジックにパラメータを渡す
 
 		/* 硬直時間を終えたら、攻撃 */
-		if (pOwner->get_StateTimer() > m_PreAttackStunDuration)
+		if (pOwner->get_StateTimer() > m_PreAttackStunDuration && !m_IsAttackEnd )
 		{
+			m_IsAttackEnd = true;
+
+			// ****************************************************
+			//				 攻撃アニメーションへ
+			// ****************************************************
+			pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::ATTACK_ACID));
 
 			// ****************************************************
 			//				 酸発射音再生
@@ -142,12 +171,6 @@ int Ant_AT_AttackAcidState::Update(class EnemyController* pOwner)
 				Master::m_pBulletManager->Shot(*m_pRenderer, spawnContext, data->_bulletData);
 
 			}
-			//=========================================================================================
-			//
-			//						攻撃が終了したら、移動ステートへ
-			//
-			//=========================================================================================
-			return ANT_STATE::ANT_STATE_ACTIVE_MOVE;
 		}
 	}
 

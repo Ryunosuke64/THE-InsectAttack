@@ -19,6 +19,10 @@ using namespace UtilityData;
 void Ant_AT_TrackingState::OnEnter(class EnemyController *pOwner)
 {
 	pOwner->set_IsAnim(true);
+	pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::WALK));
+	// アニメーション速度
+	pOwner->set_AnimSpeed(ANIM_SPEED);
+
 	pOwner->set_MoveSpeed(MOVE_SPEED * Master::m_pDataManager->get_EnemyDifficultyFactor()._moveSpeedRate);
 	// アニメーション速度
 	pOwner->set_AnimSpeed(ANIM_SPEED);

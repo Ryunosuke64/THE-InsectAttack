@@ -20,6 +20,7 @@ using namespace EnemyData;
 void Ant_AT_MoveState::OnEnter(class EnemyController* pOwner)
 {
 	pOwner->set_IsAnim(true);
+	pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::WALK));
 	pOwner->set_MoveSpeed(MOVE_SPEED * Master::m_pDataManager->get_EnemyDifficultyFactor()._moveSpeedRate);
 
 	// アニメーション速度

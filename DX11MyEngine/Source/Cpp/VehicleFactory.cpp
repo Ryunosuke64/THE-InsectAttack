@@ -56,7 +56,7 @@ bool VehicleFactory::SpawnVehicle(const VehicleData::VehicleSpawnData& spawnData
     case VEHICLE_TYPE::DURGA:
     {
         generationData.createStateID = (int)VEHICLE_TYPE::DURGA;
-        generationData.startStateID = ::DURGA_V_STATE::DURGA_V_STATE_IDLE;
+        generationData.startStateID = ::DURGA_V_STATE::DURGA_V_STATE_MOVE;
         generatedObject = CreateDurga(generationData);
         break;
     }
@@ -114,7 +114,8 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
 
     // アニメーター
     generatedObject->get_Component<SkinnedMeshAnimator>()->set_IsAnim(true);
-    generatedObject->get_Component<SkinnedMeshAnimator>()->set_AnimIndex(0);
+    generatedObject->get_Component<SkinnedMeshAnimator>()->set_AnimIndex(6);
+    generatedObject->get_Component<SkinnedMeshAnimator>()->set_IsAnimationLODEnabled(false);
 
     // 
     // トランスフォーム設定
@@ -129,6 +130,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     // ビークル用コントローラー追加
     //
     auto vehicleController = generatedObject->add_Component<Vehicle>();
+    vehicleController->set_AnimSpeed(1.0f);
 
     //
     // 移動コンポーネントの追加
@@ -158,11 +160,13 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
 
     auto rb = generatedObject->add_Component<RigidBody>();
     auto collider = generatedObject->add_Component<MeshCollider>();
-
+    //auto collider = generatedObject->add_Component<BoxCollider>();
+    //collider->set_Size(VEC3(15.0f, 20.0f, 10.0f));
+    //collider->set_Center(VEC3(0.0f, 20.0f, 0.0f));
     collider->SetupModelData( modelResource->get_ModelData(LOD_QUALITY::ULTRA));
     collider->set_IsStatic(false);
-    collider->set_IsConvex(false);
-    collider->set_CollisionCategory(COLLISION_CATEGORY::PLAYER);// 衝突カテゴリ
+    collider->set_IsConvex(true);
+    collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
     collider->set_SurfaceType(SURFACE_TYPE::METAL);             // 材質：メタル
 
     //*****************************************************************************************
@@ -179,7 +183,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     //
     // 判定なし
     //
-    collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
+    //collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);         // エネミー弾
     collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // アイテム
 
 
@@ -192,7 +196,9 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     rbDesc.owner = generatedObject;     // オーナーオブジェクトの設定
     rbDesc.collider = collider;         // コライダーの設定
     rbDesc.gravity = VEC3(0.0f, -9.8f, 0.0f);
-    rbDesc.angularDamping = 1.f;
+    rbDesc.angularDamping = 1.0f;
+    rbDesc.angularFactor = VEC3(0.0f, 0.0f, 0.0f);
+    rbDesc.localScaling = 0.175f;
 
     rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
 

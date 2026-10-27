@@ -58,7 +58,6 @@ private:
 	VECTOR3::VEC3 m_StartPos;						// 開始位置
 	const EnemyData::BaseEnemyData* m_pEnemyData;	// 読み取り専用データ
 
-	int m_CrntAnimID;				// 現在のアニメーション番号
 	float m_MoveSpeed;				// 移動速度
 	float m_StateTimer;				// ステート時間
 	float m_Gravity;				// 重力
@@ -100,10 +99,6 @@ public:
 	/* アニメーション速度 */
 	void set_AnimSpeed(float _time) { m_AnimSpeed = _time; }
 	float get_AnimSpeed()const { return m_AnimSpeed; }
-
-	/* アニメーションID */
-	void set_AnimID(const int _id) { m_CrntAnimID = _id; }
-	int get_AnimID()const { return m_CrntAnimID; }
 
 	/* 移動速度 */
 	float get_MoveSpeed() const { return m_MoveSpeed; }

@@ -14,6 +14,21 @@ namespace EnemyData
 		NUM,
 	};
 
+	/// <summary>
+	/// アニメーションID - アリ01 -
+	/// </summary>
+	enum class ANT01_ANIM_ID
+	{
+		NONE = -1,
+
+		ATTACK_ACID,		// 酸攻撃
+		DEAD,				// 死亡
+		HIT,				// ヒット
+		IDLE,				// 待機
+		WALK,				// 歩行
+	};
+
+
 
 	/*
 	* 

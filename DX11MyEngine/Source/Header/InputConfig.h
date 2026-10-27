@@ -60,6 +60,9 @@ enum class GAME_CONFIG
     MOVE_DASH,      // ダッシュ
     MOVE_ROLLING,   // ローリング
 
+    DURGA_ROT_RIGHT,   // ドルガ - 右回転
+    DURGA_ROT_LEFT,    // ドルガ - 左回転
+
     // 視点移動
     VIEW_UP,        
     VIEW_DOWN,

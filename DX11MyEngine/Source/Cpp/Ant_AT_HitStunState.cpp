@@ -6,6 +6,8 @@
 #include "Component_BoxCollider.h"
 #include "Component_DecalRenderer.h"
 #include "Component_TimerDestruction.h"
+#include "Component_SkinnedMeshAnimator.h"
+#include "Component_RigidBody.h"
 #include "RendererEngine.h"
 #include "MeshFactory.h"
 
@@ -32,6 +34,15 @@ void Ant_AT_HitStunState::OnEnter(class EnemyController* pOwner)
 	// 移動ベクトルは0
 	pOwner->set_MoveVelocity(VEC3());
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
+
+	// ヒットアニメーション
+	pOwner->set_IsAnim(true);
+	pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::HIT));
+	// アニメーション速度
+	pOwner->set_AnimSpeed(ANIM_SPEED);
+	
+	// 物理挙動をリセットする
+	pOwner->get_RigidBodyComponent()->ResetPhysics();
 
 	// ****************************************************
 	//				 被弾音再生
@@ -98,16 +109,28 @@ int Ant_AT_HitStunState::Update(class EnemyController* pOwner)
 		VEC3 decalRot = VEC3(1.57f, Tool::RandRange(0.0f, 6.14f), 0.0f);
 		SpawnHitEffect("AntHit_01", pos, rot, 1.0f);
 		SpawnHitDecal("Decal_Ant_Splash", pos, decalRot, VEC3(6.0f, 6.0f, 1.0f));
+
+		pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::HIT));
 	}
 
+	// アニメーターコンポーネント取得
+	auto animator = pOwner->get_AnimatorComponent();
+	if (animator == nullptr)
+	{
+		assert(false);
+		return ANT_STATE::ANT_STATE_PATROL_IDLE;
+	}
 
-	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
-	m_StunTimer += deltaTime;
-
-	if (m_StunTimer > STUN_DURATION)
+	//=========================================================================================
+	//
+	//				ヒットアニメーションが終了していれば、移動ステートへ
+	//
+	//=========================================================================================
+	if (animator->get_IsCrntAnimationHasFinished())
 	{
 		return ANT_STATE::ANT_STATE_ACTIVE_MOVE;
 	}
+
 
 	return ANT_STATE::ANT_STATE_ACTIVE_HIT_STUN;
 }

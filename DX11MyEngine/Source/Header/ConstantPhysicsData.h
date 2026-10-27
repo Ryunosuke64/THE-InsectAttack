@@ -301,6 +301,7 @@ namespace PhysicsData
 		// Model origin -> center of mass, in local physics units (before rotation).
 		// Zero preserves the existing origin. For a uniform primitive, use Collider::get_Center().
 		VECTOR3::VEC3 centerOfMassOffset = VECTOR3::VEC3();
+		VECTOR3::VEC3 localScaling = VECTOR3::VEC3(1.0f);				// •K—v‚Èê‡‚Ì‚İ
 		BodyType type = BodyType::Dynamic;
 		float mass = 0.0f;												// ¿—Ê
 		float friction = 0.5f;											// –€C

@@ -41,6 +41,8 @@ private:
 	bool m_IsAnimationFlag;								 // アニメーションさせるかどうか（とりまデバッグ用）
 	float m_AnimProcTime;								 // 更新用カウンタ
 	float m_ShadowAnimProcTime;							 // シャドウ用更新カウンタ
+	bool m_IsPlaybackPaused = false;
+	float m_PlaybackSpeed = 1.0f;
 	float m_AimPitchAngle;
 	float m_AimYawAngle;
 
@@ -51,6 +53,7 @@ private:
 	float m_BlendDuration = 0.2f;         // ブレンド完了までの総時間（例: 0.2秒）
 	float m_PrevAnimProcTime = 0.0f;      // 一つ前のアニメーションの再生時間
 
+	bool m_IsAnimationLODEnabled;		// アニメーションLODを有効にするか
 	int m_AnimationLODFrameCounter;
 
 public:
@@ -62,6 +65,14 @@ public:
 	void Draw(RendererEngine& renderer)override;
 
 	void PlayAnim(float _time);	// アニメーションの再生
+	void ChangeAnim(int newAnimIndex, float blendDurationInSeconds = 0.0f);
+	void SeekAnim(float timeInSeconds); // Cancel blending and seek within the looping clip.
+	void set_PlaybackSpeed(float speed);
+	void set_IsPlaybackPaused(bool paused) { m_IsPlaybackPaused = paused; }
+	float get_PlaybackSpeed()const { return m_PlaybackSpeed; }
+	bool get_IsPlaybackPaused()const { return m_IsPlaybackPaused; }
+	bool get_IsBlending()const { return m_IsBlending; }
+	float get_AnimDurationSeconds(int animIndex)const;
 
 	void BoneTransformsUpdate(RendererEngine &renderer, float timeInSeconds, int animIdx);	// ボーンの更新
 	void set_MeshResource(std::weak_ptr<class ModelMeshResource> meshResource);	// リソースの設定
@@ -72,12 +83,16 @@ public:
 	void set_AnimIndex(int idx) { m_CurrentAnimIndex = idx; };			// アニメーションインデックスの設定
 	void set_PrevAnimIndex(int idx) { m_PrevAnimIndex = idx; };			// 前のアニメーションインデックスとして設定
 	void set_IsAnim(bool f) { m_IsAnimationFlag = f; };					// アニメーションフラグ
+	void set_IsAnimationLODEnabled(bool f) { m_IsAnimationLODEnabled = f; };// アニメーションLODを有効にするか
 
 	float get_AnimProcTime()const { return m_AnimProcTime; }
 	float get_ShadowAnimProcTime()const { return m_ShadowAnimProcTime; }
 	int getAnimIndex()const { return m_CurrentAnimIndex; }
 	int get_PrevAnimIndex()const { return m_PrevAnimIndex; }
 	bool get_IsAnim()const { return m_IsAnimationFlag; };
+	bool get_IsAnimationLODEnabled()const { return m_IsAnimationLODEnabled; };
+	bool get_IsCrntAnimationHasFinished()const;		// アニメーションが終了しているか
+	
 
 	DirectX::XMMATRIX& get_BoneLocalWorldMatrix(const std::string& _nodeName);	// ノード名からボーンのワールド変換行列を取得する
 
