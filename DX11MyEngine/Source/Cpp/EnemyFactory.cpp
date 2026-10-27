@@ -222,8 +222,8 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
 
     // LOD
     model.LODModels[0] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD0.fbx", 0.0f };
-    //model.LODModels[1] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD1.fbx", 100.0f};
-    //model.LODModels[2] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD2.fbx", 150.0f};
+    model.LODModels[1] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD1.fbx", 100.0f};
+    model.LODModels[2] = {"Resource/Model/Enemy/GiantAnt01/GiantAnt_LOD2.fbx", 150.0f};
 
     generatedObject = MeshFactory::CreateModel(model);
 

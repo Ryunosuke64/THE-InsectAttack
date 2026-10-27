@@ -34,7 +34,7 @@ void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 
 	// 死亡アニメーション
 	pOwner->set_IsAnim(true);
-	pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::DEAD));
+	pOwner->ChangeAnimation(INT_CAST(ANT01_ANIM_ID::DEAD), 0.1f);
 
 	// 死亡エフェクトの作成
 	SpawnDeadEffect(pOwner);

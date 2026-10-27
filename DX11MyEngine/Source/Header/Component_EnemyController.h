@@ -94,7 +94,7 @@ public:
 	void ChangeState(const int _state);
 
 	/// <summary>アニメーションの変更 </summary>
-	void ChangeAnimation(const int _newId);
+	void ChangeAnimation(const int _newId, float blendDurationInSeconds = 0.0f);
 
 	/* アニメーション速度 */
 	void set_AnimSpeed(float _time) { m_AnimSpeed = _time; }

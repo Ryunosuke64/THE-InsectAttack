@@ -99,10 +99,37 @@ void mission_main()
         // アリ グループ3
         groupID3 = SpawnEnemyGroup(
             ENEMY_TYPE::GIANT_ANT_Normal,
-            VEC3(0.0f,30.0f, 0.0f),
+            VEC3(-200.0f,30.0f, 0.0f),
             30.0f,
             100,
             70.0f,
+            true
+        );
+                // アリ グループ3
+        groupID3 = SpawnEnemyGroup(
+            ENEMY_TYPE::DRONE_TYPE_A,
+            VEC3(-100.0f,80.0f, 200.0f),
+            30.0f,
+            300,
+            70.0f,
+            true
+        );              
+          // アリ グループ3
+        groupID3 = SpawnEnemyGroup(
+            ENEMY_TYPE::DRONE_TYPE_A,
+            VEC3(300.0f,100.0f, 0.0f),
+            30.0f,
+            300,
+            70.0f,
+            true
+        );
+                        // アリ グループ3
+        groupID3 = SpawnEnemyGroup(
+            ENEMY_TYPE::OCTAHEDRON,
+            VEC3(300.0f,150.0f, 0.0f),
+            30.0f,
+            3,
+            870.0f,
             true
         );
         wave++;

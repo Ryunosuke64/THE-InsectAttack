@@ -267,14 +267,14 @@ void EnemyController::ChangeState(const int _state)
 //*  _id : アニメーション番号
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void EnemyController::ChangeAnimation(const int _newId)
+void EnemyController::ChangeAnimation(const int _newId, float blendDurationInSeconds)
 {
 	// 同じまたは停止中なら返す
 	if (m_IsAnim == false)
 	{
 		return;
 	}
-	m_pAnimatorComp->ChangeAnim(_newId);
+	m_pAnimatorComp->ChangeAnim(_newId, blendDurationInSeconds);
 }
 
 //*---------------------------------------------------------------------------------------
