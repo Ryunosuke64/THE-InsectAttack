@@ -21,7 +21,7 @@ void V_Durga_IdleState::OnEnter(class VehicleController* pOwner)
 	// 移動ベクトルは0
 	pOwner->set_MoveSpeed(0.0f);
 	pOwner->set_IsPlayAnim(false);
-	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(true);
+	//pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(true);
 	//pOwner->get_RigidBodyComponent()->ResetPhysics();
 
 	// 速度制御をなくす
