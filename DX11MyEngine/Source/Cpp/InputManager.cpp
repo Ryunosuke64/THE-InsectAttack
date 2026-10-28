@@ -374,10 +374,15 @@ void InputManager::InitDefaultKeyConfig()
     m_GameConfigMap[(int)GAME_CONFIG::MOVE_JUMP]._keys.push_back(DIK_SPACE);              // ジャンプ
     m_GameConfigMap[(int)GAME_CONFIG::MOVE_DASH]._keys.push_back(DIK_LSHIFT);             // ダッシュ
     
+
     // ドルガ
+    m_GameConfigMap[(int)GAME_CONFIG::SWITCH_CONTROLL_TARGET]._keys.push_back(DIK_C);    // 操作対象切り替え
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_ROT_RIGHT]._keys.push_back(DIK_E);           // ドルガ - 右回転
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_ROT_LEFT]._keys.push_back(DIK_Q);            // ドルガ - 左回転   
-    
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_LIFT]._keys.push_back(DIK_SPACE);            // ドルガ - 持ち上げる  
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_THROW]._keys.push_back(DIK_SPACE);           // ドルガ - 投げる
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_THROW]._mouse = MOUSE_BUTTON_STATE::RIGHT;   // ドルガ - 投げる マウス
+
     // 視点移動
     m_GameConfigMap[(int)GAME_CONFIG::VIEW_UP]._keys.push_back(DIK_UP);                   // 上↑
     m_GameConfigMap[(int)GAME_CONFIG::VIEW_DOWN]._keys.push_back(DIK_DOWN);               // 下↓

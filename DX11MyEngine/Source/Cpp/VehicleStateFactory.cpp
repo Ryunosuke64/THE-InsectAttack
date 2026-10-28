@@ -19,7 +19,7 @@ using namespace VehicleData;
 //* [返値]
 //* なし 
 //*----------------------------------------------------------------------------------------
-void VehicleStateFactory::Create(StateMachine<Vehicle>& _out, int _createState, RendererEngine& _renderer)
+void VehicleStateFactory::Create(StateMachine<VehicleController>& _out, int _createState, RendererEngine& _renderer)
 {
 	switch ((VEHICLE_TYPE)_createState)
 	{
@@ -43,7 +43,7 @@ void VehicleStateFactory::Create(StateMachine<Vehicle>& _out, int _createState, 
 //* [返値]
 //* なし 
 //*----------------------------------------------------------------------------------------
-void VehicleStateFactory::CreateDurgaState(StateMachine<class Vehicle>& _out, RendererEngine& _renderer)
+void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>& _out, RendererEngine& _renderer)
 {
 	// ルート作成
 	std::shared_ptr<V_Durga_IdleState> pIdle = std::make_shared<V_Durga_IdleState>();					// 待機

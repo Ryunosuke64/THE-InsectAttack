@@ -18,7 +18,7 @@ public:
 	/// <param name="_out">出力先</param>
 	/// <param name="_createScene">作成するシーン</param>
 	/// <param name="_renderer">描画エンジンの参照</param>
-	static void Create(StateMachine<class Vehicle>& _out, int _createState, RendererEngine& _renderer);
+	static void Create(StateMachine<class VehicleController>& _out, int _createState, RendererEngine& _renderer);
 
 private:
 	/// <summary>
@@ -26,7 +26,7 @@ private:
 	/// </summary>
 	/// <param name="_out">出力先</param>
 	/// <param name="_renderer">描画エンジンの参照</param>
-	static void CreateDurgaState(StateMachine<class Vehicle>& _out, RendererEngine& _renderer);
+	static void CreateDurgaState(StateMachine<class VehicleController>& _out, RendererEngine& _renderer);
 
 
 };

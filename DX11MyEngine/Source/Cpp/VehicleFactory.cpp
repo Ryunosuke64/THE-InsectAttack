@@ -8,7 +8,7 @@
 #include "VehicleStateFactory.h"
 #include "GameObject.h"
 #include "MeshFactory.h"
-#include "Component_Vehicle.h"
+#include "Component_VehicleController.h"
 #include "Component_Health.h"
 #include "Component_WeaponController.h"
 #include "Component_ModelMeshResource.h"
@@ -129,7 +129,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     //
     // ビークル用コントローラー追加
     //
-    auto vehicleController = generatedObject->add_Component<Vehicle>();
+    auto vehicleController = generatedObject->add_Component<VehicleController>();
     vehicleController->set_AnimSpeed(1.0f);
 
     //
@@ -206,7 +206,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     // ステートの登録
     //
     vehicleController->Start(*renderer);
-    StateMachine<Vehicle> stateMachine(vehicleController.get());
+    StateMachine<VehicleController> stateMachine(vehicleController.get());
     VehicleStateFactory::Create(stateMachine, generationData.createStateID, *renderer);
     stateMachine.SetStartState(generationData.startStateID);
     // 登録

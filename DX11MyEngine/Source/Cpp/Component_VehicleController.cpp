@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Component_Vehicle.h"
+#include "Component_VehicleController.h"
 #include "GameObject.h"
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_MoveLogic.h"
@@ -13,11 +13,10 @@
 #include "CollisionInfo.h"
 
 
-using namespace GIGA_Engine;
 using namespace VECTOR3;
 using namespace VECTOR2;
-using namespace EnemyData;
 using namespace UtilityData;
+using namespace VehicleData;
 
 //*---------------------------------------------------------------------------------------
 //*【?】コンストラクタ
@@ -25,10 +24,11 @@ using namespace UtilityData;
 //* pOwner : オーナーオブジェクト
 //* updateRank : 更新レイヤー
 //*----------------------------------------------------------------------------------------
-Vehicle::Vehicle(std::weak_ptr<GameObject> pOwner, int updateRank)
+VehicleController::VehicleController(std::weak_ptr<GameObject> pOwner, int updateRank)
 	:IComponent(pOwner, updateRank),
 	m_StateMachine(this),
-	m_ControllMode(CONTROLL_MODE::BOARDING),
+	m_ControllMode(V_CONTROLL_MODE::REMOTE),
+	m_InputType(V_INPUT_TYPE::ROBOT),
 	m_StateTimer(0.0f),
 	m_AnimSpeed(0.0f),
 	m_MoveSpeed(0.0f),
@@ -42,13 +42,13 @@ Vehicle::Vehicle(std::weak_ptr<GameObject> pOwner, int updateRank)
 	m_pTarget(nullptr),
 	m_pAIGunWeapon(nullptr)
 {
-	this->set_Tag("Vehicle");
+	this->set_Tag("VehicleController");
 }
 
 //*---------------------------------------------------------------------------------------
 //*【?】デストラクタ
 //*----------------------------------------------------------------------------------------
-Vehicle::~Vehicle()
+VehicleController::~VehicleController()
 {
 
 }
@@ -60,7 +60,7 @@ Vehicle::~Vehicle()
 //* &renderer : 描画エンジンの参照
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void Vehicle::Start(RendererEngine& renderer)
+void VehicleController::Start(RendererEngine& renderer)
 {
 	auto ownerObj = m_pOwner.lock();;
 
@@ -110,11 +110,22 @@ void Vehicle::Start(RendererEngine& renderer)
 //* &renderer : 描画エンジンの参照
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void Vehicle::LateUpdate(RendererEngine& renderer)
+void VehicleController::LateUpdate(RendererEngine& renderer)
 {
 	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
 	m_StateTimer += deltaTime;	// タイマー進める
 
+	//
+	// 入力チェック
+	//
+	switch (m_InputType)
+	{
+	case VehicleData::V_INPUT_TYPE::ROBOT:
+		m_InputResult = CheckInputRobot();
+		break;
+	default:
+		break;
+	}
 
 	// ステートの実行
 	m_StateMachine.Update();
@@ -133,7 +144,7 @@ void Vehicle::LateUpdate(RendererEngine& renderer)
 //*  _state : ステート番号
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void Vehicle::ChangeState(const int _state)
+void VehicleController::ChangeState(const int _state)
 {
 	m_StateTimer = 0;	// ステート時間をリセット
 	m_StateMachine.ChangeState(_state);
@@ -147,7 +158,7 @@ void Vehicle::ChangeState(const int _state)
 //*  _id : アニメーション番号
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void Vehicle::ChangeAnimation(const int _newId)
+void VehicleController::ChangeAnimation(const int _newId)
 {
 	// 同じまたは停止中なら返す
 	if (m_IsPlayAnim == false)
@@ -163,7 +174,7 @@ void Vehicle::ChangeAnimation(const int _newId)
 //* [引数]なし
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-bool Vehicle::get_IsDead()const
+bool VehicleController::get_IsDead()const
 {
 	if (m_pHealthComp != nullptr) {
 		return m_pHealthComp->get_IsDead();
@@ -181,7 +192,7 @@ bool Vehicle::get_IsDead()const
 //*  _moveType : 移動タイプ
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void Vehicle::set_MoveLogicState(UtilityData::MOVE_BEHAVIOUR_TYPE _moveType)
+void VehicleController::set_MoveLogicState(UtilityData::MOVE_BEHAVIOUR_TYPE _moveType)
 {
 	if (m_pMoveLogicComp != nullptr)
 	{
@@ -191,4 +202,49 @@ void Vehicle::set_MoveLogicState(UtilityData::MOVE_BEHAVIOUR_TYPE _moveType)
 	{
 		assert(false);
 	}
+}
+
+//*---------------------------------------------------------------------------------------
+//*【?】ロボットの入力をチェックする
+//*
+//* [引数] 
+//* なし
+//* [返値]
+//* 入力情報 
+//*----------------------------------------------------------------------------------------
+const VehicleData::VehicleInputResult VehicleController::CheckInputRobot()
+{
+	VehicleInputResult_Robot result;
+	result.isMoveF = GetInput(GAME_CONFIG::MOVE_FORWARD);
+	result.isMoveB = GetInput(GAME_CONFIG::MOVE_BACK);
+	result.isMoveR = GetInput(GAME_CONFIG::MOVE_RIGHT);
+	result.isMoveL = GetInput(GAME_CONFIG::MOVE_LEFT);
+	result.isRotR = GetInput(GAME_CONFIG::DURGA_ROT_RIGHT);
+	result.isRotL = GetInput(GAME_CONFIG::DURGA_ROT_LEFT);
+	result.isLift = GetInput(GAME_CONFIG::DURGA_LIFT);
+	result.isThrow = GetInput(GAME_CONFIG::DURGA_THROW);
+	return result;
+}
+//*---------------------------------------------------------------------------------------
+//*【?】ロボットの入力情報を取得する
+//*
+//* [引数] 
+//* なし
+//* [返値]
+//* 入力情報 
+//*----------------------------------------------------------------------------------------
+const VehicleData::VehicleInputResult_Robot& 
+VehicleController::get_InputResult_Robot()const
+{
+	const VehicleInputResult_Robot* input =
+		std::get_if<VehicleInputResult_Robot>(&m_InputResult);
+
+	// 変換失敗
+	if (input == nullptr)
+	{
+		assert(false);
+		return{};
+	}
+
+	return *input;
 }

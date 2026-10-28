@@ -4,26 +4,17 @@
 
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
-/* --- @:Vehicle Class --- */
+/* --- @:VehicleController Class --- */
 //
 //  ★継承：IComponent ★
 //
-// 【?】ビークルに付けるコンポーネント
+// 【?】プレイヤーが操作するビークルに付けるコンポーネント
+//		※ AI用は別に作る
 //		
 // ***************************************************************************************
-class Vehicle : public IComponent
+class VehicleController : public IComponent
 {
 public:
-	/// <summary>
-	/// 操作方法
-	/// </summary>
-	enum class CONTROLL_MODE
-	{
-		AI,			// AI行動
-		BOARDING,	// 搭乗
-		REMOTE,		// リモート（鉄人形式）
-	};
-
 	/// <summary>
 	/// ビークルのセットアップ情報
 	/// </summary>
@@ -33,13 +24,15 @@ public:
 	};
 
 private:
-	StateMachine<Vehicle>m_StateMachine;	// ステートマシン
-	CONTROLL_MODE m_ControllMode;			// 操作方法
-	float m_StateTimer;						// ステート時間
-	float m_AnimSpeed;						// アニメーション速度
-	bool m_IsPlayAnim;						// アニメーションさせるかどうか
-	float m_MoveSpeed;						// 移動速度
-	int m_WeaponID;							// 使用する武器ID
+	StateMachine<VehicleController>m_StateMachine;	// ステートマシン
+	VehicleData::V_CONTROLL_MODE m_ControllMode;	// 操作方法
+	VehicleData::V_INPUT_TYPE m_InputType;			// 操作するための入力タイプ
+	float m_StateTimer;								// ステート時間
+	float m_AnimSpeed;								// アニメーション速度
+	bool m_IsPlayAnim;								// アニメーションさせるかどうか
+	float m_MoveSpeed;								// 移動速度
+	int m_WeaponID;									// 使用する武器ID
+	VehicleData::VehicleInputResult m_InputResult;	// 入力情報の格納
 
 	class Health* m_pHealthComp;					// 体力管理コンポーネント
 	class SkinnedMeshAnimator* m_pAnimatorComp;		// アニメータコンポーネント
@@ -49,8 +42,8 @@ private:
 	const GameObject* m_pTarget;					// 攻撃目標
 	class AI_GunWeapon* m_pAIGunWeapon;				// 銃火器コンポーネント
 public:
-	Vehicle(std::weak_ptr<GameObject> pOwner, int updateRank);
-	~Vehicle();
+	VehicleController(std::weak_ptr<GameObject> pOwner, int updateRank);
+	~VehicleController();
 
 	void Start(RendererEngine& renderer) override;	// 初期化
 	void LateUpdate(RendererEngine& renderer) override;	// 更新
@@ -59,11 +52,10 @@ public:
 	bool Setup(const VehicleSetupInfo& _info);	// セットアップ
 
 	/// <summary> ステートマシンの登録 </summary>
-	void RegisterStateMachine(const StateMachine<Vehicle>& _state) { m_StateMachine = _state; };
+	void RegisterStateMachine(const StateMachine<VehicleController>& _state) { m_StateMachine = _state; };
 
 	/// <summary>ステートの変更 </summary>
 	void ChangeState(const int _state);
-
 
 	/// <summary>アニメーションの変更 </summary>
 	void ChangeAnimation(const int _newId);
@@ -89,6 +81,14 @@ public:
 	/* 武器ID */
 	void set_WeaponID(int _id) { m_WeaponID = _id; }
 	int get_WeaponID()const { return m_WeaponID; }
+
+	/* 入力処理 */
+	const VehicleData::VehicleInputResult CheckInputRobot();
+
+	/* 入力結果 */
+	const VehicleData::VehicleInputResult_Robot& get_InputResult_Robot()const ;
+
+
 	// =========================================================================================
 	//	各コンポーネントの取得
 	// =========================================================================================

@@ -67,11 +67,11 @@ int DroneTypeA_AT_IdleState::Update(class EnemyController* pOwner)
 		}
 		auto myTransform = pOwner->get_TransformComponent();
 		VEC3 crntPos = myTransform->get_VEC3ToPos();					// 現在の座標
-		//
-		// ステート名
-		//
-		auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_IDLE);
-		Master::m_pDirectWriteManager->DrawString3D(stateName.data(), crntPos, "White_20_STD");
+		////
+		//// ステート名
+		////
+		//auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_IDLE);
+		//Master::m_pDirectWriteManager->DrawString3D(stateName.data(), crntPos, "White_20_STD");
 
 		MoveParam movePram;
 		movePram._moveSpeed = pOwner->get_MoveSpeed();

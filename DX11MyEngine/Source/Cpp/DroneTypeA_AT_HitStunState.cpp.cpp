@@ -82,11 +82,11 @@ int DroneTypeA_AT_HitStunState::Update(class EnemyController* pOwner)
 
 		auto myTransform = pOwner->get_TransformComponent();
 		VEC3 pos = myTransform->get_VEC3ToPos();
-		//
-		// ステート名
-		//
-		auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_DEAD);
-		Master::m_pDirectWriteManager->DrawString3D(stateName.data(), pos, "White_20_STD");
+		////
+		//// ステート名
+		////
+		//auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_DEAD);
+		//Master::m_pDirectWriteManager->DrawString3D(stateName.data(), pos, "White_20_STD");
 
 
 

@@ -74,11 +74,11 @@ int DroneTypeA_AT_AttackState::Update(class EnemyController* pOwner)
 		auto myTransform = pOwner->get_TransformComponent();
 		VEC3 myPos = myTransform->get_VEC3ToPos();			// 自分の位置
 
-		//
-		// ステート名
-		//
-		auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_ATTACK);
-		Master::m_pDirectWriteManager->DrawString3D(stateName.data(), myPos, "White_20_STD");
+		////
+		//// ステート名
+		////
+		//auto stateName = magic_enum::enum_name(DRONE_TYPE_A_STATE::DRONE_TYPE_A_STATE_ACTIVE_ATTACK);
+		//Master::m_pDirectWriteManager->DrawString3D(stateName.data(), myPos, "White_20_STD");
 
 		auto targetTransform = target->get_Transform().lock();
 		VEC3 targetPos = targetTransform->get_VEC3ToPos();	// 目標位置

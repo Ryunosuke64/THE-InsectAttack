@@ -101,7 +101,7 @@ void mission_main()
             ENEMY_TYPE::GIANT_ANT_Normal,
             VEC3(-200.0f,30.0f, 0.0f),
             30.0f,
-            100,
+            50,
             70.0f,
             true
         );
@@ -110,7 +110,7 @@ void mission_main()
             ENEMY_TYPE::DRONE_TYPE_A,
             VEC3(-100.0f,80.0f, 200.0f),
             30.0f,
-            300,
+         20,
             70.0f,
             true
         );              
@@ -119,7 +119,7 @@ void mission_main()
             ENEMY_TYPE::DRONE_TYPE_A,
             VEC3(300.0f,100.0f, 0.0f),
             30.0f,
-            300,
+            40,
             70.0f,
             true
         );

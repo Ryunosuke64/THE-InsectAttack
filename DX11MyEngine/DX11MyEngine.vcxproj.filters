@@ -1017,7 +1017,7 @@
     <ClCompile Include="Source\Cpp\DroneTypeA_AT_HitStunState.cpp.cpp">
       <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA\Active</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Cpp\Component_Vehicle.cpp">
+    <ClCompile Include="Source\Cpp\Component_VehicleController.cpp">
       <Filter>ソース ファイル\Game\Component\Vehicle</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cpp\V_Durga_Idle.cpp">
@@ -1637,7 +1637,7 @@
     <ClInclude Include="Source\Header\DroneTypeA_StateHeader.h">
       <Filter>ソース ファイル\Game\Component\Enemy\State_DroneTypeA</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Header\Component_Vehicle.h">
+    <ClInclude Include="Source\Header\Component_VehicleController.h">
       <Filter>ソース ファイル\Game\Component\Vehicle</Filter>
     </ClInclude>
     <ClInclude Include="Source\Header\V_Durga_StateHeader.h">
