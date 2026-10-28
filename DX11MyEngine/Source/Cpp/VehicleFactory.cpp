@@ -188,7 +188,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
 
 
     PhysicsData::RigidBodyDesc rbDesc;
-    rbDesc.mass = 1000.0f;
+    rbDesc.mass = 100000.0f;
     rbDesc.centerOfMassOffset = collider->get_Center();
     rbDesc.pos = pos;
     rbDesc.restitution = 0.0f;          // 跳ねない
@@ -196,8 +196,9 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     rbDesc.owner = generatedObject;     // オーナーオブジェクトの設定
     rbDesc.collider = collider;         // コライダーの設定
     rbDesc.gravity = VEC3(0.0f, -9.8f, 0.0f);
-    rbDesc.angularDamping = 1.0f;
-    rbDesc.angularFactor = VEC3(0.0f, 0.0f, 0.0f);
+    rbDesc.angularDamping = 0.9f;
+    rbDesc.linearDamping = 0.5f;
+    rbDesc.angularFactor = VEC3(0.0f, 1.0f, 0.0f);
     rbDesc.localScaling = 0.175f;
 
     rb->Setup(*Master::m_pPhysicsEngine, rbDesc);

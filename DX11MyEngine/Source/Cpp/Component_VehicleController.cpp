@@ -165,7 +165,7 @@ void VehicleController::ChangeAnimation(const int _newId)
 	{
 		return;
 	}
-	m_pAnimatorComp->ChangeAnim(_newId);
+	m_pAnimatorComp->ChangeAnim(_newId,0.3f);
 }
 
 //*---------------------------------------------------------------------------------------

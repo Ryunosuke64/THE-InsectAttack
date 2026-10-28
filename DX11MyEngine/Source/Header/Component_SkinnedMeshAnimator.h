@@ -92,7 +92,7 @@ public:
 	bool get_IsAnim()const { return m_IsAnimationFlag; };
 	bool get_IsAnimationLODEnabled()const { return m_IsAnimationLODEnabled; };
 	bool get_IsCrntAnimationHasFinished()const;		// アニメーションが終了しているか
-	
+
 
 	DirectX::XMMATRIX& get_BoneLocalWorldMatrix(const std::string& _nodeName);	// ノード名からボーンのワールド変換行列を取得する
 

@@ -3,8 +3,10 @@
 #include "V_Durga_StateHeader.h"
 #include "Component_MoveLogic.h"
 #include "Component_SkinnedMeshAnimator.h"
+#include "Component_RigidBody.h"
 #include "GameObject.h"
 
+using namespace VECTOR4;
 using namespace VECTOR3;
 using namespace VECTOR2;
 using namespace UtilityData;
@@ -21,7 +23,6 @@ void V_Durga_IdleState::OnEnter(class VehicleController* pOwner)
 	// 移動ベクトルは0
 	pOwner->set_MoveSpeed(0.0f);
 	pOwner->set_IsPlayAnim(false);
-	//pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(true);
 	//pOwner->get_RigidBodyComponent()->ResetPhysics();
 
 	// 速度制御をなくす
@@ -39,7 +40,6 @@ void V_Durga_IdleState::OnEnter(class VehicleController* pOwner)
 //*----------------------------------------------------------------------------------------
 void V_Durga_IdleState::OnExit(class VehicleController* pOwner)
 {
-
 }
 
 //*---------------------------------------------------------------------------------------
@@ -73,6 +73,36 @@ int V_Durga_IdleState::Update(class VehicleController* pOwner)
 	if (input.isPunchA)
 	{
 	}
+	auto rigidBody = pOwner->get_RigidBodyComponent();
+	const float turnInput =
+		(input.isRotR ? 1.0f : 0.0f) -
+		(input.isRotL ? 1.0f : 0.0f);
+
+	// 入力がないときは姿勢を書き換えない
+	if (turnInput != 0.0f)
+	{
+		const float turnSpeed = DirectX::XMConvertToRadians(60.0f); // 毎秒60度
+		const float dt = Master::m_pTimeManager->get_DeltaTime();
+		const float deltaYaw = turnInput * turnSpeed * dt;
+
+		const auto rotation = rigidBody->GetRotation();
+		const auto currentQ = DirectX::XMVectorSet(
+			rotation.x, rotation.y, rotation.z, rotation.w);
+
+		const auto deltaQ =
+			DirectX::XMQuaternionRotationRollPitchYaw(
+				0.0f, deltaYaw, 0.0f);
+
+		const auto nextQ = DirectX::XMQuaternionNormalize(
+			DirectX::XMQuaternionMultiply(currentQ, deltaQ));
+
+		DirectX::XMFLOAT4 result;
+		DirectX::XMStoreFloat4(&result, nextQ);
+
+		rigidBody->SetRotation(VEC4(
+			result.x, result.y, result.z, result.w));
+	}
+
 
 	return DURGA_V_STATE::DURGA_V_STATE_IDLE;
 }
