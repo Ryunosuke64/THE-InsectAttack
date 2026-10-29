@@ -12,6 +12,7 @@
   "soundID": "weapon.gun_fire_02",
   "muzzleFlashEffectTag" : "MuzzleEffect_01",
   "muzzleFlashEffectScale" :  [1.0, 1.0, 1.0],
+  "muzzleFlashEffectColor" :  [255, 64, 64],
   "bulletType": "NORMAL",
   "bulletParam": 
   {

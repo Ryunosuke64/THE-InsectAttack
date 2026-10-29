@@ -89,9 +89,9 @@ bool RenderPipeline::Setup(RendererEngine &renderer)
     m_PostEffectParam.Fog.End    = 150.0f;
 
 	// カラーグレーディングの設定
-    m_PostEffectParam.ColorGrading.Exposure = 0.5f;                   // 露出補正（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Exposure = 0.15f;                   // 露出補正（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.Contrast = 2.3f;                   // コントラスト（1.0fで補正なし）
-    m_PostEffectParam.ColorGrading.Saturation = 0.9f;                 // 彩度（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Saturation = 0.8f;                 // 彩度（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.Gamma = 1.0f;                      // ガンマ補正（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.ColorTint = { 1.0f, 1.0f, 1.0f };  // 色味（1.0fで補正なし）
 
@@ -704,7 +704,6 @@ void RenderPipeline::Forward_PathRender(RendererEngine& renderer)
     // スロットの解除
     ID3D11ShaderResourceView* nullSRV = nullptr;
     context->PSSetShaderResources(7, 1, &nullSRV);
-
 
     /*
     * エフェクシアの描画もここでする！！

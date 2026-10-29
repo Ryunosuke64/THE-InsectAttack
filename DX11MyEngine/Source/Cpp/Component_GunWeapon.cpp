@@ -601,12 +601,17 @@ void GunWeapon::OnceFire(RendererEngine& renderer)
             Master::m_pEffectManager->SetDynamicParameter(handle, 0, bulletData._commonData._range);
         }
     }
+    VEC3 muzzleFlashScale = gunParam->_muzzleFlashEffectScale;      // エフェクトの大きさ
+    VEC3 muzzleFlashColor = gunParam->_muzzleFlashEffectColor;      // エフェクトの色
+    VEC3 muzzleFlashColor_N = gunParam->_muzzleFlashEffectColor_N;  // エフェクトの色 正規化
 
     if (!m_pFlashPointLight.expired()) {
         // フラッシュ
-        m_pFlashPointLight.lock()->set_Range(5.0f);
-        m_pFlashPointLight.lock()->set_Intensity(3.0f);
-        m_pFlashPointLight.lock()->set_LightColor(VEC3(1.0f, 0.8f, 0.0f));
+        const float FLASH_RANGE_FACTOR = 5.0f;
+        float scaleLengthSq = muzzleFlashScale.LengthSq();
+        m_pFlashPointLight.lock()->set_Range(scaleLengthSq * FLASH_RANGE_FACTOR);
+        m_pFlashPointLight.lock()->set_Intensity(5.0f);
+        m_pFlashPointLight.lock()->set_LightColor(VEC3(muzzleFlashColor_N.x, muzzleFlashColor_N.y, muzzleFlashColor_N.z));
     }
 
     //*****************************************************************************************
@@ -614,10 +619,9 @@ void GunWeapon::OnceFire(RendererEngine& renderer)
     //*****************************************************************************************
     if (gunParam->_muzzleFlashEffectTag.empty() == false)
     {
-        VEC3 muzzleScale = gunParam->_muzzleFlashEffectScale;   // エフェクトの大きさ
-
         auto handle = Master::m_pEffectManager->PlayEffect(gunParam->_muzzleFlashEffectTag, firePos, 1);
-        Master::m_pEffectManager->SetScaleEffect(handle, muzzleScale.x, muzzleScale.y, muzzleScale.z);
+        Master::m_pEffectManager->SetScaleEffect(handle, muzzleFlashScale.x, muzzleFlashScale.y, muzzleFlashScale.z);
+        Master::m_pEffectManager->SetAllColorEffect(handle, Effekseer::Color(muzzleFlashColor.x, muzzleFlashColor.y, muzzleFlashColor.z));
         Master::m_pEffectManager->SetRotationEffect(handle, pitch, yaw, 0.0f);
     }
 

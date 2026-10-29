@@ -105,8 +105,7 @@ int c_Game_Play::Update(SceneManager *pOwner)
         pOwner->OnSceneClose();
     }
 
-    // ミッションスクリプトの実行
-    Master::m_pMissionDirector->ExcuteScriptMissionMain();
+
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -200,6 +199,10 @@ int c_Game_Play::Update(SceneManager *pOwner)
 
         return c_GAME::c_GO_RESULT_SCENE;
     }
+    
+    // ミッションスクリプトの実行
+    Master::m_pMissionDirector->ExcuteScriptMissionMain();
+
 
     return c_GAME::c_GAME_PLAY;
 }

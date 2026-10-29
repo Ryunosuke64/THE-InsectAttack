@@ -61,6 +61,10 @@ enum class GAME_CONFIG
     MOVE_ROLLING,   // ローリング
 
     SWITCH_CONTROLL_TARGET, // 操作対象切り替え
+    DURGA_MOVE_FOWARD,      // ドルガ - 前進
+    DURGA_MOVE_BACK,        // ドルガ - 後退
+    DURGA_MOVE_LEFT,        // ドルガ - 左
+    DURGA_MOVE_RIGHT,       // ドルガ - 右
     DURGA_ROT_RIGHT,        // ドルガ - 右回転
     DURGA_ROT_LEFT,         // ドルガ - 左回転
     DURGA_LIFT,             // ドルガ - 持ち上げる

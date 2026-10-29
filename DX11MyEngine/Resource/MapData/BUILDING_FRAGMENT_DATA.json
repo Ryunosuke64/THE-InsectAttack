@@ -13,21 +13,21 @@
                     "scale" : [1.0, 1.0, 1.0]
                 },
                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01_F_Building_01.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01_F_02.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [17.5221, 57.6438, 7.88871],
                     "rotation" : [0.0, 0.0, 0.0],
                     "scale" : [1.0, 1.0, 1.0]
                 },
                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01_F_Tower_01.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01_F_03.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [6.17528, 42.9693, 1.95653],
                     "rotation" : [0.0, 0.0, 0.0],
                     "scale" : [1.0, 1.0, 1.0]
                 },
                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01_F_Building_03.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01_F_04.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [17.5759, 13.8528, 7.38857],
                     "rotation" : [0.0, 0.0, 0.0],
@@ -75,21 +75,21 @@
                     "scale" : [1.0, 1.0, 1.0]
                 },
                                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03_F_Building_01.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03_F_02.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [0.0, 0.0, 0.0],
                     "rotation" : [0.0, 0.0, 0.0],
                     "scale" : [1.0, 1.0, 1.0]
                 },
                                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03_F_Tower_01.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03_F_03.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [0.0, 0.0, 0.0],
                     "rotation" : [0.0, 0.0, 0.0],
                     "scale" : [1.0, 1.0, 1.0]
                 },
                                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03_F_Building_03.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03_F_04.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [0.0, 0.0, 0.0],
                     "rotation" : [0.0, 0.0, 0.0],
@@ -144,21 +144,21 @@
                     "scale" : [1.0, 1.0, 1.0]
                 },
                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01_F_Building_01.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01_F_02.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [17.5221, 57.6438, 7.88871],
                     "rotation" : [0.0, 0.0, 0.0],
                     "scale" : [1.0, 1.0, 1.0]
                 },
                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01_F_Tower_01.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01_F_03.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [6.17528, 42.9693, 1.95653],
                     "rotation" : [0.0, 0.0, 0.0],
                     "scale" : [1.0, 1.0, 1.0]
                 },
                 {
-                    "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01_F_Building_03.fbx",
+                    "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01_F_04.fbx",
                     "physicsPresetID" : "Building_01_F",
                     "position" : [17.5759, 13.8528, 7.38857],
                     "rotation" : [0.0, 0.0, 0.0],

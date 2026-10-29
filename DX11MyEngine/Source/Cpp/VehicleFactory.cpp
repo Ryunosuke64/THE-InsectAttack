@@ -18,6 +18,7 @@
 #include "Component_Faction.h"
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_AI_GunWeapon.h"
+#include "Component_3DCamera.h"
 
 #include "Component_CapsuleCollider.h"
 #include "Component_SphereCollider.h"
@@ -212,6 +213,8 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     stateMachine.SetStartState(generationData.startStateID);
     // 登録
     vehicleController->RegisterStateMachine(stateMachine);
+
+    //Master::m_pDataManager->get_CameraComponent().lock()->set_FocusObject(generatedObject);
 
     // 生成したオブジェクトを返す
     return generatedObject;

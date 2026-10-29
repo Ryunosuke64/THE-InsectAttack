@@ -376,7 +376,10 @@ void InputManager::InitDefaultKeyConfig()
     
 
     // ドルガ
-    m_GameConfigMap[(int)GAME_CONFIG::SWITCH_CONTROLL_TARGET]._keys.push_back(DIK_C);    // 操作対象切り替え
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_MOVE_FOWARD]._keys.push_back(DIK_I);         // ドルガ - 前進
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_MOVE_BACK]._keys.push_back(DIK_K);           // ドルガ - 後退
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_MOVE_LEFT]._keys.push_back(DIK_J);           // ドルガ - 左
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_MOVE_RIGHT]._keys.push_back(DIK_L);          // ドルガ - 右
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_ROT_RIGHT]._keys.push_back(DIK_E);           // ドルガ - 右回転
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_ROT_LEFT]._keys.push_back(DIK_Q);            // ドルガ - 左回転   
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_LIFT]._keys.push_back(DIK_SPACE);            // ドルガ - 持ち上げる  

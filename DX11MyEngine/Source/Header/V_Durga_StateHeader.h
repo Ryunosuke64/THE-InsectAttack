@@ -54,6 +54,7 @@ private:
 
 	VECTOR3::VEC3 m_InputDir = VECTOR3::VEC3();				// “ü—Í‚Ì•ûŒü
 	FOOT_STATE m_NextFootState = FOOT_STATE::FOOT_R_ENTER;	// Œ»İ‚Ì“¥‚İo‚µó‘Ô
+	FOOT_STATE m_CrntFootState = FOOT_STATE::FOOT_R_ENTER;	// Œ»İ‚Ì“¥‚İo‚µó‘Ô
 
 public:
 	void OnEnter(class VehicleController* pOwner) override;

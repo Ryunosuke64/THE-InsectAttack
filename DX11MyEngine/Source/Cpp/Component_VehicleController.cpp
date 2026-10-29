@@ -215,10 +215,10 @@ void VehicleController::set_MoveLogicState(UtilityData::MOVE_BEHAVIOUR_TYPE _mov
 const VehicleData::VehicleInputResult VehicleController::CheckInputRobot()
 {
 	VehicleInputResult_Robot result;
-	result.isMoveF = GetInput(GAME_CONFIG::MOVE_FORWARD);
-	result.isMoveB = GetInput(GAME_CONFIG::MOVE_BACK);
-	result.isMoveR = GetInput(GAME_CONFIG::MOVE_RIGHT);
-	result.isMoveL = GetInput(GAME_CONFIG::MOVE_LEFT);
+	result.isMoveF = GetInput(GAME_CONFIG::DURGA_MOVE_FOWARD);
+	result.isMoveB = GetInput(GAME_CONFIG::DURGA_MOVE_BACK);
+	result.isMoveR = GetInput(GAME_CONFIG::DURGA_MOVE_RIGHT);
+	result.isMoveL = GetInput(GAME_CONFIG::DURGA_MOVE_LEFT);
 	result.isRotR = GetInput(GAME_CONFIG::DURGA_ROT_RIGHT);
 	result.isRotL = GetInput(GAME_CONFIG::DURGA_ROT_LEFT);
 	result.isLift = GetInput(GAME_CONFIG::DURGA_LIFT);

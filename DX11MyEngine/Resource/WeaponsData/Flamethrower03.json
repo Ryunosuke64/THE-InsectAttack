@@ -11,7 +11,8 @@
   "shotSoundRadius": 300.0,
   "soundID": "weapon.gun_fire_02",
   "muzzleFlashEffectTag" : "",
-  "muzzleFlashEffectScale" : [0.5, 0.5, 0.5],
+  "muzzleFlashEffectScale" : [3.5, 3.5, 3.5],
+  "muzzleFlashEffectColor" :  [255, 64, 0],
   "bulletType": "FLAME",
   "bulletParam": 
   {

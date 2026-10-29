@@ -12,6 +12,7 @@
   "soundID": "weapon.gun_fire_laser_01",
   "muzzleFlashEffectTag" : "",
   "muzzleFlashEffectScale" :  [0.0, 0.0, 0.0],
+  "muzzleFlashEffectColor" :  [255, 255, 255],
   "bulletType": "LASER",
   "bulletParam": 
   {

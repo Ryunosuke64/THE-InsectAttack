@@ -93,7 +93,7 @@ Variables:
    95  34 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
                ObjInfo  v17, 1
    97  29 *    VAR      v17
-   98  31 *    PshC4    0x2          (i:2, f:2.8026e-45)
+   98  31 *    PshC4    0x0          (i:0, f:0)
   100  32 *    GETREF   1
   101  32 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
   103  25 *    PSF      v17

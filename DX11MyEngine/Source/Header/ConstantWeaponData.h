@@ -57,6 +57,8 @@ namespace WeaponData
         std::string _soundID = "";              // 発射音のID
 		std::string _muzzleFlashEffectTag;      // マズルフラッシュエフェクトのタグ
 		VECTOR3::VEC3 _muzzleFlashEffectScale = VECTOR3::VEC3(1.0f); // マズルフラッシュエフェクトの大きさ
+		VECTOR3::VEC3 _muzzleFlashEffectColor = VECTOR3::VEC3(1.0f); // マズルフラッシュエフェクトの色
+		VECTOR3::VEC3 _muzzleFlashEffectColor_N = VECTOR3::VEC3(1.0f); // マズルフラッシュエフェクトの色 (0.0～1.0にしたもの jsonからは読み込まない)
 
         BulletData::BULLET_TYPE _bulletType = BulletData::BULLET_TYPE::NORMAL;  // 弾の種類
 

@@ -14,11 +14,11 @@ Building01_Base1,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/MapObject/Build
 Building01_Base2,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/MapObject/Building/Building_01/Textures/BL_tex04.jpg,Resource/Model/MapObject/Building/Building_01/Textures/BL_tex04_normal.png,-1,0,BACK
 Building01_Base3,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/MapObject/Building/Building_01/Textures/BL_tex03.jpg,Resource/Model/MapObject/Building/Building_01/Textures/BL_tex03_normal.png,-1,0,BACK
 Building_Tower_1_SupportPillar,1,1,1,1,1,1,1,1,150,0.5,0.1,0.1,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01.png,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01_normal.png,-1,0,BACK
-Building_Tower_1_TopPillar,1,1,1,1,1,1,1,1,150,0.1,0.5,0.5,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01.png,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01_normal.png,-1,0,BACK
-Building_Tower_1_TopToroid,1,1,1,1,1,1,1,1,150,0.1,0.25,0.5,1,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01.png,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01_normal.png,-1,0,BACK
+Building_Tower_1_TopPillar,1,1,1,1,1,1,1,1,150,0.25,0.5,0.5,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01.png,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01_normal.png,-1,0,BACK
+Building_Tower_1_TopToroid,1,1,1,1,1,1,1,1,150,0.25,0.25,0.5,1,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01.png,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01_normal.png,-1,0,BACK
 Building_Tower_1_Top,1,1,1,1,1,1,1,1,150,1.5,1.5,0.1,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01.png,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex01_normal.png,-1,0,BACK
-Building_Tower_1_Wall,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex03.jpg,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex03_normal.png,-1,0,BACK
-Building_Tower_1_BaseGround,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex02.jpg,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex02_normal.png,-1,0,BACK
+Building_Tower_1_Wall,1,1,1,1,1,1,1,1,50,0.5,0.5,0.5,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex03.jpg,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex03_normal.png,-1,0,BACK
+Building_Tower_1_BaseGround,1,1,1,1,1,1,1,1,50,0.25,0.25,0.25,0,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex02.jpg,Resource/Model/MapObject/Building/Tower_01/Textures/BL_TW01_tex02_normal.png,-1,0,BACK
 MotherShip,1,1,1,1,1,1,1,1,150,0.2,0.2,0.2,0,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
 Ground,1,1,1,1,1,1,1,1,0,0,0,0,0,Resource/Texture/Materials/aerial_grass_rock_diff_4k.png,Resource/Texture/Materials/aerial_grass_rock_nor_dx_4k.png,-1,0,BACK
 GroundCity_01,1,1,1,1,1,1,1,1,0,0,0,0,0,Resource/Model/MapObject/Building/Ground/Textures/Asphalt023S_2K-PNG_Color.png,Resource/Model/MapObject/Building/Ground/Textures/Asphalt023S_2K-PNG_NormalGL.png,-1,0,BACK
@@ -54,4 +54,4 @@ Tree_Wood,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/Bar
 DroneTypeA_Body,1,1,1,1,1,1,1,1,200,1,0,0,1,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
 DroneTypeA_UnderBody,0.65,0.65,0.65,1,1,1,1,1,200,0,0,0,0.2,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern.jpg,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern_normal.png,-1,0,BACK
 Rock_01,1,1,1,1,1,1,1,1,100,0.15,0.15,0.15,0,Resource/Model/MapObject/Rock/textures/aerial_rocks_04_diff_1k.png,Resource/Model/MapObject/Rock/textures/aerial_rocks_04_nor_dx_1k.png,-1,0,BACK
-Durga,1,1,1,1,1,1,1,1,150,0.2,0.2,0.2,0,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
+Durga,1,1,1,1,1,1,1,1,150,0.2,0.2,0.2,0,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/metal_plate_02_diff_2k_n.png,-1,0,BACK

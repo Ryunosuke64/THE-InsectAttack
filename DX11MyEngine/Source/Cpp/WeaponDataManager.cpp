@@ -247,7 +247,8 @@ bool WeaponDataManager::LoadGunWeaponData(const std::string& _filepath, WeaponDa
         _outData._muzzleFlashEffectScale.y = j["muzzleFlashEffectScale"][1].get<float>();
         _outData._muzzleFlashEffectScale.z = j["muzzleFlashEffectScale"][2].get<float>();
     }
-
+    LoadVEC3Data(j, "muzzleFlashEffectColor", _outData._muzzleFlashEffectColor);                        // フラッシュカラー
+    _outData._muzzleFlashEffectColor_N = _outData._muzzleFlashEffectColor / 255.0f;     // 0.0～1.0にしたカラー
 
     //*****************************************************************************************
     //	ここから↓					弾情報自体の読み取り

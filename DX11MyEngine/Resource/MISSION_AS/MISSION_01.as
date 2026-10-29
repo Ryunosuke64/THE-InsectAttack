@@ -25,9 +25,9 @@ void mission_setup()
     SetStageEnvironmentParam(environmentParam);
 
     
-    // ドローン タイプA
+    // アリ タイプA
     SpawnEnemyGroup(
-        ENEMY_TYPE::DRONE_TYPE_A,
+        ENEMY_TYPE::GIANT_ANT_Normal,
         VEC3(0.0f,50.0,0.0), 
         20.0f,
         1,
@@ -48,42 +48,23 @@ void mission_main()
         //
         //************************************************************************
     case 0:
-    // // 八面体 
-    // enemyID = SpawnEnemy(
-    //     ENEMY_TYPE::OCTAHEDRON,
-    //     VEC3(-200.0f,150.0f,0.0f),
-    //     VEC3(0.0f),
-    //     3000.0f,
-    //     true
-    // );
-
-    // // 八面体グループ
-    // SpawnEnemyGroup(
-    //     ENEMY_TYPE::OCTAHEDRON,
-    //     VEC3(0.0f,150.0,0.0), 
-    //     100.0f,
-    //     3,
-    //     3000.0f,
-    //     true
-    // );
-
-    // ドローン タイプA
-    // SpawnEnemyGroup(
-    //     ENEMY_TYPE::DRONE_TYPE_A,
-    //     VEC3(0.0f,250.0,0.0), 
-    //     50.0f,
-    //     1,
-    //     100.0f,
-    //     true
-    // );
+    // アリ 
+    // ※イベントトリガー 
+    enemyID = SpawnEnemy(
+        ENEMY_TYPE::GIANT_ANT_Normal,
+        VEC3(0.0f, 50.0f,0.0f),
+        VEC3(0.0f),
+        400.0f,
+        false
+    );
 
     // アリ グループ
     groupID3 = SpawnEnemyGroup(
         ENEMY_TYPE::GIANT_ANT_Normal,
         VEC3(0.0f,30.0f, 0.0f),
         30.0f,
-        10,
-        3000.0f,
+        130,
+        300.0f,
         false
     );
     wave++;
@@ -96,7 +77,7 @@ void mission_main()
         //************************************************************************
     if(IsEnemyDead(enemyID))
     {
-        // アリ グループ3
+        // アリ グループ
         groupID3 = SpawnEnemyGroup(
             ENEMY_TYPE::GIANT_ANT_Normal,
             VEC3(-200.0f,30.0f, 0.0f),
@@ -105,31 +86,31 @@ void mission_main()
             70.0f,
             true
         );
-                // アリ グループ3
+        // ドローン グループ
         groupID3 = SpawnEnemyGroup(
             ENEMY_TYPE::DRONE_TYPE_A,
-            VEC3(-100.0f,80.0f, 200.0f),
+            VEC3(-300.0f,200.0f, 400.0f),
             30.0f,
          20,
             70.0f,
             true
-        );              
-          // アリ グループ3
+        );
+          // ドローン グループ
         groupID3 = SpawnEnemyGroup(
             ENEMY_TYPE::DRONE_TYPE_A,
-            VEC3(300.0f,100.0f, 0.0f),
+            VEC3(300.0f,200.0f, -200.0f),
             30.0f,
             40,
             70.0f,
             true
         );
-                        // アリ グループ3
+        // 八面体 グループ
         groupID3 = SpawnEnemyGroup(
             ENEMY_TYPE::OCTAHEDRON,
-            VEC3(300.0f,150.0f, 0.0f),
-            30.0f,
+            VEC3(300.0f,200.0f, -200.0f),
+            50.0f,
             3,
-            870.0f,
+            2000.0f,
             true
         );
         wave++;
@@ -143,12 +124,72 @@ void mission_main()
         //************************************************************************
     if(GetAliveEnemyCount() < 10)
     {
+        //************************************************ */
+        // 前方向
+        //************************************************ */
+        // 八面体 グループ
         SpawnEnemyGroup(
             ENEMY_TYPE::OCTAHEDRON,
-            VEC3(0.0f,150.0,0.0), 
-            100.0f,
-            3,
-            500.0f,
+            VEC3(0.0f,400.0,500.0), 
+            30.0f,
+            1,
+            2500.0f,
+            true
+        );
+
+        // ドローン グループ 
+        SpawnEnemyGroup(
+            ENEMY_TYPE::DRONE_TYPE_A,
+            VEC3(0.0f,400.0, 500.0),
+            200.0f,
+            150,
+            70.0f,
+            true
+        );
+
+        //************************************************ */
+        // 右方向
+        //************************************************ */
+        // 八面体 グループ
+        SpawnEnemyGroup(
+            ENEMY_TYPE::OCTAHEDRON,
+            VEC3(400.0f,400.0,0.0), 
+            30.0f,
+            1,
+            2500.0f,
+            true
+        );
+
+        // ドローン グループ
+        SpawnEnemyGroup(
+            ENEMY_TYPE::DRONE_TYPE_A,
+            VEC3(400.0f,400.0,0.0),
+            200.0f,
+            100,
+            70.0f,
+            true
+        );
+        
+        //************************************************ */
+        // 左方向
+        //************************************************ */
+        // 八面体 グループ
+        SpawnEnemyGroup(
+            ENEMY_TYPE::OCTAHEDRON,
+            VEC3(-500.0f,400.0,0.0), 
+            30.0f,
+            1,
+            2500.0f,
+            true
+        );
+
+        // ドローン グループ
+        SpawnEnemyGroup(
+            ENEMY_TYPE::DRONE_TYPE_A,
+            VEC3(-500.0f,400.0,0.0),
+            200.0f,
+            100,
+            70.0f,
             true
         );
         wave++;

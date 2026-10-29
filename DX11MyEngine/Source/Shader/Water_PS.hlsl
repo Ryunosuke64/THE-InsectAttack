@@ -93,7 +93,7 @@ float4 PSMain(PS_SimpleIntput input) : SV_TARGET
     float4 worldPos = GetConvertPosFromDepthToWorld(sceneDepthRaw, screenUV);
     worldPos.w = 1.0f;
     
-    float specularPower = 100.0f;
+    float specularPower = 200.0f;
     // ŠÂ‹«Œõ‘Š“–‚Ì¬•ª
     finalColor += waterColor * 0.5f;
     //************************************************************************

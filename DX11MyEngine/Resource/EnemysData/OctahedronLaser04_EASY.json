@@ -14,6 +14,7 @@
   "soundID": "enemy.octahedron.shot_02",
   "muzzleFlashEffectTag" : "MuzzleEffect_Laser_01",
   "muzzleFlashEffectScale" :  [3.0, 3.0, 3.0],
+  "muzzleFlashEffectColor" :  [64, 255, 64],
   "bulletType": "NORMAL",
   "bulletParam": 
   {

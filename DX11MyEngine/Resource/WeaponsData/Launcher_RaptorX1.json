@@ -14,6 +14,7 @@
   "soundID": "weapon.gun_fire_02",
   "muzzleFlashEffectTag" : "MuzzleEffect_Rocket_01",
   "muzzleFlashEffectScale" : [2.0, 2.0, 2.0],
+  "muzzleFlashEffectColor" :  [255, 255, 64],
   "bulletType": "EXPLOSION",
   "bulletParam": 
   {
@@ -49,7 +50,7 @@
       "type" : "EXPLOSION",
       "decalMaterialTag" : "Decal_BulletHole",
       "hitEffectTag" : "BulletHit_Flame",
-      "explosionRadius" : 14.0,
+      "explosionRadius" : 12.0,
       "explosionEffectTag" : "Explosion_01",
       "explosionEffectAliveTime" : 1.0,
       "isSmoke" : true,

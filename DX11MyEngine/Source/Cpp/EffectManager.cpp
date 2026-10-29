@@ -127,6 +127,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/PointItemGet.efkefc", "PointItemGet");
     LoadEffect(u"Resource/Effect/Explosion_01_SmokeSet.efkefc", "Explosion_01_SmokeSet");
     LoadEffect(u"Resource/Effect/FlameEmitter_01.efkefc", "FlameEmitter_01");
+    LoadEffect(u"Resource/Effect/Dust_01.efkefc", "Dust_01");
 
     return true;
 }
@@ -213,7 +214,7 @@ void EffectManager::UpdateEffect(RendererEngine& renderer)
 //*----------------------------------------------------------------------------------------
 void EffectManager::DrawEffect()
 {
-    //m_EfkRenderer->SetMaintainGammaColorInLinearColorSpace(true);
+    m_EfkRenderer->SetMaintainGammaColorInLinearColorSpace(false);
     // エフェクトの描画開始処理
     m_EfkRenderer->BeginRendering();
     // エフェクトの描画
