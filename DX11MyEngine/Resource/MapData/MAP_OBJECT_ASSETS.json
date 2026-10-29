@@ -4,7 +4,12 @@
         {
             "assetID" : "Tree_01",
             "physicsPresetID" : "Tree_01",
-            "modelPath" : "Resource/Model/MapObject/Tree/Tree_01.fbx",
+            "LODModels" : 
+            [
+                { "modelPath" : "Resource/Model/MapObject/Tree/Tree_01.fbx" },
+                { "modelPath" : "Resource/Model/MapObject/Tree/Tree_01_LOD1.fbx" },
+                { "modelPath" : "Resource/Model/MapObject/Tree/Tree_01_LOD2.fbx" }
+            ],
             "mapObjectType" : "PROP",
             "materials" : 
             [
@@ -18,7 +23,10 @@
         {
             "assetID" : "Glass_01",
             "physicsPresetID" : "",
-            "modelPath" : "Resource/Model/MapObject/Glass/Glass_01.fbx",
+            "LODModels" : 
+            [
+                { "modelPath" : "Resource/Model/MapObject/Glass/Glass_01.fbx"}
+            ],
             "mapObjectType" : "PROP",
             "materials" : 
             [
@@ -31,7 +39,10 @@
         {
             "assetID" : "Rock_01",
             "physicsPresetID" : "Rock_01",
-            "modelPath" : "Resource/Model/MapObject/Rock/Rock_01.fbx",
+            "LODModels" : 
+            [
+                { "modelPath" : "Resource/Model/MapObject/Rock/Rock_01.fbx"}
+            ],
             "mapObjectType" : "PROP",
             "materials" : 
             [
@@ -44,7 +55,10 @@
         {
             "assetID" : "Building_01",
             "physicsPresetID" : "Building_01",
-            "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01.fbx",
+            "LODModels" : 
+            [
+                { "modelPath" : "Resource/Model/MapObject/Building/Building_01/Building_01.fbx"}
+            ],
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -60,7 +74,10 @@
         {
             "assetID" : "Building_03",
             "physicsPresetID" : "Building_01",
-            "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03.fbx",
+            "LODModels" : 
+            [
+                { "modelPath" : "Resource/Model/MapObject/Building/Building_03/Building_03.fbx"}
+            ],
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -73,7 +90,10 @@
         {
             "assetID" : "Tower_01",
             "physicsPresetID" : "Tower_01",
-            "modelPath" : "Resource/Model/MapObject/Building/Tower_01/Tower_01.fbx",
+            "LODModels" : 
+            [
+                { "modelPath" :  "Resource/Model/MapObject/Building/Tower_01/Tower_01.fbx"}
+            ],
             "mapObjectType" : "BUILDING",
             "materials" : 
             [
@@ -91,7 +111,10 @@
         {
             "assetID" : "Durga",
             "physicsPresetID" : "BuildingTW_01",
-            "modelPath" : "Resource/Model/Vehicle/Durga/Durga.fbx",
+            "LODModels" : 
+            [
+                { "modelPath" :   "Resource/Model/Vehicle/Durga/Durga.fbx"}
+            ],
             "mapObjectType" : "BUILDING",
             "materials" : 
             [

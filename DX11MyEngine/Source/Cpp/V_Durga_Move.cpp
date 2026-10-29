@@ -60,7 +60,7 @@ void V_Durga_MoveState::OnEnter(class VehicleController* pOwner)
 	m_InputDir = m_InputDir.Normalize();
 
 	// 移動ベクトルは0
-	pOwner->set_MoveSpeed(100.0f);
+	pOwner->set_MoveSpeed(80.0f);
 	pOwner->set_IsPlayAnim(true);
 	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
 	//pOwner->get_RigidBodyComponent()->ResetPhysics();
@@ -197,7 +197,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 		default:
 			break;
 		}
-		footOffset += forward * 6.0f;
+		footOffset += forward * 8.0f;
 
 		footPos += footOffset;
 		VEC3 scale = VEC3(1.0f, 1.0f, 1.0f);
@@ -211,6 +211,10 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 		{
 			camera->DistanceDecay(1.0f, VEC3(0.1f, 0.4f, 0.1f), crntPos, 1000.0f);
 		}
+		// ****************************************************
+		//				 踏みつけサウンド再生
+		// ****************************************************
+		Master::m_pSoundManager->Play_3D("vehicle.Stomp", crntPos, 1000.0f);
 
 		// ****************************************************
 		//				 範囲内にダメージ
@@ -337,5 +341,11 @@ void V_Durga_MoveState::SetWalkAnimation(class VehicleController* pOwner)
 	default:
 		break;
 	}
+	auto transform = pOwner->get_TransformComponent();
+	VEC3 crntPos = transform->get_VEC3ToPos();
 
+	// ****************************************************
+	//				 駆動サウンド再生
+	// ****************************************************
+	Master::m_pSoundManager->Play_3D("vehicle.WalkingNoise", crntPos, 500.0f);
 }

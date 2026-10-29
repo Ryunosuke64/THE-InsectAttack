@@ -167,7 +167,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     collider->SetupModelData( modelResource->get_ModelData(LOD_QUALITY::ULTRA));
     collider->set_IsStatic(false);
     collider->set_IsConvex(true);
-    collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
+    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
     collider->set_SurfaceType(SURFACE_TYPE::METAL);             // 材質：メタル
 
     //*****************************************************************************************
@@ -180,6 +180,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
     collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_BLOCK);                // プレイヤー
     collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_BLOCK);                // エネミー
+    collider->set_CollisionResponse(COLLISION_CATEGORY::PROP, COLLISION_RESPONSE::RESPONSE_BLOCK);                // エネミー
 
     //
     // 判定なし

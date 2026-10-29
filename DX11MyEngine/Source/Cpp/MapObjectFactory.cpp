@@ -93,8 +93,18 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
     model.SetupMaterial = assetData.materials.data();
     model.ShaderType = shderType;
 
+    const float LOD_RANGE_ARRAY[MAX_REGISTER_LOD] =
+    {
+        0.0f,       // 最高品質
+        100.0f,     // 低品質
+        200.0f      // 最低品質
+    };
+
     // LOD
-    model.LODModels[0] = { assetData.modelPath, 0.0f };
+    for (int i = 0; i < assetData.modelPaths.size(); i++)
+    {
+        model.LODModels[i] = { assetData.modelPaths[i], LOD_RANGE_ARRAY[i] };
+    }
 
     generatedObject = MeshFactory::CreateModel(model);
     if (!generatedObject)
@@ -211,8 +221,9 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
     auto fragmentData = Master::m_pMapManager->FindBuildingFragmentDataSet(_assetID);
     auto assetData = Master::m_pMapManager->FindMapObjectAssetData(_assetID);
 
+    // 最上位モデルにする
     auto sourceModel = 
-        Master::m_pResourceManager->LoadModel(assetData.modelPath.c_str());
+        Master::m_pResourceManager->LoadModel(assetData.modelPaths[0].c_str());
 
     if (!sourceModel)
     {

@@ -148,7 +148,8 @@ namespace Map
     {
         std::string assetID = "";           // アセットID
         std::string physicsPresetID = "";   // 物理プリセット
-        std::string modelPath = "";         // モデルパス
+        //std::string modelPath = "";         // モデルパス
+        std::array<std::string, MAX_REGISTER_LOD> modelPaths;
 
         MAP_OBJECT_TYPE objectType = 
             MAP_OBJECT_TYPE::PROP;

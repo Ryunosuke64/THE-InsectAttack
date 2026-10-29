@@ -5,6 +5,7 @@
 #include "Component_RigidBody.h"
 #include "ConstantMapData.h"
 #include "DestructionBehavior_Header.h"
+#include "Component_Faction.h"
 
 using namespace Map;
 
@@ -158,5 +159,27 @@ void Destructible::StartDestruction(
             ownerObj,
             hitPos,
             hitDir);
+    }
+}
+
+//*---------------------------------------------------------------------------------------
+//*y?zÕ“Ëˆ—
+//*
+//* [ˆø”]
+//* &_other : Õ“Ë‘ŠŽè‚Ìî•ñ
+//* [•Ô’l]‚È‚µ
+//*----------------------------------------------------------------------------------------
+void Destructible::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
+{
+    if (auto hitObj = _other.hitObject.lock())
+    {
+        auto faction = hitObj->get_Component<Faction>();
+        if (faction)
+        {
+            if (faction->get_Faction() == UtilityData::FACTION::VEHICLE)
+            {
+                this->StartDestruction(_other.hitPoint, _other.hitNormal);
+            }
+        }
     }
 }

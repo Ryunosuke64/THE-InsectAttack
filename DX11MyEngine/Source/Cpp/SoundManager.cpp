@@ -289,6 +289,9 @@ bool SoundManager::InitXA2Sound(void)
         // •ºŽm
         { "soldier.jump", "Resource/Sound/SE/Ranger/ƒpƒ“ƒ`‚ÌˆßŽC‚ê1.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN) },
         { "soldier.land", "Resource/Sound/SE/Ranger/ƒWƒƒƒ“ƒv‚Ì’…’n.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_LAND) },
+        // ƒhƒ‹ƒK
+        { "vehicle.Stomp", "Resource/Sound/SE/Vehicle/Stomp.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_STOMP) },
+        { "vehicle.WalkingNoise", "Resource/Sound/SE/Vehicle/WalkingNoise.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_WALKINGNOIZE) },
         // “G
         { "enemy.ant.hit_01", "Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_HIT01) },
         { "enemy.ant.dead", "Resource/Sound/SE/Enemy/DSGNImpt_Impact High Spark 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_DEAD) },

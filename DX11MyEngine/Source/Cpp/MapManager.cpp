@@ -371,9 +371,23 @@ bool MapManager::ExtractionMapObjectAssetData(const nlohmann::json& _json, Map::
     //
     // assetIDは呼び出し元ですでに抽出済みなのでここではしない
     //
+    
+    // LODモデルパス取得
+    int idx = 0;
+    for (const auto& model : _json.at("LODModels"))
+    {
+        if (idx >= _outData.modelPaths.max_size())
+        {
+            assert(false);
+            Tool::ErrorMessage(L"LODモデルパス配列の範囲外です",L"MapManager");
+            return false;
+        }
 
-    // モデルパス
-    _outData.modelPath = _json.at("modelPath").get<std::string>();
+        // モデルパス
+        _outData.modelPaths[idx] = model.at("modelPath").get<std::string>();
+
+        idx++;
+    }
 
     // 物理プリセットID
     _outData.physicsPresetID = _json.at("physicsPresetID").get<std::string>();

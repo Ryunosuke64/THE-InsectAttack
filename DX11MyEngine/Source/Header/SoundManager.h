@@ -75,6 +75,9 @@ enum class SOUND_ID
     SOLDIER_R_JUMP_IN,       // ジャンプ - 開始
     SOLDIER_R_JUMP_LAND,     // ジャンプ - 着地
 
+    /* ビークル */
+    VEHICLE_DURGA_STOMP,
+    VEHICLE_DURGA_WALKINGNOIZE,
 
     /* 敵 */
     ENEMY_ANT_HIT01,         // アリ被弾 

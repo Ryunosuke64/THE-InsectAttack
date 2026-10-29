@@ -35,6 +35,7 @@ public:
 	void Start(RendererEngine& renderer) override;	// ‰Šú‰»
 	void Update(RendererEngine& renderer) override;	// XV
 	bool Setup(std::unique_ptr<IDestructionBehavior> behavior);
+	void OnCollisionEnter(const PhysicsData::CollisionInfo& _other)override;
 
 private:
 	void StartDestruction(

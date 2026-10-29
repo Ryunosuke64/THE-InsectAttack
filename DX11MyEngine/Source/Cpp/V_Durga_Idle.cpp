@@ -51,13 +51,17 @@ void V_Durga_IdleState::OnExit(class VehicleController* pOwner)
 int V_Durga_IdleState::Update(class VehicleController* pOwner)
 {
 	const auto& input = pOwner->get_InputResult_Robot();
+	auto animator = pOwner->get_AnimatorComponent();
+	auto transform = pOwner->get_TransformComponent();
+	VEC3 crntPos = transform->get_VEC3ToPos();			// 現在の座標
+	float walkAnimDuration = animator->get_AnimDurationSeconds(INT_CAST(DURGA_ANIM_ID::WALK_F_ENTER));	// 歩行アニメーションの再生時間を取得
 
 	//=========================================================================================
 	//
 	//						移動入力があるかチェック
 	//
 	//=========================================================================================
-	if (input.CheckMove())
+	if (input.CheckMove() || input.CheckRot())
 	{
 		return DURGA_V_STATE::DURGA_V_STATE_MOVE;
 	}

@@ -55,6 +55,7 @@ namespace UtilityData
 		BUILDING				= 1 << 5,	// 破壊不可能な建物
 		ITEM					= 1 << 6,	// アイテム
 		PROP					= 1 << 7,	// 小物系オブジェクト
+		VEHICLE					= 1 << 8,	// ビークル
 
 		EVERY = 0xFFFFFFFF	// 全てに衝突
 	};

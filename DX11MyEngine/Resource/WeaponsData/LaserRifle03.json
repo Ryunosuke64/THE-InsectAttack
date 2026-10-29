@@ -11,8 +11,8 @@
   "shotSoundRadius": 300.0,
   "soundID": "weapon.gun_fire_laser_01",
   "muzzleFlashEffectTag" : "MuzzleEffect_Laser_01",
-  "muzzleFlashEffectScale" :  [1.0, 1.0, 1.0],
-  "muzzleFlashEffectColor" :  [255, 64, 64],
+  "muzzleFlashEffectScale" :  [0.1, 0.1, 0.1],
+  "muzzleFlashEffectColor" :  [255, 0, 0],
   "bulletType": "LASER",
   "bulletParam": 
   {
