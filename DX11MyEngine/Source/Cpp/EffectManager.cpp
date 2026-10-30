@@ -103,6 +103,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/Smoke_01.efkefc", "Smoke_01");
     LoadEffect(u"Resource/Effect/Smoke_02.efkefc", "Smoke_02");
     LoadEffect(u"Resource/Effect/Smoke_03.efkefc", "Smoke_03");
+    LoadEffect(u"Resource/Effect/Smoke_04.efkefc", "Smoke_04");
     LoadEffect(u"Resource/Effect/Fragment_Smoke_01.efkefc", "Fragment_Smoke_01");
     LoadEffect(u"Resource/Effect/Fragment_Plasma_01.efkefc", "Fragment_Plasma_01");
     LoadEffect(u"Resource/Effect/Fragment_Acid_01.efkefc", "Fragment_Acid_01");

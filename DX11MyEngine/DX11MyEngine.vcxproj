@@ -203,6 +203,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Source\Header\Component_CylinderCollider.h" />
     <ClInclude Include="Source\Header\Component_Destructible.h" />
     <ClInclude Include="Source\Header\Component_MapObject.h" />
+    <ClInclude Include="Source\Header\Component_MapObjectDebris.h" />
     <ClInclude Include="Source\Header\Component_VehicleController.h" />
     <ClInclude Include="Source\Header\ConstantVehicleData.h" />
     <ClInclude Include="Source\Header\DebrisManager.h" />
@@ -447,6 +448,7 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\Component_CylinderCollider.cpp" />
     <ClCompile Include="Source\Cpp\Component_Destructible.cpp" />
     <ClCompile Include="Source\Cpp\Component_MapObject.cpp" />
+    <ClCompile Include="Source\Cpp\Component_MapObjectDebris.cpp" />
     <ClCompile Include="Source\Cpp\Component_VehicleController.cpp" />
     <ClCompile Include="Source\Cpp\DebrisManager.cpp" />
     <ClCompile Include="Source\Cpp\DestructionBehavior.cpp" />

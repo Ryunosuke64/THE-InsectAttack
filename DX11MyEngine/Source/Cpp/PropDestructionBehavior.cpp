@@ -46,7 +46,7 @@ void PropDestructionBehavior::Start(
 
     int effectHandle = Master::m_pEffectManager->PlayEffect("Smoke_03");
     Master::m_pEffectManager->SetPositionEffect(effectHandle,hitPos);
-    Master::m_pEffectManager->SetScaleEffect(effectHandle, VEC3(10.0f));
+    Master::m_pEffectManager->SetScaleEffect(effectHandle, VEC3(2.0f));
 
     // ”j‰óŠJŽn
     m_IsDestructionStart = true;

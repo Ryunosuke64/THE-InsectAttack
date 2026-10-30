@@ -1,7 +1,7 @@
 タグ,Diff_R,Diff_G,Diff_B,Diff_A,Spec_R,Spec_G,Spec_B,Spec_A,スペキュラ強度,Emsv_R,Emsv_G,Emsv_B,エミッシブ,ディフューズマップ,ノーマルマップ,スペキュラマップ,ブレンドモード,カリング
 PlayerModel,0.4,0.4,0.6,1,1,1,1,1,150,0,0,0,0,Resource/Texture/Wall_S050.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
-Soldier_body,1,1,1,1,1,1,1,1,50,0,0,0,0,Resource/Model/Ranger/Textures/Soldier_Body_diffuse.png,Resource/Model/Ranger/Textures/Soldier_Body_normal.png,Resource/Model/Ranger/Textures/Soldier_Body_specular.png,0,BACK
-Soldier_head,1,1,1,1,1,1,1,1,50,0,0,0,0,Resource/Model/Ranger/Textures/Soldier_head_diffuse.png,Resource/Model/Ranger/Textures/Soldier_head_normal.png,Resource/Model/Ranger/Textures/Soldier_head_specular.png,0,BACK
+Soldier_body,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0.1,Resource/Model/Ranger/Textures/Soldier_Body_diffuse.png,Resource/Model/Ranger/Textures/Soldier_Body_normal.png,Resource/Model/Ranger/Textures/Soldier_Body_specular.png,0,BACK
+Soldier_head,1,1,1,1,1,1,1,1,50,0.1,0.1,0.1,0,Resource/Model/Ranger/Textures/Soldier_head_diffuse.png,Resource/Model/Ranger/Textures/Soldier_head_normal.png,Resource/Model/Ranger/Textures/Soldier_head_specular.png,0,BACK
 Bullet,1,1,1,1,1,1,1,1,200,1,1,1,0,Resource/Texture/rust_coarse_01_arm_1k.jpg,-1,-1,0,BACK
 AssultRifle,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Wall_W030.jpg,-1,-1,0,BACK
 DirLight,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Light_Img.png,-1,-1,0,BACK
@@ -43,7 +43,7 @@ Acid_03,1,5,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Particle/Ant_Hit1.png,Resou
 Flame_01,3,2,2,1,1,1,1,1,100,1,1,1,0,Resource/Effect/Texture/flamea.png,-1,-1,1,BACK
 Fog_01,2,1,2,0.3,1,1,1,1,100,1,1,1,0,Resource/Effect/Texture/smoke01.png,-1,-1,1,BACK
 Objector_body,1,1,1,1,1,1,1,1,100,5,1,0,0,Resource/Model/Enemy/Octahedron/textures/shieldSurface.jpg,-1,-1,0,BACK
-Objector_shield,1,1,1,1,1,1,1,1,100,0,0,0,1,Resource/Model/Enemy/Octahedron/textures/shieldSurface.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
+Objector_shield,1,1,1,1,1,1,1,1,100,0.15,0.15,0.15,1,Resource/Model/Enemy/Octahedron/textures/shieldSurface.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
 Grass,1,1,1,1,1,0,0,0,0,0,0,0,0,Resource/Texture/Materials/grass.png,-1,-1,0,NONE
 TestBlock,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Materials/260718150419111.JPG,Resource/Texture/DefaultN_Map.png,-1,0,BACK
 UTDecal_01,4,4,1,1,1,1,1,1,100,1,1,1,0,Resource/Texture/Particle/UTDecal01.png,Resource/Texture/Particle/UTDecal01_n.png,-1,1,BACK
@@ -51,7 +51,7 @@ Acid_04,1,1,0,1,1,1,1,1,100,1,1,1,0,Resource/Texture/Particle/UTDecal01.png,-1,-
 Water,1,1,1,0.7,1,1,1,1,100,0,0,0,0,Resource/Texture/Materials/water-map2.png,Resource/Texture/Materials/water-map2.png,-1,1,NONE
 Tree_Lerf,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/leaf.png,Resource/Texture/DefaultN_Map.png,-1,0,NONE
 Tree_Wood,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/MapObject/Tree/textures/Bark09_1K_BaseColor.png,Resource/Model/MapObject/Tree/textures/Bark09_1K_Normal.png,Resource/Model/MapObject/Tree/textures/Bark09_1K_Roughness.png,0,BACK
-DroneTypeA_Body,1,1,1,1,1,1,1,1,200,1,0,0,1,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
-DroneTypeA_UnderBody,0.65,0.65,0.65,1,1,1,1,1,200,0,0,0,0.2,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern.jpg,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern_normal.png,-1,0,BACK
+DroneTypeA_Body,1,1,1,1,1,1,1,1,200,1,0.15,0.15,1,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern.jpg,Resource/Texture/DefaultN_Map.png,-1,0,BACK
+DroneTypeA_UnderBody,0.65,0.65,0.65,1,1,1,1,1,200,0.15,0.15,0.15,0.2,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern.jpg,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern_normal.png,-1,0,BACK
 Rock_01,1,1,1,1,1,1,1,1,100,0.15,0.15,0.15,0,Resource/Model/MapObject/Rock/textures/aerial_rocks_04_diff_1k.png,Resource/Model/MapObject/Rock/textures/aerial_rocks_04_nor_dx_1k.png,-1,0,BACK
-Durga,1,1,1,1,1,1,1,1,150,0.2,0.2,0.2,0,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/metal_plate_02_diff_2k_n.png,-1,0,BACK
+Durga,1,1,1,1,1,1,1,1,150,0.2,0.2,0.2,0.15,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/metal_plate_02_diff_2k_n.png,-1,0,BACK

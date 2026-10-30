@@ -1035,6 +1035,9 @@
     <ClCompile Include="Source\Cpp\V_Durga_Move.cpp">
       <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_MapObjectDebris.cpp">
+      <Filter>ソース ファイル\Game\Component\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1654,6 +1657,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\VehicleStateFactory.h">
       <Filter>ソース ファイル\Game\StateFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_MapObjectDebris.h">
+      <Filter>ソース ファイル\Game\Component\Map</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

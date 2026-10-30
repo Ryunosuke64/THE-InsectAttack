@@ -14,15 +14,15 @@
   "soundID": "enemy.octahedron.shot_02",
   "muzzleFlashEffectTag" : "MuzzleEffect_Laser_01",
   "muzzleFlashEffectScale" :  [15.0, 15.0, 15.0],
-  "muzzleFlashEffectColor" :  [255, 64, 64],
+  "muzzleFlashEffectColor" :  [255, 32, 32],
   "bulletType": "LASER",
   "bulletParam": 
   {
     "common" :  
     {
       "aliveFrame" : 40,
-      "speed": 500.0,
-      "maxSpeed": 500.0,
+      "speed": 1000.0,
+      "maxSpeed": 1000.0,
       "damage": 3.0,
       "acceleration": 0.0,
       "penetrationsCount": 0,
@@ -44,7 +44,7 @@
       "type" : "DIRECT",
       "decalMaterialTag" : "",
       "hitEffectTag" : "BulletHit_Laser",
-      "hitEffectColor" :[255, 64, 64, 255],
+      "hitEffectColor" :[255, 32, 32, 255],
       "environmentResponse" : "DEACTIVATE"
     },
 
@@ -60,7 +60,7 @@
       "smokeEffectTag" : "",
       "effectColor" : [255, 32, 32, 255],
       "trailColor" : [1.0, 1.0, 1.0],
-      "scale" :  [1.0, 1.0,1.0],
+      "scale" :  [5.0, 1.0,5.0],
 
       "custom" : 
       {

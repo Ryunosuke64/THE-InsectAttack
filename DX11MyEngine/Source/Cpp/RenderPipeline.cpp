@@ -78,7 +78,7 @@ bool RenderPipeline::Setup(RendererEngine &renderer)
     m_ShadowParam.depthBiasClamp = 0.001f;
     m_ShadowParam.slopeScaledBias = 0.1f;
 	m_ShadowParam.isEnable = false;
-
+     
     // 被写界深度の設定
     m_PostEffectParam.Dof.dof_MaxRange = DOF_MAX_RANGE;
     m_PostEffectParam.Dof.dof_MinRange = DOF_MIN_RANGE;
@@ -89,9 +89,16 @@ bool RenderPipeline::Setup(RendererEngine &renderer)
     m_PostEffectParam.Fog.End    = 150.0f;
 
 	// カラーグレーディングの設定
-    m_PostEffectParam.ColorGrading.Exposure = 0.15f;                   // 露出補正（1.0fで補正なし）
-    m_PostEffectParam.ColorGrading.Contrast = 2.3f;                   // コントラスト（1.0fで補正なし）
-    m_PostEffectParam.ColorGrading.Saturation = 0.8f;                 // 彩度（1.0fで補正なし）
+    
+    // 初代EDF風？
+    {
+        // m_PostEffectParam.ColorGrading.Exposure = -0.250;                 // 露出補正（1.0fで補正なし）
+        //m_PostEffectParam.ColorGrading.Contrast = 2.8f;                   // コントラスト（1.0fで補正なし）
+        //m_PostEffectParam.ColorGrading.Saturation = 0.65f;                 // 彩度（1.0fで補正なし）
+    }
+    m_PostEffectParam.ColorGrading.Exposure = 0.2f;                   // 露出補正（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Contrast = 2.4f;                   // コントラスト（1.0fで補正なし）
+    m_PostEffectParam.ColorGrading.Saturation = 0.6f;                 // 彩度（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.Gamma = 1.0f;                      // ガンマ補正（1.0fで補正なし）
     m_PostEffectParam.ColorGrading.ColorTint = { 1.0f, 1.0f, 1.0f };  // 色味（1.0fで補正なし）
 

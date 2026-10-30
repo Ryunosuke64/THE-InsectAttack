@@ -12,6 +12,7 @@
 #include "Component_CylinderCollider.h"
 #include "Component_Destructible.h"
 #include "Component_TimerDestruction.h"
+#include "Component_MapObjectDebris.h"
 #include "DestructionBehavior_Header.h"
 #include "RendererEngine.h"
 #include "ResourceManager.h"
@@ -334,11 +335,17 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
         transform->set_RotateToRad(rot);
         transform->set_Scale(scl);
 
+        ////
+        //// 時間削除コンポーネントの追加
+        ////
+        //auto timeDestruction = generatedObject->add_Component<TimerDestruction>();
+        //timeDestruction->set_LifeTime(15.0f);
+        
         //
-        // 時間削除コンポーネントの追加
+        // 破片制御コンポーネントの追加
         //
-        auto timeDestruction = generatedObject->add_Component<TimerDestruction>();
-        timeDestruction->set_LifeTime(15.0f);
+        auto mapObjectDebris = generatedObject->add_Component<MapObjectDebris>();
+
 
         auto modelResource = generatedObject->get_Component<ModelMeshResource>();
 

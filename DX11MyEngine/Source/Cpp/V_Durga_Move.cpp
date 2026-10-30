@@ -17,8 +17,9 @@ using namespace PhysicsData;
 
 namespace
 {
-	constexpr float MOVE_ACCELERATION = 2000.0f;	// 移動加速度
+	constexpr float MOVE_ACCELERATION = 1000.0f;	// 移動加速度
 	constexpr float MOVE_DECELERATION = 0.1f;	// 移動減速
+	constexpr float MOVE_SPEED = 80.0f;	// 移動速度
 }
 
 //*---------------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ void V_Durga_MoveState::OnEnter(class VehicleController* pOwner)
 	m_InputDir = m_InputDir.Normalize();
 
 	// 移動ベクトルは0
-	pOwner->set_MoveSpeed(80.0f);
+	pOwner->set_MoveSpeed(MOVE_SPEED);
 	pOwner->set_IsPlayAnim(true);
 	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
 	//pOwner->get_RigidBodyComponent()->ResetPhysics();
@@ -173,8 +174,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	// 正規化
 	right = right.Normalize();
 	
-	static bool isDustPlay = false;
-	if (walkAnimDuration - 0.67f <= animator->get_AnimProcTime() &&!isDustPlay)
+	if (walkAnimDuration - 0.67f <= animator->get_AnimProcTime() &&!m_IsDustEffectPlay)
 	{
 		// ****************************************************
 		//				 土埃エフェクト
@@ -209,7 +209,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 		std::shared_ptr<Camera3D> camera;
 		if (camera = Master::m_pDataManager->get_CameraComponent().lock())
 		{
-			camera->DistanceDecay(1.0f, VEC3(0.1f, 0.4f, 0.1f), crntPos, 1000.0f);
+			camera->DistanceDecay(1.0f, VEC3(0.1f, 0.5f, 0.1f), crntPos, 1000.0f);
 		}
 		// ****************************************************
 		//				 踏みつけサウンド再生
@@ -269,7 +269,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 			}
 		}
 
-		isDustPlay = true;
+		m_IsDustEffectPlay = true;
 	}
 
 	//=========================================================================================
@@ -279,7 +279,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	//=========================================================================================
 	if (walkAnimDuration - 0.28f <= animator->get_AnimProcTime())
 	{
-		isDustPlay = false;
+		m_IsDustEffectPlay = false;
 
 		if (!input.CheckMove())
 		{

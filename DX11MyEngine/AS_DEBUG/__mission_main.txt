@@ -16,7 +16,7 @@ Variables:
 
 
 - 44,5 -
-    0  14 *    CpyGtoV4 v1, 0x1cc491f8e70          (i:1976911761008, f:9.76724e-312)
+    0  14 *    CpyGtoV4 v1, 0x2add6a6e980          (i:2945653860736, f:1.45535e-311)
     3  14 *    CMPIi    v1, 2
     5  14 *    JP       +420              (d:427)
     7  14 *    CMPIi    v1, 0
@@ -55,13 +55,13 @@ Variables:
    53  14 *    PSF      v8
    54  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v8, 0
-   56  14 *    CpyVtoG4 v1, 0x1cc491f75b0          (i:1976911754672, f:9.76724e-312)
+   56  14 *    CpyVtoG4 v1, 0x2add6a6d900          (i:2945653856512, f:1.45535e-311)
 - 62,5 -
    59  14 *    SUSPEND
    60  14 *    SetV1    v1, 0x0
    62  14 *    PshV4    v1
    63  15 *    PshC4    0x43960000          (i:1133903872, f:300)
-   65  16 *    PshC4    0x1e          (i:30, f:4.2039e-44)
+   65  16 *    PshC4    0x82          (i:130, f:1.82169e-43)
    67  17 *    PshC4    0x41f00000          (i:1106247680, f:30)
    69  18 *    PshC4    0x0          (i:0, f:0)
    71  19 *    PshC4    0x41f00000          (i:1106247680, f:30)
@@ -77,10 +77,10 @@ Variables:
    85  14 *    PSF      v5
    86  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v5, 0
-   88  14 *    CpyVtoG4 v9, 0x1cc450dff00          (i:1976843501312, f:9.7669e-312)
+   88  14 *    CpyVtoG4 v9, 0x2add6a6e2a0          (i:2945653858976, f:1.45535e-311)
 - 70,5 -
    91  14 *    SUSPEND
-   92  14 *    LDG      0x1cc491f8e70          (i:1976911761008, f:9.76724e-312)
+   92  14 *    LDG      0x2add6a6e980          (i:2945653860736, f:1.45535e-311)
    95  14 *    INCi
 - 71,9 -
    96  14 *    SUSPEND
@@ -90,7 +90,7 @@ Variables:
 - 78,5 -
             3:
    99  14 *    SUSPEND
-  100  14 *    PshG4    0x1cc491f75b0          (i:1976911754672, f:9.76724e-312)
+  100  14 *    PshG4    0x2add6a6d900          (i:2945653856512, f:1.45535e-311)
   103  15 *    CALLSYS  1, 151           (bool IsEnemyDead(uint))
   105  14 *    JLowZ    +133              (d:240)
 - 81,9 -
@@ -115,7 +115,7 @@ Variables:
   133  14 *    PSF      v8
   134  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v8, 0
-  136  14 *    CpyVtoG4 v2, 0x1cc450dff00          (i:1976843501312, f:9.7669e-312)
+  136  14 *    CpyVtoG4 v2, 0x2add6a6e2a0          (i:2945653858976, f:1.45535e-311)
 - 90,9 -
   139  14 *    SUSPEND
   140  14 *    SetV1    v13, 0x1
@@ -137,7 +137,7 @@ Variables:
   165  14 *    PSF      v5
   166  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v5, 0
-  168  14 *    CpyVtoG4 v9, 0x1cc450dff00          (i:1976843501312, f:9.7669e-312)
+  168  14 *    CpyVtoG4 v9, 0x2add6a6e2a0          (i:2945653858976, f:1.45535e-311)
 - 99,9 -
   171  14 *    SUSPEND
   172  14 *    SetV1    v11, 0x1
@@ -159,7 +159,7 @@ Variables:
   197  14 *    PSF      v8
   198  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v8, 0
-  200  14 *    CpyVtoG4 v2, 0x1cc450dff00          (i:1976843501312, f:9.7669e-312)
+  200  14 *    CpyVtoG4 v2, 0x2add6a6e2a0          (i:2945653858976, f:1.45535e-311)
 - 108,9 -
   203  14 *    SUSPEND
   204  14 *    SetV1    v1, 0x1
@@ -181,10 +181,10 @@ Variables:
   229  14 *    PSF      v5
   230  16 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v5, 0
-  232  14 *    CpyVtoG4 v9, 0x1cc450dff00          (i:1976843501312, f:9.7669e-312)
+  232  14 *    CpyVtoG4 v9, 0x2add6a6e2a0          (i:2945653858976, f:1.45535e-311)
 - 116,9 -
   235  14 *    SUSPEND
-  236  14 *    LDG      0x1cc491f8e70          (i:1976911761008, f:9.76724e-312)
+  236  14 *    LDG      0x2add6a6e980          (i:2945653860736, f:1.45535e-311)
   239  14 *    INCi
 - 118,9 -
             }
@@ -323,7 +323,7 @@ Variables:
 - 195,9 -
                ObjInfo  v5, 0
   419  14 *    SUSPEND
-  420  14 *    LDG      0x1cc491f8e70          (i:1976911761008, f:9.76724e-312)
+  420  14 *    LDG      0x2add6a6e980          (i:2945653860736, f:1.45535e-311)
   423  14 *    INCi
 - 197,9 -
             }
