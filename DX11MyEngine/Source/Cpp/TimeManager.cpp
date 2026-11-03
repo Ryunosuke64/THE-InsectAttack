@@ -87,7 +87,15 @@ void TimeManager::Update()
 	// タイマー処理更新
 	TimersUpdate();
 }
-
+//*---------------------------------------------------------------------------------------
+//*【?】ヒットストップ
+//*
+//* [引数]
+//* _duration : 停止時間（秒） 
+//* _scale    : 停止時間のスケール（倍率） 
+//* [返値]
+//* なし 
+//*----------------------------------------------------------------------------------------
 void TimeManager::TriggerHitStop(float _duration, float _scale)
 {
 	if (_duration > m_HitStopTimer)
@@ -100,7 +108,12 @@ void TimeManager::TriggerHitStop(float _duration, float _scale)
 		m_HitStopScale = _scale;
 	}
 }
-
+//*---------------------------------------------------------------------------------------
+//*【?】遅延処理用のタイマーを更新
+//*
+//* [引数] なし 
+//* [返値] なし 
+//*----------------------------------------------------------------------------------------
 void TimeManager::TimersUpdate()
 {
 	for(auto it = m_Timers.begin(); it  != m_Timers.end(); )
@@ -122,11 +135,20 @@ void TimeManager::TimersUpdate()
 		}
 	}
 }
-
-void TimeManager::AddTimer(float _duration, std::function<void()> _callback)
+//*---------------------------------------------------------------------------------------
+//*【?】遅延処理用のタイマーを追加
+//*
+//* [引数]
+//* _duration : 遅延時間（秒）
+//* _callback : コールバック関数
+//*
+//* [返値]
+//* なし 
+//*----------------------------------------------------------------------------------------
+void TimeManager::AddTimer(float _executionDelay, std::function<void()> _callback)
 {
 	Timer newTimer;
-	newTimer._remainingTime = _duration;
+	newTimer._remainingTime = _executionDelay;
 	newTimer._callback = _callback;
 
 	m_Timers.push_back(newTimer);

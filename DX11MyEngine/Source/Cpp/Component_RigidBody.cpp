@@ -126,6 +126,29 @@ void RigidBody::RefreshCollisionFilter()
     }
 }
 
+
+//*---------------------------------------------------------------------------------------
+//*【?】リジッドボディ側からコリジョン用の衝突マスクの設定をし、
+//*     コライダーにも再設定をする
+//*  ※ 基本はコライダーの情報を参照するので、
+//*     特別な場合を除きこの関数は仕様は控える
+//*
+//* [引数] 
+//* _mask  : マスク
+//* _group : 自身のグループ
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void RigidBody::SetCollisionBitMask_And_MyCategory_FromRigidBody(unsigned _mask, UtilityData::COLLISION_CATEGORY _group)
+{
+    if (auto collider = m_Desc.collider.lock())
+    {
+        collider->set_CollisionBitMask(_mask);
+        collider->set_CollisionCategory(_group);
+        unsigned group = UINT_CAST(_group);
+        m_pEngine->SetMask(m_Handle, group, _mask);
+    }
+}
+
 //*---------------------------------------------------------------------------------------
 //*【?】継続的な力を加える
 //*

@@ -97,7 +97,7 @@ void Building_CllapseInState::OnEnter(BuildingController* pOwner)
 
 	VEC3 pos = ownerObj->get_Transform().lock()->get_VEC3ToPos();
 	VEC3 rot = ownerObj->get_Transform().lock()->get_VEC3ToRotateToRad();
-	Master::m_pSoundManager->Play_3D("building.destruction", pos, BUILDING_DESTRUCTION_SOUND_RADIUS);
+	Master::m_pSoundManager->Play_3D("building.destruction01", pos, BUILDING_DESTRUCTION_SOUND_RADIUS);
 
 
 	//
@@ -153,7 +153,7 @@ void Building_CllapseInState::OnExit(BuildingController* pOwner)
 	auto ownerObj = pOwner->get_OwnerObj().lock();
 
 	VEC3 pos = ownerObj->get_Transform().lock()->get_VEC3ToPos();
-	Master::m_pSoundManager->Play_3D("building.destruction", pos, BUILDING_DESTRUCTION_SOUND_RADIUS);
+	Master::m_pSoundManager->Play_3D("building.destruction01", pos, BUILDING_DESTRUCTION_SOUND_RADIUS);
 
 	// 完全に破壊されたら、コライダーをオフにする
 	auto collider = ownerObj->get_Component<MeshCollider>();

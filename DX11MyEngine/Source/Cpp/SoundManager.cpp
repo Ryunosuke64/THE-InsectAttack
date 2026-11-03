@@ -284,7 +284,10 @@ bool SoundManager::InitXA2Sound(void)
         { "weapon.explosion_01", "Resource/Sound/SE/Weapon/Explosion01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::EXPLOSION01) },
         { "weapon.change_01", "Resource/Sound/SE/Weapon/GunChange_01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::GUN_CHANGE01) },
         // 建物
-        { "building.destruction", "Resource/Sound/SE/Building/Destruction.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_DESTRUCTION) },
+        { "building.destruction01", "Resource/Sound/SE/Building/Destruction01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_DESTRUCTION01) },
+        { "building.destruction02", "Resource/Sound/SE/Building/Destruction02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_DESTRUCTION02) },
+        { "building.collapsing01", "Resource/Sound/SE/Building/Collapsing01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_COLLAPSING01) },
+        { "building.collapsing02", "Resource/Sound/SE/Building/Collapsing02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_COLLAPSING02) },
         { "building.fall", "Resource/Sound/SE/Building/Fall.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_FALL) },
         // 兵士
         { "soldier.jump", "Resource/Sound/SE/Ranger/パンチの衣擦れ1.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN) },
@@ -784,7 +787,9 @@ bool SoundManager::Internal_Load_Wav(const char* _filename, WaveResource& _out, 
 	mmio_handle = mmioOpenA(str_buffer, NULL, MMIO_ALLOCBUF | MMIO_READ);
 
 	if (!mmio_handle) {
-		MessageBoxA(NULL, "wavファイルを開けませんでした", "SoundManager", MB_OK);
+		std::string filenameStr = _filename;
+		filenameStr += "を開けませんでした";
+		MessageBoxA(NULL, filenameStr.c_str(), "SoundManager", MB_OK);
 		return false;
 	}
 

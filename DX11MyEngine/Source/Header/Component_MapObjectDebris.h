@@ -15,7 +15,7 @@ class MapObjectDebris : public IComponent
 private:
 	enum class STATE
 	{
-		ALIVE,			// ê∂ë∂íÜ
+		ALIVE,		// ê∂ë∂íÜ
 		UNDERWORLD,	// ó†ê¢äEÇ÷
 	};
 

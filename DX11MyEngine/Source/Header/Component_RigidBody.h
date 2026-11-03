@@ -35,6 +35,11 @@ public:
 
     void RefreshCollisionFilter();
 
+    // リジッドボディ側からコリジョン用の衝突マスクの設定をし、
+    // コライダーにも再設定をする
+    // ※ 基本はコライダーの情報を参照するので、特別な場合を除きこの関数は仕様は控える
+    void SetCollisionBitMask_And_MyCategory_FromRigidBody(unsigned _mask, UtilityData::COLLISION_CATEGORY _group);
+
     //
     // 移動系
     //

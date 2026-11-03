@@ -40,6 +40,14 @@ public:
 	void EndDebugWindow();											   
 
 	void DG_Text(std::string tex);																			// テキスト表示
+	void DG_BulletTextValue(const std::string& text, const VECTOR2::VEC2& val);
+	void DG_BulletTextValue(const std::string& text, const VECTOR3::VEC3& val);
+	void DG_BulletTextValue(const std::string& text, const VECTOR4::VEC4& val);
+	void DG_BulletTextValue(const std::string& text, const int val);
+	void DG_BulletTextValue(const std::string& text, const float val);
+	void DG_BulletTextValue(const std::string& text, const double val);
+	void DG_BulletTextValue(const std::string& text, const bool val);
+
 	void DG_SameLine(float offsetStart_X = 0.0f);															// この関数の上と下のテキストを横につなげる
 	
 	bool DG_ColorPicker3(const std::string &label, float col[]);													// カラーピッカー3
@@ -89,6 +97,7 @@ public:
 		// 選択肢が出てきて選べるみたいなやつ
 		//ImGui::Combo("combo", &item, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
 	}
+
 
 	/* テンプレート */
 	

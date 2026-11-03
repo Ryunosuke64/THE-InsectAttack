@@ -123,6 +123,11 @@ bool PhysicsEngine::Setup()
 //*----------------------------------------------------------------------------------------
 bool PhysicsEngine::Shutdown()
 {
+    if (m_pWorld == nullptr)
+    {
+        return false;
+    }
+
     //
     // リジッドボディの削除
     //
@@ -168,6 +173,12 @@ bool PhysicsEngine::Shutdown()
 //*----------------------------------------------------------------------------------------
 void PhysicsEngine::Update(float deltaTime)
 {
+	// ポーズ中は物理演算を行わない
+    if (Master::m_pDataManager->get_IsPause())
+    {
+        return;
+    }
+
     m_pWorld->stepSimulation(deltaTime);
 
     CollectContacts();

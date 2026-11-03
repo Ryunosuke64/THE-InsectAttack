@@ -67,7 +67,7 @@ Variables:
    59  25 *    WRTV4    v19
 - 23,5 -
    60  25 *    SUSPEND
-   61  25 *    SetV4    v18, 0x447a0000          (i:1148846080, f:1000)
+   61  25 *    SetV4    v18, 0x44e10000          (i:1155596288, f:1800)
    63  25 *    LoadVObjR v14, v48, 67108880
    66  25 *    WRTV4    v18
 - 24,5 -
@@ -93,7 +93,7 @@ Variables:
    95  34 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
                ObjInfo  v17, 1
    97  29 *    VAR      v17
-   98  31 *    PshC4    0x0          (i:0, f:0)
+   98  31 *    PshC4    0x1          (i:1, f:1.4013e-45)
   100  32 *    GETREF   1
   101  32 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
   103  25 *    PSF      v17

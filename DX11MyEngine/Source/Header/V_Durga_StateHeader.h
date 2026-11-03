@@ -55,6 +55,8 @@ private:
 	VECTOR3::VEC3 m_InputDir = VECTOR3::VEC3();				// 入力の方向
 	FOOT_STATE m_NextFootState = FOOT_STATE::FOOT_R_ENTER;	// 現在の踏み出し状態
 	FOOT_STATE m_CrntFootState = FOOT_STATE::FOOT_R_ENTER;	// 現在の踏み出し状態
+	VehicleData::DURGA_ANIM_ID m_CrntAnimID = 
+		VehicleData::DURGA_ANIM_ID::WALK_F_ENTER;	// 現在のアニメーションID
 	bool m_IsDustEffectPlay = false;;
 
 public:

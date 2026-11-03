@@ -891,7 +891,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     VehicleData::VehicleSpawnData durgaSpawnData;
     durgaSpawnData.type = VehicleData::VEHICLE_TYPE::DURGA;
     durgaSpawnData.hp = 1000.0f;
-    durgaSpawnData.position = VEC3(playerPos);
+    durgaSpawnData.position = VEC3(100.0f,10.0f,100.0f);
     VehicleFactory::SpawnVehicle(durgaSpawnData);
 
 

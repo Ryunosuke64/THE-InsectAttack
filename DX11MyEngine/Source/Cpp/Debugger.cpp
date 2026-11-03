@@ -180,6 +180,40 @@ void Debugger::DG_Text(std::string tex)
     ImGui::Text(tex.c_str());
 }
 
+void Debugger::DG_BulletTextValue(const std::string& text, const VECTOR2::VEC2& val)
+{
+    std::string combinedText = text + '\n';
+    combinedText += "X : "+ std::to_string(val.x) + "Y : " + std::to_string(val.y);
+    ImGui::BulletText(combinedText.c_str());
+}
+void Debugger::DG_BulletTextValue(const std::string& text, const VECTOR3::VEC3& val)
+{
+    std::string combinedText = text + '\n';
+    combinedText += "X : " + std::to_string(val.x) + "Y : " + std::to_string(val.y) + "Z : " + std::to_string(val.z);
+    ImGui::BulletText(combinedText.c_str());
+}
+void Debugger::DG_BulletTextValue(const std::string& text, const VECTOR4::VEC4& val)
+{
+    std::string combinedText = text + '\n';
+    combinedText += "X : " + std::to_string(val.x) + "Y : " + std::to_string(val.y) + "Z : " + std::to_string(val.z) + "W : " + std::to_string(val.w);
+    ImGui::BulletText(combinedText.c_str());
+}
+void Debugger::DG_BulletTextValue(const std::string& text, const int val)
+{
+}
+void Debugger::DG_BulletTextValue(const std::string& text, const float val)
+{
+}
+void Debugger::DG_BulletTextValue(const std::string& text, const double val)
+{
+}
+void Debugger::DG_BulletTextValue(const std::string& text, const bool val)
+{
+    std::string combinedText = text + '\n';
+    combinedText += val ? "true" : "false";
+    ImGui::BulletText(combinedText.c_str());
+}
+
 //**************************************************************************************
 //      * Debugger Class - この関数の上のテキストと下のテキストを繋げて表示するか - *
 // 引数 1.繋げる際のオフセット開始位置

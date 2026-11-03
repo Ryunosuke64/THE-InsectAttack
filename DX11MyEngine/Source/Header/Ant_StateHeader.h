@@ -210,7 +210,7 @@ class Ant_AT_DeadState : public IState<class EnemyController>
 private:
 	const float OVERTURN_TIME = 0.4f;		// ひっくり返るまでの時間
 	const float DELETE_TIME = 10.0f;		// 死亡までの時間
-	const float SOUND_DEAD_RADIUS = 600.0f;				// 死亡音が聞こえる範囲
+	const float SOUND_DEAD_RADIUS = 300.0f;				// 死亡音が聞こえる範囲
 	const int DROP_ITEM_MIN = 0;						// 落とすアイテムの最小数
 	const int DROP_ITEM_MAX = 1;						// 落とすアイテムの最大数
 	int m_FrameCounter = 0;

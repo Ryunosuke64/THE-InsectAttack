@@ -396,9 +396,13 @@ namespace BulletBehaviour
         //*****************************************************************************************
         if (surfaceHitData.soundID.empty() == false)
         {
-            Master::m_pSoundManager->Play_RandPitch_3D(
-                surfaceHitData.soundID,
-                hitPoint, 40, 300);
+            // –ˆ‰ñÄ¶‚³‚¹‚¸Aˆê’è‚ÌŠm—¦‚ÅÄ¶‚³‚¹‚é
+            if (Master::m_pRandomManager->GetBoolRandom())
+            {
+                Master::m_pSoundManager->Play_RandPitch_3D(
+                    surfaceHitData.soundID,
+                    hitPoint, 40, 300);
+            }
         }
 
         return result;

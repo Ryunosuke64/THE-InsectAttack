@@ -139,9 +139,6 @@
     <Filter Include="ソース ファイル\Engine\BaseComponent\Camera">
       <UniqueIdentifier>{fb43e8a1-5573-4ccd-bd25-3ff510b7fdb1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Engine\BaseComponent\Utility">
-      <UniqueIdentifier>{75a97a67-7ffb-40ed-b03a-0cb20f935867}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Engine\BaseComponent\Light">
       <UniqueIdentifier>{2f0323dd-a2e0-4ba8-9884-89a0b94d8278}</UniqueIdentifier>
     </Filter>
@@ -372,6 +369,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\StateFactory">
       <UniqueIdentifier>{1a9eeeef-f0da-47f3-a365-29d517591dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Engine\BaseComponent\Utility">
+      <UniqueIdentifier>{75a97a67-7ffb-40ed-b03a-0cb20f935867}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

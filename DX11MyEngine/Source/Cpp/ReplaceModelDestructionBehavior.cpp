@@ -4,6 +4,8 @@
 #include "Component_MapObject.h"
 #include "MapObjectFactory.h"
 
+using namespace VECTOR3;
+
 //*---------------------------------------------------------------------------------------
 //*【?】開始
 //*
@@ -25,6 +27,11 @@ void ReplaceModelDestructionBehavior::Start(
     //auto rigidBody =
     //    object->get_Component<RigidBody>();
 
+    const auto transform = object->get_TransformConst();
+    VEC3 pos = transform->get_VEC3ToPos();
+    VEC3 rot = transform->get_VEC3ToRotateToRad();
+    VEC3 scale = transform->get_VEC3ToScale();
+
     if (/*rigidBody && */mapObject)
     {
         // アセットデータの取り出し
@@ -41,16 +48,32 @@ void ReplaceModelDestructionBehavior::Start(
         //rigidBody->AddImpulse(
         //    hitDir * IMPULSE_POWER);
 
-        const auto transform = object->get_TransformConst();
-
         Map::MO_TransformData transformData;
-        transformData.position = transform->get_VEC3ToPos();
-        transformData.rotation = transform->get_VEC3ToRotateToRad();
-        transformData.scale = transform->get_VEC3ToScale();
+        transformData.position = pos;
+        transformData.rotation = rot;
+        transformData.scale = scale;
         if (!MapObjectFactory::CreateBuildingDebris(assetID, transformData))
         {
             assert(false);
         }
+
+        // ****************************************************
+        //		        破壊サウンド再生
+        // ****************************************************
+        Master::m_pSoundManager->Play_3D(
+            "building.destruction01", pos, 500.0f);
+
+        // ****************************************************
+        //		        崩壊サウンドを遅延再生
+        // ****************************************************
+		const float PLAY_COLLAPSING_SOUND_TIME = 1.5f;  // 崩壊サウンド再生までの時間
+        Master::m_pTimeManager->AddTimer(
+            PLAY_COLLAPSING_SOUND_TIME,
+            [pos]()
+            {
+                Master::m_pSoundManager->Play_3D(
+                    "building.collapsing01", pos, 800.0f);
+            });
     }
 
     // 破壊開始
@@ -74,13 +97,17 @@ void ReplaceModelDestructionBehavior::Update(float deltaTime)
         return;
     }
 
-    m_DestroyTimer += deltaTime;
-
-    // デストロイタイムを過ぎたら、終了
-    //if (m_DestroyTimer >= DESTROY_TIME)
+    //
+	// 崩壊サウンド再生し、破壊終了
+    //
+    if(m_ElapsedTime >= PLAY_COLLAPSING_SOUND_TIME)
     {
-        m_IsFinished = true;
+
     }
+
+    // 破壊終了
+    m_IsFinished = true;
+    m_ElapsedTime += deltaTime;
 }
 
 //*---------------------------------------------------------------------------------------

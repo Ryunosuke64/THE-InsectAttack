@@ -160,15 +160,19 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     auto modelResource = generatedObject->get_Component<ModelMeshResource>();
 
     auto rb = generatedObject->add_Component<RigidBody>();
-    auto collider = generatedObject->add_Component<MeshCollider>();
+    auto collider = generatedObject->add_Component<CapsuleCollider>();
+    collider->set_Radius(40.0f);
+    collider->set_Height(120.0f);
+    collider->set_Center(VEC3(0.0f,18.f,0.0f));
+    //auto collider = generatedObject->add_Component<MeshCollider>();
     //auto collider = generatedObject->add_Component<BoxCollider>();
     //collider->set_Size(VEC3(15.0f, 20.0f, 10.0f));
     //collider->set_Center(VEC3(0.0f, 20.0f, 0.0f));
-    collider->SetupModelData( modelResource->get_ModelData(LOD_QUALITY::ULTRA));
+    //collider->SetupModelData( modelResource->get_ModelData(LOD_QUALITY::ULTRA));
     collider->set_IsStatic(false);
-    collider->set_IsConvex(true);
-    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
-    collider->set_SurfaceType(SURFACE_TYPE::METAL);             // 材質：メタル
+    collider->set_IsConvex(false);
+    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING); // 衝突カテゴリ
+    collider->set_SurfaceType(SURFACE_TYPE::METAL);                // 材質：メタル
 
     //*****************************************************************************************
     //						衝突マスクの設定

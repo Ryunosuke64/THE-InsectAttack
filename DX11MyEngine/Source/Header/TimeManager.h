@@ -3,6 +3,7 @@
 
 /// <summary>
 /// タイマー構造体
+/// 遅延処理を行うためのもの
 ///</summary>
 struct Timer
 {
@@ -32,7 +33,7 @@ private:
 	float m_HitStopScale;	// 停止時間のスケール（倍率）
 	std::chrono::steady_clock::time_point m_PrevTime;
 
-	std::vector<Timer> m_Timers; // タイマーのリスト
+	std::vector<Timer> m_Timers; // タイマー（遅延処理）のリスト 
 
 	float m_GameElapsedTime;	// ゲーム開始時からの経過時間
 
@@ -51,7 +52,8 @@ public:
 
 	void TriggerHitStop(float _duration, float _scale = 0.5f);
 
-	void AddTimer(float _duration, std::function<void()> _callback);
+
+	void AddTimer(float _executionDelay, std::function<void()> _callback); // 遅延処理用のタイマーを追加
 
 
 private:

@@ -74,13 +74,18 @@ void MapObjectDebris::Start(RendererEngine& renderer)
 
 	if (transform)
 	{
-		VEC3 pos = transform->get_VEC3ToPos();
+		VEC3 effectPos = transform->get_VEC3ToPos();
+		effectPos += fragmentCenter;
 		float effectSize = (fragmentExtents.x + fragmentExtents.y + fragmentExtents.z) / 3.0f;	// •½‹Ï’l
 		effectSize *= 0.5;
-		float effectSizes = fragmentExtents.Length();
-		int effectHandle = Master::m_pEffectManager->PlayEffect("Smoke_04");
-		Master::m_pEffectManager->SetPositionEffect(effectHandle, pos + fragmentCenter);
-		Master::m_pEffectManager->SetScaleEffect(effectHandle, effectSize);
+		int smoke_effectHandle = Master::m_pEffectManager->PlayEffect("Smoke_04");
+		Master::m_pEffectManager->SetPositionEffect(smoke_effectHandle, effectPos);
+		Master::m_pEffectManager->SetScaleEffect(smoke_effectHandle, effectSize);
+
+
+		int fragemnt_effectHandle = Master::m_pEffectManager->PlayEffect("Fragment_Building_01");
+		Master::m_pEffectManager->SetPositionEffect(fragemnt_effectHandle, effectPos);
+		Master::m_pEffectManager->SetScaleEffect(fragemnt_effectHandle, VEC3(1.0f));
 	}
 
 	m_pRigidBody = owner->get_Component<RigidBody>();

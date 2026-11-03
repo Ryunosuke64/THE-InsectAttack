@@ -17,9 +17,9 @@ using namespace PhysicsData;
 
 namespace
 {
-	constexpr float MOVE_ACCELERATION = 1000.0f;	// 移動加速度
-	constexpr float MOVE_DECELERATION = 0.1f;	// 移動減速
-	constexpr float MOVE_SPEED = 80.0f;	// 移動速度
+	constexpr float MOVE_ACCELERATION = 20.0f;	// 移動加速度
+	constexpr float MOVE_DECELERATION = 110.0f;	// 移動減速
+	constexpr float MOVE_SPEED = 30.0f;	// 移動速度
 }
 
 //*---------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	VEC3 crntPos = transform->get_VEC3ToPos();			// 現在の座標
 	float moveSpeed = pOwner->get_MoveSpeed();
 	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
-	float walkAnimDuration = animator->get_AnimDurationSeconds(INT_CAST(DURGA_ANIM_ID::WALK_F_ENTER));	// 歩行アニメーションの再生時間を取得
+	float walkAnimDuration = animator->get_AnimDurationSeconds(INT_CAST(m_CrntAnimID));	// 歩行アニメーションの再生時間を取得
 
 
 	const bool hasInput = m_InputDir.LengthSq() > 0.0001f;	// 移動入力があったかどうか
@@ -119,16 +119,29 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	const float maxChange =
 		(hasInput ? MOVE_ACCELERATION : MOVE_DECELERATION) * deltaTime;
 
+	bool isTest = false;
+
 	// 移動入力なし
 	if (distance <= maxChange)
 	{
+		isTest = true;
 		horizontal = target;
 	}
 	// 移動入力あり
 	else
 	{
+		isTest = false;
 		horizontal += difference * (maxChange / distance);
 	}
+
+	Master::m_pDebugger->BeginDebugWindow("Durga", 0);
+	Master::m_pDebugger->DG_BulletTextValue("InputDir", m_InputDir);
+	Master::m_pDebugger->DG_BulletTextValue("maxChange", maxChange);
+	Master::m_pDebugger->DG_BulletTextValue("target", target);
+	Master::m_pDebugger->DG_BulletTextValue("difference", difference);
+	Master::m_pDebugger->DG_BulletTextValue("distance", distance);
+	Master::m_pDebugger->DG_BulletTextValue("isTest", isTest);
+	Master::m_pDebugger->EndDebugWindow();
 
 
 	// Y方向は維持し、重力やジャンプを消さない
@@ -163,7 +176,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 			result.x, result.y, result.z, result.w));
 	}
 
-	m_InputDir = VEC3(0.0f);
+	//m_InputDir = VEC3(0.0f);
 	
 	
 	// 前方向と右方向ベクトルを作る 
@@ -176,6 +189,8 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	
 	if (walkAnimDuration - 0.67f <= animator->get_AnimProcTime() &&!m_IsDustEffectPlay)
 	{
+		m_InputDir = VEC3(0.0f, 0.0f, 0.0f);
+
 		// ****************************************************
 		//				 土埃エフェクト
 		// ****************************************************
@@ -252,10 +267,10 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 					knockbackDir = knockbackDir.Normalize();
 
 					// 少し上（Y軸）に向かせることで、放物線を描いて飛ばせる
-					knockbackDir.y += 10.5f;
-					knockbackDir.x += Master::m_pRandomManager->GetFloatRandom(-0.5f, 0.5f);
-					knockbackDir.z += Master::m_pRandomManager->GetFloatRandom(-0.5f, 0.5f);
-					knockbackDir = knockbackDir.Normalize();
+					//knockbackDir.y += 10.5f;
+					//knockbackDir.x += Master::m_pRandomManager->GetFloatRandom(-0.5f, 0.5f);
+					//knockbackDir.z += Master::m_pRandomManager->GetFloatRandom(-0.5f, 0.5f);
+					//knockbackDir = knockbackDir.Normalize();
 
 					// 衝撃ベクトルの設定
 					rb->AddImpulse(knockbackDir * knockback);
@@ -329,14 +344,17 @@ void V_Durga_MoveState::SetWalkAnimation(class VehicleController* pOwner)
 	case V_Durga_MoveState::FOOT_STATE::FOOT_R_ENTER:
 		pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::WALK_F_ENTER));
 		m_NextFootState = FOOT_STATE::FOOT_L;
+		m_CrntAnimID = DURGA_ANIM_ID::WALK_F_ENTER;
 		break;
 	case V_Durga_MoveState::FOOT_STATE::FOOT_R:
 		pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::WALK_F_R));
 		m_NextFootState = FOOT_STATE::FOOT_L;
+		m_CrntAnimID = DURGA_ANIM_ID::WALK_F_R;
 		break;
 	case V_Durga_MoveState::FOOT_STATE::FOOT_L:
 		pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::WALK_F_L));
 		m_NextFootState = FOOT_STATE::FOOT_R;
+		m_CrntAnimID = DURGA_ANIM_ID::WALK_F_L;
 		break;
 	default:
 		break;

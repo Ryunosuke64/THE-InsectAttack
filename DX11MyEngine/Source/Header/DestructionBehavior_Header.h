@@ -41,11 +41,20 @@ public:
 class PropDestructionBehavior : public IDestructionBehavior
 {
 private:
-    const float DESTROY_TIME = 10.0f;   // 削除までの時間
-    const float IMPULSE_POWER = 30.0f;  // 吹っ飛び力
+    enum class STATE
+    {
+        ALIVE,		    // 生存中
+        DESTROYED,		// 崩壊中
+        UNDERWORLD,	    // 裏世界へ
+    };
+    const float TO_UNDERWORLD_TIME = 10.0f;     // 裏世界へ落とすまでの時間
+    const float DESTROY_TIME = 15.0f;           // 削除までの時間
+    const float IMPULSE_POWER = 30.0f;          // 吹っ飛び力
     bool m_IsFinished = false;
-    bool m_IsDestructionStart = false;
-    float m_DestroyTimer = 0.0f;
+    float m_ElapsedTime = 0.0f;		// 経過時間
+    //float m_LifeTime = 0.0f;		    // 生存時間
+    STATE m_CrntState = STATE::ALIVE;
+    std::weak_ptr<class RigidBody> m_pRigidBody;
 
 public:
     void Start(
@@ -71,12 +80,12 @@ public:
 class ReplaceModelDestructionBehavior : public IDestructionBehavior
 {
 private:
-    const float DESTROY_TIME = 20.0f;   // 削除までの時間
+    //const float DESTROY_TIME = 20.0f;   // 削除までの時間
+    const float PLAY_COLLAPSING_SOUND_TIME = 4.0f;   // 崩壊サウンド再生までの時間
     const float IMPULSE_POWER = 50.0f;  // 吹っ飛び力
     bool m_IsFinished = false;
     bool m_IsDestructionStart = false;
-    float m_DestroyTimer = 0.0f;
-
+    float m_ElapsedTime = 0.0f;
 public:
     void Start(
         GameObject* object,
