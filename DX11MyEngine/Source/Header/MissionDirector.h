@@ -14,6 +14,8 @@ class MissionDirector
 private:
     std::vector<UtilityData::MissionData> m_MissionDataList;    // ミッションデータの保持
     UtilityData::StageEnvironmentParam m_EnvironmentParam;      // ステージ環境パラメータ
+    bool m_IsScriptLoaded = false;
+    bool m_IsScriptReady = false;
     const std::string ModuleName = "MissionModule";             // モジュール名
 
 public:
@@ -24,8 +26,8 @@ public:
     bool LoadMissionScript(const std::string& _filePath);                                                       // ミッションスクリプトの読み込み
     void SetStageEnvironmentParam(const UtilityData::StageEnvironmentParam& param);                             // ステージ環境の設定
     const UtilityData::StageEnvironmentParam& GetStageEnvironmentParam()const { return m_EnvironmentParam; }    // ステージ環境の取得
-    void ExcuteScriptMissionSetup();                                                                            // ミッションスクリプトのセットアップ関数実行
-    void ExcuteScriptMissionMain();                                                                             // ミッションスクリプトのメイン関数実行
+    bool ExcuteScriptMissionSetup();                                                                            // ミッションスクリプトのセットアップ関数実行
+    bool ExcuteScriptMissionMain();                                                                             // ミッションスクリプトのメイン関数実行
 
 private:
     // コピー禁止

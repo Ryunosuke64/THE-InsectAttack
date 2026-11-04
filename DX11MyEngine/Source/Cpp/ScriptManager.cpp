@@ -17,6 +17,7 @@ using namespace VECTOR3;
 using namespace UtilityData;
 
 #include <fstream>
+#include <filesystem>
 
 void GeneratePredefined(
     asIScriptEngine* engine,
@@ -375,7 +376,12 @@ bool ScriptManager::ExcuteModuleFunction(const std::string& _moduleName, const s
     }
 
     // コンテキスト作成・準備・実行
-    m_pContext->Prepare(func);
+    r = m_pContext->Prepare(func);
+    if (r < 0)
+    {
+        ErrorMessage(L"スクリプト関数の実行準備に失敗しました\n", L"ScriptManager");
+        return false;
+    }
     r = m_pContext->Execute();
     if (r != asEXECUTION_FINISHED)
     {
@@ -385,6 +391,8 @@ bool ScriptManager::ExcuteModuleFunction(const std::string& _moduleName, const s
         }
         return false;
     }
+
+    return true;
 }
 
 
@@ -412,10 +420,25 @@ bool ScriptManager::LoadScript(const std::string& _moduleName, const std::string
         return false;
     }
 
-    r = builder.AddSectionFromFile(_filePath.c_str());
+    // Resolve with the wide Windows path APIs, then pass UTF-8 to AngelScript.
+    // Its relative-path resolver uses _getcwd(), which returns the ANSI code page.
+    std::error_code pathError;
+    const std::u8string utf8FilePath(_filePath.begin(), _filePath.end());
+    const auto scriptPath = std::filesystem::absolute(std::filesystem::path(utf8FilePath), pathError);
+    if (pathError)
+    {
+        ErrorMessage(L"スクリプトの絶対パスを取得できませんでした\n", L"ScriptManager");
+        m_pEngine->DiscardModule(_moduleName.c_str());
+        return false;
+    }
+    const auto utf8Path = scriptPath.u8string();
+    const std::string scriptFilePath(utf8Path.begin(), utf8Path.end());
+
+    r = builder.AddSectionFromFile(scriptFilePath.c_str());
     if (r < 0)
     {
-        ErrorMessage(L"ファイル読み込み失敗\n", L"ScriptManager");
+        ErrorMessage(L"ファイル読み込み失敗\n" + scriptPath.wstring(), L"ScriptManager");
+        m_pEngine->DiscardModule(_moduleName.c_str());
         return false;
     }
 
@@ -425,7 +448,8 @@ bool ScriptManager::LoadScript(const std::string& _moduleName, const std::string
     r = builder.BuildModule();
     if (r < 0)
     {
-        ErrorMessage(L"コンパイルが出来ませんでした\n", L"ScriptManager");
+        ErrorMessage(L"コンパイルが出来ませんでした\n" + scriptPath.wstring(), L"ScriptManager");
+        m_pEngine->DiscardModule(_moduleName.c_str());
         return false;
     }
 

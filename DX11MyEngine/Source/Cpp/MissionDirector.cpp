@@ -45,9 +45,12 @@ bool MissionDirector::LoadMissionData(const std::string& _filePath, UtilityData:
 //* [引数] なし
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void MissionDirector::ExcuteScriptMissionSetup()
+bool MissionDirector::ExcuteScriptMissionSetup()
 {
-    Master::m_pScriptManager->ExcuteModuleFunction(ModuleName, "void mission_setup()");
+    if (!m_IsScriptLoaded) return false;
+
+    m_IsScriptReady = Master::m_pScriptManager->ExcuteModuleFunction(ModuleName, "void mission_setup()");
+    return m_IsScriptReady;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -56,9 +59,12 @@ void MissionDirector::ExcuteScriptMissionSetup()
 //* [引数] なし
 //* [返値] なし
 //*----------------------------------------------------------------------------------------
-void MissionDirector::ExcuteScriptMissionMain()
+bool MissionDirector::ExcuteScriptMissionMain()
 {
-    Master::m_pScriptManager->ExcuteModuleFunction(ModuleName, "void mission_main()");
+    if (!m_IsScriptReady) return false;
+
+    m_IsScriptReady = Master::m_pScriptManager->ExcuteModuleFunction(ModuleName, "void mission_main()");
+    return m_IsScriptReady;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -75,9 +81,9 @@ bool MissionDirector::LoadMissionScript(const std::string& _filePath)
     // =====================================
     // スクリプト読み込み
     // =====================================
-    bool isRes = false;
-    isRes = Master::m_pScriptManager->LoadScript(ModuleName, _filePath.c_str());
-    if (!isRes)
+    m_IsScriptReady = false;
+    m_IsScriptLoaded = Master::m_pScriptManager->LoadScript(ModuleName, _filePath);
+    if (!m_IsScriptLoaded)
     {
         return false;
     }

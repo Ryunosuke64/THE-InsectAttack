@@ -196,7 +196,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 		// ****************************************************
 		auto transform = pOwner->get_TransformComponent();
 		int dustEffectHandle = Master::m_pEffectManager->PlayEffect("Dust_01");
-		VEC3 footPos = transform->get_VEC3ToPos();
+		VEC3 footPos = crntPos;
 		VEC3 footOffset;
 		switch (m_CrntFootState)
 		{
@@ -218,6 +218,12 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 		VEC3 scale = VEC3(1.0f, 1.0f, 1.0f);
 		Master::m_pEffectManager->SetPositionEffect(dustEffectHandle, footPos);
 		Master::m_pEffectManager->SetScaleEffect(dustEffectHandle, scale);
+
+		//VEC3 dust02Pos = crntPos + VEC3(0.0f, 35.0f, 0.0f);
+		//int dust02EffectHandle = Master::m_pEffectManager->PlayEffect("Dust_02");
+		//Master::m_pEffectManager->SetPositionEffect(dust02EffectHandle, dust02Pos);
+
+
 		// ****************************************************
 		//				 カメラシェイク
 		// ****************************************************

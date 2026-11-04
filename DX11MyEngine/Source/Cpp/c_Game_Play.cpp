@@ -184,6 +184,13 @@ int c_Game_Play::Update(SceneManager *pOwner)
         return c_GAME::c_GO_RESULT_SCENE;
     }
     
+    // Run the mission before checking for victory so a new wave can spawn.
+    if (!Master::m_pMissionDirector->ExcuteScriptMissionMain())
+    {
+        Master::m_pDataManager->set_IsMissionCleared(false);
+        return c_GAME::c_GO_RESULT_SCENE;
+    }
+
     // 敵の数
     auto enemys = Master::m_pGameObjectManager->get_ObjectListByFactionAlive(FACTION::ENEMY);
     m_EnemyNum = INT_CAST(enemys.size());
@@ -200,8 +207,6 @@ int c_Game_Play::Update(SceneManager *pOwner)
         return c_GAME::c_GO_RESULT_SCENE;
     }
     
-    // ミッションスクリプトの実行
-    Master::m_pMissionDirector->ExcuteScriptMissionMain();
 
 
     return c_GAME::c_GAME_PLAY;
