@@ -64,13 +64,16 @@ bool LightManager::Init(std::shared_ptr<RendererEngine> pRenderer)
 void LightManager::Update()
 {
 	const bool isPause = Master::m_pDataManager->get_IsPause();
-	if (!isPause)
+	float deltaTime = Master::m_pTimeManager->get_DeltaTime();
+	if (isPause)
 	{
-		m_TransientPointLightPool.Update(
-			Master::m_pTimeManager->get_DeltaTime(),
-			m_TemporaryPointLightData,
-			POINTLIGHT_MAX_NUM);
+		deltaTime = 0.0f;
 	}
+
+	m_TransientPointLightPool.Update(
+		deltaTime,
+		m_TemporaryPointLightData,
+		POINTLIGHT_MAX_NUM);
 
 	// ライトデータを定数バッファへ送る
 	LightDataSetupAndBindToConstantBuffer();

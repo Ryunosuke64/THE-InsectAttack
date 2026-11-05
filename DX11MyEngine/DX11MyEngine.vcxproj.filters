@@ -1044,6 +1044,9 @@
     <ClCompile Include="Source\Cpp\V_Durga_ThrowState.cpp">
       <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_ImpactDamage.cpp">
+      <Filter>ソース ファイル\Game\Component\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1666,6 +1669,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_MapObjectDebris.h">
       <Filter>ソース ファイル\Game\Component\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_ImpactDamage.h">
+      <Filter>ソース ファイル\Game\Component\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
