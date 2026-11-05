@@ -27,11 +27,11 @@ void mission_setup()
     
     // アリ タイプA
     SpawnEnemyGroup(
-        ENEMY_TYPE::GIANT_ANT_Normal,
-        VEC3(0.0f,50.0,0.0), 
+        ENEMY_TYPE::OCTAHEDRON,
+        VEC3(100.0f,20.0,100.0), 
         20.0f,
         1,
-        100.0f,
+        2200.0f,
         true
     );
 }

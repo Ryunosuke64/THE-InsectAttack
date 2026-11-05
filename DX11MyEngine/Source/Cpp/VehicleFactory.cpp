@@ -171,7 +171,7 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     //collider->SetupModelData( modelResource->get_ModelData(LOD_QUALITY::ULTRA));
     collider->set_IsStatic(false);
     collider->set_IsConvex(false);
-    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING); // 衝突カテゴリ
+    collider->set_CollisionCategory(COLLISION_CATEGORY::VEHICLE); // 衝突カテゴリ
     collider->set_SurfaceType(SURFACE_TYPE::METAL);                // 材質：メタル
 
     //*****************************************************************************************

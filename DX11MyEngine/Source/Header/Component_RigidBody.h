@@ -83,6 +83,10 @@ public:
     void SetEnabled(bool enabled);  
     void ResetPhysics();            // 物理状態のリセット
 
+    // メッシュシェイプを切り替える
+    //※メッシュコライダーが追加されていないと使えません
+    bool ChangeMeshShape(PhysicsData::MESH_SHAPE_MODE shapeMode, float mass);
+
     // Kinematic用。瞬間移動とは区別する。
     void MovePosition(const VECTOR3::VEC3& position);
 };

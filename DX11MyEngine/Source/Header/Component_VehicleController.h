@@ -33,13 +33,13 @@ private:
 	float m_MoveSpeed;								// 移動速度
 	int m_WeaponID;									// 使用する武器ID
 	VehicleData::VehicleInputResult m_InputResult;	// 入力情報の格納
+	std::vector<std::weak_ptr<GameObject>>m_pTargetObjects; // 目標オブジェクト（攻撃対象など）
 
 	class Health* m_pHealthComp;					// 体力管理コンポーネント
 	class SkinnedMeshAnimator* m_pAnimatorComp;		// アニメータコンポーネント
 	class MoveLogic* m_pMoveLogicComp;				// 移動コンポーネント
 	class RigidBody* m_pRigidBodyComp;				// 物理コンポーネント
 	class MyTransform* m_pTransformComp;			// トランスフォームコンポーネント
-	const GameObject* m_pTarget;					// 攻撃目標
 	class AI_GunWeapon* m_pAIGunWeapon;				// 銃火器コンポーネント
 public:
 	VehicleController(std::weak_ptr<GameObject> pOwner, int updateRank);
@@ -58,7 +58,7 @@ public:
 	void ChangeState(const int _state);
 
 	/// <summary>アニメーションの変更 </summary>
-	void ChangeAnimation(const int _newId);
+	void ChangeAnimation(const int _newId, float blendDurationInSeconds = 0.3f);
 
 	/* アニメーションの再生させるかどうか */
 	bool get_IsPlayAnim() const { return m_IsPlayAnim; }
@@ -81,6 +81,11 @@ public:
 	/* 武器ID */
 	void set_WeaponID(int _id) { m_WeaponID = _id; }
 	int get_WeaponID()const { return m_WeaponID; }
+
+	/* 目標オブジェクト */
+	void add_TargetObject(std::shared_ptr<GameObject>_obj) { m_pTargetObjects .push_back(_obj); }
+	std::vector<std::weak_ptr<GameObject>>get_TargetObjects()const { return m_pTargetObjects; };
+	void clear_TargetObhects() { m_pTargetObjects.clear(); }
 
 	/* 入力処理 */
 	const VehicleData::VehicleInputResult CheckInputRobot();

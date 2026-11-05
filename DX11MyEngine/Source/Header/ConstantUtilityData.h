@@ -71,6 +71,7 @@ namespace UtilityData
 		{"EVERY",				 COLLISION_CATEGORY::EVERY},
 		{"ITEM",				 COLLISION_CATEGORY::ITEM},
 		{"PROP",				 COLLISION_CATEGORY::PROP},
+		{"VEHICLE",				 COLLISION_CATEGORY::VEHICLE},
 	};
 	// è’ìÀîªíË EnumÇï∂éöóÒÇ…ïœä∑Ç∑ÇÈÉ}ÉbÉv
 	static std::map<COLLISION_CATEGORY, std::string > g_CollisionCategoryStringMap = {
@@ -83,6 +84,7 @@ namespace UtilityData
 		{COLLISION_CATEGORY::EVERY				  ,"EVERY",				  },
 		{COLLISION_CATEGORY::ITEM				  ,"ITEM",				  },
 		{COLLISION_CATEGORY::PROP				  ,"PROP",				  },
+		{COLLISION_CATEGORY::VEHICLE			  ,"VEHICLE",				  },
 	};
 
 	/// <summary>

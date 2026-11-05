@@ -56,6 +56,14 @@ namespace PhysicsData
 		{"CONCAVE_TRIANGLE", COLLIDER_TYPE::CONCAVE_TRIANGLE}
 	};
 
+	// メッシュシェイプ切り替え用
+	enum class MESH_SHAPE_MODE
+	{
+		CONVEX_HULL,		// 凸包
+		CONVEX_TRIANGLE,	// 凸面三角形
+		CONCAVE_TRIANGLE	// 凹面三角形
+	};
+
 	/// カプセルの軸方向
 	enum class CAPSULE_AXIS
 	{

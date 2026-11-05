@@ -279,6 +279,21 @@ void RigidBody::SetWorldTransform(const VECTOR3::VEC3& position, const VECTOR4::
 }
 
 //*---------------------------------------------------------------------------------------
+//*【?】メッシュシェイプの切り替え
+//*
+//* [引数]
+//* shapeMode : メッシュシェイプの種類
+//* mass      : 質量
+//* 
+//* [返値]
+//* 成功したか（切り替えが失敗したら、元の形状のまま） 
+//*----------------------------------------------------------------------------------------
+bool RigidBody::ChangeMeshShape(PhysicsData::MESH_SHAPE_MODE shapeMode, float mass)
+{
+
+}
+
+//*---------------------------------------------------------------------------------------
 //*【?】ワールド座標の取得
 //*----------------------------------------------------------------------------------------
 VECTOR3::VEC3 RigidBody::GetWorldPotision()const
@@ -422,6 +437,7 @@ void RigidBody::ResetPhysics()
 
     m_pEngine->ResetPhysics(m_Handle);
 }
+
 
 // インスペクターから未セットアップ・解放済みの剛体を参照しても安全に扱う。
 bool RigidBody::IsInitialized() const

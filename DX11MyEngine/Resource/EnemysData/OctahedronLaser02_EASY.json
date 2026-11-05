@@ -31,7 +31,7 @@
       "knockbackForce" : 1.0,
       "bulletType" : "LASER",
       "collisionCategory" : "ENEMY_BULLET",
-      "collisionMask": ["PLAYER", "BUILDING", "DESTRUCTION_BUILDING", "PROP"]
+      "collisionMask": ["PLAYER", "BUILDING", "DESTRUCTION_BUILDING", "PROP","VEHICLE"]
     },
     
     "movement" :

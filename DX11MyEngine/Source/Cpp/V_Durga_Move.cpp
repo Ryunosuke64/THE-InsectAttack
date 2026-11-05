@@ -155,7 +155,8 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	// “ü—Í‚ª‚È‚¢‚Æ‚«‚ÍŽp¨‚ð‘‚«Š·‚¦‚È‚¢
 	if (turnInput != 0.0f)
 	{
-		const float turnSpeed = DirectX::XMConvertToRadians(60.0f); // –ˆ•b60“x
+		const float truenAngle = hasInput ? 10.0f : 25.0f; // ˆÚ“®Žž‚Í’x‚­A’âŽ~Žž‚Í‘‚­‰ñ“]‚·‚é
+		const float turnSpeed = DirectX::XMConvertToRadians(truenAngle); // –ˆ•b10“x
 		const float deltaYaw = turnInput * turnSpeed * deltaTime;
 
 		const auto rotation = rigidBody->GetRotation();
@@ -246,7 +247,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 			UINT_CAST(COLLISION_CATEGORY::PROP);
 		const float damageRadius = 15.0f;
 		const float knockback = 100.0f;
-		const float damage = 700.0f;
+		const float damage = 300.0f;
 		// ”ÍˆÍ“àƒ`ƒFƒbƒN
 		auto targets = Master::m_pPhysicsEngine->CheckSphere(footPos, damageRadius, mask);
 

@@ -39,7 +39,7 @@ VehicleController::VehicleController(std::weak_ptr<GameObject> pOwner, int updat
 	m_pMoveLogicComp(nullptr),
 	m_pRigidBodyComp(nullptr),
 	m_pTransformComp(nullptr),
-	m_pTarget(nullptr),
+	m_pTargetObjects(),
 	m_pAIGunWeapon(nullptr)
 {
 	this->set_Tag("VehicleController");
@@ -50,7 +50,7 @@ VehicleController::VehicleController(std::weak_ptr<GameObject> pOwner, int updat
 //*----------------------------------------------------------------------------------------
 VehicleController::~VehicleController()
 {
-
+	m_pTargetObjects.clear();
 }
 
 //*---------------------------------------------------------------------------------------
@@ -158,14 +158,14 @@ void VehicleController::ChangeState(const int _state)
 //*  _id : アニメーション番号
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void VehicleController::ChangeAnimation(const int _newId)
+void VehicleController::ChangeAnimation(const int _newId, float blendDurationInSeconds)
 {
 	// 同じまたは停止中なら返す
 	if (m_IsPlayAnim == false)
 	{
 		return;
 	}
-	m_pAnimatorComp->ChangeAnim(_newId,0.3f);
+	m_pAnimatorComp->ChangeAnim(_newId, blendDurationInSeconds);
 }
 
 //*---------------------------------------------------------------------------------------

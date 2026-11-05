@@ -1038,6 +1038,12 @@
     <ClCompile Include="Source\Cpp\Component_MapObjectDebris.cpp">
       <Filter>ソース ファイル\Game\Component\Map</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_LiftState.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_ThrowState.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">

@@ -53,15 +53,17 @@ namespace VehicleData
 	/// </summary>
 	enum class DURGA_ANIM_ID
 	{
-		DOWN,			// 倒れる
-		GETUP,			// 起き上がる
-		LIFT,			// 持ち上げる
-		PUNCH_A,		// パンチ - A
-		THROW,			// 投げる
-		TPOSE,			// Tポーズ
-		WALK_F_ENTER,	// 歩き始め
-		WALK_F_L,		// 左足前進
-		WALK_F_R,		// 右足前進
+		DOWN			= 0,	// 倒れる
+		GETUP			= 1,	// 起き上がる
+		LIFT			= 2,	// 持ち上げる
+		PUNCH_A			= 3,	// パンチ - A
+		THROW			= 4,	// 投げる
+		TPOSE			= 5,	// Tポーズ
+		WALK_F_ENTER	= 6,	// 歩き始め
+		WALK_F_L		= 7,	// 左足前進
+		WALK_F_L_LIFT	= 8,	// 左足前進 - 持ち上げ状態
+		WALK_F_R		= 9,	// 右足前進
+		WALK_F_R_LIFT	= 10,	// 右足前進 - 持ち上げ状態
 	};
 
 	// ビークル出現時のセットアップデータ

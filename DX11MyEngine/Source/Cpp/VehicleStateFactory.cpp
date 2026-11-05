@@ -48,6 +48,8 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	// ルート作成
 	std::shared_ptr<V_Durga_IdleState> pIdle = std::make_shared<V_Durga_IdleState>();					// 待機
 	std::shared_ptr<V_Durga_MoveState> pMove = std::make_shared<V_Durga_MoveState>();					// 移動
+	std::shared_ptr<V_Durga_LiftState> pLift = std::make_shared<V_Durga_LiftState>();					// 持ち上げる
+	std::shared_ptr<V_Durga_ThrowState> pThrow = std::make_shared<V_Durga_ThrowState>();					// 投げ飛ばす
 	//std::shared_ptr<Ant_AT_TrackingState> pATTracking = std::make_shared<Ant_AT_TrackingState>();		// AT 追従
 	//std::shared_ptr<Ant_AT_MoveState> pATMove = std::make_shared<Ant_AT_MoveState>();					// AT 移動
 	//std::shared_ptr<Ant_AT_AttackAcidState> pATAttackAcid = std::make_shared<Ant_AT_AttackAcidState>();	// AT 酸攻撃
@@ -58,6 +60,8 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	// add_childの中で子にもセットしてるのでaddする前に呼んで！
 	pIdle->set_Renderer(&_renderer);
 	pMove->set_Renderer(&_renderer);
+	pLift->set_Renderer(&_renderer);
+	pThrow->set_Renderer(&_renderer);
 	//pATTracking->set_Renderer(&_renderer);
 	//pATMove->set_Renderer(&_renderer);
 	//pATAttackAcid->set_Renderer(&_renderer);
@@ -67,6 +71,8 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	//ステートマシンに登録
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_IDLE, std::move(pIdle));
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_MOVE, std::move(pMove));
+	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_LIFT, std::move(pLift));
+	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_THROW, std::move(pThrow));
 	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_TRACKING, std::move(pATTracking));
 	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_MOVE, std::move(pATMove));
 	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_ATTACK_ACID, std::move(pATAttackAcid));

@@ -54,7 +54,7 @@ int V_Durga_IdleState::Update(class VehicleController* pOwner)
 	auto animator = pOwner->get_AnimatorComponent();
 	auto transform = pOwner->get_TransformComponent();
 	VEC3 crntPos = transform->get_VEC3ToPos();			// 現在の座標
-	float walkAnimDuration = animator->get_AnimDurationSeconds(INT_CAST(DURGA_ANIM_ID::WALK_F_ENTER));	// 歩行アニメーションの再生時間を取得
+	const float AnimDuration = animator->get_AnimDurationSeconds(INT_CAST(DURGA_ANIM_ID::WALK_F_ENTER));	// 歩行アニメーションの再生時間を取得
 
 	//=========================================================================================
 	//
@@ -72,41 +72,12 @@ int V_Durga_IdleState::Update(class VehicleController* pOwner)
 	//=========================================================================================
 	if (input.isLift)
 	{
-		//return DURGA_V_STATE::DURGA_V_STATE_LIFT;
+		return DURGA_V_STATE::DURGA_V_STATE_LIFT;
 	}
 	if (input.isPunchA)
 	{
 	}
 	auto rigidBody = pOwner->get_RigidBodyComponent();
-	const float turnInput =
-		(input.isRotR ? 1.0f : 0.0f) -
-		(input.isRotL ? 1.0f : 0.0f);
-
-	// 入力がないときは姿勢を書き換えない
-	if (turnInput != 0.0f)
-	{
-		const float turnSpeed = DirectX::XMConvertToRadians(60.0f); // 毎秒60度
-		const float dt = Master::m_pTimeManager->get_DeltaTime();
-		const float deltaYaw = turnInput * turnSpeed * dt;
-
-		const auto rotation = rigidBody->GetRotation();
-		const auto currentQ = DirectX::XMVectorSet(
-			rotation.x, rotation.y, rotation.z, rotation.w);
-
-		const auto deltaQ =
-			DirectX::XMQuaternionRotationRollPitchYaw(
-				0.0f, deltaYaw, 0.0f);
-
-		const auto nextQ = DirectX::XMQuaternionNormalize(
-			DirectX::XMQuaternionMultiply(currentQ, deltaQ));
-
-		DirectX::XMFLOAT4 result;
-		DirectX::XMStoreFloat4(&result, nextQ);
-
-		rigidBody->SetRotation(VEC4(
-			result.x, result.y, result.z, result.w));
-	}
-
 
 	return DURGA_V_STATE::DURGA_V_STATE_IDLE;
 }

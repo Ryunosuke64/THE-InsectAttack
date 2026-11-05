@@ -176,9 +176,12 @@ void Destructible::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
         auto faction = hitObj->get_Component<Faction>();
         if (faction)
         {
+            // ビークルに触れるとダメージ
             if (faction->get_Faction() == UtilityData::FACTION::VEHICLE)
             {
-                this->StartDestruction(_other.hitPoint, _other.hitNormal);
+                auto health = m_pHealthComp.lock();
+                health->TakeDamage(50.0f);
+                //this->StartDestruction(_other.hitPoint, _other.hitNormal);
             }
         }
     }

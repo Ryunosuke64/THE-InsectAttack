@@ -67,3 +67,47 @@ public:
 private:
 	void SetWalkAnimation(class VehicleController* pOwner);
 };
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:V_Durga_LiftState Class --- */
+//
+//  ★継承：IState ★
+//
+// 【?】持ち上げステート
+//		
+// ***************************************************************************************
+class V_Durga_LiftState : public IState<class VehicleController>
+{
+private:
+	std::vector<std::weak_ptr<GameObject>> m_pLiftTargets;	// 持ち上げる対象
+	DirectX::XMMATRIX m_HandR_LocalMat;	// 右手のローカル座標
+	DirectX::XMMATRIX m_HandL_LocalMat;	// 右手のローカル座標
+public:
+	void OnEnter(class VehicleController* pOwner) override;
+	void OnExit(class VehicleController* pOwner)override;
+	int Update(class VehicleController* pOwner)override;
+};
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:v Class --- */
+//
+//  ★継承：IState ★
+//
+// 【?】投げ飛ばすステート
+//		
+// ***************************************************************************************
+class V_Durga_ThrowState : public IState<class VehicleController>
+{
+private:
+	std::vector<std::weak_ptr<GameObject>> m_pLiftObjects;	// 持ち上げているオブジェクト
+	DirectX::XMMATRIX m_HandR_LocalMat;			// 右手のローカル座標
+	DirectX::XMMATRIX m_HandL_LocalMat;			// 右手のローカル座標
+	VECTOR3::VEC3 m_GrabOffset;					// 掴む対象のオフセット座標
+	bool m_IsThrow = false;	// 投げ終わったか
+public:
+	void OnEnter(class VehicleController* pOwner) override;
+	void OnExit(class VehicleController* pOwner)override;
+	int Update(class VehicleController* pOwner)override;
+};
