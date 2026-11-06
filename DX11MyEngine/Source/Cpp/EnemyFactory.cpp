@@ -19,6 +19,7 @@
 #include "Component_Faction.h"
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_AI_GunWeapon.h"
+#include "Component_ImpactDamage.h"
 
 #include "Component_CapsuleCollider.h"
 #include "Component_SphereCollider.h"
@@ -268,7 +269,18 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     auto health = generatedObject->add_Component<Health>();
     float hp = generationData.hp * Master::m_pDataManager->get_EnemyDifficultyFactor()._hpRate;
     health->set_MaxHP(hp);
-    health->set_CrntHP(hp);
+    health->set_CrntHP(hp);    
+
+    //
+    // 衝撃ダメージコンポーネント追加
+    //
+    auto impactDamage = generatedObject->add_Component<ImpactDamage>();
+    ImpactDamage::ImpactDamageParam impactDamageParam;
+    impactDamageParam.damageActiveDuration = 5.0f;
+    impactDamageParam.damageValue = 100.0f;
+    impactDamageParam.impactEffectScale = VEC3(1.0f);
+    impactDamageParam.impactEffectTag = "AntHit_01";
+    impactDamage->set_ImpactDamageParam(impactDamageParam);
 
     // コントローラー側に怯み耐久を設定する
     enemyController->set_StaggerThreshold(hp * ANT_THRESHOLD_RATE);
@@ -279,7 +291,6 @@ std::shared_ptr<GameObject> EnemyFactory::CreateAnt01(const EnemyGenerationData&
     
     auto rb = generatedObject->add_Component<RigidBody>();
     auto collider = generatedObject->add_Component<BoxCollider>();
-   ;
 
     //collider->SetupModelData( modelResource->get_ModelData(LOD_QUALITY::LOW));
     collider->set_Size(VEC3(2.0f, 1.5f, 2.0f));
@@ -419,6 +430,17 @@ std::shared_ptr<GameObject> EnemyFactory::CreateOctahedron(const EnemyGeneration
     float hp = generationData.hp * Master::m_pDataManager->get_EnemyDifficultyFactor()._hpRate;
     health->set_MaxHP(hp);
     health->set_CrntHP(hp);
+
+    //
+    // 衝撃ダメージコンポーネント追加
+    //
+    auto impactDamage = generatedObject->add_Component<ImpactDamage>();
+    ImpactDamage::ImpactDamageParam impactDamageParam;
+    impactDamageParam.damageActiveDuration = 3.0f;
+    impactDamageParam.damageValue = 500.0f;
+    impactDamageParam.impactEffectScale = VEC3(1.0f);
+    impactDamageParam.impactEffectTag = "Dust_01";
+    impactDamage->set_ImpactDamageParam(impactDamageParam);
 
     // コントローラー側に怯み耐久を設定する
     enemyController->set_StaggerThreshold(hp * OCTAHEDRON_THRESHOLD_RATE);
@@ -560,6 +582,17 @@ std::shared_ptr<GameObject> EnemyFactory::CreateDroneTypeA(const EnemyGeneration
     float hp = generationData.hp * Master::m_pDataManager->get_EnemyDifficultyFactor()._hpRate;
     health->set_MaxHP(hp);
     health->set_CrntHP(hp);
+
+    //
+    // 衝撃ダメージコンポーネント追加
+    //
+    auto impactDamage = generatedObject->add_Component<ImpactDamage>();
+    ImpactDamage::ImpactDamageParam impactDamageParam;
+    impactDamageParam.damageActiveDuration = 3.0f;
+    impactDamageParam.damageValue = 100.0f;
+    impactDamageParam.impactEffectScale = VEC3(1.0f);
+    impactDamageParam.impactEffectTag = "Smoke_03";
+    impactDamage->set_ImpactDamageParam(impactDamageParam);
 
     // コントローラー側に怯み耐久を設定する
     enemyController->set_StaggerThreshold(hp * DRONE_TYPE_A_THRESHOLD_RATE);

@@ -12,6 +12,7 @@
 #include "Component_CylinderCollider.h"
 #include "Component_Destructible.h"
 #include "Component_TimerDestruction.h"
+#include "Component_ImpactDamage.h"
 #include "Component_MapObjectDebris.h"
 #include "DestructionBehavior_Header.h"
 #include "RendererEngine.h"
@@ -137,7 +138,7 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
 
     //
     // 体力コンポーネント追加
-    // 体力が0.0以上の場合
+    // ※体力が0.0以上の場合
     //
     if (assetData.health > 0.0f)
     {
@@ -145,6 +146,24 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
         float hp = assetData.health;
         health->set_MaxHP(hp);
         health->set_CrntHP(hp);
+    }
+
+    //
+    // 衝撃ダメージコンポーネント追加
+    // ※掴むことが出来るオブジェクトの場合
+    //
+    if (assetData.isGrabbable)
+    {
+        //
+        // 衝撃ダメージコンポーネント追加
+        //
+        auto impactDamage = generatedObject->add_Component<ImpactDamage>();
+        ImpactDamage::ImpactDamageParam impactDamageParam;
+        impactDamageParam.damageActiveDuration = 10.0f;
+        impactDamageParam.damageValue = 100.0f;
+        impactDamageParam.impactEffectScale = VEC3(3.0f);
+        impactDamageParam.impactEffectTag = "Dust_03";
+        impactDamage->set_ImpactDamageParam(impactDamageParam);
     }
 
     // 
@@ -212,11 +231,13 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
 //*【?】建物の破片モデルの生成
 //* [引数]
 //* _assetID   : 紐付けされた建物のアセットID
+//* _transform : トランスフォーム
+//* _info      : 生成用データ
 //*
 //* [返値]
 //* 生成できたか 
 //*----------------------------------------------------------------------------------------
-bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const Map::MO_TransformData& _transform)
+bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const Map::MO_TransformData& _transform, const BuildingDebrisGenerateInfo& _info)
 {
     // 破片モデルの定義データを探す
     auto fragmentData = Master::m_pMapManager->FindBuildingFragmentDataSet(_assetID);
@@ -347,6 +368,18 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
         auto mapObjectDebris = generatedObject->add_Component<MapObjectDebris>();
 
 
+        //
+        // 衝撃ダメージコンポーネント追加
+        //
+        auto impactDamage = generatedObject->add_Component<ImpactDamage>();
+        ImpactDamage::ImpactDamageParam impactDamageParam;
+        impactDamageParam.damageActiveDuration = 5.0f;
+        impactDamageParam.damageValue = 100.0f;
+        impactDamageParam.impactEffectScale = VEC3(1.0f);
+        impactDamageParam.impactEffectTag = "Dust_03";
+        impactDamage->set_ImpactDamageParam(impactDamageParam);
+
+
         auto modelResource = generatedObject->get_Component<ModelMeshResource>();
 
         // ここから追加
@@ -433,16 +466,16 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
             //
             collider->set_CollisionResponse(COLLISION_CATEGORY::BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);              // 建物
             collider->set_CollisionResponse(COLLISION_CATEGORY::DESTRUCTION_BUILDING, COLLISION_RESPONSE::RESPONSE_BLOCK);  // 破壊可能建物
+            collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_BLOCK);                 // エネミー
+            collider->set_CollisionResponse(COLLISION_CATEGORY::PROP, COLLISION_RESPONSE::RESPONSE_BLOCK);                  // 小物
 
             //
             // 判定なし
             //
             collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER, COLLISION_RESPONSE::RESPONSE_IGNORE);                // プレイヤー
-            collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);                // プレイヤー
-            collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY, COLLISION_RESPONSE::RESPONSE_IGNORE);                 // エネミー
+            collider->set_CollisionResponse(COLLISION_CATEGORY::PLAYER_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);         // プレイヤー
             collider->set_CollisionResponse(COLLISION_CATEGORY::ENEMY_BULLET, COLLISION_RESPONSE::RESPONSE_IGNORE);          // エネミー弾
             collider->set_CollisionResponse(COLLISION_CATEGORY::ITEM, COLLISION_RESPONSE::RESPONSE_IGNORE);                  // アイテム
-            collider->set_CollisionResponse(COLLISION_CATEGORY::PROP, COLLISION_RESPONSE::RESPONSE_IGNORE);                  // 小物
 
             MO_RigidBodyData rigidBody = physicsData.rigidBody;
 
@@ -462,6 +495,12 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
             rbDesc.owner = generatedObject;                         // オーナーオブジェクトの設定
 
             rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+
+            //
+            // 移動/回転の速度を引き継ぐ
+            //
+            rb->SetLinearVelocity(_info.lin_velocity);
+            rb->SetAngularVelocity(_info.ang_velocity);
         }
     }
     return true;

@@ -11,8 +11,15 @@
 class MapObjectFactory
 {
 public:
+	struct BuildingDebrisGenerateInfo
+	{
+		VECTOR3::VEC3 lin_velocity = VECTOR3::VEC3();	// ‘¬“x‚ª‚ ‚ê‚Îˆø‚«Œp‚®
+		VECTOR3::VEC3 ang_velocity = VECTOR3::VEC3();	// ‘¬“x‚ª‚ ‚ê‚Îˆø‚«Œp‚®
+	};
+
+public:
 	static bool CreateMapObject(const Map::MapObjectData& _data);
-	static bool CreateBuildingDebris(const std::string& _assetID, const Map::MO_TransformData& _transform);
+	static bool CreateBuildingDebris(const std::string& _assetID, const Map::MO_TransformData& _transform, const BuildingDebrisGenerateInfo& info);
 
 private:
 	static bool AddPhysics(const Map::MO_PhysicsData& data, std::shared_ptr<GameObject> outObj);	// •¨—ˆ—‚ğ’Ç‰Á‚·‚é

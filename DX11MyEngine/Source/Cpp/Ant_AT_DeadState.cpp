@@ -71,7 +71,7 @@ void Ant_AT_DeadState::OnEnter(class EnemyController* pOwner)
 	VEC3 angularImpulse;
 	angularImpulse.x = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
 	angularImpulse.y = Master::m_pRandomManager->GetFloatRandom(-6.0f, 6.0f);
-	angularImpulse.z = Master::m_pRandomManager->GetFloatRandom(30.0f, 40.0f);
+	angularImpulse.z = Master::m_pRandomManager->GetFloatRandom(20.0f, 30.0f);
 	rigidBody->AddAngularImpulse(angularImpulse);
 
 	// コライダーの判定をオフに

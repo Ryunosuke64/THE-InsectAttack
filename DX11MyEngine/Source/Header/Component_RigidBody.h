@@ -47,6 +47,7 @@ public:
     void AddImpulse(const VECTOR3::VEC3& impulse);
     void AddAngularImpulse(const VECTOR3::VEC3& impulse);
     void SetLinearVelocity(const VECTOR3::VEC3& velocity);
+    void SetAngularVelocity(const VECTOR3::VEC3& velocity);
     void AddCentralForce(const VECTOR3::VEC3& force);
     void AddCentralImpulse(const VECTOR3::VEC3& impulse);
     void Teleport(const VECTOR3::VEC3& position);

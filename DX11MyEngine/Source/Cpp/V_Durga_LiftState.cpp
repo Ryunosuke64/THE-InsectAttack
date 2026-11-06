@@ -44,8 +44,8 @@ void V_Durga_LiftState::OnEnter(class VehicleController* pOwner)
 	VEC3 forward = transform->get_Forward();			// Œü‚¢‚Ä‚é•ûŒü
 	m_HandR_LocalMat = animator->get_BoneLocalWorldMatrix("Hand.R");
 	m_HandL_LocalMat = animator->get_BoneLocalWorldMatrix("Hand.L");
-	const float GrabRange = 10.0f;						// è‚Ì“Í‚­”ÍˆÍ
-	const float GrabCollisionRadius = 50.0f;			// ’Í‚Ş‚½‚ß‚Ì“–‚½‚è”»’è‚Ì”¼Œa
+	const float GrabRange = 15.0f;						// è‚Ì“Í‚­”ÍˆÍ
+	const float GrabCollisionRadius = 20.0f;			// ’Í‚Ş‚½‚ß‚Ì“–‚½‚è”»’è‚Ì”¼Œa
 	VEC3 grabCollisionSpherePos = crntPos + forward * GrabRange;	// è‚Ì“Í‚­”ÍˆÍ‚Ì‹…‚Ì’†SÀ•W
 
 
@@ -53,6 +53,7 @@ void V_Durga_LiftState::OnEnter(class VehicleController* pOwner)
 	unsigned mask = 
 		UINT_CAST(COLLISION_CATEGORY::ENEMY)|
 		UINT_CAST(COLLISION_CATEGORY::PLAYER)|
+		UINT_CAST(COLLISION_CATEGORY::PROP)|
 		UINT_CAST(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
 
 	//

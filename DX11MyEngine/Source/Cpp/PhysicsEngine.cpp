@@ -218,6 +218,31 @@ SetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::V
         btVector3(velocity.x, velocity.y, velocity.z)
     );
 }
+//*---------------------------------------------------------------------------------------
+//*【?】回転速度を設定
+//*
+//* [引数] 
+//* & handle    : ハンドル
+//* & velocity  : ベロシティ
+//* 
+//* [返値] なし
+//*----------------------------------------------------------------------------------------
+void PhysicsEngine::
+SetAngularVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& velocity)
+{
+    if (!IsValidRigidBody(handle) || !IsFiniteVector(velocity))
+    {
+        return;
+    }
+
+    auto& rb = m_RigidBodies[handle.index].rigidBody;
+
+    WakeForParameterChange(*rb);
+
+    rb->setAngularVelocity(
+        btVector3(velocity.x, velocity.y, velocity.z)
+    );
+}
 
 //*---------------------------------------------------------------------------------------
 //*【?】力を加える
@@ -844,7 +869,7 @@ CreateRigidBody(const RigidBodyDesc& desc)
     m_CollisionShapes.push_back(pShape);
 
     // RD
-    btRigidBody* rigidBody = new btRigidBody(info);
+    btRigidBody* rigidBody = new btRigidBody(info); 
 
     // 自身の衝突マスクの種類
     const int group =

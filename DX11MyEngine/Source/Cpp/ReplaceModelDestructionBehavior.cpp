@@ -24,15 +24,15 @@ void ReplaceModelDestructionBehavior::Start(
 {
     auto mapObject =
         object->get_Component<MapObject>();
-    //auto rigidBody =
-    //    object->get_Component<RigidBody>();
+    auto rigidBody =
+        object->get_Component<RigidBody>();
 
     const auto transform = object->get_TransformConst();
     VEC3 pos = transform->get_VEC3ToPos();
     VEC3 rot = transform->get_VEC3ToRotateToRad();
     VEC3 scale = transform->get_VEC3ToScale();
 
-    if (/*rigidBody && */mapObject)
+    if (rigidBody && mapObject)
     {
         // アセットデータの取り出し
         std::string assetID = mapObject->get_AssetID();
@@ -52,7 +52,10 @@ void ReplaceModelDestructionBehavior::Start(
         transformData.position = pos;
         transformData.rotation = rot;
         transformData.scale = scale;
-        if (!MapObjectFactory::CreateBuildingDebris(assetID, transformData))
+        MapObjectFactory::BuildingDebrisGenerateInfo info;
+        info.ang_velocity = rigidBody->GetAngularVelocity();    // 現在の速度を引き継ぐ
+        info.lin_velocity = rigidBody->GetLinearVelocity();
+        if (!MapObjectFactory::CreateBuildingDebris(assetID, transformData, info))
         {
             assert(false);
         }
@@ -66,7 +69,7 @@ void ReplaceModelDestructionBehavior::Start(
         // ****************************************************
         //		        崩壊サウンドを遅延再生
         // ****************************************************
-		const float PLAY_COLLAPSING_SOUND_TIME = 1.5f;  // 崩壊サウンド再生までの時間
+		const float PLAY_COLLAPSING_SOUND_TIME = 1.7f;  // 崩壊サウンド再生までの時間
         Master::m_pTimeManager->AddTimer(
             PLAY_COLLAPSING_SOUND_TIME,
             [pos]()

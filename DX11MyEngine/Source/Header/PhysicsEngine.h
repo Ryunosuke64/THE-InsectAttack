@@ -51,6 +51,7 @@ public:
 
 	bool IsValidRigidBody(const PhysicsData::PhysicsBodyHandle& handle)const;
 	void SetLinearVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& velocity);
+	void SetAngularVelocity(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& velocity);
 	void AddForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force, const VECTOR3::VEC3& rel_pos);
 	void AddCentralForce(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& force);
 	void AddImpulse(const PhysicsData::PhysicsBodyHandle& handle, const VECTOR3::VEC3& impulse, const VECTOR3::VEC3& rel_pos);

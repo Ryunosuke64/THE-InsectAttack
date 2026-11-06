@@ -474,93 +474,93 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     }
 
     /* 足場 */
-    {
-        VEC3 pos = VEC3(0.0f, 10.0f, 0.0f);
+    //{
+    //    VEC3 pos = VEC3(0.0f, 10.0f, 0.0f);
 
-        // マテリアル取得
-        auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
+    //    // マテリアル取得
+    //    auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
 
-        SetupMaterialInfo matInfo[1];
-        matInfo[0].Index = 0;
-        matInfo[0].pMaterialData = matPtr;
+    //    SetupMaterialInfo matInfo[1];
+    //    matInfo[0].Index = 0;
+    //    matInfo[0].pMaterialData = matPtr;
 
-        CreateUtilityMeshInfo mesh;
-        mesh.pRenderer = m_pRenderer;
-        mesh.Type = UTILITY_MESH_TYPE::CUBE;
-        mesh.MatNum = 1;
-        mesh.MaterialData = matInfo;
-        mesh.IsActive = true;
-        mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-        mesh.IsNormalMap = true;
+    //    CreateUtilityMeshInfo mesh;
+    //    mesh.pRenderer = m_pRenderer;
+    //    mesh.Type = UTILITY_MESH_TYPE::CUBE;
+    //    mesh.MatNum = 1;
+    //    mesh.MaterialData = matInfo;
+    //    mesh.IsActive = true;
+    //    mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+    //    mesh.IsNormalMap = true;
 
-        auto obj = MeshFactory::CreateUtilityMesh(mesh);
-        obj->get_Transform().lock()->set_Pos(pos);
-        obj->get_Transform().lock()->set_Scale(VEC3(5.0f, 1.0f, 5.0f));
-        obj->set_Tag("Scaffolding");
-        // コライダーの追加
-        auto rb = obj->add_Component<RigidBody>();
-        auto collider = obj->add_Component<BoxCollider>();
-        collider->set_Size(VEC3(5.0f, 1.0f, 5.0f));
-        collider->set_Center(VEC3(0, 0, 0));
-        collider->set_IsStatic(true);
+    //    auto obj = MeshFactory::CreateUtilityMesh(mesh);
+    //    obj->get_Transform().lock()->set_Pos(pos);
+    //    obj->get_Transform().lock()->set_Scale(VEC3(5.0f, 1.0f, 5.0f));
+    //    obj->set_Tag("Scaffolding");
+    //    // コライダーの追加
+    //    auto rb = obj->add_Component<RigidBody>();
+    //    auto collider = obj->add_Component<BoxCollider>();
+    //    collider->set_Size(VEC3(5.0f, 1.0f, 5.0f));
+    //    collider->set_Center(VEC3(0, 0, 0));
+    //    collider->set_IsStatic(true);
 
-        // 衝突カテゴリ
-        collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
+    //    // 衝突カテゴリ
+    //    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
 
-        PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 0.0f;
-        rbDesc.friction = 0.0f;
-        rbDesc.restitution = 0.8f;
-        rbDesc.pos = pos;
-        rbDesc.owner = obj;         // オーナーオブジェクトの設定
-        rbDesc.collider = collider; // コライダーの設定
+    //    PhysicsData::RigidBodyDesc rbDesc;
+    //    rbDesc.mass = 0.0f;
+    //    rbDesc.friction = 0.0f;
+    //    rbDesc.restitution = 0.8f;
+    //    rbDesc.pos = pos;
+    //    rbDesc.owner = obj;         // オーナーオブジェクトの設定
+    //    rbDesc.collider = collider; // コライダーの設定
 
-        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-    }
+    //    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+    //}
 
 
     /* 足場 */
-    {
-        VEC3 pos = VEC3(-50.0f, 1.0f, 90.0f);
+    //{
+    //    VEC3 pos = VEC3(-50.0f, 1.0f, 90.0f);
 
-        // マテリアル取得
-        auto matPtr = Master::m_pResourceManager->FindMaterial("Block");
-        SetupMaterialInfo matInfo[1];
-        matInfo[0].Index = 0;
-        matInfo[0].pMaterialData = matPtr;
-        CreateUtilityMeshInfo mesh;
-        mesh.pRenderer = m_pRenderer;
-        mesh.Type = UTILITY_MESH_TYPE::CUBE;
-        mesh.MatNum = 1;
-        mesh.MaterialData = matInfo;
-        mesh.IsActive = true;
-        mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-        mesh.IsNormalMap = true;
-        auto obj = MeshFactory::CreateUtilityMesh(mesh);
-        obj->get_Transform().lock()->set_Pos(pos);
-        obj->get_Transform().lock()->set_Scale(VEC3(5.0f, 1.0f, 5.0f));
-        obj->set_Tag("Scaffolding");
+    //    // マテリアル取得
+    //    auto matPtr = Master::m_pResourceManager->FindMaterial("Block");
+    //    SetupMaterialInfo matInfo[1];
+    //    matInfo[0].Index = 0;
+    //    matInfo[0].pMaterialData = matPtr;
+    //    CreateUtilityMeshInfo mesh;
+    //    mesh.pRenderer = m_pRenderer;
+    //    mesh.Type = UTILITY_MESH_TYPE::CUBE;
+    //    mesh.MatNum = 1;
+    //    mesh.MaterialData = matInfo;
+    //    mesh.IsActive = true;
+    //    mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+    //    mesh.IsNormalMap = true;
+    //    auto obj = MeshFactory::CreateUtilityMesh(mesh);
+    //    obj->get_Transform().lock()->set_Pos(pos);
+    //    obj->get_Transform().lock()->set_Scale(VEC3(5.0f, 1.0f, 5.0f));
+    //    obj->set_Tag("Scaffolding");
 
-        // コライダーの追加
-        auto rb = obj->add_Component<RigidBody>();
-        auto collider = obj->add_Component<BoxCollider>();
-        collider->set_Size(VEC3(5.0f, 1.0f, 5.0f));
-        collider->set_Center(VEC3(0, 0, 0));
-        collider->set_IsStatic(true);
+    //    // コライダーの追加
+    //    auto rb = obj->add_Component<RigidBody>();
+    //    auto collider = obj->add_Component<BoxCollider>();
+    //    collider->set_Size(VEC3(5.0f, 1.0f, 5.0f));
+    //    collider->set_Center(VEC3(0, 0, 0));
+    //    collider->set_IsStatic(true);
 
-        // 衝突カテゴリ
-        collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
+    //    // 衝突カテゴリ
+    //    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
 
-        PhysicsData::RigidBodyDesc rbDesc;
-        rbDesc.mass = 0.0f;
-        rbDesc.friction = 0.0f;
-        rbDesc.restitution = 0.8f;
-        rbDesc.pos = pos;
-        rbDesc.owner = obj;         // オーナーオブジェクトの設定
-        rbDesc.collider = collider; // コライダーの設定
+    //    PhysicsData::RigidBodyDesc rbDesc;
+    //    rbDesc.mass = 0.0f;
+    //    rbDesc.friction = 0.0f;
+    //    rbDesc.restitution = 0.8f;
+    //    rbDesc.pos = pos;
+    //    rbDesc.owner = obj;         // オーナーオブジェクトの設定
+    //    rbDesc.collider = collider; // コライダーの設定
 
-        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-    }
+    //    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+    //}
 
 
 

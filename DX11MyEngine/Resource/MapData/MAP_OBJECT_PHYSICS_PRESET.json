@@ -6,7 +6,7 @@
             "rigidBody" : 
             {
                 "mass"              : 3.0,
-                "restitution"       : 0.8,
+                "restitution"       : 0.2,
                 "friction"          : 0.5,
                 "gravityScale"      : 2.5,
                 "linearDamping"     : 0.0,
@@ -72,7 +72,7 @@
             "rigidBody" : 
             {
                 "mass"              : 100.0,
-                "restitution"       : 1.0,
+                "restitution"       : 0.2,
                 "friction"          : 0.5,
                 "gravityScale"      : 1.0,
                 "linearDamping"     : 0.0,

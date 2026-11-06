@@ -17,13 +17,22 @@
 // ***************************************************************************************
 class ImpactDamage : public IComponent
 {
+public:
+	// 衝撃ダメージ用の情報
+	struct ImpactDamageParam
+	{
+		std::string impactEffectTag;		// 衝突時のエフェクト
+		VECTOR3::VEC3 impactEffectScale		// 衝突時のエフェクトの大きさ
+			= VECTOR3::VEC3();	
+		float damageValue = 0.0f;			// ダメージ
+		float damageActiveDuration = 0.0f;	// ダメージを与えることが可能な時間
+	};
+
 private:
-	std::string m_ImpactEffectTag;		// 衝突時のエフェクト
-	VECTOR3::VEC3 m_ImpactEffectScale;	// 衝突時のエフェクトの大きさ
-	float m_Damage;						// ダメージ
-	float m_DamageActiveDuration;		// ダメージを与えることが可能な時間
+	ImpactDamageParam m_Param;
 	float m_ElapsedTime;				// 経過時間
 	bool m_IsImapctEnabled;				// 衝撃ダメージの使用状態か
+
 
 public:
 	ImpactDamage(std::weak_ptr<GameObject> pOwner, int updateRank);
@@ -32,7 +41,8 @@ public:
 	void Start(RendererEngine& renderer) override;	// 初期化
 	void Update(RendererEngine& renderer) override; // 更新
 	void OnCollisionEnter(const PhysicsData::CollisionInfo& _other)override;	// 衝突時処理
-
-	void set_IsImpactEnabled(bool flag) { m_IsImapctEnabled = flag; };
+	
+	void set_ImpactDamageParam(const ImpactDamageParam& _param) { m_Param = _param; };
+	void set_ImpactEnabled(bool _flag) { m_IsImapctEnabled = _flag; };
 };
 

@@ -67,9 +67,9 @@
                 {"slot" : 2, "tag" : "Building01_Base2"},
                 {"slot" : 3, "tag" : "Building01_Base3"}
             ],
-            "isGrabbable" : false,
+            "isGrabbable" : true,
             "isDestruction" : true,
-            "health" : 600.0
+            "health" : 1000.0
         },
         {
             "assetID" : "Building_03",
@@ -83,9 +83,9 @@
             [
                 {"slot" : 0, "tag" : "Building01_Base1"}
             ],
-            "isGrabbable" : false,
+            "isGrabbable" : true,
             "isDestruction" : true,
-            "health" : 600.0
+            "health" : 1000.0
         },
         {
             "assetID" : "Tower_01",
@@ -104,9 +104,9 @@
                 {"slot" : 4, "tag" : "Building_Tower_1_BaseGround"},
                 {"slot" : 5, "tag" : "Building_Tower_1_Wall"}
             ],
-            "isGrabbable" : false,
+            "isGrabbable" : true,
             "isDestruction" : true,
-            "health" : 600.0
+            "health" : 1000.0
         },
         {
             "assetID" : "Durga",

@@ -5,6 +5,7 @@
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_RigidBody.h"
 #include "Component_Destructible.h"
+#include "Component_ImpactDamage.h"
 #include "GameObject.h"
 
 using namespace VECTOR4;
@@ -122,11 +123,25 @@ int V_Durga_ThrowState::Update(class VehicleController* pOwner)
 				if (liftObj_RigidBody)
 				{
 					const float ImpulsePower = 300.0f;
-					VEC3 impulse = forward * ImpulsePower;
+					VEC3 thwowDir = forward;
+					thwowDir.y -= 0.2f;	// ちょっとした方向に
+					thwowDir = thwowDir.Normalize();
+					VEC3 impulse = thwowDir * ImpulsePower;
 					liftObj_RigidBody->SetEnabled(true);
-					liftObj_RigidBody->SetMass(1.0f);
+					liftObj_RigidBody->SetMass(3.0f);
+					liftObj_RigidBody->SetRestitution(0.1f);
 					liftObj_RigidBody->AddImpulse(impulse);
 					liftObj_RigidBody->AddAngularImpulse(impulse);
+
+					//
+					// 衝撃ダメージコンポーネントが付いてるなら、
+					// 使用をオンにする
+					//
+					auto impactDamage = targetObj->get_Component<ImpactDamage>();
+					if (impactDamage)
+					{
+						impactDamage->set_ImpactEnabled(true);
+					}
 
 					// 投げ終わった
 					m_IsThrow = true;

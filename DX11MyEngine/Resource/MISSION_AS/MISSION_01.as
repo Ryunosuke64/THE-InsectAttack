@@ -54,7 +54,7 @@ void mission_main()
         ENEMY_TYPE::GIANT_ANT_Normal,
         VEC3(0.0f, 50.0f,0.0f),
         VEC3(0.0f),
-        400.0f,
+        100.0f,
         false
     );
 
@@ -64,7 +64,7 @@ void mission_main()
         VEC3(0.0f,30.0f, 0.0f),
         30.0f,
         130,
-        300.0f,
+        100.0f,
         false
     );
     wave++;
