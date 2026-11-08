@@ -22,6 +22,7 @@ public:
 	struct ImpactDamageParam
 	{
 		std::string impactEffectTag;		// 衝突時のエフェクト
+		std::string impactSoundTag;			// 衝突時の音
 		VECTOR3::VEC3 impactEffectScale		// 衝突時のエフェクトの大きさ
 			= VECTOR3::VEC3();	
 		float damageValue = 0.0f;			// ダメージ
@@ -41,7 +42,7 @@ public:
 	void Start(RendererEngine& renderer) override;	// 初期化
 	void Update(RendererEngine& renderer) override; // 更新
 	void OnCollisionEnter(const PhysicsData::CollisionInfo& _other)override;	// 衝突時処理
-	
+	bool get_IsImpactEnabled()const { return m_IsImapctEnabled; }
 	void set_ImpactDamageParam(const ImpactDamageParam& _param) { m_Param = _param; };
 	void set_ImpactEnabled(bool _flag) { m_IsImapctEnabled = _flag; };
 };

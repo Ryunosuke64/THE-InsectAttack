@@ -53,7 +53,7 @@ void V_Durga_LiftState::OnEnter(class VehicleController* pOwner)
 	unsigned mask = 
 		UINT_CAST(COLLISION_CATEGORY::ENEMY)|
 		UINT_CAST(COLLISION_CATEGORY::PLAYER)|
-		UINT_CAST(COLLISION_CATEGORY::PROP)|
+		//UINT_CAST(COLLISION_CATEGORY::PROP)|
 		UINT_CAST(COLLISION_CATEGORY::DESTRUCTION_BUILDING);
 
 	//
@@ -114,6 +114,11 @@ void V_Durga_LiftState::OnEnter(class VehicleController* pOwner)
 			}
 		}
 	}
+
+	// ****************************************************
+	//				 駆動音サウンド再生
+	// ****************************************************
+	Master::m_pSoundManager->Play_3D("vehicle.OperatingNoise01", grabCollisionSpherePos, 500.0f);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -126,6 +131,8 @@ void V_Durga_LiftState::OnExit(class VehicleController* pOwner)
 {
 	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(true);
 	m_pLiftTargets.clear();
+
+	m_IsPlayGrabSound = false;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -163,7 +170,8 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 		VEC3 handR_Pos = VEC3::FromXMVECTOR(handWorld_R.r[3]);
 		VEC3 handL_Pos = VEC3::FromXMVECTOR(handWorld_L.r[3]);
 		VEC3 handCenterPos = (handR_Pos + handL_Pos) * 0.5f;	// 左右の手のちょうど真ん中の位置に合わせる
-		VEC3 targetPos = handCenterPos;
+		VEC3 targetPos/* = handCenterPos*/;
+		float ease = (animProcTime/ AnimDuration);
 
 		//
 		// 持ち上げられているオブジェクトたち
@@ -175,10 +183,25 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 				auto rb = targetObj->get_Component<RigidBody>();
 				if (rb)
 				{
+					VEC3 crntPos = rb->GetWorldPotision();
+					targetPos = VEC3::Lerp(crntPos, handCenterPos, ease);
 					//rb->SetEnabled(false);
 					rb->SetWorldTransform(targetPos, VEC4(0.0f, 0.0f, 0.0f, 1.0f));
 				}
 			}
+		}
+
+		//
+		// 既に再生済みなら再生しない
+		//
+		if (!m_IsPlayGrabSound)
+		{
+			// ****************************************************
+			//				 掴みサウンド再生
+			// ****************************************************
+			Master::m_pSoundManager->Play_3D("vehicle.Grab01", handCenterPos, 500.0f);
+
+			m_IsPlayGrabSound = true;
 		}
 	}
 
@@ -199,8 +222,25 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 	//=========================================================================================
 	if (AnimDuration - 0.1f <= animProcTime)
 	{
+		// ポーズを維持
 		pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(true);
 
+		//=========================================================================================
+		//	投げつけ入力が押されたら、投げつけステートへ
+		//=========================================================================================
+		if (input.isThrow)
+		{
+			return DURGA_V_STATE::DURGA_V_STATE_THROW;
+		}
+		//=========================================================================================
+		//	移動、回転入力が押されたら、持ち上げ中移動ステートへ
+		//=========================================================================================
+		else if (input.CheckMove() || input.CheckRot())
+		{
+			return DURGA_V_STATE::DURGA_V_STATE_LIFT_MOVE;
+		}
+		
+		
 		// 何も掴めなかった
 		if (m_pLiftTargets.empty())
 		{
@@ -210,10 +250,6 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 		}
 	}
 
-	if (input.isThrow)
-	{
-		return DURGA_V_STATE::DURGA_V_STATE_THROW;
-	}
 
 	return DURGA_V_STATE::DURGA_V_STATE_LIFT;
 }

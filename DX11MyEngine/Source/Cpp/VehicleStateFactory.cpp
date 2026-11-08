@@ -49,6 +49,8 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	std::shared_ptr<V_Durga_IdleState> pIdle = std::make_shared<V_Durga_IdleState>();					// ë“ã@
 	std::shared_ptr<V_Durga_MoveState> pMove = std::make_shared<V_Durga_MoveState>();					// à⁄ìÆ
 	std::shared_ptr<V_Durga_LiftState> pLift = std::make_shared<V_Durga_LiftState>();					// éùÇøè„Ç∞ÇÈ
+	std::shared_ptr<V_Durga_LiftIdleState> pLiftIdle = std::make_shared<V_Durga_LiftIdleState>();					// ìäÇ∞îÚÇŒÇ∑
+	std::shared_ptr<V_Durga_LiftMoveState> pLiftMove = std::make_shared<V_Durga_LiftMoveState>();					// ìäÇ∞îÚÇŒÇ∑
 	std::shared_ptr<V_Durga_ThrowState> pThrow = std::make_shared<V_Durga_ThrowState>();					// ìäÇ∞îÚÇŒÇ∑
 	//std::shared_ptr<Ant_AT_TrackingState> pATTracking = std::make_shared<Ant_AT_TrackingState>();		// AT í«è]
 	//std::shared_ptr<Ant_AT_MoveState> pATMove = std::make_shared<Ant_AT_MoveState>();					// AT à⁄ìÆ
@@ -61,6 +63,8 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	pIdle->set_Renderer(&_renderer);
 	pMove->set_Renderer(&_renderer);
 	pLift->set_Renderer(&_renderer);
+	pLiftIdle->set_Renderer(&_renderer);
+	pLiftMove->set_Renderer(&_renderer);
 	pThrow->set_Renderer(&_renderer);
 	//pATTracking->set_Renderer(&_renderer);
 	//pATMove->set_Renderer(&_renderer);
@@ -72,6 +76,8 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_IDLE, std::move(pIdle));
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_MOVE, std::move(pMove));
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_LIFT, std::move(pLift));
+	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_LIFT_IDLE, std::move(pLiftIdle));
+	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_LIFT_MOVE, std::move(pLiftMove));
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_THROW, std::move(pThrow));
 	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_TRACKING, std::move(pATTracking));
 	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_MOVE, std::move(pATMove));

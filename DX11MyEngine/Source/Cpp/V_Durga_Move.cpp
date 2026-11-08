@@ -72,8 +72,9 @@ void V_Durga_MoveState::OnEnter(class VehicleController* pOwner)
 	move->ClearSpeedEasing();
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
 
-	// アニメーションの設定
-	SetWalkAnimation(pOwner);
+	// 歩行アニメーションの設定
+	SetWalkAnimation(pOwner, m_CrntFootState, m_NextFootState, m_CrntAnimID);
+
 }
 
 //*---------------------------------------------------------------------------------------
@@ -134,14 +135,14 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 		horizontal += difference * (maxChange / distance);
 	}
 
-	Master::m_pDebugger->BeginDebugWindow("Durga", 0);
-	Master::m_pDebugger->DG_BulletTextValue("InputDir", m_InputDir);
-	Master::m_pDebugger->DG_BulletTextValue("maxChange", maxChange);
-	Master::m_pDebugger->DG_BulletTextValue("target", target);
-	Master::m_pDebugger->DG_BulletTextValue("difference", difference);
-	Master::m_pDebugger->DG_BulletTextValue("distance", distance);
-	Master::m_pDebugger->DG_BulletTextValue("isTest", isTest);
-	Master::m_pDebugger->EndDebugWindow();
+	//Master::m_pDebugger->BeginDebugWindow("Durga", 0);
+	//Master::m_pDebugger->DG_BulletTextValue("InputDir", m_InputDir);
+	//Master::m_pDebugger->DG_BulletTextValue("maxChange", maxChange);
+	//Master::m_pDebugger->DG_BulletTextValue("target", target);
+	//Master::m_pDebugger->DG_BulletTextValue("difference", difference);
+	//Master::m_pDebugger->DG_BulletTextValue("distance", distance);
+	//Master::m_pDebugger->DG_BulletTextValue("isTest", isTest);
+	//Master::m_pDebugger->EndDebugWindow();
 
 
 	// Y方向は維持し、重力やジャンプを消さない
@@ -310,7 +311,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 		else
 		{
 			// アニメーションの設定
-			SetWalkAnimation(pOwner);
+			SetWalkAnimation(pOwner, m_CrntFootState, m_NextFootState, m_CrntAnimID);
 
 
 			m_InputDir = VEC3(0.0f, 0.0f, 0.0f);
@@ -340,28 +341,32 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	return DURGA_V_STATE::DURGA_V_STATE_MOVE;
 }
 
-void V_Durga_MoveState::SetWalkAnimation(class VehicleController* pOwner)
+void V_Durga_MoveState::SetWalkAnimation(
+	class VehicleController* pOwner,
+	FOOT_STATE& outCrntFootState, 
+	FOOT_STATE& outNextFootState, 
+	VehicleData::DURGA_ANIM_ID& outCrnrAnimID)
 {
-	m_CrntFootState = m_NextFootState;
+	outCrntFootState = outNextFootState;
 
 	// 現在の足の踏み出し状況により、アニメーションを切り替える
 	// 次に踏み出す足の状態も入れる
-	switch (m_NextFootState)
+	switch (outNextFootState)
 	{
 	case V_Durga_MoveState::FOOT_STATE::FOOT_R_ENTER:
 		pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::WALK_F_ENTER));
-		m_NextFootState = FOOT_STATE::FOOT_L;
-		m_CrntAnimID = DURGA_ANIM_ID::WALK_F_ENTER;
+		outNextFootState = FOOT_STATE::FOOT_L;
+		outCrnrAnimID = DURGA_ANIM_ID::WALK_F_ENTER;
 		break;
 	case V_Durga_MoveState::FOOT_STATE::FOOT_R:
 		pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::WALK_F_R));
-		m_NextFootState = FOOT_STATE::FOOT_L;
-		m_CrntAnimID = DURGA_ANIM_ID::WALK_F_R;
+		outNextFootState = FOOT_STATE::FOOT_L;
+		outCrnrAnimID = DURGA_ANIM_ID::WALK_F_R;
 		break;
 	case V_Durga_MoveState::FOOT_STATE::FOOT_L:
 		pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::WALK_F_L));
-		m_NextFootState = FOOT_STATE::FOOT_R;
-		m_CrntAnimID = DURGA_ANIM_ID::WALK_F_L;
+		outNextFootState = FOOT_STATE::FOOT_R;
+		outCrnrAnimID = DURGA_ANIM_ID::WALK_F_L;
 		break;
 	default:
 		break;

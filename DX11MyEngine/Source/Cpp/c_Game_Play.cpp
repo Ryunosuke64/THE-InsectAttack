@@ -47,7 +47,7 @@ void c_Game_Play::OnEnter(SceneManager* pOwner)
     // ****************************************************
     //				ƒQ[ƒ€BGM‚ÌÄ¶
     // ****************************************************
-    Master::m_pSoundManager->PlayBGM("bgm.game_01");
+    Master::m_pSoundManager->PlayBGM("bgm.hangeki");
 
 
     //*****************************************************************************************

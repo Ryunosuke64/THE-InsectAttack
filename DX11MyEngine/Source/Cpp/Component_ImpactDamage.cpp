@@ -75,6 +75,7 @@ void ImpactDamage::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
     {
         return;
     }
+    VEC3 hitPos = _other.hitPoint;
     //*******************************************************
     // ダメージ適用可能時間内なら自身と相手にダメージを与える
     //*******************************************************
@@ -112,23 +113,31 @@ void ImpactDamage::OnCollisionEnter(const PhysicsData::CollisionInfo& _other)
         std::shared_ptr<Camera3D> camera;
         if (camera = Master::m_pDataManager->get_CameraComponent().lock())
         {
-            camera->DistanceDecay(3.0f, VEC3(0.1f, 0.2f, 0.1f), _other.hitPoint, 500.0f);
+            camera->DistanceDecay(3.0f, VEC3(0.1f, 0.2f, 0.1f), hitPos, 500.0f);
         }
-    }
 
-    //********************************************************************************
-    // 衝突エフェクトを再生する
-    //********************************************************************************
-    if (!m_Param.impactEffectTag.empty())
-    {
-        VEC3 normal = _other.hitNormal;
-        VEC3 pos = _other.hitPoint;
-        VEC3 effectRotAxis = VEC3(0.0f);
-        float effectRotAngle = 0;
-        Tool::GetRotationFromNormal(normal, VEC3(0.0f, 0.0f, -1.0f), effectRotAxis, effectRotAngle);
-        int effectHandle = Master::m_pEffectManager->PlayEffect(m_Param.impactEffectTag, pos);
-        Master::m_pEffectManager->SetRotationEffect(effectHandle, effectRotAxis, effectRotAngle);
-        Master::m_pEffectManager->SetScaleEffect(effectHandle, m_Param.impactEffectScale);
+
+        //********************************************************************************
+        // 衝突エフェクトを再生する
+        //********************************************************************************
+        if (!m_Param.impactEffectTag.empty())
+        {
+            VEC3 normal = _other.hitNormal;
+            VEC3 effectRotAxis = VEC3(0.0f);
+            float effectRotAngle = 0;
+            Tool::GetRotationFromNormal(normal, VEC3(0.0f, 0.0f, -1.0f), effectRotAxis, effectRotAngle);
+            int effectHandle = Master::m_pEffectManager->PlayEffect(m_Param.impactEffectTag, hitPos);
+            Master::m_pEffectManager->SetRotationEffect(effectHandle, effectRotAxis, effectRotAngle);
+            Master::m_pEffectManager->SetScaleEffect(effectHandle, m_Param.impactEffectScale);
+        }
+
+        //********************************************************************************
+        // 衝突サウンドを再生する
+        //********************************************************************************
+        if (!m_Param.impactSoundTag.empty())
+        {
+            Master::m_pSoundManager->Play_RandPitch_3D(m_Param.impactSoundTag, hitPos, 500.0f, 100.0f);
+        }
     }
 
 }

@@ -2,6 +2,7 @@
 #include "DestructionBehavior_Header.h"
 #include "Component_RigidBody.h"
 #include "Component_MapObject.h"
+#include "Component_ImpactDamage.h"
 #include "MapObjectFactory.h"
 
 using namespace VECTOR3;
@@ -55,6 +56,11 @@ void ReplaceModelDestructionBehavior::Start(
         MapObjectFactory::BuildingDebrisGenerateInfo info;
         info.ang_velocity = rigidBody->GetAngularVelocity();    // Œ»Ý‚Ì‘¬“x‚ðˆø‚«Œp‚®
         info.lin_velocity = rigidBody->GetLinearVelocity();
+        auto impactDamage = object->get_Component<ImpactDamage>();
+        if (impactDamage)
+        {
+            info.isImpactDamage = impactDamage->get_IsImpactEnabled();
+        }
         if (!MapObjectFactory::CreateBuildingDebris(assetID, transformData, info))
         {
             assert(false);

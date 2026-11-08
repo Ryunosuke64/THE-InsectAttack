@@ -201,7 +201,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     Master::m_pMapManager->LoadPhysicsDataPreset("Resource/MapData/MAP_OBJECT_PHYSICS_PRESET.json");
     Master::m_pMapManager->LoadMapObjectAssetDataAll("Resource/MapData/MAP_OBJECT_ASSETS.json");
     Master::m_pMapManager->LoadBuildingFragmentData("Resource/MapData/BUILDING_FRAGMENT_DATA.json");
-    Master::m_pMapManager->CreateMap("Resource/MapData/MAP_MOUNTAINS_A.json");
+    //Master::m_pMapManager->CreateMap("Resource/MapData/MAP_MOUNTAINS_A.json");
+    Master::m_pMapManager->CreateMap("Resource/MapData/MAP_CITY_A.json");
 
     //
     //リジッドボディテスト
@@ -283,8 +284,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         /* 地面の生成 */
         {
             // マテリアル取得
-            auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
-            //auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
+            //auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
+            auto matPtr = Master::m_pResourceManager->FindMaterial("Block");
 
             SetupMaterialInfo matInfo[1];
             matInfo[0].Index = 0;
@@ -293,7 +294,8 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
             model.pRenderer = m_pRenderer;
             model.ObjTag = "Ground";
             model.IsAnim = false;
-            model.LODModels[0] = { "Resource/Model/MapObject/Building/Ground/Ground01.fbx", 0.0f };
+            //model.LODModels[0] = { "Resource/Model/MapObject/Building/Ground/Ground01.fbx", 0.0f };
+            model.LODModels[0] = { "Resource/Model/MapObject/Building/Ground/Ground_Plane_01.fbx", 0.0f };
             model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
             model.MatNum = 1;
             model.SetupMaterial = matInfo;
@@ -788,7 +790,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
 
     // プレイヤーに操作コンポーネントつける
-    VEC3 playerPos = VEC3(-90.0f, 3.0f, 90.0f);     // プレイヤーの初期位置を設定
+    VEC3 playerPos = VEC3(0.0f, 3.0f, -450.0f);     // プレイヤーの初期位置を設定
     auto playerRigidBody = playerObj->get_Component<RigidBody>();
     playerRigidBody->SetWorldTransform(playerPos, VEC4(0.0f, 0.0f, 0.0f, 1.0f));
     playerRigidBody->SetLinearVelocity(VEC3(0.0f, 0.0f, 0.0f));
@@ -891,7 +893,7 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     VehicleData::VehicleSpawnData durgaSpawnData;
     durgaSpawnData.type = VehicleData::VEHICLE_TYPE::DURGA;
     durgaSpawnData.hp = 1000.0f;
-    durgaSpawnData.position = VEC3(100.0f,10.0f,100.0f);
+    durgaSpawnData.position = VEC3(0.0f,2.0f,-400.0f);
     VehicleFactory::SpawnVehicle(durgaSpawnData);
 
 

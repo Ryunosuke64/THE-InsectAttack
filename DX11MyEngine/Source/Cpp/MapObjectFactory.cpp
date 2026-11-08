@@ -159,10 +159,11 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
         //
         auto impactDamage = generatedObject->add_Component<ImpactDamage>();
         ImpactDamage::ImpactDamageParam impactDamageParam;
-        impactDamageParam.damageActiveDuration = 10.0f;
+        impactDamageParam.damageActiveDuration = 5.0f;
         impactDamageParam.damageValue = 100.0f;
         impactDamageParam.impactEffectScale = VEC3(3.0f);
         impactDamageParam.impactEffectTag = "Dust_03";
+        impactDamageParam.impactSoundTag = "building.Impact01";
         impactDamage->set_ImpactDamageParam(impactDamageParam);
     }
 
@@ -373,11 +374,13 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
         //
         auto impactDamage = generatedObject->add_Component<ImpactDamage>();
         ImpactDamage::ImpactDamageParam impactDamageParam;
-        impactDamageParam.damageActiveDuration = 5.0f;
+        impactDamageParam.damageActiveDuration = 3.0f;
         impactDamageParam.damageValue = 100.0f;
         impactDamageParam.impactEffectScale = VEC3(1.0f);
         impactDamageParam.impactEffectTag = "Dust_03";
+        impactDamageParam.impactSoundTag = "building.Impact02";
         impactDamage->set_ImpactDamageParam(impactDamageParam);
+        impactDamage->set_ImpactEnabled(_info.isImpactDamage);
 
 
         auto modelResource = generatedObject->get_Component<ModelMeshResource>();

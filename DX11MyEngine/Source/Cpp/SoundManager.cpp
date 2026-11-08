@@ -289,12 +289,18 @@ bool SoundManager::InitXA2Sound(void)
         { "building.collapsing01", "Resource/Sound/SE/Building/Collapsing01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_COLLAPSING01) },
         { "building.collapsing02", "Resource/Sound/SE/Building/Collapsing02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_COLLAPSING02) },
         { "building.fall", "Resource/Sound/SE/Building/Fall.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_FALL) },
+        { "building.Impact01", "Resource/Sound/SE/Building/Impact01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_IMPACT01) },
+        { "building.Impact02", "Resource/Sound/SE/Building/Impact02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::BUILDING_IMPACT02) },
         // •ºŽm
         { "soldier.jump", "Resource/Sound/SE/Ranger/ƒpƒ“ƒ`‚ÌˆßŽC‚ê1.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_IN) },
         { "soldier.land", "Resource/Sound/SE/Ranger/ƒWƒƒƒ“ƒv‚Ì’…’n.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::SOLDIER_R_JUMP_LAND) },
         // ƒhƒ‹ƒK
         { "vehicle.Stomp", "Resource/Sound/SE/Vehicle/Stomp.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_STOMP) },
         { "vehicle.WalkingNoise", "Resource/Sound/SE/Vehicle/WalkingNoise.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_WALKINGNOIZE) },
+        { "vehicle.OperatingNoise01", "Resource/Sound/SE/Vehicle/OperatingNoise01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_OPERATINGNOIZE01) },
+        { "vehicle.OperatingNoise02", "Resource/Sound/SE/Vehicle/OperatingNoise02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_OPERATINGNOIZE02) },
+        { "vehicle.Grab01", "Resource/Sound/SE/Vehicle/Grab01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_GRAB01) },
+        { "vehicle.WindNoise01", "Resource/Sound/SE/Vehicle/WindNoise01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_WINDNOIZE01) },
         // “G
         { "enemy.ant.hit_01", "Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_HIT01) },
         { "enemy.ant.dead", "Resource/Sound/SE/Enemy/DSGNImpt_Impact High Spark 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_DEAD) },

@@ -42,6 +42,8 @@ namespace VehicleData
 		DURGA_V_STATE_IDLE,		// ‘Ò‹@
 		DURGA_V_STATE_MOVE,		// ˆÚ“®
 		DURGA_V_STATE_LIFT,		// Ž‚¿ã‚°‚é
+		DURGA_V_STATE_LIFT_IDLE,// Ž‚¿ã‚°’† ‘Ò‹@
+		DURGA_V_STATE_LIFT_MOVE,// Ž‚¿ã‚°’† ˆÚ“®
 		DURGA_V_STATE_THROW,	// “Š‚°‚é
 		DURGA_V_STATE_DOWN,		// “|‚ê‚é
 		DURGA_V_STATE_GETUP,	// —§‚¿ã‚ª‚é

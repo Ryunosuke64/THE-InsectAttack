@@ -15,6 +15,7 @@ public:
 	{
 		VECTOR3::VEC3 lin_velocity = VECTOR3::VEC3();	// 速度があれば引き継ぐ
 		VECTOR3::VEC3 ang_velocity = VECTOR3::VEC3();	// 速度があれば引き継ぐ
+		bool isImpactDamage = false;	// 衝撃ダメージを引き継ぐか
 	};
 
 public:

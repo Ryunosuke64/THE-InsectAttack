@@ -63,6 +63,7 @@ void Player_HPBar::Start(RendererEngine& renderer)
     spriteData._tag = "HPBar_Back";
     spriteData._imagePath = "Resource/Texture/UI/HPBar_Ver2_ai.png";
     spriteData._layerRank = 101;
+    spriteData._color = VEC4(1.0f, 1.0f, 1.0f, 0.5f);
     m_pPlayerHPBarBackSpriteObj = Master::m_pUIManager->GetSprite(renderer, rectData, spriteData);
     m_pPlayerHPBarBackSpriteRenderer = m_pPlayerHPBarBackSpriteObj->get_Component<SpriteRenderer>();
 
@@ -96,7 +97,7 @@ void Player_HPBar::Update(RendererEngine& renderer)
 
         float crntHP = player->get_Component<Health>()->get_CrntHP();
         float maxHP = player->get_Component<Health>()->get_MaxHP();
-        VEC4 color = VEC4(1.0f);
+        VEC4 color = VEC4(1.0f, 1.0f, 1.0f, 0.5f);
         VEC4 bodyColor = VEC4(0.0f, 1.0f, 1.0f, 1.0f);  // 水色
         VEC2 backSpritePos;
         VEC2 bodySpritePos;      
@@ -107,7 +108,7 @@ void Player_HPBar::Update(RendererEngine& renderer)
         if (m_PrevHP > crntHP)
         {
             m_Shaker.Start(SHAKE_HPBAR_DURATION, SHAKE_LENGTH);
-            color = VEC4(5.0f, 0.0f, 0.0f, 1.0f);
+            color = VEC4(1.0f, 0.0f, 0.0f, 1.0f);
         }
 
         m_Shaker.Update(deltaTime); // シェイク更新
@@ -130,7 +131,7 @@ void Player_HPBar::Update(RendererEngine& renderer)
         // HPが3割り未満になったら赤く点滅させる
         if (crntHP < maxHP * 0.3f){
             float red = sinf(m_Timer * DANGER_COLOR_FADE_SPEED) * 0.5f + 0.5f;  // 0～1
-            bodyColor = VEC4(red, 0.0f, 0.0f, 1.0f);
+            bodyColor = VEC4(red, 0.0f, 0.0f, 0.5f);
         }
         bodySpriteComp->set_Color(bodyColor);
 

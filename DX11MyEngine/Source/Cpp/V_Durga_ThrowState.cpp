@@ -34,13 +34,21 @@ void V_Durga_ThrowState::OnEnter(class VehicleController* pOwner)
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
 
 	
-	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
 
 	// 投げ飛ばしアニメーションに切り替える
-	pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::THROW), 0.1f);
+	pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::THROW));
+	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
 
 	// 持ち上げているオブジェクトを取得
 	m_pLiftObjects = pOwner->get_TargetObjects();
+
+	auto transform = pOwner->get_TransformComponent();
+	VEC3 crntPos = transform->get_VEC3ToPos();			// 現在の座標
+
+	// ****************************************************
+	//				 投げ飛ばしサウンド再生
+	// ****************************************************
+	Master::m_pSoundManager->Play_3D("vehicle.OperatingNoise02", crntPos, 500.0f);
 
 	m_IsThrow = false;
 }
@@ -146,6 +154,11 @@ int V_Durga_ThrowState::Update(class VehicleController* pOwner)
 					// 投げ終わった
 					m_IsThrow = true;
 				}
+
+				// ****************************************************
+				//				 投げ飛ばしサウンド再生
+				// ****************************************************
+				Master::m_pSoundManager->Play_3D("vehicle.WindNoise01", handCenterPos, 500.0f);
 			}
 		}
 	}

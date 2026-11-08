@@ -1038,7 +1038,7 @@
     <ClCompile Include="Source\Cpp\Component_MapObjectDebris.cpp">
       <Filter>ソース ファイル\Game\Component\Map</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Cpp\V_Durga_LiftState.cpp">
+    <ClCompile Include="Source\Cpp\V_Durga_Lift.cpp">
       <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
     <ClCompile Include="Source\Cpp\V_Durga_ThrowState.cpp">
@@ -1046,6 +1046,12 @@
     </ClCompile>
     <ClCompile Include="Source\Cpp\Component_ImpactDamage.cpp">
       <Filter>ソース ファイル\Game\Component\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_LiftMove.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_LiftIdle.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

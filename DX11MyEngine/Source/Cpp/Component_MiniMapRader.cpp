@@ -72,6 +72,7 @@ void MiniMapRader::Start(RendererEngine& renderer)
     spriteData._imagePath = "Resource/Texture/UI/Radar.png";
     spriteData._shaderType = SHADER_TYPE::FORWARD_UNLIT_UI_SPRITE;
     spriteData._layerRank = 100;
+    spriteData._color = VEC4(1.0f,1.0f,1.0f,0.5f);
     m_pRaderBackSpriteObj = Master::m_pUIManager->GetSprite(renderer, rectData, spriteData);
 
 }
