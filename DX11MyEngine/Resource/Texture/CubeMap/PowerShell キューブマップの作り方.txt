@@ -1,0 +1,5 @@
+[HDR/EXRから6枚の画像を作る]
+https://panoramagenerator.com/hdri-to-cubemap
+
+[キューブマップを6枚の画像から作る]
+texassemble cube -o skybox.dds pos_x.png neg_x.png pos_y.png neg_y.png pos_z.png neg_z.png
