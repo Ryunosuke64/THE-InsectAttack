@@ -17,9 +17,9 @@ using namespace PhysicsData;
 
 namespace
 {
-	constexpr float MOVE_ACCELERATION = 20.0f;	// 移動加速度
+	constexpr float MOVE_ACCELERATION = 32.0f;	// 移動加速度
 	constexpr float MOVE_DECELERATION = 110.0f;	// 移動減速
-	constexpr float MOVE_SPEED = 30.0f;	// 移動速度
+	constexpr float MOVE_SPEED = 50.0f;	// 移動速度
 }
 
 //*---------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void V_Durga_MoveState::OnEnter(class VehicleController* pOwner)
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
 
 	// 歩行アニメーションの設定
-	SetWalkAnimation(pOwner, m_CrntFootState, m_NextFootState, m_CrntAnimID);
+	//SetWalkAnimation(pOwner, m_CrntFootState, m_NextFootState, m_CrntAnimID);
 
 }
 
@@ -156,7 +156,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	// 入力がないときは姿勢を書き換えない
 	if (turnInput != 0.0f)
 	{
-		const float truenAngle = hasInput ? 10.0f : 25.0f; // 移動時は遅く、停止時は早く回転する
+		const float truenAngle = hasInput ? 15.0f : 35.0f; // 移動時は遅く、停止時は早く回転する
 		const float turnSpeed = DirectX::XMConvertToRadians(truenAngle); // 毎秒10度
 		const float deltaYaw = turnInput * turnSpeed * deltaTime;
 
@@ -178,6 +178,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 			result.x, result.y, result.z, result.w));
 	}
 
+
 	//m_InputDir = VEC3(0.0f);
 	
 	
@@ -189,7 +190,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	// 正規化
 	right = right.Normalize();
 	
-	if (walkAnimDuration - 0.67f <= animator->get_AnimProcTime() &&!m_IsDustEffectPlay)
+	if (walkAnimDuration - 0.5f <= animator->get_AnimProcTime() &&!m_IsDustEffectPlay)
 	{
 		m_InputDir = VEC3(0.0f, 0.0f, 0.0f);
 
@@ -304,7 +305,7 @@ int V_Durga_MoveState::Update(class VehicleController* pOwner)
 	{
 		m_IsDustEffectPlay = false;
 
-		if (!input.CheckMove())
+		if (!input.CheckMove() && !input.CheckRot())
 		{
 			return DURGA_V_STATE::DURGA_V_STATE_IDLE;
 		}

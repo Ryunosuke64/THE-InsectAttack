@@ -17,7 +17,7 @@ using namespace PhysicsData;
 
 namespace
 {
-	constexpr float MOVE_ACCELERATION = 20.0f;	// à⁄ìÆâ¡ë¨ìx
+	constexpr float MOVE_ACCELERATION = 26.0f;	// à⁄ìÆâ¡ë¨ìx
 	constexpr float MOVE_DECELERATION = 110.0f;	// à⁄ìÆå∏ë¨
 	constexpr float MOVE_SPEED = 22.0f;	// à⁄ìÆë¨ìx
 }
@@ -72,7 +72,7 @@ void V_Durga_LiftMoveState::OnEnter(class VehicleController* pOwner)
 	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
 
 	// éùÇøè„Ç∞ÉAÉjÉÅÅ[ÉVÉáÉìÇ…êÿÇËë÷Ç¶ÇÈ
-	pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::LIFT), 0.5f);
+	//pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::LIFT), 0.5f);
 
 	SetWalkAnimation(pOwner, m_CrntFootState, m_NextFootState, m_CrntAnimID);
 
@@ -150,14 +150,14 @@ int V_Durga_LiftMoveState::Update(class VehicleController* pOwner)
 		(input.isRotR ? 1.0f : 0.0f) -
 		(input.isRotL ? 1.0f : 0.0f);
 
+	const auto rotation = rigidBody->GetRotation();
 	// ì¸óÕÇ™Ç»Ç¢Ç∆Ç´ÇÕépê®ÇèëÇ´ä∑Ç¶Ç»Ç¢
 	if (turnInput != 0.0f)
 	{
-		const float truenAngle = hasInput ? 10.0f : 25.0f; // à⁄ìÆéûÇÕíxÇ≠ÅAí‚é~éûÇÕëÅÇ≠âÒì]Ç∑ÇÈ
+		const float truenAngle = hasInput ? 12.0f : 30.0f; // à⁄ìÆéûÇÕíxÇ≠ÅAí‚é~éûÇÕëÅÇ≠âÒì]Ç∑ÇÈ
 		const float turnSpeed = DirectX::XMConvertToRadians(truenAngle); // ñàïb10ìx
 		const float deltaYaw = turnInput * turnSpeed * deltaTime;
 
-		const auto rotation = rigidBody->GetRotation();
 		const auto currentQ = DirectX::XMVectorSet(
 			rotation.x, rotation.y, rotation.z, rotation.w);
 
@@ -186,7 +186,7 @@ int V_Durga_LiftMoveState::Update(class VehicleController* pOwner)
 	// ê≥ãKâª
 	right = right.Normalize();
 
-	if (walkAnimDuration - 0.67f <= animator->get_AnimProcTime() && !m_IsDustEffectPlay)
+	if (walkAnimDuration - 0.5f <= animator->get_AnimProcTime() && !m_IsDustEffectPlay)
 	{
 		m_InputDir = VEC3(0.0f, 0.0f, 0.0f);
 
@@ -301,7 +301,7 @@ int V_Durga_LiftMoveState::Update(class VehicleController* pOwner)
 	{
 		m_IsDustEffectPlay = false;
 
-		if (!input.CheckMove())
+		if (!input.CheckMove() && !input.CheckRot())
 		{
 			return DURGA_V_STATE::DURGA_V_STATE_LIFT_IDLE;
 		}
@@ -379,7 +379,7 @@ int V_Durga_LiftMoveState::Update(class VehicleController* pOwner)
 			if (rb)
 			{
 				VEC3 crntPos = rb->GetWorldPotision();
-				rb->SetWorldTransform(handCenterPos, VEC4(0.0f, 0.0f, 0.0f, 1.0f));
+				rb->SetWorldTransform(handCenterPos, rotation);
 			}
 		}
 	}

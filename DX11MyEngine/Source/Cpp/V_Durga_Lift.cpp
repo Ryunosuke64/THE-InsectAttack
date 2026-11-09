@@ -172,6 +172,7 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 		VEC3 handCenterPos = (handR_Pos + handL_Pos) * 0.5f;	// 左右の手のちょうど真ん中の位置に合わせる
 		VEC3 targetPos/* = handCenterPos*/;
 		float ease = (animProcTime/ AnimDuration);
+		const VEC4 rotation = rigidBody->GetRotation();
 
 		//
 		// 持ち上げられているオブジェクトたち
@@ -186,7 +187,7 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 					VEC3 crntPos = rb->GetWorldPotision();
 					targetPos = VEC3::Lerp(crntPos, handCenterPos, ease);
 					//rb->SetEnabled(false);
-					rb->SetWorldTransform(targetPos, VEC4(0.0f, 0.0f, 0.0f, 1.0f));
+					rb->SetWorldTransform(targetPos, rotation);
 				}
 			}
 		}

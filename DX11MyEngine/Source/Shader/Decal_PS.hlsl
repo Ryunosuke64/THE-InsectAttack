@@ -37,6 +37,7 @@ struct PS_OUT
 {
     float4 Albedo : SV_Target0;
     float4 Normal : SV_Target1;
+    float4 Emissive : SV_Target2;
 };
 
 // **************************************************************************
@@ -48,6 +49,7 @@ PS_OUT PSMain(PS_IN input)
     
     float4 albedColor = float4(0.0, 0.0, 0.0, 1.0);
     float4 normalColor = float4(0.0, 0.0, 0.0, 1.0);
+    float4 emissive = float4(0.0, 0.0, 0.0, 0.0);
     
     // スクリーン空間のUVを求める（デカールはボックスの為そのままでは使えない）
     float2 screenUV = input.Pos.xy / float2(cb_WindowWidth, cb_WindowHeight);
@@ -107,10 +109,13 @@ PS_OUT PSMain(PS_IN input)
     albedColor.a = albedTex.a;
     normalColor.rgb = decalWorldNormal.rgb;
     normalColor.a = normTex.a;
+    emissive.rgb = cb_EmissiveColor;
+    emissive.a = cb_EnvironmentReflectionStrength;
     
     // アルベドと法線出力
     output.Albedo = albedColor;
     output.Normal = normalColor;
+    output.Emissive = emissive;
     
     return output;
 }

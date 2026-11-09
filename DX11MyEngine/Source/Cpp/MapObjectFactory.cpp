@@ -160,7 +160,7 @@ bool MapObjectFactory::CreateMapObject(const Map::MapObjectData& data)
         auto impactDamage = generatedObject->add_Component<ImpactDamage>();
         ImpactDamage::ImpactDamageParam impactDamageParam;
         impactDamageParam.damageActiveDuration = 5.0f;
-        impactDamageParam.damageValue = 100.0f;
+        impactDamageParam.damageValue = 200.0f;
         impactDamageParam.impactEffectScale = VEC3(3.0f);
         impactDamageParam.impactEffectTag = "Dust_03";
         impactDamageParam.impactSoundTag = "building.Impact01";
@@ -368,14 +368,13 @@ bool MapObjectFactory::CreateBuildingDebris(const std::string& _assetID, const M
         //
         auto mapObjectDebris = generatedObject->add_Component<MapObjectDebris>();
 
-
         //
         // 衝撃ダメージコンポーネント追加
         //
         auto impactDamage = generatedObject->add_Component<ImpactDamage>();
         ImpactDamage::ImpactDamageParam impactDamageParam;
-        impactDamageParam.damageActiveDuration = 3.0f;
-        impactDamageParam.damageValue = 100.0f;
+        impactDamageParam.damageActiveDuration = 5.0f;
+        impactDamageParam.damageValue = 150.0f;
         impactDamageParam.impactEffectScale = VEC3(1.0f);
         impactDamageParam.impactEffectTag = "Dust_03";
         impactDamageParam.impactSoundTag = "building.Impact02";

@@ -507,6 +507,7 @@ void RenderPipeline::Decal_PathRender(RendererEngine &renderer)
     DX_RenderTarget* decalMRT[] = {
         m_pAlbedo_RT ,
         m_pNormal_RT,
+        m_pEmissive_RT,
     };
 
     // アルベドと法線に上書き（読み取り専用の深度ビューも渡す）

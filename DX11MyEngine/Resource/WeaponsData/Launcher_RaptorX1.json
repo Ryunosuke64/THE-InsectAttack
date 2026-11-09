@@ -48,7 +48,7 @@
     "hit" : 
     {
       "type" : "EXPLOSION",
-      "decalMaterialTag" : "Decal_BulletHole",
+      "decalMaterialTag" : "Decal_Explosion",
       "hitEffectTag" : "BulletHit_Flame",
       "explosionRadius" : 12.0,
       "explosionEffectTag" : "Explosion_01",

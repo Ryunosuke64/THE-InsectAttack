@@ -39,7 +39,7 @@
     "hit" : 
     {
       "type" : "EXPLOSION",
-      "decalMaterialTag" : "Decal_Ant_Splash",
+      "decalMaterialTag" : "Decal_Explosion",
       "hitEffectTag" : "BulletHit_Acid",
       "explosionRadius" : 10.0,
       "explosionEffectTag" : "Explosion_Acid_01",

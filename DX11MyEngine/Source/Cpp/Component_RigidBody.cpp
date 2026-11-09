@@ -308,7 +308,7 @@ void RigidBody::SetWorldTransform(const VECTOR3::VEC3& position, const VECTOR4::
 //*----------------------------------------------------------------------------------------
 bool RigidBody::ChangeMeshShape(PhysicsData::MESH_SHAPE_MODE shapeMode, float mass)
 {
-
+    return true;
 }
 
 //*---------------------------------------------------------------------------------------

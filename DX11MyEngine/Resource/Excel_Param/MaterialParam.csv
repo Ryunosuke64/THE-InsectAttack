@@ -31,6 +31,7 @@ LaserPointBillboard,5,1,1,1,1,1,1,1,50,1,0,0,0,Resource/Texture/Particle/Particl
 PointLight,1,1,1,1,1,1,1,1,50,0,0,0,0,Resource/Texture/Wall_W040.jpg,Resource/Texture/Wall_W040_n.png,-1,0,BACK
 Block,1,1,1,1,1,1,1,1,120,0,0,0,0,Resource/Texture/Materials/concrete_pavement_diff_2k.png,Resource/Texture/Materials/concrete_pavement_nor_dx_2k.png,-1,0,BACK
 Decal_BulletHole,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Texture/Particle/BulletHole.png,Resource/Texture/Particle/BulletHole_n.png,-1,0,BACK
+Decal_Explosion,0.25,0.25,0.25,1,1,1,1,1,0,0,0,0,0,Resource/Texture/Particle/UTDecal01.png,Resource/Texture/Particle/UTDecal01_n2.png,-1,0,BACK
 Decal_Ant_Splash,1,1,1,1,1,1,1,1,100,1.5,1.5,1.5,0,Resource/Texture/Particle/Ant_Hit1.png,Resource/Texture/Particle/Ant_Hit1_n.png,-1,1,BACK
 RocketLauncher,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/Weapon/RocketLauncher/Simple rocket launcher Tex.png,Resource/Texture/DefaultN_Map.png,-1,0,BACK
 Bullet_01,2,2,1,1,1,1,1,1,100,1,1,1,0,Resource/Texture/Particle/Particle04_bokashi_hard.png,-1,-1,1,BACK
@@ -55,3 +56,4 @@ DroneTypeA_Body,1,1,1,1,1,1,1,1,200,1,0.15,0.15,1,Resource/Model/Enemy/DroneType
 DroneTypeA_UnderBody,0.65,0.65,0.65,1,1,1,1,1,200,0.1,0.1,0.1,0.2,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern.jpg,Resource/Model/Enemy/DroneTypeA/textures/HoneycombPattern_normal.png,-1,0,BACK
 Rock_01,1,1,1,1,1,1,1,1,100,0.15,0.15,0.15,0,Resource/Model/MapObject/Rock/textures/aerial_rocks_04_diff_1k.png,Resource/Model/MapObject/Rock/textures/aerial_rocks_04_nor_dx_1k.png,-1,0,BACK
 Durga,1,1,1,1,1,1,1,1,200,0.2,0.2,0.2,0.15,Resource/Texture/metal_plate_02_diff_2k.jpg,Resource/Texture/metal_plate_02_diff_2k_n.png,-1,0,BACK
+Kaiju_A,1,1,1,1,1,1,1,1,100,0,0,0,0,Resource/Model/Enemy/Kaiju/TaorDiff.png,Resource/Model/Enemy/Kaiju/TaoNormal (1).png,Resource/Model/Enemy/Kaiju/TaoSpecular (1).png,0,BACK

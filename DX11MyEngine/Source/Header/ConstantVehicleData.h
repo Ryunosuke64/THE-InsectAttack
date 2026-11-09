@@ -45,6 +45,12 @@ namespace VehicleData
 		DURGA_V_STATE_LIFT_IDLE,// 持ち上げ中 待機
 		DURGA_V_STATE_LIFT_MOVE,// 持ち上げ中 移動
 		DURGA_V_STATE_THROW,	// 投げる
+
+		DURGA_V_STATE_FLIGHT_CHARGE,	// 飛行 - 飛行準備
+		DURGA_V_STATE_FLIGHT,			// 飛行 - 飛行中
+		DURGA_V_STATE_FLIGHT_FALL,		// 飛行 - 落下
+		DURGA_V_STATE_FLIGHT_LANDING,	// 飛行 - 着地
+
 		DURGA_V_STATE_DOWN,		// 倒れる
 		DURGA_V_STATE_GETUP,	// 立ち上がる
 		DURGA_V_STATE_DEAD,		// 死
@@ -56,16 +62,23 @@ namespace VehicleData
 	enum class DURGA_ANIM_ID
 	{
 		DOWN			= 0,	// 倒れる
-		GETUP			= 1,	// 起き上がる
-		LIFT			= 2,	// 持ち上げる
-		PUNCH_A			= 3,	// パンチ - A
-		THROW			= 4,	// 投げる
-		TPOSE			= 5,	// Tポーズ
-		WALK_F_ENTER	= 6,	// 歩き始め
-		WALK_F_L		= 7,	// 左足前進
-		WALK_F_L_LIFT	= 8,	// 左足前進 - 持ち上げ状態
-		WALK_F_R		= 9,	// 右足前進
-		WALK_F_R_LIFT	= 10,	// 右足前進 - 持ち上げ状態
+
+		FLIGHT			= 1,	// 飛行 - 飛行中
+		FLIGHT_CHARGE	= 2,	// 飛行 - 準備
+		FLIGHT_FALL		= 3,	// 飛行 - 落下
+		FLIGHT_LANDING	= 4,	// 飛行 - 着地
+
+		GETUP			= 5,	// 起き上がる
+		IDLE			= 6,	// 起き上がる
+		LIFT			= 7,	// 持ち上げる
+		PUNCH_A			= 8,	// パンチ - A
+		THROW			= 9,	// 投げる
+		TPOSE			= 10,	// Tポーズ
+		WALK_F_ENTER	= 11,	// 歩き始め
+		WALK_F_L		= 12,	// 左足前進
+		WALK_F_L_LIFT	= 13,	// 左足前進 - 持ち上げ状態
+		WALK_F_R		= 14,	// 右足前進
+		WALK_F_R_LIFT	= 15,	// 右足前進 - 持ち上げ状態
 	};
 
 	// ビークル出現時のセットアップデータ

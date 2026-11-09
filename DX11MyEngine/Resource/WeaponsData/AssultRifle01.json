@@ -40,7 +40,7 @@
     "hit" : 
     {
       "type" : "DIRECT",
-      "decalMaterialTag" : "Decal_BulletHole",
+      "decalMaterialTag" : "Decal_Explosion",
       "hitEffectTag" : "BulletHit_Standard",
       "environmentResponse" : "DEACTIVATE"
     },

@@ -139,6 +139,52 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         //    obj->set_IsUpdateAllowedDuringPause(false);
         //}
     }
+    /* 怪獣 モデルの生成 */
+    {
+        // マテリアル取得
+        auto matPtr1 = Master::m_pResourceManager->FindMaterial("Kaiju_A");
+
+        SetupMaterialInfo matInfo[1];
+        matInfo[0].Index = 0;
+        matInfo[0].pMaterialData = matPtr1;
+
+        CreateModelInfo model;
+        model.pRenderer = m_pRenderer;
+        model.LODModels[0] = { "Resource/Model/Enemy/Kaiju/Kaiju_A.fbx", 0.0f };
+        model.ObjTag = "Kaiju_A";
+        model.IsAnim = true;
+        model.MatNum = 1;
+        model.IsActive = true;
+        model.SetupMaterial = matInfo;
+        model.ShaderType = SHADER_TYPE::DEFERRED_STD_SKINNED_N;
+        VEC3 pos = VEC3(0.0f, 10.0f, -300.0f);
+
+        auto obj = MeshFactory::CreateModel(model);
+        obj->set_IsStatic(false);
+        obj->get_Component<MyTransform>()->set_Scale(1.0f, 1.0f, 1.0f);
+        obj->get_Component<MyTransform>()->set_Pos(pos);
+        obj->get_Component<MyTransform>()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
+
+        auto modelResource = obj->get_Component<ModelMeshResource>();
+
+        auto rb = obj->add_Component<RigidBody>();
+        auto collider = obj->add_Component<MeshCollider>();
+        collider->SetupModelData(modelResource->get_ModelData());
+        collider->set_IsStatic(false);
+        collider->set_IsConvex(true);
+        collider->set_CollisionCategory(COLLISION_CATEGORY::ENEMY);// 衝突カテゴリ
+        collider->set_SurfaceType(SURFACE_TYPE::ANT);
+
+        PhysicsData::RigidBodyDesc rbDesc;
+        rbDesc.mass = 100.0f;
+        rbDesc.pos = pos;
+        rbDesc.restitution = 0.1f;
+        rbDesc.owner = obj;         // オーナーオブジェクトの設定
+        rbDesc.collider = collider; // コライダーの設定
+        rbDesc.gravity = VEC3(0.0f, -9.9f, 0.0f);
+
+        rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
+    }
 
     {
         auto obj = GIGA_Engine::Instantiate3D(std::make_shared<GameObject>(), true);

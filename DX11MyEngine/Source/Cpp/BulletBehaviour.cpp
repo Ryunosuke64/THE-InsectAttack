@@ -28,11 +28,11 @@ using namespace BulletData;
 
 constexpr float DECAL_SIZE_FACTOR        = 7.0f;   // デカールの大きさの補正値（transformのスケールだと小さすぎるため）
 constexpr float DECAL_Z_AXIS_SIZE_FACTOR = 0.0f;   // デカールの奥行に加算する補正値
-constexpr float DECAL_LIFE_TIME          = 5.0f;   // デカールの生存時間
+constexpr float DECAL_LIFE_TIME          = 10.0f;  // デカールの生存時間
 constexpr float EFFECTL_SIZE_FACTOR      = 4.0f;   // エフェクトの大きさの補正値（transformのスケールだと小さすぎるため）
 
 constexpr float EXP_SHAKE_MAX_RANGE_EXPLOSION_SCALE_FACTOR  = 15.0f;    // カメラシェイク時、シェイクの最大距離を求める際に掛ける補正値
-constexpr float EXP_SHAKE_LENGTH_SCALE_FACTOR               = 0.004f;   // カメラシェイク時、シェイクの大きさを求める際に掛ける補正値
+constexpr float EXP_SHAKE_LENGTH_SCALE_FACTOR               = 0.008f;   // カメラシェイク時、シェイクの大きさを求める際に掛ける補正値
 constexpr float EXP_SHAKEDURATION                           = 1.0f;     // カメラシェイクの持続時間
 constexpr float EXP_EFFECT_SIZE_FACTOR                      = 0.12f;    // そのままだと、エフェクトが大きすぎるので
 
@@ -461,38 +461,41 @@ namespace BulletBehaviour
         float pitch = atan2(-hitNormal.y, xzLen);
         float angleZ = Tool::RandRange(0.0f, 6.14f);
 
-        // デカールの作成
+        //*****************************************************************************************
+        //						デカールの生成
+        //*****************************************************************************************
+        if (_hitData._decalMaterialTag.empty() == false)
         {
-            //auto matPtr = Master::m_pResourceManager->FindMaterial(_hitData._decalMaterialTag);
+            auto matPtr = Master::m_pResourceManager->FindMaterial(_hitData._decalMaterialTag);
 
-            //SetupMaterialInfo matInfo[1];
-            //matInfo[0].Index = 0;
-            //matInfo[0].pMaterialData = matPtr;
+            SetupMaterialInfo matInfo[1];
+            matInfo[0].Index = 0;
+            matInfo[0].pMaterialData = matPtr;
 
-            //CreateDecalInfo decal;
-            //decal.pRenderer = &_renderer;
-            //decal.Type = UTILITY_MESH_TYPE::CUBE;
-            //decal.MatNum = 1;
-            //decal.MaterialData = matInfo;
-            //decal.IsActive = false;
-            //decal.ShaderType = SHADER_TYPE::DEFERRED_STD_DECAL;
-            //decal.IsNormalMap = false;
-            //decal.IsDynamic = true;
+            CreateDecalInfo decal;
+            decal.pRenderer = &_renderer;
+            decal.Type = UTILITY_MESH_TYPE::CUBE;
+            decal.MatNum = 1;
+            decal.MaterialData = matInfo;
+            decal.IsActive = false;
+            decal.ShaderType = SHADER_TYPE::DEFERRED_STD_DECAL;
+            decal.IsNormalMap = false;
+            decal.IsDynamic = true;
 
-            //float expSize = _hitData._explosionRadius * 1.5f;   // 元が半径なので2倍に
-            //VEC3 scale;
-            //scale.x = expSize;
-            //scale.y = expSize;
-            //scale.z = expSize;
+            float expSize = _hitData._explosionRadius * 1.5f;   // 元が半径なので2倍に
+            VEC3 scale;
+            scale.x = expSize;
+            scale.y = expSize;
+            scale.z = expSize;
 
-            //auto obj = MeshFactory::CreateDecal(decal);
-            //obj->get_Component<DecalRenderer>()->Start(_renderer);
-            //obj->get_Transform().lock()->set_Pos(hitPoint);
-            //obj->get_Transform().lock()->set_Scale(scale);
-            //obj->get_Transform().lock()->set_RotateToRad(angleX, angleY, angleZ);
-            //obj->set_Tag("BulletHole");
-            //auto timer = obj->add_Component<TimerDestruction>();
-            //timer->set_LifeTime(DECAL_LIFE_TIME);  // 生存時間
+            auto obj = MeshFactory::CreateDecal(decal);
+            obj->get_Component<DecalRenderer>()->Start(_renderer);
+            obj->get_Transform().lock()->set_Pos(hitPoint);
+            obj->get_Transform().lock()->set_Scale(scale);
+            obj->get_Transform().lock()->set_RotateToRad(pitch, yaw, angleZ);
+            obj->set_Tag("BulletHole");
+            auto timer = obj->add_Component<TimerDestruction>();
+            timer->set_LifeTime(DECAL_LIFE_TIME);  // 生存時間
         }
 
         float expSize = _hitData._explosionRadius * 2.0f;   // 元が半径なので2倍に

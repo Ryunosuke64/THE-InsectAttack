@@ -19,6 +19,7 @@
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_AI_GunWeapon.h"
 #include "Component_3DCamera.h"
+#include "Component_LineRenderer.h"
 
 #include "Component_CapsuleCollider.h"
 #include "Component_SphereCollider.h"
@@ -206,7 +207,6 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     rbDesc.linearDamping = 0.5f;
     rbDesc.angularFactor = VEC3(0.0f, 1.0f, 0.0f);
     rbDesc.localScaling = 0.175f;
-
     rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
 
     //
