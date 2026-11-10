@@ -34,9 +34,7 @@ void V_Durga_LiftState::OnEnter(class VehicleController* pOwner)
 	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
 
 	// 持ち上げアニメーションに切り替える
-	pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::LIFT), 0.5f);
-
-
+	pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::LIFT), 0.5f,false);
 
 	auto animator = pOwner->get_AnimatorComponent();
 	auto transform = pOwner->get_TransformComponent();

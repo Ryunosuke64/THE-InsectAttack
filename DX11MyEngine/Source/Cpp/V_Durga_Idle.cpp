@@ -74,8 +74,9 @@ int V_Durga_IdleState::Update(class VehicleController* pOwner)
 	{
 		return DURGA_V_STATE::DURGA_V_STATE_LIFT;
 	}
-	if (input.isPunchA)
+	if (input.isFlight)
 	{
+		return DURGA_V_STATE::DURGA_V_STATE_FLIGHT_CHARGE;
 	}
 	auto rigidBody = pOwner->get_RigidBodyComponent();
 

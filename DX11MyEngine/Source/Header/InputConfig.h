@@ -69,6 +69,7 @@ enum class GAME_CONFIG
     DURGA_ROT_LEFT,         // ドルガ - 左回転
     DURGA_LIFT,             // ドルガ - 持ち上げる
     DURGA_THROW,            // ドルガ - 投げる
+    DURGA_FLIGHT,           // ドルガ - 飛行
 
     // 視点移動
     VIEW_UP,        

@@ -45,7 +45,7 @@ private:
 	float m_PlaybackSpeed = 1.0f;
 	float m_AimPitchAngle;
 	float m_AimYawAngle;
-
+	bool m_IsLooping;									 // ループするかどうか
 
 	// --- アニメーションブレンド用 ---
 	bool  m_IsBlending = false;           // ブレンド中かどうかのフラグ
@@ -65,7 +65,7 @@ public:
 	void Draw(RendererEngine& renderer)override;
 
 	void PlayAnim(float _time);	// アニメーションの再生
-	void ChangeAnim(int newAnimIndex, float blendDurationInSeconds = 0.0f);
+	void ChangeAnim(int newAnimIndex, float blendDurationInSeconds = 0.0f, bool looping = true);
 	void SeekAnim(float timeInSeconds); // Cancel blending and seek within the looping clip.
 	void set_PlaybackSpeed(float speed);
 	void set_IsPlaybackPaused(bool paused) { m_IsPlaybackPaused = paused; }
@@ -84,6 +84,7 @@ public:
 	void set_PrevAnimIndex(int idx) { m_PrevAnimIndex = idx; };			// 前のアニメーションインデックスとして設定
 	void set_IsAnim(bool f) { m_IsAnimationFlag = f; };					// アニメーションフラグ
 	void set_IsAnimationLODEnabled(bool f) { m_IsAnimationLODEnabled = f; };// アニメーションLODを有効にするか
+	void set_IsLooping(bool f) { m_IsLooping = f; };					// アニメーションをループさせるか
 
 	float get_AnimProcTime()const { return m_AnimProcTime; }
 	float get_ShadowAnimProcTime()const { return m_ShadowAnimProcTime; }
@@ -91,6 +92,7 @@ public:
 	int get_PrevAnimIndex()const { return m_PrevAnimIndex; }
 	bool get_IsAnim()const { return m_IsAnimationFlag; };
 	bool get_IsAnimationLODEnabled()const { return m_IsAnimationLODEnabled; };
+	bool get_IsLooping()const { return m_IsLooping; };
 	bool get_IsCrntAnimationHasFinished()const;		// アニメーションが終了しているか
 
 

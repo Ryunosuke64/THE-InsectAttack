@@ -73,7 +73,7 @@ void V_Durga_MoveState::OnEnter(class VehicleController* pOwner)
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
 
 	// 歩行アニメーションの設定
-	//SetWalkAnimation(pOwner, m_CrntFootState, m_NextFootState, m_CrntAnimID);
+	SetWalkAnimation(pOwner, m_CrntFootState, m_NextFootState, m_CrntAnimID);
 
 }
 

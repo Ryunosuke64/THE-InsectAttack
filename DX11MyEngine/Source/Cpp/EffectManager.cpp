@@ -132,6 +132,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/Dust_02.efkefc", "Dust_02");
     LoadEffect(u"Resource/Effect/Dust_03.efkefc", "Dust_03");
     LoadEffect(u"Resource/Effect/Fragment_Building_01.efkefc", "Fragment_Building_01");
+    LoadEffect(u"Resource/Effect/JetSpray.efkefc", "JetSpray");
 
     return true;
 }

@@ -4,13 +4,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-//						アリのステートのヘッダクラス定義をまとめたヘッダ
+//						ドルガのステートのヘッダクラス定義をまとめたヘッダ
 // 
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// PT:巡回中
-// AT:戦闘態勢
 
 // ***************************************************************************************
 // ---------------------------------------------------------------------------------------
@@ -174,6 +171,89 @@ private:
 	DirectX::XMMATRIX m_HandL_LocalMat;			// 右手のローカル座標
 	VECTOR3::VEC3 m_GrabOffset;					// 掴む対象のオフセット座標
 	bool m_IsThrow = false;	// 投げ終わったか
+public:
+	void OnEnter(class VehicleController* pOwner) override;
+	void OnExit(class VehicleController* pOwner)override;
+	int Update(class VehicleController* pOwner)override;
+};
+
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:V_Durga_FlightChargeState Class --- */
+//
+//  ★継承：IState ★
+//
+// 【?】飛行 - 飛行準備ステート
+//		
+// ***************************************************************************************
+class V_Durga_FlightChargeState : public IState<class VehicleController>
+{
+private:
+	float m_ElapsedTime = 0.0f;	// 経過時間
+	// ジェット噴射エフェクトの左右ハンドル
+	int m_JetEffectHandleR = -1;	
+	int m_JetEffectHandleL = -1;
+	DirectX::XMMATRIX m_JetR_LocalMat;			
+	DirectX::XMMATRIX m_JetL_LocalMat;
+public:
+	void OnEnter(class VehicleController* pOwner) override;
+	void OnExit(class VehicleController* pOwner)override;
+	int Update(class VehicleController* pOwner)override;
+};
+
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:V_Durga_FlightState Class --- */
+//
+//  ★継承：IState ★
+//
+// 【?】飛行 - 飛行中ステート
+//		
+// ***************************************************************************************
+class V_Durga_FlightState : public IState<class VehicleController>
+{
+private:
+
+public:
+	void OnEnter(class VehicleController* pOwner) override;
+	void OnExit(class VehicleController* pOwner)override;
+	int Update(class VehicleController* pOwner)override;
+};
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:V_Durga_FlightFallState Class --- */
+//
+//  ★継承：IState ★
+//
+// 【?】飛行 - 落下
+//		
+// ***************************************************************************************
+class V_Durga_FlightFallState : public IState<class VehicleController>
+{
+private:
+
+public:
+	void OnEnter(class VehicleController* pOwner) override;
+	void OnExit(class VehicleController* pOwner)override;
+	int Update(class VehicleController* pOwner)override;
+};
+
+// ***************************************************************************************
+// ---------------------------------------------------------------------------------------
+/* --- @:V_Durga_FlightLandingState Class --- */
+//
+//  ★継承：IState ★
+//
+// 【?】飛行 - 着地
+//		
+// ***************************************************************************************
+class V_Durga_FlightLandingState : public IState<class VehicleController>
+{
+private:
+
 public:
 	void OnEnter(class VehicleController* pOwner) override;
 	void OnExit(class VehicleController* pOwner)override;

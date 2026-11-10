@@ -20,6 +20,7 @@ m_AnimationTime(0.0),
 m_CurrentAnimIndex(-1),
 m_IsAnimationFlag(false),
 m_IsAnimationLODEnabled(true),
+m_IsLooping(true),
 m_AnimProcTime(0.0),
 m_AnimationLODFrameCounter(0),
 m_ShadowAnimProcTime(0.0)/*,
@@ -147,16 +148,19 @@ void SkinnedMeshAnimator::Draw(RendererEngine &renderer)
 //*----------------------------------------------------------------------------------------
 void SkinnedMeshAnimator::PlayAnim(float _time)
 {
-    if (m_IsAnimationFlag && !m_IsPlaybackPaused && std::isfinite(_time) && _time >= 0.0f) {
+    if (m_IsAnimationFlag && !m_IsPlaybackPaused && std::isfinite(_time) && _time >= 0.0f) 
+    {
         _time *= m_PlaybackSpeed;
         m_AnimProcTime += _time;
 
-        if (m_IsBlending) {
+        if (m_IsBlending) 
+        {
             m_PrevAnimProcTime += _time; // 前のアニメも内部的に進める
             m_BlendTime += _time;
 
             // ブレンド終了判定
-            if (m_BlendTime >= m_BlendDuration) {
+            if (m_BlendTime >= m_BlendDuration) 
+            {
                 m_IsBlending = false;
             }
         }
@@ -229,9 +233,24 @@ void SkinnedMeshAnimator::BoneTransformsUpdate(RendererEngine &renderer, float t
 
         // アニメーションの現在の再生時間を剰余演算で求める
         /* 現在の再生時間 ＝ ティック単位時間 ％ アニメーションの持続時間 */
-        if (m_Animations[animIdx]->Duration > 0.0)
+        double duration = m_Animations[animIdx]->Duration;
+        if (duration > 0.0)
         {
-            animTimeTicks = static_cast<float>(fmod(timeInTicks, m_Animations[animIdx]->Duration));
+            /* 
+            * ループ再生 
+            */
+            if (m_IsLooping)
+            {
+                animTimeTicks = static_cast<float>(fmod(timeInTicks, duration));
+            }
+            /* 
+            * 最後のフレームを維持する 
+            */
+            else
+            {
+                animTimeTicks = static_cast<float>(std::clamp(static_cast<double>(timeInTicks), 0.0, duration));
+
+            }
         }
     }
 
@@ -605,6 +624,10 @@ DirectX::XMVECTOR SkinnedMeshAnimator::CalcInterpolatedScalingVec(float animTime
     if (pNodeAnim->ScalingKeys.size() < 2) {
         return XMVectorSet(pNodeAnim->ScalingKeys[0].Value.x, pNodeAnim->ScalingKeys[0].Value.y, pNodeAnim->ScalingKeys[0].Value.z, 0.0f);
     }
+    if (animTimeTicks >= pNodeAnim->ScalingKeys.back().Time) {
+        const auto& value = pNodeAnim->ScalingKeys.back().Value;
+        return XMVectorSet(value.x, value.y, value.z, 0.0f);
+    }
     VEC3 startScl{};
     VEC3 endScl{};
     UINT sclIndex = FindScaling(animTimeTicks, pNodeAnim);
@@ -627,6 +650,11 @@ DirectX::XMVECTOR SkinnedMeshAnimator::CalcInterpolatedRotationQuat(float animTi
     if (pNodeAnim->RotationKeys.size() < 2) {
         return XMVectorSet(pNodeAnim->RotationKeys[0].Value.x, pNodeAnim->RotationKeys[0].Value.y, pNodeAnim->RotationKeys[0].Value.z, pNodeAnim->RotationKeys[0].Value.w);
     }
+    if (animTimeTicks >= pNodeAnim->RotationKeys.back().Time) {
+        const auto& value = pNodeAnim->RotationKeys.back().Value;
+        return XMQuaternionNormalize(
+            XMVectorSet(value.x, value.y, value.z, value.w));
+    }
     aiQuaternion startRot{};
     aiQuaternion endRot{};
     UINT rotIndex = FindRotation(animTimeTicks, pNodeAnim);
@@ -648,6 +676,10 @@ DirectX::XMVECTOR SkinnedMeshAnimator::CalcInterpolatedPositionVec(float animTim
 {
     if (pNodeAnim->PositionKeys.size() < 2) {
         return XMVectorSet(pNodeAnim->PositionKeys[0].Value.x, pNodeAnim->PositionKeys[0].Value.y, pNodeAnim->PositionKeys[0].Value.z, 0.0f);
+    }
+    if (animTimeTicks >= pNodeAnim->PositionKeys.back().Time) {
+        const auto& value = pNodeAnim->PositionKeys.back().Value;
+        return XMVectorSet(value.x, value.y, value.z, 0.0f);
     }
     VEC3 startScl{};
     VEC3 endScl{};
@@ -697,9 +729,10 @@ void SkinnedMeshAnimator::CrossFadeAnim(int newAnimIndex, float blendDurationInS
 //* 
 //* [返値] なし 
 //*----------------------------------------------------------------------------------------
-void SkinnedMeshAnimator::ChangeAnim(int newAnimIndex, float blendDurationInSeconds)
+void SkinnedMeshAnimator::ChangeAnim(int newAnimIndex, float blendDurationInSeconds, bool looping )
 {
-    // Selection is also allowed while animation evaluation is disabled.
+    m_IsLooping = looping;
+
     CrossFadeAnim(newAnimIndex, blendDurationInSeconds);
 }
 

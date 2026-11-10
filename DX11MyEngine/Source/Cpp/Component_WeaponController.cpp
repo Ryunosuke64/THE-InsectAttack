@@ -409,6 +409,7 @@ void WeaponController::SetupWeaponSprite(RendererEngine& renderer)
 	spriteData._tag = "WeaponGage_1";
 	spriteData._imagePath = "Resource/Texture/UI/BulletGage.png";
 	spriteData._layerRank = 101;
+	spriteData._color = VEC4(1.0f, 1.0f, 1.0f, 0.8f);
 	m_pBulletGageSpriteObjArray.push_back(Master::m_pUIManager->GetSprite(renderer, rectData, spriteData));
 
 	// Œã‚ë
@@ -454,7 +455,7 @@ void WeaponController::SetupReloadSprite(RendererEngine& renderer)
 	rectData._pivot = VEC2(0.0f, 0.0f);		// ƒsƒ{ƒbƒg‚Í¶ã
 	spriteData._tag = "ReloadBar";
 	spriteData._layerRank = 108;
-	spriteData._color = VEC4(0.0f, 1.0f, 0.0f, 1.0f);
+	spriteData._color = VEC4(0.0f, 1.0f, 0.0f, 0.7f);
 	spriteData._shaderType = SHADER_TYPE::FORWARD_UNLIT_UI_NOTEXTURE_SPRITE;
 	m_pReloadBarSpriteObj = Master::m_pUIManager->GetSprite(renderer, rectData, spriteData);
 
@@ -466,7 +467,7 @@ void WeaponController::SetupReloadSprite(RendererEngine& renderer)
 	rectData._pivot = VEC2(0.5f, 0.5f);
 	spriteData._tag = "ReloadBarBack";
 	spriteData._layerRank = 107;
-	spriteData._color = VEC4(0.05f, 0.05f, 0.05f, 0.8f);	// •”wŒi
+	spriteData._color = VEC4(0.05f, 0.05f, 0.05f, 0.5f);	// •”wŒi
 	spriteData._shaderType = SHADER_TYPE::FORWARD_UNLIT_UI_NOTEXTURE_SPRITE;
 	m_pReloadBarBackSpriteObj = Master::m_pUIManager->GetSprite(renderer, rectData, spriteData);
 

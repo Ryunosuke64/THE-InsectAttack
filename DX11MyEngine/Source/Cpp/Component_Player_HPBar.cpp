@@ -75,7 +75,7 @@ void Player_HPBar::Start(RendererEngine& renderer)
     spriteData._tag = "HPBar";
     spriteData._layerRank = 102;
     spriteData._shaderType = SHADER_TYPE::FORWARD_UNLIT_UI_NOTEXTURE_SPRITE;    // テクスチャなし
-    spriteData._color = VECTOR4::VEC4(0.0f, 1.0f, 1.0f, 1.0f);
+    spriteData._color = VECTOR4::VEC4(0.3f, 1.0f, 0.5f, 1.0f);
     m_pPlayerHPBarSpriteObj = Master::m_pUIManager->GetSprite(renderer, rectData, spriteData);
     m_pPlayerHPBarSpriteRenderer = m_pPlayerHPBarSpriteObj->get_Component<SpriteRenderer>();
 }
@@ -98,7 +98,7 @@ void Player_HPBar::Update(RendererEngine& renderer)
         float crntHP = player->get_Component<Health>()->get_CrntHP();
         float maxHP = player->get_Component<Health>()->get_MaxHP();
         VEC4 color = VEC4(1.0f, 1.0f, 1.0f, 0.5f);
-        VEC4 bodyColor = VEC4(0.0f, 1.0f, 1.0f, 1.0f);  // 水色
+        VEC4 bodyColor = VEC4(0.3f, 1.0f, 0.5f, 1.0f);  // 水色
         VEC2 backSpritePos;
         VEC2 bodySpritePos;      
         VEC2 crntHPTextPos;

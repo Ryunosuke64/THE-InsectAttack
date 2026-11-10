@@ -104,6 +104,7 @@ namespace VehicleData
 		bool isLift = false;		// ‚¿ã‚°‚é
 		bool isThrow = false;		// “Š‚°‚é
 		bool isPunchA = false;		// ƒpƒ“ƒ` - A
+		bool isFlight = false;		// ”òs
 
 		bool CheckMove()const {
 			return isMoveF || isMoveB || isMoveR || isMoveL;

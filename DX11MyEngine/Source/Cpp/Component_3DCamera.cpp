@@ -138,6 +138,8 @@ void Camera3D::LateUpdate(RendererEngine &renderer)
 	//m_FocusPoint = m_CameraPos + forward;
 	//m_LookDir = forward;
 
+	ResolveObstacleCollision(renderer);
+
 	// シェイクの適用
 	if (Master::m_pDataManager->get_UserConfigData()._isCameraShake)
 	{
@@ -145,8 +147,6 @@ void Camera3D::LateUpdate(RendererEngine &renderer)
 		m_Shaker.Update(deltaTime);
 		m_CameraPos = m_Shaker.Apply(m_CameraPos);
 	}
-
-	ResolveObstacleCollision(renderer);
 
 
 	// カメラの位置

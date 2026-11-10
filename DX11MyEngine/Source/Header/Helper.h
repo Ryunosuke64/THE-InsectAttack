@@ -318,7 +318,7 @@ namespace Tool
             if (_shakeTimer < _shakeDuration){
 
                 float t = _shakeTimer / _shakeDuration;
-                float easeOut = 1.0f - Tool::Easing::EaseOutQuad(t);  // イージングで段々弱まるように
+                float easeOut = 1.0f - Tool::Easing::EaseOutSin(t);  // イージングで段々弱まるように
 
                 // 新しい揺れオフセットを生成
                 _shakeOffset.x =  (RandRange(-1.0f,1.0f) * _shaleStrength.x) * easeOut;

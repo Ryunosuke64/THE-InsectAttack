@@ -756,6 +756,10 @@ LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Source\Cpp\VertexBuffer.cpp" />
     <ClCompile Include="Source\Cpp\VertexShader.cpp" />
     <ClCompile Include="Source\Cpp\Component_WeaponController.cpp" />
+    <ClCompile Include="Source\Cpp\V_Durga_Flight.cpp" />
+    <ClCompile Include="Source\Cpp\V_Durga_FlightCharge.cpp" />
+    <ClCompile Include="Source\Cpp\V_Durga_FlightFall.cpp" />
+    <ClCompile Include="Source\Cpp\V_Durga_FlightLanding.cpp" />
     <ClCompile Include="Source\Cpp\V_Durga_Idle.cpp" />
     <ClCompile Include="Source\Cpp\V_Durga_LiftIdle.cpp" />
     <ClCompile Include="Source\Cpp\V_Durga_LiftMove.cpp" />

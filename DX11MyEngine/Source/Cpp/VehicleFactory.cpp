@@ -90,15 +90,18 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
 
 
     // ƒ}ƒeƒŠƒAƒ‹Žæ“¾
-    auto matPtr = Master::m_pResourceManager->FindMaterial("Durga");
-    SetupMaterialInfo matInfo[1];
+    auto matPtr1 = Master::m_pResourceManager->FindMaterial("Durga");
+    auto matPtr2 = Master::m_pResourceManager->FindMaterial("Durga");
+    SetupMaterialInfo matInfo[2];
     matInfo[0].Index = 0;
-    matInfo[0].pMaterialData = matPtr;
+    matInfo[0].pMaterialData = matPtr1;  
+    matInfo[1].Index = 1;
+    matInfo[1].pMaterialData = matPtr2;
     CreateModelInfo model;
     model.pRenderer = renderer;
     model.ObjTag = "Durga";
     model.IsAnim = true;
-    model.MatNum = 1;
+    model.MatNum = 2;
 
     model.SetupMaterial = matInfo;
     model.ShaderType = SHADER_TYPE::DEFERRED_STD_SKINNED_N;

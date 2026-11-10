@@ -58,7 +58,7 @@ public:
 	void ChangeState(const int _state);
 
 	/// <summary>アニメーションの変更 </summary>
-	void ChangeAnimation(const int _newId, float blendDurationInSeconds = 0.3f);
+	void ChangeAnimation(const int _newId, float blendDurationInSeconds = 0.3f, bool looping = true);
 
 	/* アニメーションの再生させるかどうか */
 	bool get_IsPlayAnim() const { return m_IsPlayAnim; }

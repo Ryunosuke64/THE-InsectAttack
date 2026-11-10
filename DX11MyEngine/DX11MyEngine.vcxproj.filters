@@ -1053,6 +1053,18 @@
     <ClCompile Include="Source\Cpp\V_Durga_LiftIdle.cpp">
       <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_FlightCharge.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_Flight.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_FlightFall.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Cpp\V_Durga_FlightLanding.cpp">
+      <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">

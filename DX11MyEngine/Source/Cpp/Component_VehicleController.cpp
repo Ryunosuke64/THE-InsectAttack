@@ -158,14 +158,14 @@ void VehicleController::ChangeState(const int _state)
 //*  _id : アニメーション番号
 //* [返値]なし
 //*----------------------------------------------------------------------------------------
-void VehicleController::ChangeAnimation(const int _newId, float blendDurationInSeconds)
+void VehicleController::ChangeAnimation(const int _newId, float blendDurationInSeconds, bool looping)
 {
 	// 同じまたは停止中なら返す
 	if (m_IsPlayAnim == false)
 	{
 		return;
 	}
-	m_pAnimatorComp->ChangeAnim(_newId, blendDurationInSeconds);
+	m_pAnimatorComp->ChangeAnim(_newId, blendDurationInSeconds, looping);
 }
 
 //*---------------------------------------------------------------------------------------
@@ -223,6 +223,7 @@ const VehicleData::VehicleInputResult VehicleController::CheckInputRobot()
 	result.isRotL = GetInput(GAME_CONFIG::DURGA_ROT_LEFT);
 	result.isLift = GetInput(GAME_CONFIG::DURGA_LIFT);
 	result.isThrow = GetInput(GAME_CONFIG::DURGA_THROW);
+	result.isFlight = GetInput(GAME_CONFIG::DURGA_FLIGHT);
 	return result;
 }
 //*---------------------------------------------------------------------------------------
