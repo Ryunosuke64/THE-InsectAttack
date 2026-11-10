@@ -191,6 +191,7 @@ class V_Durga_FlightChargeState : public IState<class VehicleController>
 {
 private:
 	float m_ElapsedTime = 0.0f;	// 経過時間
+	float m_SmokeEffectSpawnTimer = 0.0f;	// 煙エフェクト発生用タイマー
 	// ジェット噴射エフェクトの左右ハンドル
 	int m_JetEffectHandleR = -1;	
 	int m_JetEffectHandleL = -1;
@@ -215,6 +216,15 @@ public:
 class V_Durga_FlightState : public IState<class VehicleController>
 {
 private:
+	float m_ElapsedTime = 0.0f;	// 経過時間
+	float m_LightSpawnTimer = 0.0f;	// 光を発生させるためのタイマー
+	// ジェット噴射エフェクトの左右ハンドル
+	int m_JetEffectHandleR = -1;
+	int m_JetEffectHandleL = -1;
+	DirectX::XMMATRIX m_JetR_LocalMat;
+	DirectX::XMMATRIX m_JetL_LocalMat;
+	VECTOR3::VEC3 m_FlightDir = VECTOR3::VEC3();				// 飛行方向
+
 
 public:
 	void OnEnter(class VehicleController* pOwner) override;
@@ -234,7 +244,9 @@ public:
 class V_Durga_FlightFallState : public IState<class VehicleController>
 {
 private:
-
+	float m_ElapsedTime = 0.0f;	// 経過時間
+	float m_FootDustEffectSpawnTime = 0.0f;	// 経過時間
+	float m_OriginalFriction = 0.0f;	// 元の摩擦
 public:
 	void OnEnter(class VehicleController* pOwner) override;
 	void OnExit(class VehicleController* pOwner)override;
@@ -253,6 +265,7 @@ public:
 class V_Durga_FlightLandingState : public IState<class VehicleController>
 {
 private:
+	float m_ElapsedTime = 0.0f;	// 経過時間
 
 public:
 	void OnEnter(class VehicleController* pOwner) override;

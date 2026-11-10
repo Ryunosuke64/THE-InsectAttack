@@ -301,6 +301,9 @@ bool SoundManager::InitXA2Sound(void)
         { "vehicle.OperatingNoise02", "Resource/Sound/SE/Vehicle/OperatingNoise02.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_OPERATINGNOIZE02) },
         { "vehicle.Grab01", "Resource/Sound/SE/Vehicle/Grab01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_GRAB01) },
         { "vehicle.WindNoise01", "Resource/Sound/SE/Vehicle/WindNoise01.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_WINDNOIZE01) },
+        { "vehicle.Takeoff", "Resource/Sound/SE/Vehicle/Takeoff.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_TAKEOFF) },
+        { "vehicle.JetSpray", "Resource/Sound/SE/Vehicle/JetSpray.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_JETSPRAY) },
+        { "vehicle.Landing", "Resource/Sound/SE/Vehicle/Landing.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::VEHICLE_DURGA_LANDING) },
         // “G
         { "enemy.ant.hit_01", "Resource/Sound/SE/Enemy/DSGNImpt_Impact Smear Short 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_HIT01) },
         { "enemy.ant.dead", "Resource/Sound/SE/Enemy/DSGNImpt_Impact High Spark 04_RSCPC_HV.wav", SOUND_TYPE::SE, SOUND_ID_TO_INT(SOUND_ID::ENEMY_ANT_DEAD) },

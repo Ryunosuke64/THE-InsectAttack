@@ -20,7 +20,15 @@ void V_Durga_FlightLandingState::OnEnter(class VehicleController* pOwner)
 {
 	// 移動ベクトルは0
 	pOwner->set_MoveSpeed(0.0f);
-	pOwner->set_IsPlayAnim(false);
+
+	// アニメーションON
+	pOwner->set_IsPlayAnim(true);
+
+	// 飛行-着地アニメーションに変更
+	pOwner->ChangeAnimation(INT_CAST(DURGA_ANIM_ID::FLIGHT_LANDING), 0.3f, false);
+	pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
+	
+	m_ElapsedTime = 0.0f;
 }
 
 //*---------------------------------------------------------------------------------------
@@ -46,8 +54,17 @@ int V_Durga_FlightLandingState::Update(class VehicleController* pOwner)
 	auto animator = pOwner->get_AnimatorComponent();
 	auto transform = pOwner->get_TransformComponent();
 	VEC3 crntPos = transform->get_VEC3ToPos();			// 現在の座標
-	const float AnimDuration = animator->get_AnimDurationSeconds(INT_CAST(DURGA_ANIM_ID::WALK_F_ENTER));	// 歩行アニメーションの再生時間を取得
 	auto rigidBody = pOwner->get_RigidBodyComponent();
 
-	return DURGA_V_STATE::DURGA_V_STATE_FLIGHT_CHARGE;
+	//=========================================================================================
+	//
+	//			アニメーションが終了していれば、待機ステートへ
+	//
+	//=========================================================================================
+	if (animator->get_IsCrntAnimationHasFinished())
+	{
+		return DURGA_V_STATE::DURGA_V_STATE_IDLE;
+	}
+
+	return DURGA_V_STATE::DURGA_V_STATE_FLIGHT_LANDING;
 }

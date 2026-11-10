@@ -53,11 +53,9 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	std::shared_ptr<V_Durga_LiftMoveState> pLiftMove = std::make_shared<V_Durga_LiftMoveState>();				// 持ち上げ移動
 	std::shared_ptr<V_Durga_ThrowState> pThrow = std::make_shared<V_Durga_ThrowState>();						// 投げ飛ばす
 	std::shared_ptr<V_Durga_FlightChargeState> pFlightCharge = std::make_shared<V_Durga_FlightChargeState>();	// 飛行準備
-	//std::shared_ptr<Ant_AT_TrackingState> pATTracking = std::make_shared<Ant_AT_TrackingState>();		// AT 追従
-	//std::shared_ptr<Ant_AT_MoveState> pATMove = std::make_shared<Ant_AT_MoveState>();					// AT 移動
-	//std::shared_ptr<Ant_AT_AttackAcidState> pATAttackAcid = std::make_shared<Ant_AT_AttackAcidState>();	// AT 酸攻撃
-	//std::shared_ptr<Ant_AT_HitStunState> pATHitStun = std::make_shared<Ant_AT_HitStunState>();					// AT死亡
-	//std::shared_ptr<Ant_AT_DeadState> pATDead = std::make_shared<Ant_AT_DeadState>();					// AT死亡
+	std::shared_ptr<V_Durga_FlightState> pFlight = std::make_shared<V_Durga_FlightState>();	// 飛行準備
+	std::shared_ptr<V_Durga_FlightFallState> pFlightFall = std::make_shared<V_Durga_FlightFallState>();	// 飛行準備
+	std::shared_ptr<V_Durga_FlightLandingState> pFlightLanding = std::make_shared<V_Durga_FlightLandingState>();	// 飛行準備
 
 	//描画インターフェイス設定
 	// add_childの中で子にもセットしてるのでaddする前に呼んで！
@@ -68,11 +66,9 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	pLiftMove->set_Renderer(&_renderer);
 	pThrow->set_Renderer(&_renderer);
 	pFlightCharge->set_Renderer(&_renderer);
-	//pATTracking->set_Renderer(&_renderer);
-	//pATMove->set_Renderer(&_renderer);
-	//pATAttackAcid->set_Renderer(&_renderer);
-	//pATHitStun->set_Renderer(&_renderer);
-	//pATDead->set_Renderer(&_renderer);
+	pFlight->set_Renderer(&_renderer);
+	pFlightFall->set_Renderer(&_renderer);
+	pFlightLanding->set_Renderer(&_renderer);
 
 	//ステートマシンに登録
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_IDLE, std::move(pIdle));
@@ -82,9 +78,7 @@ void VehicleStateFactory::CreateDurgaState(StateMachine<class VehicleController>
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_LIFT_MOVE, std::move(pLiftMove));
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_THROW, std::move(pThrow));
 	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_FLIGHT_CHARGE, std::move(pFlightCharge));
-	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_TRACKING, std::move(pATTracking));
-	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_MOVE, std::move(pATMove));
-	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_ATTACK_ACID, std::move(pATAttackAcid));
-	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_HIT_STUN, std::move(pATHitStun));
-	//_out.RegisterState(ANT_STATE::ANT_STATE_ACTIVE_DEAD, std::move(pATDead));
+	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_FLIGHT, std::move(pFlight));
+	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_FLIGHT_FALL, std::move(pFlightFall));
+	_out.RegisterState(DURGA_V_STATE::DURGA_V_STATE_FLIGHT_LANDING, std::move(pFlightLanding));
 }

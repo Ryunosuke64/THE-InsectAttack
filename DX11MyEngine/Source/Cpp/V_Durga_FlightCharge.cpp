@@ -3,6 +3,7 @@
 #include "V_Durga_StateHeader.h"
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_RigidBody.h"
+#include "Component_3DCamera.h"
 #include "GameObject.h"
 
 using namespace VECTOR3;
@@ -13,7 +14,8 @@ using namespace DirectX;
 
 namespace
 {
-	constexpr float FLIGHT_CHARGE_DURATION = 7.0f; // 飛行開始までのチャージ時間
+	constexpr float FLIGHT_CHARGE_DURATION = 5.0f; // 飛行開始までのチャージ時間
+	constexpr float EFFECT_SPAWN_DURATION = 0.2f; // エフェクトのスポーン間隔
 }
 
 //*---------------------------------------------------------------------------------------
@@ -39,6 +41,15 @@ void V_Durga_FlightChargeState::OnEnter(class VehicleController* pOwner)
 	// エフェクト再生
 	m_JetEffectHandleR = Master::m_pEffectManager->PlayEffect("JetSpray");
 	m_JetEffectHandleL = Master::m_pEffectManager->PlayEffect("JetSpray");
+
+	auto transform = pOwner->get_TransformComponent();
+	VEC3 crntPos = transform->get_VEC3ToPos();			// 現在の座標
+
+	// ****************************************************
+	//				 ジェット噴射サウンド再生
+	// ****************************************************
+	Master::m_pSoundManager->Play_3D("vehicle.JetSpray", crntPos, 800.0f);
+
 }
 
 //*---------------------------------------------------------------------------------------
@@ -125,6 +136,41 @@ int V_Durga_FlightChargeState::Update(class VehicleController* pOwner)
 		Master::m_pEffectManager->SetPositionEffect(m_JetEffectHandleL, jetL_Pos);
 	}
 
+	//*****************************************************************************************
+	// 衝撃用煙エフェクトの再生
+	//*****************************************************************************************
+	if (EFFECT_SPAWN_DURATION <= m_SmokeEffectSpawnTimer)
+	{
+		m_SmokeEffectSpawnTimer = 0.0f;
+		float effectSize = 3.0f;
+		int smokeEffectHandle = Master::m_pEffectManager->PlayEffect("Smoke_05", crntPos);
+		Master::m_pEffectManager->SetScaleEffect(smokeEffectHandle, effectSize);
+
+
+		//*****************************************************************************************
+		//						パッと光らせる
+		//*****************************************************************************************
+		TransientPointLightDesc desc;
+		desc._color = VEC3(0.8f, 0.4f, 0.1f);
+		desc._startRange = 200.0f;
+		desc._endRange = 0.0f;
+		desc._startIntensity = 5.0f;
+		desc._endIntensity = 0.0f;
+		desc._duration = 3.0f;
+		auto handle = Master::m_pLightManager->PlayTransientPointLight(
+			jetR_Pos,
+			desc);
+	}
+
+	// ****************************************************
+	//				 カメラシェイク
+	// ****************************************************
+	std::shared_ptr<Camera3D> camera;
+	if (camera = Master::m_pDataManager->get_CameraComponent().lock())
+	{
+		camera->DistanceDecay(0.1, VEC3(0.05f, 0.1f, 0.05f), crntPos, 300.0f);
+	}
+
 	//=========================================================================================
 	//
 	//						チャージ時間を超えたら、飛行ステートへ
@@ -132,11 +178,21 @@ int V_Durga_FlightChargeState::Update(class VehicleController* pOwner)
 	//=========================================================================================
 	if (FLIGHT_CHARGE_DURATION <= m_ElapsedTime)
 	{
-		return DURGA_V_STATE::DURGA_V_STATE_IDLE;
+		// ****************************************************
+		//				 カメラシェイク
+		// ****************************************************
+		std::shared_ptr<Camera3D> camera;
+		if (camera = Master::m_pDataManager->get_CameraComponent().lock())
+		{
+			camera->DistanceDecay(1.0, VEC3(0.7f, 0.7f, 0.7f), crntPos, 300.0f);
+		}
+
+		return DURGA_V_STATE::DURGA_V_STATE_FLIGHT;
 	}
 
 	// 経過時間
 	m_ElapsedTime += deltaTime;
+	m_SmokeEffectSpawnTimer += deltaTime;
 
 	return DURGA_V_STATE::DURGA_V_STATE_FLIGHT_CHARGE;
 }

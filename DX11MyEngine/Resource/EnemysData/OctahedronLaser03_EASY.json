@@ -11,7 +11,7 @@
   "zoomLength": 1.0,
   "isLaserSight": false,
   "shotSoundRadius": 1000.0,
-  "soundID": "enemy.octahedron.shot_02",
+  "soundID": "enemy.octahedron.shot_01",
   "muzzleFlashEffectTag" : "MuzzleEffect_Laser_01",
   "muzzleFlashEffectScale" :  [23.0, 23.0, 23.0],
   "muzzleFlashEffectColor" :  [255, 0, 0],

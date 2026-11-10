@@ -383,10 +383,10 @@ void InputManager::InitDefaultKeyConfig()
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_ROT_RIGHT]._keys.push_back(DIK_E);           // ドルガ - 右回転
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_ROT_LEFT]._keys.push_back(DIK_Q);            // ドルガ - 左回転   
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_LIFT]._keys.push_back(DIK_F);                // ドルガ - 持ち上げる  
-    m_GameConfigMap[(int)GAME_CONFIG::DURGA_THROW]._keys.push_back(DIK_T);               // ドルガ - 投げる
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_THROW]._keys.push_back(DIK_F);               // ドルガ - 投げる
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_FLIGHT]._keys.push_back(DIK_G);               // ドルガ - 投げる
     m_GameConfigMap[(int)GAME_CONFIG::DURGA_LIFT]._mouse = MOUSE_BUTTON_STATE::RIGHT;    // ドルガ - 持ち上げる - マウス 
-    m_GameConfigMap[(int)GAME_CONFIG::DURGA_THROW]._mouse = MOUSE_BUTTON_STATE::LEFT;    // ドルガ - 投げる - マウス
+    m_GameConfigMap[(int)GAME_CONFIG::DURGA_THROW]._mouse = MOUSE_BUTTON_STATE::RIGHT;    // ドルガ - 投げる - マウス
 
     // 視点移動
     m_GameConfigMap[(int)GAME_CONFIG::VIEW_UP]._keys.push_back(DIK_UP);                   // 上↑
