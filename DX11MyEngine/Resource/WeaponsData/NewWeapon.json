@@ -1,12 +1,14 @@
 {
   "level": 0,
-  "name": "オックスDF24",
-  "bulletMaxNum": 82,
+  "name": "ガイスト",
+  "bulletMaxNum": 16,
   "bulletSimultaneousNum": 1,
-  "fireRate": 8,
-  "accuracy": 0.046,
+  "fireRate": 1,
+  "burstCount": 4,
+  "burstInterval": 0.1,
+  "accuracy": 0.086,
   "zoomLength": 1,
-  "isLaserSight": true,
+  "isLaserSight": false,
   "shotSoundRadius": 300.0,
   "soundID": "weapon.gun_fire_02",
   "muzzleFlashEffectTag": "MuzzleEffect_01",
@@ -19,8 +21,8 @@
   "bulletType": "NORMAL",
   "bulletParam": {
     "common": {
-      "aliveFrame": 60,
-      "speed": 150,
+      "aliveFrame": 240,
+      "speed": 80,
       "maxSpeed": 150,
       "damage": 42,
       "acceleration": 0,
@@ -61,7 +63,7 @@
     "visual": {
       "type": "BILLBOARD",
       "bulletMaterialTag": "Bullet_02",
-      "trailDrawTime": 0.03,
+      "trailDrawTime": 0.2,
       "trailWidth": 0.5,
       "enableFlightSmoke": false,
       "smokeInterval": 0,
@@ -70,7 +72,7 @@
       "trailColor": [
         3,
         3,
-        3
+        10
       ],
       "scale": [
         0.15,
