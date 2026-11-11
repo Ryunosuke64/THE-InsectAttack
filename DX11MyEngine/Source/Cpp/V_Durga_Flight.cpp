@@ -39,8 +39,8 @@ void V_Durga_FlightState::OnEnter(class VehicleController* pOwner)
 
 
 	// エフェクト再生
-	m_JetEffectHandleR = Master::m_pEffectManager->PlayEffect("JetSpray");
-	m_JetEffectHandleL = Master::m_pEffectManager->PlayEffect("JetSpray");
+	m_JetEffectHandleR = Master::m_pEffectManager->PlayEffect("JetSpray_Flight");
+	m_JetEffectHandleL = Master::m_pEffectManager->PlayEffect("JetSpray_Flight");
 
 
 	auto transform = pOwner->get_TransformComponent();
@@ -113,7 +113,7 @@ int V_Durga_FlightState::Update(class VehicleController* pOwner)
 	XMVECTOR scale;
 	XMVECTOR rotation;
 	XMVECTOR position;
-	const float jetEffectSize = 2.0f;
+	const float jetEffectSize = 1.0f;
 
 	if (XMMatrixDecompose(
 		&scale, &rotation, &position, jetWorld_R))
@@ -218,11 +218,12 @@ int V_Durga_FlightState::Update(class VehicleController* pOwner)
 	//*****************************************************************************************
 	if (LIGHT_SPAWN_DURATION <= m_LightSpawnTimer)
 	{
+		float lightIntensity = Master::m_pRandomManager->GetFloatRandom(6.0f, 10.0f);
 		TransientPointLightDesc desc;
 		desc._color = VEC3(0.8f, 0.4f, 0.1f);
-		desc._startRange = 1200.0f;
+		desc._startRange = 1000.0f;
 		desc._endRange = 0.0f;
-		desc._startIntensity = 10.0f;
+		desc._startIntensity = lightIntensity;
 		desc._endIntensity = 0.0f;
 		desc._duration = 3.0f;
 		auto handle = Master::m_pLightManager->PlayTransientPointLight(

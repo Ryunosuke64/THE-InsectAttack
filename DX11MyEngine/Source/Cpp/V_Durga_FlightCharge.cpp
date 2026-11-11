@@ -15,7 +15,7 @@ using namespace DirectX;
 namespace
 {
 	constexpr float FLIGHT_CHARGE_DURATION = 5.0f; // 飛行開始までのチャージ時間
-	constexpr float EFFECT_SPAWN_DURATION = 0.2f; // エフェクトのスポーン間隔
+	constexpr float EFFECT_SPAWN_DURATION = 0.1f; // エフェクトのスポーン間隔
 }
 
 //*---------------------------------------------------------------------------------------
@@ -150,11 +150,12 @@ int V_Durga_FlightChargeState::Update(class VehicleController* pOwner)
 		//*****************************************************************************************
 		//						パッと光らせる
 		//*****************************************************************************************
+		float lightIntensity = Master::m_pRandomManager->GetFloatRandom(3.0f, 7.0f);
 		TransientPointLightDesc desc;
 		desc._color = VEC3(0.8f, 0.4f, 0.1f);
-		desc._startRange = 200.0f;
+		desc._startRange = 300.0f;
 		desc._endRange = 0.0f;
-		desc._startIntensity = 5.0f;
+		desc._startIntensity = lightIntensity;
 		desc._endIntensity = 0.0f;
 		desc._duration = 3.0f;
 		auto handle = Master::m_pLightManager->PlayTransientPointLight(

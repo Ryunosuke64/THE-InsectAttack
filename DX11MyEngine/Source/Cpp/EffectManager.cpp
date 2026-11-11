@@ -134,6 +134,7 @@ bool EffectManager::Setup(RendererEngine &renderer)
     LoadEffect(u"Resource/Effect/Dust_03.efkefc", "Dust_03");
     LoadEffect(u"Resource/Effect/Fragment_Building_01.efkefc", "Fragment_Building_01");
     LoadEffect(u"Resource/Effect/JetSpray.efkefc", "JetSpray");
+    LoadEffect(u"Resource/Effect/JetSpray_Flight.efkefc", "JetSpray_Flight");
 
     return true;
 }
@@ -209,6 +210,11 @@ void EffectManager::UpdateEffect(RendererEngine& renderer)
     m_EfkRenderer->SetCameraMatrix(cameraMatrix);
 
     m_Timer += deltaTime * timeScale;
+
+    Master::m_pDebugger->BeginDebugWindow("Effect",0);
+    Master::m_pDebugger->DG_BulletTextValue("DrawCallCount",INT_CAST(m_EfkRenderer->GetDrawCallCount()));
+    Master::m_pDebugger->DG_BulletTextValue("VertexCount",INT_CAST(m_EfkRenderer->GetDrawVertexCount()));
+    Master::m_pDebugger->EndDebugWindow();
 }
 
 

@@ -200,6 +200,9 @@ void Debugger::DG_BulletTextValue(const std::string& text, const VECTOR4::VEC4& 
 }
 void Debugger::DG_BulletTextValue(const std::string& text, const int val)
 {
+    std::string combinedText = text + '\n';
+    combinedText += " : " + std::to_string(val);
+    ImGui::BulletText(combinedText.c_str());
 }
 void Debugger::DG_BulletTextValue(const std::string& text, const float val)
 {
