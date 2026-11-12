@@ -152,3 +152,4 @@ bool IsEnemyDead(uint enemyID);
 bool IsEnemyGroupDestroyed(uint groupID);
 int GetEnemyGroupAliveCount(uint groupID);
 int GetAliveEnemyCount();
+void SetupPlayer(const VEC3&in pos, const VEC3&in rot_deg);

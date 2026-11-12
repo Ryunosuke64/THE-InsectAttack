@@ -11,7 +11,7 @@ uint32 wave = 0;
 void mission_setup()
 {
     StageEnvironmentParam environmentParam;
-    environmentParam.dirLightColor     = VEC3(1.0f);              // ライトカラー
+    environmentParam.dirLightColor     = VEC3(1.0f,0.9f,0.85f);   // ライトカラー
     environmentParam.dirLightIntensity = 2.5f;                    // ライトの強さ
     environmentParam.fogColor          = VEC3(0.6f, 0.0f, 0.0f);  // フォグカラー
     // environmentParam.fogStart       = 50.0f;                   // フォグ開始距離
@@ -24,7 +24,9 @@ void mission_setup()
     environmentParam.dofEnd            = 2000.0f;                 // 被写界深度最大距離
     SetStageEnvironmentParam(environmentParam);
 
-    
+    // プレイヤーのセットアップ
+    SetupPlayer(VEC3(200.0f, 3.0f, -450.0f),VEC3(0.0f,90.0f,0.0f));
+
     // アリ タイプA
     SpawnEnemyGroup(
         ENEMY_TYPE::OCTAHEDRON,

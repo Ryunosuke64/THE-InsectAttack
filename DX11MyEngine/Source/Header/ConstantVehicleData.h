@@ -72,13 +72,19 @@ namespace VehicleData
 		IDLE			= 6,	// 起き上がる
 		LIFT			= 7,	// 持ち上げる
 		PUNCH_A			= 8,	// パンチ - A
-		THROW			= 9,	// 投げる
-		TPOSE			= 10,	// Tポーズ
-		WALK_F_ENTER	= 11,	// 歩き始め
-		WALK_F_L		= 12,	// 左足前進
-		WALK_F_L_LIFT	= 13,	// 左足前進 - 持ち上げ状態
-		WALK_F_R		= 14,	// 右足前進
-		WALK_F_R_LIFT	= 15,	// 右足前進 - 持ち上げ状態
+
+		RP_REATTACH			= 9,	// ロケットパンチ - 再装着
+		RP_REATTACH_STAND	= 10,	// ロケットパンチ - 再装着待ち
+		RP_SHOT				= 11,	// ロケットパンチ - 発射
+		RP_READY			= 12,	// ロケットパンチ - 発射準備
+
+		THROW			= 13,	// 投げる
+		TPOSE			= 14,	// Tポーズ
+		WALK_F_ENTER	= 15,	// 歩き始め
+		WALK_F_L		= 16,	// 左足前進
+		WALK_F_L_LIFT	= 17,	// 左足前進 - 持ち上げ状態
+		WALK_F_R		= 18,	// 右足前進
+		WALK_F_R_LIFT	= 19,	// 右足前進 - 持ち上げ状態
 	};
 
 	// ビークル出現時のセットアップデータ

@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "AS_GameAPI.h"
+#include "Component_RigidBody.h"
 
 using namespace EnemyData;
+using namespace VECTOR4;
+using namespace VECTOR3;
 
 //=========================================================================================
 // ミッション開始からの時間を取得
@@ -91,3 +94,30 @@ int  GIGA_Engine::ScriptAPI::Game::GetAliveEnemyCount()
 {
 	return Master::m_pEnemyManager->GetAllEnemyCount();
 }
+
+
+//=========================================================================================
+// プレイヤーのセットアップ
+//=========================================================================================
+void  GIGA_Engine::ScriptAPI::Game::
+SetupPlayer(const VECTOR3::VEC3& pos, const VECTOR3::VEC3& rot_deg)
+{
+	auto playerObj = Master::m_pMissionDirector->get_Player();
+	// プレイヤーに操作コンポーネントつける
+	auto playerRigidBody = playerObj->get_Component<RigidBody>();
+
+	// デグリーからクオータニオンに変換
+	const auto q = DirectX::XMQuaternionRotationRollPitchYaw(
+		Tool::DegToRad(rot_deg.x),
+		Tool::DegToRad(rot_deg.y),
+		Tool::DegToRad(rot_deg.z)
+	);
+
+	DirectX::XMFLOAT4 rotation;
+	DirectX::XMStoreFloat4(&rotation, q);
+
+	// プレイヤーの初期位置、回転を設定
+	playerRigidBody->SetWorldTransform(pos, VEC4(rotation));
+	playerRigidBody->SetLinearVelocity(VEC3(0.0f, 0.0f, 0.0f));
+}
+

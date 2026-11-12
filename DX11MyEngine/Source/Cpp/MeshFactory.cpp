@@ -19,15 +19,19 @@ using namespace GIGA_Engine;
 using namespace VECTOR3;
 using namespace VECTOR2;
 
+
 //*---------------------------------------------------------------------------------------
-//* @:MeshFactory Class 
-//*【?】モデルの生成
-//* 引数：1.CreateModelInfo&
-//* 返値：std::weak_ptr<GameObject>
+//*【?】LODモデルの読み込みを行う
+//*
+//* [引数]
+//* info : モデルの作成に必要な情報
+//*
+//* [返値]
+//* LODモデルデータ配列 
 //*----------------------------------------------------------------------------------------
-std::shared_ptr<class GameObject> MeshFactory::CreateModel(const CreateModelInfo& info)
+ModelLODSet MeshFactory::LoadLODModels(const CreateModelInfo& info)
 {
-    std::array<LODModelData, MAX_REGISTER_LOD>lodModels;
+    ModelLODSet lodModels;
 
     // =================================================
     // LODモデルがあるなら
@@ -58,10 +62,26 @@ std::shared_ptr<class GameObject> MeshFactory::CreateModel(const CreateModelInfo
         // 使用するシェーダの設定
         modeldata->set_ShaderType(info.ShaderType);
         modeldata->set_ShadowShaderType(info.Shadow_ShaderType);
-        
+
         lodModels[i]._pModelData = modeldata;
         lodModels[i]._distance = info.LODModels[i]._distance;
     }
+
+    return lodModels;
+}
+
+//*---------------------------------------------------------------------------------------
+//* @:MeshFactory Class 
+//*【?】モデルの生成
+//* 引数：1.CreateModelInfo&
+//* 返値：std::weak_ptr<GameObject>
+//*----------------------------------------------------------------------------------------
+std::shared_ptr<class GameObject> MeshFactory::CreateModel(const CreateModelInfo& info)
+{
+    ModelLODSet lodModels;
+    
+    // LODモデルの読み込み
+    lodModels = LoadLODModels(info);
 
     auto obj = std::make_shared<GameObject>();
     obj->set_LayerRank(info.ObjLayer);  // 更新レイヤーの設定

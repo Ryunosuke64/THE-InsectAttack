@@ -200,6 +200,7 @@ private:
 
 
 public:
+    static ModelLODSet LoadLODModels(const CreateModelInfo& info);  // LODƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
     static std::shared_ptr<class GameObject> CreateModel(const CreateModelInfo& info);
     static std::shared_ptr<class GameObject> CreateUtilityMesh(const CreateUtilityMeshInfo& info);
     static std::shared_ptr<class GameObject> CreateSprite(const CreateSpriteInfo &info);

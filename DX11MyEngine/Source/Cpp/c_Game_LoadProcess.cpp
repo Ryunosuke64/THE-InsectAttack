@@ -109,35 +109,30 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         MessageBoxA(NULL, "アイテム管理クラスの初期化に失敗しました", "GameLoad", MB_OK);
         assert(false);
     }
-    
-    Master::m_pMissionDirector->LoadMissionScript("Resource/MISSION_AS/MISSION_01.as");
-    Master::m_pMissionDirector->ExcuteScriptMissionSetup();
-    
+
     /* B-2 モデルの生成 */
     {
-        //// マテリアル取得
-        //auto matPtr = Master::m_pResourceManager->FindMaterial("B_2");
+        // マテリアル取得
+        auto matPtr = Master::m_pResourceManager->FindMaterial("B_2");
 
-        //SetupMaterialInfo matInfo[1];
-        //matInfo[0].Index = 0;
-        //matInfo[0].pMaterialData = matPtr;
+        SetupMaterialInfo matInfo[1];
+        matInfo[0].Index = 0;
+        matInfo[0].pMaterialData = matPtr;
 
-        //CreateModelInfo model;
-        //model.pRenderer = m_pRenderer;
-        //model.Path = "Resource/Model/b-2/B-2_NonBone.fbx";
-        //model.ObjTag = "B-2";
-        //model.IsAnim = false;
-        //model.MatNum = 1;
-        //model.SetupMaterial = matInfo;
-        //model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-        //for (int i = 0; i < 3; i++)
-        //{
-        //    model.ObjTag = "B-2_" + std::to_string(i + 1);
-        //    auto obj = MeshFactory::CreateModel(model);
-        //    obj->get_Component<MyTransform>()->set_Scale(0.05f, 0.05f, 0.05f);           
-        //    // ポーズ中は停止
-        //    obj->set_IsUpdateAllowedDuringPause(false);
-        //}
+        CreateModelInfo model;
+        model.pRenderer = m_pRenderer;
+        model.LODModels[0] = { "Resource/Model/b-2/B-2.fbx", 0.0f };
+        model.ObjTag = "B-2";
+        model.IsAnim = false;
+        model.MatNum = 1;
+        model.SetupMaterial = matInfo;
+        model.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
+        model.ObjTag = "B-2";
+        auto obj = MeshFactory::CreateModel(model);
+        obj->get_Component<MyTransform>()->set_Scale(1.0f, 1.0f, 1.0f);
+        // ポーズ中は停止
+        obj->set_IsUpdateAllowedDuringPause(false);
+        obj->get_Transform().lock()->set_Pos(0.0f, 100.0f, -300.0f);
     }
     /* 怪獣 モデルの生成 */
     //{
@@ -283,50 +278,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
 
             auto modelRenderer = obj->get_Component<ModelMeshRenderer>();
         }
-
-        ///* 地面の生成 */
-        //{
-        //    // マテリアル取得
-        //    auto matPtr = Master::m_pResourceManager->FindMaterial("Ground");
-        //    //auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
-
-        //    SetupMaterialInfo matInfo[1];
-        //    matInfo[0].Index = 0;
-        //    matInfo[0].pMaterialData = matPtr;
-
-        //    CreateUtilityMeshInfo mesh;
-        //    mesh.pRenderer = m_pRenderer;
-        //    mesh.Type = UTILITY_MESH_TYPE::PLANE;
-        //    mesh.ObjTag = "RBGround";
-        //    mesh.MatNum = 1;
-        //    mesh.MaterialData = matInfo;
-        //    mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-        //    mesh.IsNormalMap = true;
-        //    mesh.TilingScale = VEC2(60.0f, 60.0f);
-        //    mesh.ObjLayer = 90;
-
-        //    auto obj = MeshFactory::CreateUtilityMesh(mesh);
-        //    obj->get_Transform().lock()->set_Scale(400.0f, 1.0f, 400.0f);
-        //    obj->get_Transform().lock()->set_Pos(0.0f, 0.0f, 0.0f);
-        //    obj->get_Transform().lock()->set_RotateToDeg(0.0f, 0.0f, 0.0f);
-
-        //    auto rb = obj->add_Component<RigidBody>();
-        //    auto collider = obj->add_Component<BoxCollider>();
-        //    collider->set_Size(VEC3(400.0f, 1.0f, 400.0f));
-        //    collider->set_Center(VEC3(0.0f, -1.0f, 0.0f));
-        //    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);// 衝突カテゴリ
-        //    collider->add_CollisionBitMask(COLLISION_CATEGORY::EVERY);
-        //    collider->set_SurfaceType(SURFACE_TYPE::SOIL);
-
-        //    PhysicsData::RigidBodyDesc rbDesc;
-        //    rbDesc.mass = 0.0f;
-        //    rbDesc.pos = VEC3(0.0f, 0.0f, 0.0f);
-        //    rbDesc.restitution = 1.0f;
-        //    rbDesc.owner = obj;         // オーナーオブジェクトの設定
-        //    rbDesc.collider = collider; // コライダーの設定
-
-        //    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-        //}
         /* 地面の生成 */
         {
             // マテリアル取得
@@ -425,17 +376,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         }
     }
 
-    /* ディストーション */
-  //  {
-  //      auto obj = GIGA_Engine::Instantiate3D(std::make_shared<GameObject>(), true);
-  //      obj->set_Tag("DistortionEffect");
-  //      obj->set_LayerRank(1000);
-  //      obj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
-		//obj->get_Transform().lock()->set_Pos(-155.0f, 5.0f, 100.0f);
-  //      auto distortion = obj->add_Component<DistortionEffect>();
-  //      distortion->Setup(*m_pRenderer);
-  //  }
-
     /* スカイボックスの生成 */
     {
         // マテリアル取得
@@ -521,101 +461,14 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
         }
     }
 
-    /* 足場 */
-    //{
-    //    VEC3 pos = VEC3(0.0f, 10.0f, 0.0f);
-
-    //    // マテリアル取得
-    //    auto matPtr = Master::m_pResourceManager->FindMaterial("PointLight");
-
-    //    SetupMaterialInfo matInfo[1];
-    //    matInfo[0].Index = 0;
-    //    matInfo[0].pMaterialData = matPtr;
-
-    //    CreateUtilityMeshInfo mesh;
-    //    mesh.pRenderer = m_pRenderer;
-    //    mesh.Type = UTILITY_MESH_TYPE::CUBE;
-    //    mesh.MatNum = 1;
-    //    mesh.MaterialData = matInfo;
-    //    mesh.IsActive = true;
-    //    mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-    //    mesh.IsNormalMap = true;
-
-    //    auto obj = MeshFactory::CreateUtilityMesh(mesh);
-    //    obj->get_Transform().lock()->set_Pos(pos);
-    //    obj->get_Transform().lock()->set_Scale(VEC3(5.0f, 1.0f, 5.0f));
-    //    obj->set_Tag("Scaffolding");
-    //    // コライダーの追加
-    //    auto rb = obj->add_Component<RigidBody>();
-    //    auto collider = obj->add_Component<BoxCollider>();
-    //    collider->set_Size(VEC3(5.0f, 1.0f, 5.0f));
-    //    collider->set_Center(VEC3(0, 0, 0));
-    //    collider->set_IsStatic(true);
-
-    //    // 衝突カテゴリ
-    //    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
-
-    //    PhysicsData::RigidBodyDesc rbDesc;
-    //    rbDesc.mass = 0.0f;
-    //    rbDesc.friction = 0.0f;
-    //    rbDesc.restitution = 0.8f;
-    //    rbDesc.pos = pos;
-    //    rbDesc.owner = obj;         // オーナーオブジェクトの設定
-    //    rbDesc.collider = collider; // コライダーの設定
-
-    //    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-    //}
-
-
-    /* 足場 */
-    //{
-    //    VEC3 pos = VEC3(-50.0f, 1.0f, 90.0f);
-
-    //    // マテリアル取得
-    //    auto matPtr = Master::m_pResourceManager->FindMaterial("Block");
-    //    SetupMaterialInfo matInfo[1];
-    //    matInfo[0].Index = 0;
-    //    matInfo[0].pMaterialData = matPtr;
-    //    CreateUtilityMeshInfo mesh;
-    //    mesh.pRenderer = m_pRenderer;
-    //    mesh.Type = UTILITY_MESH_TYPE::CUBE;
-    //    mesh.MatNum = 1;
-    //    mesh.MaterialData = matInfo;
-    //    mesh.IsActive = true;
-    //    mesh.ShaderType = SHADER_TYPE::DEFERRED_STD_STATIC_N;
-    //    mesh.IsNormalMap = true;
-    //    auto obj = MeshFactory::CreateUtilityMesh(mesh);
-    //    obj->get_Transform().lock()->set_Pos(pos);
-    //    obj->get_Transform().lock()->set_Scale(VEC3(5.0f, 1.0f, 5.0f));
-    //    obj->set_Tag("Scaffolding");
-
-    //    // コライダーの追加
-    //    auto rb = obj->add_Component<RigidBody>();
-    //    auto collider = obj->add_Component<BoxCollider>();
-    //    collider->set_Size(VEC3(5.0f, 1.0f, 5.0f));
-    //    collider->set_Center(VEC3(0, 0, 0));
-    //    collider->set_IsStatic(true);
-
-    //    // 衝突カテゴリ
-    //    collider->set_CollisionCategory(COLLISION_CATEGORY::BUILDING);
-
-    //    PhysicsData::RigidBodyDesc rbDesc;
-    //    rbDesc.mass = 0.0f;
-    //    rbDesc.friction = 0.0f;
-    //    rbDesc.restitution = 0.8f;
-    //    rbDesc.pos = pos;
-    //    rbDesc.owner = obj;         // オーナーオブジェクトの設定
-    //    rbDesc.collider = collider; // コライダーの設定
-
-    //    rb->Setup(*Master::m_pPhysicsEngine, rbDesc);
-    //}
-
-
-
     // プレイヤーオブジェクトの取得
     auto playerObj = Master::m_pGameObjectManager->get_ObjectByTag("Player");
     playerObj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
 
+    //
+    // ミッション管理側にプレイヤーの参照を渡す
+    //
+    Master::m_pMissionDirector->set_Player(playerObj);
 
     /* 画面上のUIの生成 */
     {
@@ -833,14 +686,6 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     
     // カメラ操作をオンに
     camera->set_IsControl(true);
-
-
-    // プレイヤーに操作コンポーネントつける
-    VEC3 playerPos = VEC3(0.0f, 3.0f, -450.0f);     // プレイヤーの初期位置を設定
-    auto playerRigidBody = playerObj->get_Component<RigidBody>();
-    playerRigidBody->SetWorldTransform(playerPos, VEC4(0.0f, 0.0f, 0.0f, 1.0f));
-    playerRigidBody->SetLinearVelocity(VEC3(0.0f, 0.0f, 0.0f));
-
     playerObj->set_StatusFlag(OBJECT_STATUS_BITFLAG::IS_ACTIVE);
 
     //======================================
@@ -941,6 +786,12 @@ void c_Game_LoadProcess::OnExit(SceneManager* pOwner)
     durgaSpawnData.hp = 1000.0f;
     durgaSpawnData.position = VEC3(0.0f,2.0f,-400.0f);
     VehicleFactory::SpawnVehicle(durgaSpawnData);
+
+
+    //
+    // ミッションスクリプトの読み込み
+    //
+    Master::m_pMissionDirector->LoadMissionScript("Resource/MISSION_AS/MISSION_01.as");
 
 
     // ロード画面用スプライトをオフに

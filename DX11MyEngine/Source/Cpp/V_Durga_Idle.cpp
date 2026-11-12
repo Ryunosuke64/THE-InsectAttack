@@ -4,6 +4,7 @@
 #include "Component_MoveLogic.h"
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_RigidBody.h"
+#include "Component_ModelChange.h"
 #include "GameObject.h"
 
 using namespace VECTOR4;
@@ -30,6 +31,8 @@ void V_Durga_IdleState::OnEnter(class VehicleController* pOwner)
 	move->set_LinearVelocityControl(false);
 	move->ClearSpeedEasing();
 	pOwner->set_MoveLogicState(MOVE_BEHAVIOUR_TYPE::NONE);
+
+
 }
 
 //*---------------------------------------------------------------------------------------

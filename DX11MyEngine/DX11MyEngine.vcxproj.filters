@@ -373,6 +373,9 @@
     <Filter Include="ソース ファイル\Engine\BaseComponent\Utility">
       <UniqueIdentifier>{75a97a67-7ffb-40ed-b03a-0cb20f935867}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Component\Utility">
+      <UniqueIdentifier>{c0c93d40-af09-488a-bddf-38d587c8098b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Cpp\SHADER.cpp">
@@ -1065,6 +1068,9 @@
     <ClCompile Include="Source\Cpp\V_Durga_FlightLanding.cpp">
       <Filter>ソース ファイル\Game\Component\Vehicle\State_Durga</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Cpp\Component_ModelChange.cpp">
+      <Filter>ソース ファイル\Game\Component\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Header\SHADER.h">
@@ -1690,6 +1696,9 @@
     </ClInclude>
     <ClInclude Include="Source\Header\Component_ImpactDamage.h">
       <Filter>ソース ファイル\Game\Component\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Header\Component_ModelChange.h">
+      <Filter>ソース ファイル\Game\Component\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

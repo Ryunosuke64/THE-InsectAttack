@@ -208,6 +208,7 @@ func "bool IsEnemyDead(uint)"
 func "bool IsEnemyGroupDestroyed(uint)"
 func "int GetEnemyGroupAliveCount(uint)"
 func "int GetAliveEnemyCount()"
+func "void SetupPlayer(const VEC3&in, const VEC3&in)"
 
 // Properties
 

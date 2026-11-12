@@ -18,6 +18,8 @@ private:
     bool m_IsScriptReady = false;
     const std::string ModuleName = "MissionModule";             // モジュール名
 
+    std::weak_ptr<GameObject> m_pPlayer;    // プレイヤーの参照を持つ
+
 public:
     MissionDirector();
     ~MissionDirector();
@@ -28,6 +30,9 @@ public:
     const UtilityData::StageEnvironmentParam& GetStageEnvironmentParam()const { return m_EnvironmentParam; }    // ステージ環境の取得
     bool ExcuteScriptMissionSetup();                                                                            // ミッションスクリプトのセットアップ関数実行
     bool ExcuteScriptMissionMain();                                                                             // ミッションスクリプトのメイン関数実行
+
+    void set_Player(const std::shared_ptr<GameObject>& player){m_pPlayer = player;}
+    std::shared_ptr<GameObject> get_Player() const { return m_pPlayer.lock(); }
 
 private:
     // コピー禁止

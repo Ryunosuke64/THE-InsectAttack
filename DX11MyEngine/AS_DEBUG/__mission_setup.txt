@@ -1,6 +1,6 @@
 void mission_setup()
 
-Temps: 17, 18, 19, 20, 21, 22, 23, 24, 25
+Temps: 17, 18, 19, 20, 23, 24, 25, 26, 27, 28
 
 Variables: 
  014: StageEnvironmentParam environmentParam
@@ -8,101 +8,128 @@ Variables:
  018: int 
  019: int 
  020: int 
- 021: int 
- 022: int 
- 023: int 
+ 023: VEC3 
  024: int 
  025: int 
+ 026: int 
+ 027: int 
+ 028: int 
 
 
 - 13,5 -
                VarDecl  0
-    0  25 *    PSF      v14
-    1  27 *    CALLSYS  0, 144           (StageEnvironmentParam::StageEnvironmentParam())
+    0  28 *    PSF      v14
+    1  30 *    CALLSYS  0, 144           (StageEnvironmentParam::StageEnvironmentParam())
 - 14,5 -
                ObjInfo  v14, 1
-    3  25 *    SUSPEND
-    4  25 *    PshC4    0x3f800000          (i:1065353216, f:1)
-    6  26 *    PSF      v17
-    7  28 *    CALLSYS  1, 142           (VEC3::VEC3(float))
+    3  28 *    SUSPEND
+    4  28 *    PshC4    0x3f59999a          (i:1062836634, f:0.85)
+    6  29 *    PshC4    0x3f666666          (i:1063675494, f:0.9)
+    8  30 *    PshC4    0x3f800000          (i:1065353216, f:1)
+   10  31 *    PSF      v17
+   11  33 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
                ObjInfo  v17, 1
-    9  25 *    VAR      v17
-   10  27 *    PSF      v14
-   11  29 *    ADDSi    v0, 67108880
-   13  29 *    GETREF   2
-   14  29 *    CALLSYS  1, 140           (VEC3& VEC3::opAssign(const VEC3&in))
-   16  25 *    PSF      v17
-   17  27 *    CALLSYS  0, 139           (VEC3::~VEC3())
+   13  28 *    VAR      v17
+   14  30 *    PSF      v14
+   15  32 *    ADDSi    v0, 67108880
+   17  32 *    GETREF   2
+   18  32 *    CALLSYS  1, 140           (VEC3& VEC3::opAssign(const VEC3&in))
+   20  28 *    PSF      v17
+   21  30 *    CALLSYS  0, 139           (VEC3::~VEC3())
 - 15,5 -
                ObjInfo  v17, 0
-   19  25 *    SUSPEND
-   20  25 *    SetV4    v18, 0x40200000          (i:1075838976, f:2.5)
-   22  25 *    LoadVObjR v14, v24, 67108880
-   25  25 *    WRTV4    v18
+   23  28 *    SUSPEND
+   24  28 *    SetV4    v18, 0x40200000          (i:1075838976, f:2.5)
+   26  28 *    LoadVObjR v14, v24, 67108880
+   29  28 *    WRTV4    v18
 - 16,5 -
-   26  25 *    SUSPEND
-   27  25 *    PshC4    0x0          (i:0, f:0)
-   29  26 *    PshC4    0x0          (i:0, f:0)
-   31  27 *    PshC4    0x3f19999a          (i:1058642330, f:0.6)
-   33  28 *    PSF      v17
-   34  30 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
+   30  28 *    SUSPEND
+   31  28 *    PshC4    0x0          (i:0, f:0)
+   33  29 *    PshC4    0x0          (i:0, f:0)
+   35  30 *    PshC4    0x3f19999a          (i:1058642330, f:0.6)
+   37  31 *    PSF      v17
+   38  33 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
                ObjInfo  v17, 1
-   36  25 *    VAR      v17
-   37  27 *    PSF      v14
-   38  29 *    ADDSi    v28, 67108880
-   40  29 *    GETREF   2
-   41  29 *    CALLSYS  1, 140           (VEC3& VEC3::opAssign(const VEC3&in))
-   43  25 *    PSF      v17
-   44  27 *    CALLSYS  0, 139           (VEC3::~VEC3())
+   40  28 *    VAR      v17
+   41  30 *    PSF      v14
+   42  32 *    ADDSi    v28, 67108880
+   44  32 *    GETREF   2
+   45  32 *    CALLSYS  1, 140           (VEC3& VEC3::opAssign(const VEC3&in))
+   47  28 *    PSF      v17
+   48  30 *    CALLSYS  0, 139           (VEC3::~VEC3())
 - 21,5 -
                ObjInfo  v17, 0
-   46  25 *    SUSPEND
-   47  25 *    SetV4    v18, 0x0          (i:0, f:0)
-   49  25 *    LoadVObjR v14, v40, 67108880
-   52  25 *    WRTV4    v18
+   50  28 *    SUSPEND
+   51  28 *    SetV4    v18, 0x0          (i:0, f:0)
+   53  28 *    LoadVObjR v14, v40, 67108880
+   56  28 *    WRTV4    v18
 - 22,5 -
-   53  25 *    SUSPEND
-   54  25 *    SetV4    v19, 0x0          (i:0, f:0)
-   56  25 *    LoadVObjR v14, v44, 67108880
-   59  25 *    WRTV4    v19
+   57  28 *    SUSPEND
+   58  28 *    SetV4    v20, 0x0          (i:0, f:0)
+   60  28 *    LoadVObjR v14, v44, 67108880
+   63  28 *    WRTV4    v20
 - 23,5 -
-   60  25 *    SUSPEND
-   61  25 *    SetV4    v18, 0x44e10000          (i:1155596288, f:1800)
-   63  25 *    LoadVObjR v14, v48, 67108880
-   66  25 *    WRTV4    v18
+   64  28 *    SUSPEND
+   65  28 *    SetV4    v18, 0x44e10000          (i:1155596288, f:1800)
+   67  28 *    LoadVObjR v14, v48, 67108880
+   70  28 *    WRTV4    v18
 - 24,5 -
-   67  25 *    SUSPEND
-   68  25 *    SetV4    v19, 0x44fa0000          (i:1157234688, f:2000)
-   70  25 *    LoadVObjR v14, v52, 67108880
-   73  25 *    WRTV4    v19
+   71  28 *    SUSPEND
+   72  28 *    SetV4    v20, 0x44fa0000          (i:1157234688, f:2000)
+   74  28 *    LoadVObjR v14, v52, 67108880
+   77  28 *    WRTV4    v20
 - 25,5 -
-   74  25 *    SUSPEND
-   75  25 *    PSF      v14
-   76  27 *    CALLSYS  1, 148           (void SetStageEnvironmentParam(const StageEnvironmentParam&in))
-- 29,5 -
-   78  25 *    SUSPEND
-   79  25 *    SetV1    v21, 0x1
-   81  25 *    PshV4    v21
-   82  26 *    PshC4    0x43480000          (i:1128792064, f:200)
-   84  27 *    PshC4    0x1          (i:1, f:1.4013e-45)
-   86  28 *    PshC4    0x41a00000          (i:1101004800, f:20)
-   88  29 *    PshC4    0x42c80000          (i:1120403456, f:100)
-   90  30 *    PshC4    0x42c80000          (i:1120403456, f:100)
-   92  31 *    PshC4    0x42c80000          (i:1120403456, f:100)
-   94  32 *    PSF      v17
-   95  34 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
+   78  28 *    SUSPEND
+   79  28 *    PSF      v14
+   80  30 *    CALLSYS  1, 148           (void SetStageEnvironmentParam(const StageEnvironmentParam&in))
+- 28,5 -
+   82  28 *    SUSPEND
+   83  28 *    PshC4    0x0          (i:0, f:0)
+   85  29 *    PshC4    0x42b40000          (i:1119092736, f:90)
+   87  30 *    PshC4    0x0          (i:0, f:0)
+   89  31 *    PSF      v17
+   90  33 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
                ObjInfo  v17, 1
-   97  29 *    VAR      v17
-   98  31 *    PshC4    0x1          (i:1, f:1.4013e-45)
-  100  32 *    GETREF   1
-  101  32 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
-  103  25 *    PSF      v17
-  104  27 *    CALLSYS  0, 139           (VEC3::~VEC3())
-- 37,2 -
+   92  28 *    VAR      v17
+   93  30 *    PshC4    0xc3e10000          (i:-1008664576, f:-450)
+   95  31 *    PshC4    0x40400000          (i:1077936128, f:3)
+   97  32 *    PshC4    0x43480000          (i:1128792064, f:200)
+   99  33 *    PSF      v23
+  100  35 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
+               ObjInfo  v23, 1
+  102  30 *    PSF      v23
+  103  32 *    GETREF   2
+  104  32 *    CALLSYS  2, 155           (void SetupPlayer(const VEC3&in, const VEC3&in))
+  106  28 *    PSF      v17
+  107  30 *    CALLSYS  0, 139           (VEC3::~VEC3())
                ObjInfo  v17, 0
-  106  25 *    SUSPEND
-  107  25 *    PSF      v14
-  108  27 *    CALLSYS  0, 145           (StageEnvironmentParam::~StageEnvironmentParam())
+  109  28 *    PSF      v23
+  110  30 *    CALLSYS  0, 139           (VEC3::~VEC3())
+- 31,5 -
+               ObjInfo  v23, 0
+  112  28 *    SUSPEND
+  113  28 *    SetV1    v24, 0x1
+  115  28 *    PshV4    v24
+  116  29 *    PshC4    0x43480000          (i:1128792064, f:200)
+  118  30 *    PshC4    0x1          (i:1, f:1.4013e-45)
+  120  31 *    PshC4    0x41a00000          (i:1101004800, f:20)
+  122  32 *    PshC4    0x42c80000          (i:1120403456, f:100)
+  124  33 *    PshC4    0x42c80000          (i:1120403456, f:100)
+  126  34 *    PshC4    0x42c80000          (i:1120403456, f:100)
+  128  35 *    PSF      v17
+  129  37 *    CALLSYS  3, 143           (VEC3::VEC3(float, float, float))
+               ObjInfo  v17, 1
+  131  32 *    VAR      v17
+  132  34 *    PshC4    0x1          (i:1, f:1.4013e-45)
+  134  35 *    GETREF   1
+  135  35 *    CALLSYS  6, 150           (uint SpawnEnemyGroup(ENEMY_TYPE, const VEC3&in, float, uint, float, bool))
+  137  28 *    PSF      v17
+  138  30 *    CALLSYS  0, 139           (VEC3::~VEC3())
+- 39,2 -
+               ObjInfo  v17, 0
+  140  28 *    SUSPEND
+  141  28 *    PSF      v14
+  142  30 *    CALLSYS  0, 145           (StageEnvironmentParam::~StageEnvironmentParam())
                ObjInfo  v14, 0
             0:
-  110  25 *    RET      0
+  144  28 *    RET      0

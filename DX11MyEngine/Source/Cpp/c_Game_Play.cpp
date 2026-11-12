@@ -37,8 +37,13 @@ void c_Game_Play::OnEnter(SceneManager* pOwner)
     this->SetInitChildState(pOwner, c_GAME::c_GAME_NONE);
 
 
-    m_pPlayerObj = Master::m_pGameObjectManager->get_ObjectByTag("Player");
+    //*****************************************************************************************
+    // ミッションのセットアップ処理実行
+    //*****************************************************************************************
+    Master::m_pMissionDirector->ExcuteScriptMissionSetup();
 
+    
+    m_pPlayerObj = Master::m_pGameObjectManager->get_ObjectByTag("Player");
     m_EnemyNum = 0;
 
     // クリアフラグ初期化

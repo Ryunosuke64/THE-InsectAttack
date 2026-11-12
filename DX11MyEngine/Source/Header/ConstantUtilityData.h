@@ -375,10 +375,10 @@ namespace UtilityData
 		VECTOR3::VEC3 dirLightColor;		// ディレクションライトカラー（スカイボックスの色になる）
 		VECTOR3::VEC3 dirLightDirection;	// ディレクションライトの向き
 		float dirLightIntensity;			// ディレクションライトインテンシティ
-		VECTOR3::VEC3 fogColor;			// フォグカラー
-		float fogStart;					// フォグの開始距離
+		VECTOR3::VEC3 fogColor;				// フォグカラー
+		float fogStart;						// フォグの開始距離
 		float fogEnd;						// フォグの最大距離（1.0以下ならフォグを設定しない）
-		float dofStart;					// 被写界深度の開始距離
+		float dofStart;						// 被写界深度の開始距離
 		float dofEnd;						// 被写界深度の最大距離
 
 		StageEnvironmentParam() :

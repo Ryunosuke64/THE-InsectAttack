@@ -33,6 +33,9 @@ namespace GIGA_Engine::ScriptAPI::Game
 	// エネミーの生存数を取得
 	int GetAliveEnemyCount();
 
+	// プレイヤーのセットアップ
+	void SetupPlayer(const VECTOR3::VEC3& pos, const VECTOR3::VEC3& rot_deg);
+
 	// プレイヤーが指定エリア内に入ったか
 	bool IsPlayerInArea(const VECTOR3::VEC3& pos, float radius);
 

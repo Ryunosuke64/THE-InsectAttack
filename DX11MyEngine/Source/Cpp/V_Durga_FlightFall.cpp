@@ -116,8 +116,8 @@ int V_Durga_FlightFallState::Update(class VehicleController* pOwner)
 		//				 土埃エフェクト
 		// ****************************************************
 		auto transform = pOwner->get_TransformComponent();
-		int footRDustEffectHandle = Master::m_pEffectManager->PlayEffect("Dust_01");
-		int footLDustEffectHandle = Master::m_pEffectManager->PlayEffect("Dust_01");
+		int footRDustEffectHandle = Master::m_pEffectManager->PlayEffect("Dust_03");
+		int footLDustEffectHandle = Master::m_pEffectManager->PlayEffect("Dust_03");
 		VEC3 footRPos = crntPos;
 		VEC3 footLPos = crntPos;
 		VEC3 footOffsetR;
@@ -129,7 +129,7 @@ int V_Durga_FlightFallState::Update(class VehicleController* pOwner)
 
 		footRPos += footOffsetR;
 		footLPos += footOffsetL;
-		VEC3 scale = VEC3(1.5f, 1.5f, 1.5f);
+		VEC3 scale = VEC3(1.2f, 1.2f, 1.2f);
 		Master::m_pEffectManager->SetPositionEffect(footRDustEffectHandle, footRPos);
 		Master::m_pEffectManager->SetPositionEffect(footLDustEffectHandle, footLPos);
 		Master::m_pEffectManager->SetScaleEffect(footRDustEffectHandle, scale);

@@ -670,6 +670,14 @@ void ScriptManager::RegisterMissionAPI(asIScriptEngine* engine)
         "int GetAliveEnemyCount()",
         &GIGA_Engine::ScriptAPI::Game::GetAliveEnemyCount
     );
+            
+    // =====================================
+    // SetupPlayer
+    // =====================================
+    asbind20::global(engine).function(
+        "void SetupPlayer(const VEC3&in pos, const VEC3&in rot_deg)",
+        &GIGA_Engine::ScriptAPI::Game::SetupPlayer
+    );
 
 
 }

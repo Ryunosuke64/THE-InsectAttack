@@ -11,6 +11,7 @@
 #include "Component_VehicleController.h"
 #include "Component_Health.h"
 #include "Component_WeaponController.h"
+#include "Component_ModelChange.h"
 #include "Component_ModelMeshResource.h"
 #include "Component_RigidBody.h"
 #include "Component_Physics.h"
@@ -156,12 +157,39 @@ std::shared_ptr<GameObject> VehicleFactory::CreateDurga(const VehicleGenerationD
     health->set_MaxHP(hp);
     health->set_CrntHP(hp);
 
+    auto modelResource = generatedObject->get_Component<ModelMeshResource>();
+
+    //
+    // モデル切り替え用コンポーネントの追加
+    //
+    auto modelChange = generatedObject->add_Component<ModelChange>();
+    modelChange->set_ModelMeshResource(modelResource);
+    
+    //****************
+    // スロット 0
+    //****************
+    modelChange->RegisterModelData(modelResource->get_LODModelDataArray());
+
+    // 腕なしモデル用の生成情報
+    CreateModelInfo noArmsModelInfo;
+    noArmsModelInfo = model;
+    noArmsModelInfo.LODModels[0] = { "Resource/Model/Vehicle/Durga/Durga_NoArms.fbx", 0.0f };
+
+    // オブジェクトは作らず、LODモデルの読み込みだけ行う
+    ModelLODSet lodModels =  MeshFactory::LoadLODModels(noArmsModelInfo);
+    
+    //****************
+    // スロット 1
+    //****************
+    modelChange->RegisterModelData(lodModels);
+
+
+
     //// コントローラー側に怯み耐久を設定する
     //enemyController->set_StaggerThreshold(hp * ANT_THRESHOLD_RATE);
 
     //enemyController->set_AlwaysSoundID("");
 
-    auto modelResource = generatedObject->get_Component<ModelMeshResource>();
 
     auto rb = generatedObject->add_Component<RigidBody>();
     auto collider = generatedObject->add_Component<CapsuleCollider>();

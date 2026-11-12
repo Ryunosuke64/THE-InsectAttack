@@ -16,7 +16,7 @@
 class ModelMeshResource : public IComponent
 {
 private:
-    std::array<LODModelData, MAX_REGISTER_LOD> m_LODModels;
+    ModelLODSet m_LODModels;
 
 public:
     ModelMeshResource(std::weak_ptr<GameObject> pOwner, int updateRank = 100);

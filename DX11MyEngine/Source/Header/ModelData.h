@@ -19,6 +19,7 @@ enum class LOD_QUALITY
 };
 
 
+
 //* =========================================================================
 //* 【?】ボーンに含まれる影響度まとめ
 //* =========================================================================
@@ -222,3 +223,6 @@ struct LODModelData
 	float _distance = 0.0f;				  // LODの切り替え距離
 	std::weak_ptr<ModelData> _pModelData; // モデルデータ
 };
+
+
+using ModelLODSet = std::array<LODModelData, MAX_REGISTER_LOD>;
