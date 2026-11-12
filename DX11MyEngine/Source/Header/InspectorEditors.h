@@ -436,3 +436,10 @@ public:
     bool Init(RendererEngine& renderer) override;
     void OnEditorGUI(RendererEngine& renderer, class GameObject& pObj) override;
 };
+
+class SkyRendererEditor : public EditorBase
+{
+public:
+    bool Init(RendererEngine& renderer) override;
+    void OnEditorGUI(RendererEngine& renderer, class GameObject& pObj) override;
+};

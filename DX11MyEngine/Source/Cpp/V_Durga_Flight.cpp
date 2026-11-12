@@ -218,7 +218,7 @@ int V_Durga_FlightState::Update(class VehicleController* pOwner)
 	//*****************************************************************************************
 	if (LIGHT_SPAWN_DURATION <= m_LightSpawnTimer)
 	{
-		float lightIntensity = Master::m_pRandomManager->GetFloatRandom(6.0f, 10.0f);
+		float lightIntensity = Master::m_pRandomManager->GetFloatRandom(4.0f, 10.0f);
 		TransientPointLightDesc desc;
 		desc._color = VEC3(0.8f, 0.4f, 0.1f);
 		desc._startRange = 1000.0f;
@@ -239,7 +239,7 @@ int V_Durga_FlightState::Update(class VehicleController* pOwner)
 	std::shared_ptr<Camera3D> camera;
 	if (camera = Master::m_pDataManager->get_CameraComponent().lock())
 	{
-		camera->DistanceDecay(0.1f, VEC3(0.02f, 0.02f, 0.02f), crntPos, 300.0f);
+		camera->DistanceDecay(0.1f, VEC3(0.02f, 0.02f, 0.02f), crntPos, 500.0f);
 	}
 
 	//=========================================================================================

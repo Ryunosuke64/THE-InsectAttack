@@ -153,7 +153,7 @@ int V_Durga_FlightChargeState::Update(class VehicleController* pOwner)
 		float lightIntensity = Master::m_pRandomManager->GetFloatRandom(3.0f, 7.0f);
 		TransientPointLightDesc desc;
 		desc._color = VEC3(0.8f, 0.4f, 0.1f);
-		desc._startRange = 300.0f;
+		desc._startRange = 500.0f;
 		desc._endRange = 0.0f;
 		desc._startIntensity = lightIntensity;
 		desc._endIntensity = 0.0f;
@@ -169,7 +169,7 @@ int V_Durga_FlightChargeState::Update(class VehicleController* pOwner)
 	std::shared_ptr<Camera3D> camera;
 	if (camera = Master::m_pDataManager->get_CameraComponent().lock())
 	{
-		camera->DistanceDecay(0.1, VEC3(0.05f, 0.1f, 0.05f), crntPos, 300.0f);
+		camera->DistanceDecay(0.1, VEC3(0.05f, 0.1f, 0.05f), crntPos, 500.0f);
 	}
 
 	//=========================================================================================
@@ -180,12 +180,12 @@ int V_Durga_FlightChargeState::Update(class VehicleController* pOwner)
 	if (FLIGHT_CHARGE_DURATION <= m_ElapsedTime)
 	{
 		// ****************************************************
-		//				 カメラシェイク
+		//				 離陸時のカメラシェイク
 		// ****************************************************
 		std::shared_ptr<Camera3D> camera;
 		if (camera = Master::m_pDataManager->get_CameraComponent().lock())
 		{
-			camera->DistanceDecay(1.0, VEC3(0.7f, 0.7f, 0.7f), crntPos, 300.0f);
+			camera->DistanceDecay(3.0, VEC3(0.7f, 0.7f, 0.7f), crntPos, 600.0f);
 		}
 
 		return DURGA_V_STATE::DURGA_V_STATE_FLIGHT;

@@ -133,5 +133,37 @@ void SkyRenderer::set_MeshResource(std::weak_ptr<class IMeshResource> meshResour
     m_pMeshResource = meshResource;
 }
 
+std::shared_ptr<Material> SkyRenderer::get_Material() const
+{
+    const auto meshResource = m_pMeshResource.lock();
+    if (!meshResource || !meshResource->m_pMeshData)
+    {
+        return nullptr;
+    }
+    return meshResource->m_pMeshData->pMaterials.lock();
+}
 
+bool SkyRenderer::set_Material(const std::shared_ptr<Material>& material)
+{
+    const auto meshResource = m_pMeshResource.lock();
+    if (!meshResource || !meshResource->m_pMeshData || !material)
+    {
+        return false;
+    }
 
+    const auto texture = material->m_DiffuseMap.Texture.lock();
+    if (!texture || !texture->get_SRV())
+    {
+        return false;
+    }
+    D3D11_SHADER_RESOURCE_VIEW_DESC textureDesc{};
+    texture->get_SRV()->GetDesc(&textureDesc);
+    if (textureDesc.ViewDimension != D3D11_SRV_DIMENSION_TEXTURECUBE)
+    {
+        return false;
+    }
+
+    // 共有プリセットの内容は変更せず、このSkyboxの参照先だけを切り替える。
+    meshResource->m_pMeshData->pMaterials = material;
+    return true;
+}

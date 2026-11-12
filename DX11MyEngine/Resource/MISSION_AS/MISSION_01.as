@@ -82,7 +82,7 @@ void mission_main()
             ENEMY_TYPE::GIANT_ANT_Normal,
             VEC3(-200.0f,30.0f, 0.0f),
             30.0f,
-            50,
+            150,
             70.0f,
             true
         );

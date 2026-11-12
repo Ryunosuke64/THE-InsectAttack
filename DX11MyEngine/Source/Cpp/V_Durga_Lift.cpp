@@ -105,7 +105,7 @@ void V_Durga_LiftState::OnEnter(class VehicleController* pOwner)
 			//
 			// 掴む際に衝突が続いてしまうので、除外する
 			//
-			auto collider = targetObj->get_Component < MeshCollider >();
+			auto collider = targetObj->get_Component <MeshCollider>();
 			if (collider)
 			{
 				collider->remove_CollisionBitMask(COLLISION_CATEGORY::VEHICLE);
@@ -224,6 +224,14 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 		// ポーズを維持
 		pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(true);
 
+		// 何も掴めなかった
+		if (m_pLiftTargets.empty())
+		{
+			pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
+
+			return DURGA_V_STATE::DURGA_V_STATE_IDLE;
+		}
+
 		//=========================================================================================
 		//	投げつけ入力が押されたら、投げつけステートへ
 		//=========================================================================================
@@ -238,15 +246,7 @@ int V_Durga_LiftState::Update(class VehicleController* pOwner)
 		{
 			return DURGA_V_STATE::DURGA_V_STATE_LIFT_MOVE;
 		}
-		
-		
-		// 何も掴めなかった
-		if (m_pLiftTargets.empty())
-		{
-			pOwner->get_AnimatorComponent()->set_IsPlaybackPaused(false);
 
-			return DURGA_V_STATE::DURGA_V_STATE_IDLE;
-		}
 	}
 
 

@@ -12,6 +12,7 @@
 #include "Component_SkinnedMeshAnimator.h"
 #include "Component_ModelMeshResource.h"
 #include "Component_IMeshResource.h"
+#include "Component_SkyRenderer.h"
 #include "Component_ModelMeshRenderer.h"
 #include "Component_BoxCollider.h"
 #include "Component_SphereCollider.h"
@@ -1223,7 +1224,11 @@ void MeshResourceEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
 
             Master::m_pDebugger->DG_Separator();
             Master::m_pDebugger->DG_BulletText(U8ToChar(u8"ディフューズ色"));
-            Master::m_pDebugger->DG_Image(diffuseSRV, VEC2(100.0f, 100.0f));
+            // SkyboxのCubeMapは、ImGuiの2D画像用シェーダーへ渡さない。
+            if (!pObj.get_Component<SkyRenderer>())
+            {
+                Master::m_pDebugger->DG_Image(diffuseSRV, VEC2(100.0f, 100.0f));
+            }
             if (Master::m_pDebugger->DG_ColorEdit4("##MeshResourceDiffuse", &diffuseColor))
             {
                 material->m_DiffuseColor = diffuseColor;
@@ -1758,4 +1763,75 @@ void DistortionEffectEditor::OnEditorGUI(RendererEngine& renderer, GameObject& p
 
         Master::m_pDebugger->DG_TreePop();
     }
+}
+
+bool SkyRendererEditor::Init(RendererEngine& renderer)
+{
+    return true;
+}
+
+void SkyRendererEditor::OnEditorGUI(RendererEngine& renderer, GameObject& pObj)
+{
+    const auto skyRenderer = pObj.get_Component<SkyRenderer>();
+    if (!skyRenderer)
+    {
+        return;
+    }
+
+    ImGui::PushID(skyRenderer.get());
+    if (Master::m_pDebugger->DG_TreeNode("スカイレンダラー"))
+    {
+        Master::m_pDebugger->DG_Separator();
+        constexpr std::array<const char*, 6> materialTags = {
+            "SkyBox01", "SkyBox02", "SkyBox03", "SkyBox04", "SkyBox05", "SkyBox06"
+        };
+        std::array<std::shared_ptr<Material>, materialTags.size()> materials{};
+        std::array<bool, materialTags.size()> available{};
+        auto currentMaterial = skyRenderer->get_Material();
+        const char* currentLabel = currentMaterial ? U8ToChar(u8"登録外") : U8ToChar(u8"未設定");
+
+        // 選択番号をEditor側に保持せず、実際の参照先から現在の種類を求める。
+        for (size_t i = 0; i < materialTags.size(); ++i)
+        {
+            materials[i] = Master::m_pResourceManager->FindMaterial(materialTags[i]);
+            if (!materials[i])
+            {
+                continue;
+            }
+            const auto texture = materials[i]->m_DiffuseMap.Texture.lock();
+            if (texture && texture->get_SRV())
+            {
+                D3D11_SHADER_RESOURCE_VIEW_DESC textureDesc{};
+                texture->get_SRV()->GetDesc(&textureDesc);
+                available[i] = textureDesc.ViewDimension == D3D11_SRV_DIMENSION_TEXTURECUBE;
+            }
+            if (available[i] && materials[i] == currentMaterial)
+            {
+                currentLabel = materialTags[i];
+            }
+        }
+
+        if (ImGui::BeginCombo(U8ToChar(u8"スカイボックス"), currentLabel))
+        {
+            for (size_t i = 0; i < materialTags.size(); ++i)
+            {
+                const bool selected = available[i] && materials[i] == currentMaterial;
+                const std::string label = std::string(materialTags[i]) +
+                    (available[i] ? "" : U8ToChar(u8"（未読込）"));
+                ImGui::BeginDisabled(!available[i]);
+                if (ImGui::Selectable(label.c_str(), selected) && skyRenderer->set_Material(materials[i]))
+                {
+                    currentMaterial = materials[i];
+                }
+                if (selected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndDisabled();
+            }
+            ImGui::EndCombo();
+        }
+        Master::m_pDebugger->DG_TreePop();
+    }
+    ImGui::PopID();
 }

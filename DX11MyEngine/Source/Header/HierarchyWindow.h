@@ -4,6 +4,7 @@ class HierarchyWindow :   public EditWindowBase
 {
 private:
     std::unordered_map<std::string, std::unique_ptr<class EditorBase>> m_EditorMap;
+    char m_NameSearch[128] = {};
 
 public:
     HierarchyWindow();
@@ -12,7 +13,8 @@ public:
     void Update(RendererEngine &renderer)override;
 
 private:
-    void SelectObjectsDraw(std::vector<std::shared_ptr<GameObject>>& _objects)const;
+    void DrawObjectGroups(const std::vector<std::shared_ptr<GameObject>>& objects)const;
+    void SelectObjectsDraw(const std::vector<std::shared_ptr<GameObject>>& objects)const;
 
 };
 

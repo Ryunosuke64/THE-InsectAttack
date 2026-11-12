@@ -172,18 +172,26 @@ void c_Title_LoadProcess::OnExit(SceneManager *pOwner)
             Master::m_pResourceManager->RegisterMaterialData("Spider_4", mat[3]);
         }
 
-        /* スカイボックス */
+        /* スカイボックスのマテリアルを登録する */
         {
             Material mat;
             mat.m_DiffuseMap.Texture = Master::m_pResourceManager->LoadDDS_CubeMap_Texture(L"Resource/Texture/CubeMap/skybox_01.dds");
-
-            // マテリアル登録
             Master::m_pResourceManager->RegisterMaterialData("SkyBox01", mat); 
             
             mat.m_DiffuseMap.Texture = Master::m_pResourceManager->LoadDDS_CubeMap_Texture(L"Resource/Texture/CubeMap/skybox_02.dds");
-            
-            // マテリアル登録
             Master::m_pResourceManager->RegisterMaterialData("SkyBox02", mat);
+
+            mat.m_DiffuseMap.Texture = Master::m_pResourceManager->LoadDDS_CubeMap_Texture(L"Resource/Texture/CubeMap/skybox_03.dds");
+            Master::m_pResourceManager->RegisterMaterialData("SkyBox03", mat);
+
+            mat.m_DiffuseMap.Texture = Master::m_pResourceManager->LoadDDS_CubeMap_Texture(L"Resource/Texture/CubeMap/skybox_04.dds");
+            Master::m_pResourceManager->RegisterMaterialData("SkyBox04", mat);
+
+            mat.m_DiffuseMap.Texture = Master::m_pResourceManager->LoadDDS_CubeMap_Texture(L"Resource/Texture/CubeMap/skybox_05.dds");
+            Master::m_pResourceManager->RegisterMaterialData("SkyBox05", mat);
+
+            mat.m_DiffuseMap.Texture = Master::m_pResourceManager->LoadDDS_CubeMap_Texture(L"Resource/Texture/CubeMap/skybox_06.dds");
+            Master::m_pResourceManager->RegisterMaterialData("SkyBox06", mat);
         }
     }
 

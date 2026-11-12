@@ -38,5 +38,8 @@ public:
 	void Draw(RendererEngine& renderer) override;		// •`‰æˆ—
 	void set_MeshResource(std::weak_ptr<class IMeshResource> meshResource);
 
+    std::shared_ptr<class Material> get_Material() const;
+    bool set_Material(const std::shared_ptr<class Material>& material);
+
 };
 
